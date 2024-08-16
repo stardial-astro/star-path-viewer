@@ -1,7 +1,7 @@
 {
   "name": "star-path-viewer",
   "version": "1.0.0",
-  "homepage": "https://lydiazly.github.io/star-path-viewer",
+  "homepage": "https://stardial-astro.github.io/star-path-viewer",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",

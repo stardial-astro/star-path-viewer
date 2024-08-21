@@ -255,7 +255,7 @@ const StarInput = ({ onStarChange, setErrorMessage, setStarValid, fieldError, se
           helperText={starError.name || fieldError.name}
           sx={{ marginTop: 2 }}
         >
-          <MenuItem key="none" value="" sx={{ color: 'GrayText' }}>-- Select a name --</MenuItem>
+          <MenuItem key="none" value="" sx={{ color: 'action.active' }}>-- Select a name --</MenuItem>
           {Object.keys(STARS).map((key) => (
             <MenuItem key={key} value={key}>{key}</MenuItem>
           ))}

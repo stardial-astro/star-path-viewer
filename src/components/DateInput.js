@@ -431,7 +431,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
                 },
               }}
             >
-              <MenuItem key="none" value="" sx={{ color: 'GrayText' }}>-- Select a month --</MenuItem>
+              <MenuItem key="none" value="" sx={{ color: 'action.active' }}>-- Select a month --</MenuItem>
               {MONTHS.slice(1).map((month, index) => (
                 <MenuItem key={index} value={(index + 1).toString()} disabled={!!disabledMonths[index + 1]}>
                   {month.name}
@@ -489,10 +489,10 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
               </Box>
               {date.year && fetching && (
                 <Box display="flex" alignItems="center" textAlign="left" flexWrap="wrap">
-                  {/* <Typography color="grey" variant="body1">
+                  {/* <Typography color="action.active" variant="body1">
                     &gt; Quering the {EQX_SOL_NAMES[flag]} of this year at this location ...
                   </Typography> */}
-                  <CircularProgress size="0.8rem" sx={{ color: 'grey' }} />
+                  <CircularProgress size="0.8rem" sx={{ color: 'action.disabled' }} />
                 </Box>
               )}
             </Box>

@@ -232,7 +232,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
   }, [location, date, star, loading, clearImage, setDiagramId, setInfo, setSvgData, setAnno, setSuccess, setErrorMessage, clearError]);
 
   return (
-    <Stack direction="column" spacing={2}>
+    <Stack direction="column" spacing={3}>
       <Stack id="input-fields" direction="column" spacing={1.5}>
         <Stack id="location" direction="column" spacing={1}>
           <CustomDivider>LOCATION</CustomDivider>
@@ -297,7 +297,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
           </Alert>
         )}
         {loading && (
-          <Typography color="darkgrey" variant="body1" sx={{ pt: 1, textAlign: 'center' }}>
+          <Typography color="action.active" variant="body1" sx={{ pt: 1, textAlign: 'center' }}>
             <em>Please wait. This may take a few seconds.</em>
           </Typography>
         )}

@@ -10,7 +10,7 @@ import { PT_DETAIL, LINE_DETAIL } from '../utils/constants';
 const redAsterisk = <span style={{ color: 'red' }}>*</span>;
 
 const labelStyle = { textAlign: 'left', fontWeight: 500 };
-const detailStyle = { textAlign: 'left', color: 'rgba(0, 0, 0, 0.75)' };
+const detailStyle = { textAlign: 'left', color: 'text.primary' };
 const headStyle = { textAlign: 'center' };
 const cellStyleHead = { paddingX: 1.5, paddingY: 1.5, textAlign: 'center', fontWeight: 500 };
 const cellStyleCenter = { paddingX: 1.5, paddingY: 1.5, textAlign: 'center' };
@@ -37,7 +37,7 @@ const AnnoDisplay = ({ anno }) => {
 
   return (
     <Box>
-      <CustomDivider sx={{ pt: 1.5, mb: 0.5 }} />
+      <CustomDivider sx={{ mt: 1.5, mb: 0.5 }} />
       <Stack direction="column" spacing={0.6} sx={{ width: '100%', pt: 1, pl: '6%', pr: '4%' }}>
         {Object.keys(LINE_DETAIL).map((type, index) => (
           <Grid container key={index} display="flex" alignItems="flex-start" flexWrap="wrap">
@@ -64,7 +64,7 @@ const AnnoDisplay = ({ anno }) => {
                 <Typography variant="body2" component="span" fontWeight={500}>
                   {PT_DETAIL[item.name].name}
                 </Typography>
-                &nbsp;-&nbsp;{PT_DETAIL[item.name].detail}
+                &nbsp;&ndash;{PT_DETAIL[item.name].detail}
               </Typography>
             </Grid>
           </Grid>
@@ -105,7 +105,7 @@ const AnnoDisplay = ({ anno }) => {
         </Table>
       </TableContainer>
 
-      <Typography variant="body2" color="textSecondary" sx={{ textAlign: 'left', mt: 1, ml: 1 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left', mt: 1, ml: 1 }}>
         {redAsterisk} Daylight Saving Time not included.
       </Typography>
     </Box>

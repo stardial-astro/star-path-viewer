@@ -1,12 +1,14 @@
-# StarPathViewer
+# Star Path Viewer
 
-[![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
+Trace a star on any date from -3000-01-29 to 3000-05-06.
 
 [→ Go to website](https://stardial-astro.github.io/star-path-viewer)
 
+[![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
+
 ## Introduction
 
-[StarPathViewer](https://stardial-astro.github.io/star-path-viewer) is a [React](https://react.dev) web application of [this project](https://github.com/claude-hao/star-path-calculator) as a RESTful client for [this Flask server](https://github.com/lydiazly/star-path-calculator-flask).
+[Star Path Viewer](https://stardial-astro.github.io/star-path-viewer) is a [React](https://react.dev) web application of [this project](https://github.com/claude-hao/star-path-calculator) as a RESTful client for [this Flask server](https://github.com/lydiazly/star-path-calculator-flask).
 
 Input the date, location, and a celestial object's infomation to view the star path and rising/setting details.
 

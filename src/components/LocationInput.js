@@ -1,7 +1,7 @@
 // src/components/LocationInput.js
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Stack, Grid, Autocomplete, TextField, Typography, ToggleButton, ToggleButtonGroup, InputAdornment, CircularProgress, IconButton, Chip, Snackbar, Alert } from '@mui/material';
+import { Box, Stack, Grid, Autocomplete, TextField, Typography, ToggleButton, ToggleButtonGroup, InputAdornment, CircularProgress, IconButton, Chip, Snackbar, Alert, Tooltip } from '@mui/material';
 // import SearchIcon from '@mui/icons-material/Search';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import Config from '../Config';
@@ -10,6 +10,15 @@ import { useService } from '../context/ServiceContext';
 import determineService from '../utils/determineService';
 import fetchGeolocation from '../utils/fetchGeolocation';
 import fetchSuggestions from '../utils/fetchSuggestions';
+
+const gpsBtnStyle = {
+  color: "action.active",
+  p: '2px',
+  '&:hover': {
+    color: 'primary.main',
+  },
+  cursor: 'pointer',
+};
 
 const fetchCurrentLocation = async (service, setSearchTerm, setLocation, setInputType, setLoadingLocation, setErrorMessage) => {
   try {
@@ -339,7 +348,7 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
             <li
               {...props}
               key={option.id}
-              style={!option.id || option.id === 'unknown' ? { pointerEvents: 'none', color: 'gray', fontStyle: 'italic' } : {}}
+              style={!option.id || option.id === 'unknown' ? { pointerEvents: 'none', color: 'InactiveCaptionText', fontStyle: 'italic' } : {}}
             >
               <Stack direction="row" spacing={1} sx={{ width: '100%', justifyContent: 'space-between' }}>
                 <Typography>
@@ -365,13 +374,15 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
-                  <InputAdornment position="start" sx={{ ml: 0.2, mr: 0 }}>
+                  <InputAdornment position="start" sx={{ ml: 1, mr: -1 }}>
                     {!loadingSuggestions && !loadingLocation ? (
-                      <IconButton aria-label="gps" onClick={handleGpsClick}>
-                        <GpsFixedIcon size={20} sx={{ color: "grey", p: '2px', m: -1, cursor: 'pointer' }} />
-                      </IconButton>
+                      <Tooltip title="Find My Location">
+                        <IconButton aria-label="gps" edge="start" onClick={handleGpsClick}>
+                          <GpsFixedIcon size={20} sx={gpsBtnStyle} />
+                        </IconButton>
+                      </Tooltip>
                     ) : (
-                      <CircularProgress size={20} sx={{ color: "grey", mr: 0.5 }} />
+                      <CircularProgress size={20} sx={{ color: "action.disabled", mr: 1 }} />
                     )}
                   </InputAdornment>
                 ),
@@ -400,7 +411,7 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
                 InputProps={{
                   endAdornment: loadingLocation ? (
                     <InputAdornment position="end">
-                      <CircularProgress size={20} sx={{ color: "lightgrey" }} />
+                      <CircularProgress size={20} sx={{ color: "action.disabled" }} />
                     </InputAdornment>
                   ) : null,
                 }}
@@ -424,7 +435,7 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
                 InputProps={{
                   endAdornment: loadingLocation ? (
                     <InputAdornment position="end">
-                      <CircularProgress size={20} sx={{ color: "lightgrey" }} />
+                      <CircularProgress size={20} sx={{ color: "action.disabled" }} />
                     </InputAdornment>
                   ) : null,
                 }}
@@ -438,6 +449,9 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
         open={location.id === 'unknown'}
         autoHideDuration={12000}
         onClose={handleSnackbarClose}
+        sx={(theme) => ({
+          boxShadow: theme.shadows[2],
+        })}
       >
         <Alert severity="warning" sx={{ width: '100%', textAlign: 'left' }} onClose={handleSnackbarClose}>
           Sorry, we couldn't fetch the address, but you can use these coordinates for this location.

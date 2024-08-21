@@ -21,7 +21,7 @@
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.0",
+    "react-router-dom": "^6.26.1",
     "react-scripts": "^5.0.1",
     "react-web-share": "^2.0.2",
     "svg2pdf.js": "^2.2.4",

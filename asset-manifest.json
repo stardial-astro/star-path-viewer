@@ -1,14 +1,18 @@
 {
   "files": {
     "main.css": "/star-path-viewer/static/css/main.792b3898.css",
-    "main.js": "/star-path-viewer/static/js/main.895ae653.js",
+    "main.js": "/star-path-viewer/static/js/main.76d65dd7.js",
     "static/js/52.43f4144c.chunk.js": "/star-path-viewer/static/js/52.43f4144c.chunk.js",
     "static/js/493.ec920675.chunk.js": "/star-path-viewer/static/js/493.ec920675.chunk.js",
     "static/js/685.d4fa9a47.chunk.js": "/star-path-viewer/static/js/685.d4fa9a47.chunk.js",
+    "static/media/logo.svg": "/star-path-viewer/static/media/logo.39a1a072c6677d60038bf525914829d3.svg",
+    "static/media/logo-text.svg": "/star-path-viewer/static/media/logo-text.5c9ebc6ec5af0e381d9f156a0deeb016.svg",
+    "static/media/title-image.svg": "/star-path-viewer/static/media/title-image.287eeafecbe9966e8efa079d6a247eb2.svg",
+    "static/media/about-image.svg": "/star-path-viewer/static/media/about-image.2a4e24aa8f2036e761c5c36ab9fbcb7c.svg",
     "index.html": "/star-path-viewer/index.html"
   },
   "entrypoints": [
     "static/css/main.792b3898.css",
-    "static/js/main.895ae653.js"
+    "static/js/main.76d65dd7.js"
   ]
 }

@@ -1,7 +1,7 @@
 // src/components/DateInput.js
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Stack, Grid, TextField, MenuItem, RadioGroup, Radio, FormControl, Typography, Accordion, AccordionSummary, AccordionDetails, CircularProgress } from '@mui/material';
+import { Box, Stack, Grid, TextField, MenuItem, RadioGroup, Radio, FormControl, Typography, Accordion, AccordionSummary, AccordionDetails, InputAdornment, CircularProgress } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { MONTHS, EPH_DATE_MIN, EPH_DATE_MAX, EPH_DATE_MIN_JULIAN, EPH_DATE_MAX_JULIAN, EQX_SOL_NAMES } from '../utils/constants';
 import { dateToStr } from '../utils/dateUtils';
@@ -430,6 +430,13 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
                   'backgroundColor': !flag ? null : '#f5f5f5',
                 },
               }}
+              InputProps={{
+                endAdornment: date.year && fetching ? (
+                  <InputAdornment position="end" sx={{ mr: 2 }}>
+                    <CircularProgress size={20} sx={{ color: "action.disabled" }} />
+                  </InputAdornment>
+                ) : null,
+              }}
             >
               <MenuItem key="none" value="" sx={{ color: 'action.active' }}>-- Select a month --</MenuItem>
               {MONTHS.slice(1).map((month, index) => (
@@ -458,6 +465,13 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
                 '& .MuiOutlinedInput-root': {
                   'backgroundColor': !flag ? null : '#f5f5f5',
                 },
+              }}
+              InputProps={{
+                endAdornment: date.year && fetching ? (
+                  <InputAdornment position="end">
+                    <CircularProgress size={20} sx={{ color: "action.disabled" }} />
+                  </InputAdornment>
+                ) : null,
               }}
             />
           </Grid>
@@ -492,7 +506,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
                   {/* <Typography color="action.active" variant="body1">
                     &gt; Quering the {EQX_SOL_NAMES[flag]} of this year at this location ...
                   </Typography> */}
-                  <CircularProgress size="0.8rem" sx={{ color: 'action.disabled' }} />
+                  <CircularProgress size="1rem" sx={{ color: 'action.disabled' }} />
                 </Box>
               )}
             </Box>

@@ -34,6 +34,13 @@ const fetchDate = async (date, flag, locationRef, setDate, setFetching, setError
   try {
     const { month: newMonth, day: newDay } = await fetchEquinoxSolstice(location.lat, location.lng, location.tz, year, flag, signal);
     if (requestId === latestRequest.current) {
+      if (!newMonth || !newDay) {
+        setErrorMessage((prev) => ({ ...prev, date: 'Unable to fetch the date.' }));
+        setFetching(false);
+        abortControllerRef.current = null;
+        return;
+      }
+      
       const month = newMonth;
       const day = newDay;
       /* Reset month and day if needed */
@@ -44,6 +51,7 @@ const fetchDate = async (date, flag, locationRef, setDate, setFetching, setError
       };
       setDate(newDate);
       setFetching(false);
+      setDateValid(true);
       abortControllerRef.current = null;
     }
   } catch (error) {
@@ -262,7 +270,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
       if (newFlag) {
         fetchingFromRef.current = 'click';
         setFetching(true);
-        // setDateValid(false);
+        setDateValid(false);
         setCal('');  // Force to use Gregorian
         // onDateChange({ ...date, flag: newFlag, cal: '' });
       }
@@ -270,7 +278,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
       //   onDateChange({ ...date, flag: newFlag });
       // }
     }
-  }, [flag]);
+  }, [flag, setDateValid]);
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -495,20 +503,19 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
               }
             }}
           >
-            <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="center" pr={1} flexWrap="wrap">
+            <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="flex-start" pr={1} flexWrap="wrap">
               <Box flex="1 0 auto" textAlign="left" mr={1}>
                 <Typography color="primary" variant="body1">
                   Quick Entry
                 </Typography>
               </Box>
-              {date.year && fetching && (
+              {/* {date.year && fetching && (
                 <Box display="flex" alignItems="center" textAlign="left" flexWrap="wrap">
-                  {/* <Typography color="action.active" variant="body1">
+                  <Typography color="action.active" variant="body1">
                     &gt; Quering the {EQX_SOL_NAMES[flag]} of this year at this location ...
-                  </Typography> */}
-                  <CircularProgress size="1rem" sx={{ color: 'action.disabled' }} />
+                  </Typography>
                 </Box>
-              )}
+              )} */}
             </Box>
           </AccordionSummary>
           <AccordionDetails sx={{ paddingX: 1.5, paddingTop: 0, paddingBottom: 1.5 }}>

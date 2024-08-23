@@ -34,7 +34,7 @@ const fetchDate = async (date, flag, locationRef, setDate, setFetching, setError
   try {
     const { month: newMonth, day: newDay } = await fetchEquinoxSolstice(location.lat, location.lng, location.tz, year, flag, signal);
     if (requestId === latestRequest.current) {
-      if (!newMonth || !newDay) {
+      if (!(newMonth > 0 && newDay > 0)) {
         setErrorMessage((prev) => ({ ...prev, date: 'Unable to fetch the date.' }));
         setFetching(false);
         abortControllerRef.current = null;

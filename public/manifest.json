@@ -16,8 +16,8 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "/star-path-viewer",
   "display": "standalone",
-  "theme_color": "##E5EEFA",
+  "theme_color": "#E5EEFA",
   "background_color": "#ffffff"
 }

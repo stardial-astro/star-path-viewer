@@ -8,6 +8,7 @@ import { ServiceProvider } from './context/ServiceContext';
 import Home from './components/Home';
 import Footer from './components/Footer';
 import About from './components/About';
+import NotFound from './components/NotFound';
 import BackToTopButton from './components/BackToTopButton';
 import CustomAppBar from './components/CustomAppBar';
 import Config from './Config';
@@ -40,6 +41,8 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
+                {/* The catch-all route for 404 */}
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </Container>
 

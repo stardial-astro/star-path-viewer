@@ -441,7 +441,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
               InputProps={{
                 endAdornment: date.year && fetching ? (
                   <InputAdornment position="end" sx={{ mr: 2 }}>
-                    <CircularProgress size={20} sx={{ color: "action.disabled" }} />
+                    <CircularProgress size={20} sx={{ color: 'action.disabled' }} />
                   </InputAdornment>
                 ) : null,
               }}
@@ -477,7 +477,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
               InputProps={{
                 endAdornment: date.year && fetching ? (
                   <InputAdornment position="end">
-                    <CircularProgress size={20} sx={{ color: "action.disabled" }} />
+                    <CircularProgress size={20} sx={{ color: 'action.disabled' }} />
                   </InputAdornment>
                 ) : null,
               }}

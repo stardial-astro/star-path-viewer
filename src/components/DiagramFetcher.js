@@ -272,7 +272,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
           size="large"
           aria-label="draw"
           startIcon={
-            <Box display="flex" alignItems="center" sx={{ pb: '1.5px', ml:-2.5 }}>
+            <Box display="flex" alignItems="center" sx={{ pb: '1.5px', ml: -2.5 }}>
               {loading
               ? <CircularProgress color="inherit" size="1rem" sx={{ mr: 1 }} />
               : <ArrowForwardIcon />

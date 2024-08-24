@@ -247,7 +247,7 @@ const LocationInput = ({ onLocationChange, setErrorMessage, setLocationValid, fi
       if (trimmedNewSearchTerm) {
         debouncedFetchSuggestions(trimmedNewSearchTerm, serviceChosen);
       } else {
-        setLocation({ lat: '', lng: '', id: 0, tz: '' });
+        setLocation({ lat: '', lng: '', id: '', tz: '' });
         setSuggestions([]);
       }
     },

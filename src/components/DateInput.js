@@ -259,6 +259,7 @@ const DateInput = ({ onDateChange, setErrorMessage, setDateValid, fieldError, se
   const handleCalChange = useCallback((event) => {
     /* Keep the date values */
     setCal(event.target.value);
+    setAdjusting(true);
   }, []);
 
   const handleFlagChange = useCallback((event, newFlag) => {

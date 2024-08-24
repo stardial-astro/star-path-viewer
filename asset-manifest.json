@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/star-path-viewer/static/css/main.792b3898.css",
-    "main.js": "/star-path-viewer/static/js/main.c4f80623.js",
+    "main.js": "/star-path-viewer/static/js/main.4643b111.js",
     "static/js/52.43f4144c.chunk.js": "/star-path-viewer/static/js/52.43f4144c.chunk.js",
     "static/js/493.ec920675.chunk.js": "/star-path-viewer/static/js/493.ec920675.chunk.js",
     "static/js/685.d4fa9a47.chunk.js": "/star-path-viewer/static/js/685.d4fa9a47.chunk.js",
@@ -13,6 +13,6 @@
   },
   "entrypoints": [
     "static/css/main.792b3898.css",
-    "static/js/main.c4f80623.js"
+    "static/js/main.4643b111.js"
   ]
 }

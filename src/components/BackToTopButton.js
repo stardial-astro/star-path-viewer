@@ -30,7 +30,7 @@ const StyledFab = styled(Fab)(({ theme }) => ({
 const ScrollTop = ({ children }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 100, // When the button appears
+    threshold: 150, // When the button appears
   });
 
   const handleClick = useCallback((event) => {

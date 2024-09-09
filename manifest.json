@@ -1,5 +1,7 @@
 {
-  "icons": [
+    "short_name": "Star Path Viewer",
+    "name": "Star Path Viewer",
+    "icons": [
     {
       "src": "favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",

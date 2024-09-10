@@ -9,9 +9,9 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>Star Path Viewer - Home</title>
+        <title>Star Path Viewer - Trace Planets and Stars</title>
         <meta name="description" content="Learn more about Stardial and Star Path Viewer." />
-        <meta property="og:title" content="About Us - Star Path Viewer" />
+        <meta property="og:title" content="About Us - Stardial" />
         <meta property="og:description" content="Learn more about Stardial and Star Path Viewer." />
         <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
         <meta property="og:url" content="https://stardial-astro.github.io/star-path-viewer/about" />

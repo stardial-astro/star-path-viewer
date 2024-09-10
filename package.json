@@ -32,7 +32,6 @@
     "web-vitals": "^4.2.3"
   },
   "scripts": {
-    "postinstall": "yarn install --immutable=false",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

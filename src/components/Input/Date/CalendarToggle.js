@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { FormControl, RadioGroup, Radio } from '@mui/material';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
-import CustomFormControlLabel from '../../UI/CustomFormControlLabel';
+import CustomFormControlLabel from '../../CustomUI/CustomFormControlLabel';
 import { GREGORIAN, JULIAN } from '../../../utils/constants';
 
 const CalendarToggle = () => {

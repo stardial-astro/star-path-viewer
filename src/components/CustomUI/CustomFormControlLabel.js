@@ -1,4 +1,4 @@
-// src/components/UI/CustomFormControlLabel.js
+// src/components/CustomUI/CustomFormControlLabel.js
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { styled } from '@mui/material/styles';
 

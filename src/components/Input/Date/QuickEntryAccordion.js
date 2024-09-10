@@ -5,7 +5,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
 import { EQX_SOL_NAMES } from '../../../utils/constants';
-import CustomToggleButton from '../../UI/CustomToggleButton';
+import CustomToggleButton from '../../CustomUI/CustomToggleButton';
 
 const QuickEntryAccordion = () => {
   const {

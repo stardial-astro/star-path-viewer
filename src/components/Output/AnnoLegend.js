@@ -5,7 +5,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { styled } from '@mui/system';
 import { PT_DETAIL, LINE_DETAIL } from '../../utils/constants';
-import CustomDivider from '../UI/CustomDivider';
+import CustomDivider from '../CustomUI/CustomDivider';
 
 const labelStyle = { textAlign: 'left', fontWeight: 500, minWidth: '1.5rem' };
 const detailStyle = { textAlign: 'left', color: 'text.primary', ml: 1.5 };

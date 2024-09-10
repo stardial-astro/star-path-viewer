@@ -14,7 +14,7 @@ import { sanitizeSvg } from '../../utils/svgUtils';
 import LocationInput from './Location/LocationInput';
 import DateInput from './Date/DateInput';
 import StarInput from './Star/StarInput';
-import CustomDivider from '../UI/CustomDivider';
+import CustomDivider from '../CustomUI/CustomDivider';
 
 const warningPrefix = 'WARNING:';
 

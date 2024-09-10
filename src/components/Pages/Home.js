@@ -43,10 +43,10 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>Star Path Viewer - Home</title>
-        <meta name="description" content="Trace a star on any date between 3001 BCE and 3000 CE." />
+        <title>Star Path Viewer - Trace Planets and Stars</title>
+        <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
         <meta property="og:title" content="Star Path Viewer" />
-        <meta property="og:description" content="Trace a star on any date between 3001 BCE and 3000 CE." />
+        <meta property="og:description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
         <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
         <meta property="og:url" content="https://stardial-astro.github.io/star-path-viewer" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -73,7 +73,7 @@ const Home = () => {
               <RouterLink to="/">
                 <img
                   src={TitleImage}
-                  alt="Star Path Viewer Title"
+                  alt="Star Path Viewer - Trace Planets and Stars"
                   style={{
                     maxHeight: '2.1rem',
                     width: '100%',
@@ -86,6 +86,7 @@ const Home = () => {
 
             <Typography
               variant="subtitle1"
+              component="h2"
               color="action.active"
               fontWeight={400}
               sx={{

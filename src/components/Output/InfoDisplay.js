@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Box, Stack, Grid, Typography } from '@mui/material';
 import { formatDateTime, formatDateTimeISO, decimalToHMS, formatHMS } from '../../utils/dateUtils';
 import { formatCoordinate, formatDecimalDgrees } from '../../utils/coordUtils';
-import CustomDivider from '../CustomUI/CustomDivider';
+import CustomDivider from '../UI/CustomDivider';
 
 const capitalize = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1);

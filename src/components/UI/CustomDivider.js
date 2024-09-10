@@ -1,4 +1,4 @@
-// src/components/CustomUI/CustomDivider.js
+// src/components/UI/CustomDivider.js
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/material/styles';
 

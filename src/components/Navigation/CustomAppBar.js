@@ -97,7 +97,7 @@ const CustomAppBar = () => {
         <Box display="flex" alignItems="center" gap={1}>
           <Tooltip title="GitHub Repository" placement="bottom-end">
             <IconButton
-              href="https://star-path-viewer.pages.dev/"
+              href="https://github.com/stardial-astro/star-path-viewer"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="GitHub"

@@ -111,7 +111,7 @@ const CustomAppBar = () => {
           <RWebShare
             disableNative={false}
             data={{
-              text: "Star Path Viewer: Trace a star on any date between 3001 BCE and 3000 CE.",
+              text: "Star Path Viewer: An astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky.",
               url: baseUrl,
               title: "Check out Star Path Viewer",
             }}

@@ -38,7 +38,7 @@
 
 - :round_pushpin: Offers flexible location input options, including location search, geographical position lookup, or manual latitude and longitude entry.
 - :calendar: Accepts both **Gregorian** and **Julian** calendar date inputs.
-- :spiral_calendar_pad: Allows users to quickly retrieve equinox or solstice dates by specifying just the year and location, instead of a full date.
+- :magic_wand: Allows users to quickly retrieve equinox or solstice dates by specifying just the year and location, instead of a full date.
 - :star: Supports star or planet input by name, Hipparcos Catalogue number, or ICRS coordinates (RA, Dec).
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or strings of names, supporting Bayer designations, proper names, and [Chinese names (traditional, simplified, and pinyin)](#resources).
 - :framed_picture: SVG diagrams are available for download in SVG, PNG, or PDF formats.
@@ -57,10 +57,14 @@ This app relies on the following services:
 
 ## Resources
 
+- Ephemeris Data
+
+  [JPL Planetary and Lunar Ephemerides](https://ssd.jpl.nasa.gov/planets/eph_export.html) (DE406)
+
 - Hipparchus Catalogue
 
   [The Hipparcos and Tycho Catalogues](https://www.cosmos.esa.int/web/hipparcos/catalogues)
-  [FTP](https://cdsarc.cds.unistra.fr/ftp/cats/I/239) (DE406)
+  [FTP](https://cdsarc.cds.unistra.fr/ftp/cats/I/239)
 
 - Bayer Designation and Proper Name
 

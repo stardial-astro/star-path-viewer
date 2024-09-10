@@ -3,10 +3,21 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 import AboutImage from '../../assets/about-image.svg';
 import Logo from '../../assets/logo.svg';
+import { Helmet } from 'react-helmet';
 
 const About = () => {
   return (
     <>
+      <Helmet>
+        <title>Star Path Viewer - Home</title>
+        <meta name="description" content="Learn more about Stardial and Star Path Viewer." />
+        <meta property="og:title" content="About Us - Star Path Viewer" />
+        <meta property="og:description" content="Learn more about Stardial and Star Path Viewer." />
+        <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
+        <meta property="og:url" content="https://stardial-astro.github.io/star-path-viewer/about" />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+
       <Box sx={{ marginTop: 4 }}>
         <img
           src={Logo}

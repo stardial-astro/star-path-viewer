@@ -1,9 +1,8 @@
 # Star Path Viewer
 
-Trace a star on any date between 3001 BCE and 3000 CE.
-[→ Go to website](https://stardial-astro.github.io/star-path-viewer)
-
 [![Version](https://img.shields.io/badge/version-v1.0-blue)](#features) [![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
+
+[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="80%">](https://stardial-astro.github.io/star-path-viewer)
 
 ## Description<!-- omit in toc -->
 

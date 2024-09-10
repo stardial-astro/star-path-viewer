@@ -109,10 +109,11 @@ const CustomAppBar = () => {
             </IconButton>
           </Tooltip>
           <RWebShare
+            disableNative={false}
             data={{
               text: "Star Path Viewer: Trace a star on any date between 3001 BCE and 3000 CE.",
               url: baseUrl,
-              title: "Share Star Path Viewer",
+              title: "Check out Star Path Viewer",
             }}
             onClick={handleShareSuccess}
           >

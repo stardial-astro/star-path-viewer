@@ -2,11 +2,11 @@
 
 [![Version](https://img.shields.io/badge/version-v1.0-blue)](#features) [![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
-[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://stardial-astro.github.io/star-path-viewer)
+[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
 
 ## Description<!-- omit in toc -->
 
-[Star Path Viewer](https://stardial-astro.github.io/star-path-viewer) is a [React](https://react.dev) web application developed by [Stardial](https://github.com/stardial-astro).
+[Star Path Viewer](https://star-path-viewer.pages.dev/) is a [React](https://react.dev) web application developed by [Stardial](https://github.com/stardial-astro).
 
 [→ Source code](https://github.com/claude-hao/star-path-calculator)
 

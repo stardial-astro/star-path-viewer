@@ -48,7 +48,7 @@ const Home = () => {
         <meta property="og:title" content="Star Path Viewer" />
         <meta property="og:description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
         <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
-        <meta property="og:url" content="https://stardial-astro.github.io/star-path-viewer" />
+        <meta property="og:url" content="https://star-path-viewer.pages.dev/" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 

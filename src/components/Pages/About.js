@@ -3,11 +3,12 @@ import React from 'react';
 import { Box, Typography, Link } from '@mui/material';
 import AboutImage from '../../assets/about-image.svg';
 import Logo from '../../assets/logo.svg';
-import { Helmet } from 'react-helmet';
+// import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const About = () => {
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Star Path Viewer - Trace Planets and Stars</title>
         <meta name="description" content="Learn more about Stardial and Star Path Viewer." />
@@ -86,7 +87,7 @@ const About = () => {
           Compared to existing astronomical software with similar functions, <em>Star Path Viewer</em> is more precise in delivering essential results and more focused in its presentation, making it a more desirable choice for research purposes.
         </Typography>
       </Box>
-    </>
+    </HelmetProvider>
   );
 };
 

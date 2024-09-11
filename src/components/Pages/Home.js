@@ -15,7 +15,8 @@ import DownloadManager from '../Output/DownloadManager';
 import AnnoDisplay from '../Output/AnnoDisplay';
 // import Notice from '../Navigation/Notice';
 // import Config from '../../Config';
-import { Helmet } from 'react-helmet';
+// import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Home = () => {
   // console.log('Rendering Home');
@@ -41,7 +42,7 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Star Path Viewer - Trace Planets and Stars</title>
         <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
@@ -155,7 +156,7 @@ const Home = () => {
           </StarInputProvider>
         </DateInputProvider>
       </LocationInputProvider>
-    </>
+    </HelmetProvider>
   );
 };
 

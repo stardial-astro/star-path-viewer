@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Stack, Typography, Alert } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+// import { Link as RouterLink } from 'react-router-dom';
 import TitleImage from '../../assets/title-image.svg';
 import { LocationInputProvider } from '../../context/LocationInputContext';
 import { DateInputProvider } from '../../context/DateInputContext';
@@ -70,18 +70,19 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              <RouterLink to="/">
-                <img
-                  src={TitleImage}
-                  alt="Star Path Viewer - Trace Planets and Stars"
-                  style={{
-                    maxHeight: '2.1rem',
-                    width: '100%',
-                    objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
-                    cursor: 'pointer',
-                  }}
-                />
-              </RouterLink>
+              <Typography component="h1" sx={{ margin: 0, clip: 'rect(0 0 0 0)', width: '1px', height: '1px', overflow: 'hidden', position: 'absolute' }}>
+                Star Path Viewer - Trace Planets and Stars
+              </Typography>
+              <img
+                src={TitleImage}
+                alt="Star Path Viewer - Trace Planets and Stars"
+                style={{
+                  maxHeight: '2.1rem',
+                  width: '100%',
+                  objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
+                  cursor: 'pointer',
+                }}
+              />
             </Box>
 
             <Typography

@@ -55,7 +55,7 @@ const fetchGeolocation = async (service) => {
           },
           {
             enableHighAccuracy: false,
-            timeout: 5000,
+            timeout: 6000,
             maximumAge: 300000,  // 5 minutes
           }
         );

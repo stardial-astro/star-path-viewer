@@ -44,7 +44,7 @@ const Home = () => {
   return (
     <HelmetProvider>
       <Helmet>
-        <title>Star Path Viewer - Trace Planets and Stars</title>
+        <title>Star Path Viewer: Trace Planets & Stars</title>
         <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
         <meta property="og:title" content="Star Path Viewer" />
         <meta property="og:description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
@@ -71,17 +71,33 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              <Typography component="h1" sx={{ margin: 0, clip: 'rect(0 0 0 0)', width: '1px', height: '1px', overflow: 'hidden', position: 'absolute' }}>
-                Star Path Viewer - Trace Planets and Stars
+              {/* Hidden SEO-friendly title */}
+              <Typography
+                component="h1"
+                sx={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: -1,
+                  color: 'transparent',
+                  margin: 0,
+                  overflow: 'hidden',  // Prevent any visual glitches
+                  // textIndent: '-9999px',  // Further hide from screen
+                  fontSize: '1rem',
+                }}
+              >
+                Star Path Viewer
               </Typography>
+              {/* The actual title image displayed */}
               <img
                 src={TitleImage}
-                alt="Star Path Viewer - Trace Planets and Stars"
+                alt="Star Path Viewer"
                 style={{
                   maxHeight: '2.1rem',
-                  width: '100%',
                   objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
-                  cursor: 'pointer',
+                  cursor: 'default',
                 }}
               />
             </Box>

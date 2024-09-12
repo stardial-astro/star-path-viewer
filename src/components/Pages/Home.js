@@ -45,9 +45,9 @@ const Home = () => {
     <HelmetProvider>
       <Helmet>
         <title>Star Path Viewer: Trace Planets & Stars</title>
-        <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
+        <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky." />
         <meta property="og:title" content="Star Path Viewer" />
-        <meta property="og:description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
+        <meta property="og:description" content="Trace Planets & Stars" />
         <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
         <meta property="og:url" content="https://star-path-viewer.pages.dev/" />
         <meta name="twitter:card" content="summary_large_image" />

@@ -49,7 +49,6 @@ const LocationInput = ({ setErrorMessage }) => {
   useEffect(() => {
     clearLocationError(locationDispatch, setErrorMessage);
     locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
-    setErrorMessage((prev) => ({ ...prev, draw: '', download: '' }));
     /* Clear address and tz if lat or lng is empty */
     if (searchTerm.trim() && locationInputType === TYPE_COORD && (!location.lat || !location.lng)) {
       locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });

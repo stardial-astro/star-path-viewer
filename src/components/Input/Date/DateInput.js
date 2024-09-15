@@ -34,7 +34,6 @@ const DateInput = ({ setErrorMessage, location }) => {
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
     dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
-    setErrorMessage((prev) => ({ ...prev, draw: '', download: '' }));
     // const initialDate = {
     //   year: now.getFullYear().toString(),
     //   month: (now.getMonth() + 1).toString(),

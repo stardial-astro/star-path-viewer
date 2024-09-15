@@ -74,13 +74,13 @@ const formatDecimalHours = (decimalHours) => {
  *
  * @param {Object} params - An object containing year, month, day, hour, minute, second
  * @param {number} params.year - 0 is 1 BCE
- * @param {number} [params.month=1] - Starts from 1
- * @param {number} [params.day=1] - Day of the month
- * @param {number} [params.hour=12] - 24-hour format
- * @param {number} [params.minute=0] - Minutes
- * @param {number} [params.second=0] - Seconds (can be an integer or float)
- * @param {boolean} [params.monthFirst=true] - month-day-year or day-month-year
- * @param {boolean} [params.abbr=false] - use abbreviation or full name for month
+ * @param {number} [params.month=1] - Starts from 1. Defaults to `1` (January).
+ * @param {number} [params.day=1] - Day of the month. Defaults to `1`.
+ * @param {number} [params.hour=12] - 24-hour format. Defaults to `12`.
+ * @param {number} [params.minute=0] - Minutes. Defaults to `0`.
+ * @param {number} [params.second=0] - Seconds (can be an integer or float). Defaults to `0`.
+ * @param {boolean} [params.monthFirst=true] - Whether to use month-day-year instead of day-month-year format. Defaults to `true`.
+ * @param {boolean} [params.abbr=false] - Whether to use abbreviation instead of full name for month. Defaults to `false`.
  * @returns {Object} An object containing two strings: the formatted date and the formatted time.
  */
 const formatDateTime = ({ year, month = 1, day = 1, hour = 12, minute = 0, second = 0,
@@ -101,11 +101,11 @@ const formatDateTime = ({ year, month = 1, day = 1, hour = 12, minute = 0, secon
  *
  * @param {Object} params - An object containing year, month, day, hour, minute, second
  * @param {number} params.year - 0 is 1 BCE
- * @param {number} [params.month=1] - Starts from 1
- * @param {number} [params.day=1] - Day of the month
- * @param {number} [params.hour=12] - 24-hour format
- * @param {number} [params.minute=0] - Minutes
- * @param {number} [params.second=0] - Seconds (can be an integer or float)
+ * @param {number} [params.month=1] - Starts from 1. Defaults to `1` (January).
+ * @param {number} [params.day=1] - Day of the month. Defaults to `1`.
+ * @param {number} [params.hour=12] - 24-hour format. Defaults to `12`.
+ * @param {number} [params.minute=0] - Minutes. Defaults to `0`.
+ * @param {number} [params.second=0] - Seconds (can be an integer or float). Defaults to `0`.
  * @returns {Object} An object containing two strings: the formatted date and the formatted time.
  */
 const formatDateTimeISO = ({ year, month = 1, day = 1, hour = 12, minute = 0, second = 0 }) => {
@@ -121,10 +121,10 @@ const formatDateTimeISO = ({ year, month = 1, day = 1, hour = 12, minute = 0, se
  *
  * @param {Object} params - An object containing a date and time array and other parameters
  * @param {number[]} params.dateTime - An array containing [year, month, day, hour, minute, second]
- * @param {boolean} [params.iso=true] - use ISO format or not
- * @param {string} [params.delim=' '] - Delimiter between date and time when using ISO format
- * @param {boolean} [params.monthFirst=true] - month-day-year or day-month-year
- * @param {boolean} [params.abbr=false] - use abbreviation or full name for month
+ * @param {boolean} [params.iso=true] - Whether to use ISO format or not. Defaults to `true`.
+ * @param {string} [params.delim=' '] - Delimiter between date and time when using ISO format. Defaults to `' '`.
+ * @param {boolean} [params.monthFirst=true] - Whether to use month-day-year instead of day-month-year format. Defaults to `true`.
+ * @param {boolean} [params.abbr=false] - Whether to use abbreviation or full name for month. Defaults to `false`.
  * @returns {string} The formatted date and time string.
  */
 const dateTimeToStr = ({ dateTime, iso = true, delim = ' ', monthFirst = true, abbr = false }) => {
@@ -149,9 +149,9 @@ const dateTimeToStr = ({ dateTime, iso = true, delim = ' ', monthFirst = true, a
  *
  * @param {Object} params - An object containing a date array and other parameters
  * @param {number[]} params.date - An array containing [year, month, day]
- * @param {boolean} [params.iso=true] - use ISO format or not
- * @param {boolean} [params.monthFirst=true] - month-day-year or day-month-year
- * @param {boolean} [params.abbr=false] - use abbreviation or full name for month
+ * @param {boolean} [params.iso=true] - Whether to use ISO format. Defaults to `true`.
+ * @param {boolean} [params.monthFirst=true] - Whether to use month-day-year instead of day-month-year format. Defaults to `true`.
+ * @param {boolean} [params.abbr=false] - Whether to use abbreviation instead of full name for month. Defaults to `false`.
  * @returns {string} The formatted date string.
  */
 const dateToStr = ({ date, iso = true, monthFirst = true, abbr = false }) => {

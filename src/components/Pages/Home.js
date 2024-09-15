@@ -1,7 +1,7 @@
 // src/components/Pages/Home.js
 import React, { useState, useCallback } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 // import { Link as RouterLink } from 'react-router-dom';
 import TitleImage from '../../assets/title-image.svg';
 import { LocationInputProvider } from '../../context/LocationInputContext';
@@ -11,7 +11,6 @@ import { GREGORIAN } from '../../utils/constants';
 import DiagramFetcher from '../Input/DiagramFetcher';
 import InfoDisplay from '../Output/InfoDisplay';
 import ImageDisplay from '../Output/ImageDisplay';
-import DownloadManager from '../Output/DownloadManager';
 import AnnoDisplay from '../Output/AnnoDisplay';
 // import Notice from '../Navigation/Notice';
 // import Config from '../../Config';
@@ -71,7 +70,7 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              {/* Hidden SEO-friendly title */}
+              {/* Hidden title */}
               <Typography
                 component="h1"
                 sx={{
@@ -131,6 +130,8 @@ const Home = () => {
                 setAnno={setAnno}
                 setSuccess={setSuccess}
                 clearImage={clearImage}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
               />
             </Box>
 
@@ -142,29 +143,24 @@ const Home = () => {
 
                 {svgData && (
                   <Box id="diagram">
-                    <Box id="svg-container">
-                      <ImageDisplay svgData={svgData} />
-                    </Box>
-
-                    <Stack id="download" direction="column" spacing={1} sx={{ mt: -1 }}>
-                      <DownloadManager
-                        svgData={svgData}
-                        filenameBase={`sp_${diagramId}`}
-                        dpi={300}
-                        setErrorMessage={setErrorMessage}
-                      />
-                      {errorMessage.download && (
-                        <Alert severity="error" sx={{ width: '100%', mt: 1, textAlign: 'left' }} onClose={() => setErrorMessage((prev) => ({ ...prev, download: '' }))}>
-                          {errorMessage.download}
-                        </Alert>
-                      )}
-                    </Stack>
+                    <ImageDisplay
+                      svgData={svgData}
+                      diagramId={diagramId}
+                      info={info}
+                      errorMessage={errorMessage}
+                      setErrorMessage={setErrorMessage}
+                    />
                   </Box>
                 )}
 
                 {anno.length > 0 && (
                   <Box id="annotations" mt={2}>
-                    <AnnoDisplay anno={anno} />
+                    <AnnoDisplay
+                      anno={anno}
+                      diagramId={diagramId}
+                      errorMessage={errorMessage}
+                      setErrorMessage={setErrorMessage}
+                    />
                   </Box>
                 )}
               </Box>

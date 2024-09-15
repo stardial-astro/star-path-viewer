@@ -20,7 +20,7 @@ const warningPrefix = 'WARNING:';
 
 const alertStyle = { width: '100%', textAlign: 'left' };
 
-const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess, clearImage }) => {
+const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess, clearImage, errorMessage, setErrorMessage }) => {
   // console.log('Rendering DiagramFetcher');
   const {
     location,  // id: ''(not-found), 'unknown'
@@ -41,7 +41,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
     starValid,
     starDispatch,
   } = useStarInput();
-  const [errorMessage, setErrorMessage] = useState({});
+  // const [errorMessage, setErrorMessage] = useState({});
   const [loading, setLoading] = useState(false);
 
   /* Reset error when user starts typing */
@@ -265,6 +265,8 @@ DiagramFetcher.propTypes = {
   setAnno: PropTypes.func.isRequired,
   setSuccess: PropTypes.func.isRequired,
   clearImage: PropTypes.func.isRequired,
+  errorMessage: PropTypes.object.isRequired,
+  setErrorMessage: PropTypes.func.isRequired,
 };
 
 export default React.memo(DiagramFetcher);

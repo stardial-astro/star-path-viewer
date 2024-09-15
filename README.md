@@ -2,7 +2,7 @@
 
 An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/version-v1.0-blue)](#features) [![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
+[![Version](https://img.shields.io/badge/version-v1.0.1-blue)](#features) [![npm](https://img.shields.io/badge/npm-10.2.4-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.6-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
 [<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
 
@@ -44,6 +44,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 - :star: Supports star or planet input by name, Hipparcos Catalogue number, or ICRS coordinates (RA, Dec).
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or strings of names, supporting Bayer designations, proper names, and [Chinese names (traditional, simplified, and pinyin)](#resources).
 - :framed_picture: SVG diagrams are available for download in SVG, PNG, or PDF formats.
+- :clipboard: Annotation tables are available for download in CSV, JSON, or XLSX formats.
 
 ## Services
 

@@ -1,15 +1,25 @@
-// src/components/Output/DownloadManager.js
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
+// src/components/Output/DownloadImage.js
+import React, { useMemo, useCallback } from 'react';
 import { Stack, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { saveAs } from 'file-saver';
 import { Canvg } from 'canvg';
 import { jsPDF } from 'jspdf';
 import 'svg2pdf.js';
+import { formatDateTimeISO } from '../../utils/dateUtils';
 
-const DownloadManager = ({ svgData, filenameBase, dpi = 300, setErrorMessage }) => {
-  // console.log('Rendering DownloadManager');
+const capitalize = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage }) => {
+  // console.log('Rendering DownloadImage');
+  const dateStrIsoG = useMemo(() => formatDateTimeISO({
+    year: parseInt(info.dateG.year),
+    month: parseInt(info.dateG.month),
+    day: parseInt(info.dateG.day),
+  }).date, [info]);
+
   const handleDownload = useCallback(async (format) => {
     const svgElement = document.getElementById('svg-container').querySelector('svg');
     if (!svgElement) {
@@ -26,8 +36,33 @@ const DownloadManager = ({ svgData, filenameBase, dpi = 300, setErrorMessage }) 
     if (format === 'svg') {
       /* Define XML and DOCTYPE headers */
       const xmlHeader = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n';
-      /* Concatenate headers with sanitized SVG data */
-      const svgWithHeaders = xmlHeader + svgData;
+
+      /* Append metadata to the SVG */
+      const newMetadata = '\n  <title>' + filenameBase + '</title>\n' +
+                          '  <desc>Date (Gregorian): ' + dateStrIsoG + '</desc>\n' +
+                          '  <desc>Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3) + '</desc>\n' +
+                          '  <desc>Celestial Object' +
+                          (
+                            (info.name && !info.hip && ': ' + capitalize(info.name)) ||
+                            (info.hip && ' (HIP): ' + info.hip) ||
+                            ' (RA/Dec): ' + (info.ra.toFixed(3) + '/' + info.dec.toFixed(3))
+                          ) +
+                          '</desc>\n';
+
+      let svgWithMetadata;
+      if (svgData.includes('<metadata>')) {
+        /* Append new metadata inside the existing <metadata> tag */
+        svgWithMetadata = svgData.replace('<metadata>', `<metadata>${newMetadata}`);
+      } else {
+        /* If no <metadata> tag exists, insert a new <metadata> tag after <svg ...> */
+        svgWithMetadata = svgData.replace(
+          /<svg[^>]*>/i,
+          (match) => `${match}\n <metadata>${newMetadata} </metadata>`
+        );
+      }
+
+      /* Concatenate headers with the modified SVG data */
+      const svgWithHeaders = xmlHeader + svgWithMetadata;
 
       const blob = new Blob([svgWithHeaders], { type: 'image/svg+xml' });
       saveAs(blob, filename);
@@ -77,6 +112,18 @@ const DownloadManager = ({ svgData, filenameBase, dpi = 300, setErrorMessage }) 
         format: [widthPx, heightPx],
       });
 
+      /* Set metadata for the PDF */
+      pdfDoc.setProperties({
+        title: filenameBase,
+        subject: 'Date (Gregorian): ' + dateStrIsoG +
+                ', Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3) +
+                ', Celestial Object' + (
+                  (info.name && !info.hip && ': ' + capitalize(info.name)) ||
+                  (info.hip && ' (HIP): ' + info.hip) ||
+                  ' (RA/Dec): ' + (info.ra.toFixed(3) + '/' + info.dec.toFixed(3))
+                ),
+      });
+
       pdfDoc
         .svg(svgElement, {
           x: 0,
@@ -92,7 +139,7 @@ const DownloadManager = ({ svgData, filenameBase, dpi = 300, setErrorMessage }) 
         });
     }
     /* ---------------------------------------------------------------------- */
-  }, [svgData, filenameBase, dpi, setErrorMessage]);
+  }, [svgData, info, filenameBase, dpi, dateStrIsoG, setErrorMessage]);
 
   return (
     <Stack direction='row' spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent='center'>
@@ -112,11 +159,4 @@ const DownloadManager = ({ svgData, filenameBase, dpi = 300, setErrorMessage }) 
   );
 };
 
-DownloadManager.propTypes = {
-  svgData: PropTypes.string.isRequired,
-  filenameBase: PropTypes.string.isRequired,
-  dpi: PropTypes.number,
-  setErrorMessage: PropTypes.func.isRequired,
-};
-
-export default React.memo(DownloadManager);
+export default React.memo(DownloadImage);

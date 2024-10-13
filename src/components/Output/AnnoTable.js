@@ -12,16 +12,23 @@ const cellStyleCenter = { paddingX: 1.5, paddingY: 1.5, textAlign: 'center' };
 const cellStyleRight = { paddingX: 1.5, paddingY: 1.5, textAlign: 'right' };
 const timeMinWidth = '6.5rem';
 
+const stickyStyle = {
+  position: 'sticky',
+  left: 0,
+  backgroundColor: 'white',
+  zIndex: 1,
+};
+
 const AnnoTable = ({ anno }) => {
   const tzStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
 
   return (
     <>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell rowSpan={2} sx={headStyle}>Point</TableCell>
+              <TableCell rowSpan={2} sx={{ ...headStyle, ...stickyStyle }}>Point</TableCell>
               <TableCell rowSpan={2} sx={headStyle}>Altitude</TableCell>
               <TableCell rowSpan={2} sx={headStyle}>Azimuth</TableCell>
               <TableCell colSpan={2} sx={headStyle}>{`Standard Time (${tzStr})`} {redAsterisk}</TableCell>
@@ -37,7 +44,7 @@ const AnnoTable = ({ anno }) => {
           <TableBody>
             {anno.map((item, index) => (
               <TableRow key={index}>
-                <TableCell component="th" scope="row" sx={cellStyleHead}>{item.name}</TableCell>
+                <TableCell component="th" scope="row" sx={{ ...cellStyleHead, ...stickyStyle }}>{item.name}</TableCell>
                 <TableCell sx={cellStyleRight}>{formatDecimalDgrees(item.alt)}</TableCell>
                 <TableCell sx={cellStyleRight}>{formatDecimalDgrees(item.az)}</TableCell>
                 <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_local })}</TableCell>

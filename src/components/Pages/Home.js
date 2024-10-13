@@ -1,8 +1,8 @@
 // src/components/Pages/Home.js
 import React, { useState, useCallback } from 'react';
 import { useTheme } from '@mui/material/styles';
-import { Box, Stack, Typography, Alert } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Box, Typography } from '@mui/material';
+// import { Link as RouterLink } from 'react-router-dom';
 import TitleImage from '../../assets/title-image.svg';
 import { LocationInputProvider } from '../../context/LocationInputContext';
 import { DateInputProvider } from '../../context/DateInputContext';
@@ -11,11 +11,11 @@ import { GREGORIAN } from '../../utils/constants';
 import DiagramFetcher from '../Input/DiagramFetcher';
 import InfoDisplay from '../Output/InfoDisplay';
 import ImageDisplay from '../Output/ImageDisplay';
-import DownloadManager from '../Output/DownloadManager';
 import AnnoDisplay from '../Output/AnnoDisplay';
 // import Notice from '../Navigation/Notice';
 // import Config from '../../Config';
-import { Helmet } from 'react-helmet';
+// import { Helmet } from 'react-helmet';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Home = () => {
   // console.log('Rendering Home');
@@ -41,14 +41,14 @@ const Home = () => {
   }, []);
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
-        <title>Star Path Viewer - Trace Planets and Stars</title>
-        <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
+        <title>Star Path Viewer: Trace Planets & Stars</title>
+        <meta name="description" content="Astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky." />
         <meta property="og:title" content="Star Path Viewer" />
-        <meta property="og:description" content="Astronomical tool for tracing the positions of planets and stars on any date in the ancient or future sky." />
+        <meta property="og:description" content="Trace Planets & Stars" />
         <meta property="og:image" content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg" />
-        <meta property="og:url" content="https://stardial-astro.github.io/star-path-viewer" />
+        <meta property="og:url" content="https://star-path-viewer.pages.dev/" />
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
@@ -70,18 +70,35 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              <RouterLink to="/">
-                <img
-                  src={TitleImage}
-                  alt="Star Path Viewer - Trace Planets and Stars"
-                  style={{
-                    maxHeight: '2.1rem',
-                    width: '100%',
-                    objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
-                    cursor: 'pointer',
-                  }}
-                />
-              </RouterLink>
+              {/* Hidden title */}
+              <Typography
+                component="h1"
+                sx={{
+                  position: 'absolute',
+                  top: 10,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  zIndex: -1,
+                  color: 'transparent',
+                  margin: 0,
+                  overflow: 'hidden',  // Prevent any visual glitches
+                  // textIndent: '-9999px',  // Further hide from screen
+                  fontSize: '1rem',
+                }}
+              >
+                Star Path Viewer
+              </Typography>
+              {/* The actual title image displayed */}
+              <img
+                src={TitleImage}
+                alt="Star Path Viewer"
+                style={{
+                  maxHeight: '2.1rem',
+                  objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
+                  cursor: 'default',
+                }}
+              />
             </Box>
 
             <Typography
@@ -113,6 +130,8 @@ const Home = () => {
                 setAnno={setAnno}
                 setSuccess={setSuccess}
                 clearImage={clearImage}
+                errorMessage={errorMessage}
+                setErrorMessage={setErrorMessage}
               />
             </Box>
 
@@ -124,29 +143,24 @@ const Home = () => {
 
                 {svgData && (
                   <Box id="diagram">
-                    <Box id="svg-container">
-                      <ImageDisplay svgData={svgData} />
-                    </Box>
-
-                    <Stack id="download" direction="column" spacing={1} sx={{ mt: -1 }}>
-                      <DownloadManager
-                        svgData={svgData}
-                        filenameBase={`sp_${diagramId}`}
-                        dpi={300}
-                        setErrorMessage={setErrorMessage}
-                      />
-                      {errorMessage.download && (
-                        <Alert severity="error" sx={{ width: '100%', mt: 1, textAlign: 'left' }} onClose={() => setErrorMessage((prev) => ({ ...prev, download: '' }))}>
-                          {errorMessage.download}
-                        </Alert>
-                      )}
-                    </Stack>
+                    <ImageDisplay
+                      svgData={svgData}
+                      diagramId={diagramId}
+                      info={info}
+                      errorMessage={errorMessage}
+                      setErrorMessage={setErrorMessage}
+                    />
                   </Box>
                 )}
 
                 {anno.length > 0 && (
                   <Box id="annotations" mt={2}>
-                    <AnnoDisplay anno={anno} />
+                    <AnnoDisplay
+                      anno={anno}
+                      diagramId={diagramId}
+                      errorMessage={errorMessage}
+                      setErrorMessage={setErrorMessage}
+                    />
                   </Box>
                 )}
               </Box>
@@ -154,7 +168,7 @@ const Home = () => {
           </StarInputProvider>
         </DateInputProvider>
       </LocationInputProvider>
-    </>
+    </HelmetProvider>
   );
 };
 

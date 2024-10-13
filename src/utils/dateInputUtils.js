@@ -176,7 +176,7 @@ const validateDateSync = (date, flag, cal) => {
 
 /* Clear any date-related errors */
 const clearDateError = (dateDispatch, setErrorMessage) => {
-  setErrorMessage((prev) => ({ ...prev, date: '' }));
+  setErrorMessage((prev) => ({ ...prev, date: '', draw: '', download: '' }));
   dateDispatch({ type: actionTypes.CLEAR_DATE_ERROR });
 };
 

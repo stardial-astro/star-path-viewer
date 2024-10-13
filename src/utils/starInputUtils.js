@@ -86,7 +86,7 @@ const validateStarSync = (
 };
 
 const clearStarError = (starDispatch, setErrorMessage) => {
-  setErrorMessage((prev) => ({ ...prev, star: '' }));
+  setErrorMessage((prev) => ({ ...prev, star: '', draw: '', download: '' }));
   starDispatch({ type: actionTypes.CLEAR_STAR_ERROR });
 };
 

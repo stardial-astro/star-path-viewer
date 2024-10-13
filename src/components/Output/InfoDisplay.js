@@ -166,7 +166,7 @@ const InfoDisplay = ({ info }) => {
           <Stack
             direction="column"
             spacing={0.5}
-            ml={{ xs: '1.5%', sm: 4, md: (info.name && info.hip) ? 3.5 : 5.5 }}
+            ml={{ xs: '1.5%', sm: 4, md: (info.name && info.hip) ? 3.5 : 6 }}
           >
             {dateInfoItemG}
             {dateInfoItemJ}
@@ -178,7 +178,7 @@ const InfoDisplay = ({ info }) => {
           <Stack
             direction="column"
             spacing={0.5}
-            ml={{ xs: '1.5%', sm: 4, md: (info.name && info.hip) ? 3.5 : 5.5 }}
+            ml={{ xs: '1.5%', sm: 4, md: (info.name && info.hip) ? 3.5 : 6 }}
           >
             {(!info.name || !info.hip) && locationInfoItem}
             {starInfoItem}

@@ -57,7 +57,7 @@ const validateLocationSync = (locationInputType, location) => {
 };
 
 const clearLocationError = (locationDispatch, setErrorMessage) => {
-  setErrorMessage((prev) => ({ ...prev, location: '' }));
+  setErrorMessage((prev) => ({ ...prev, location: '', draw: '', download: '' }));
   locationDispatch({ type: actionTypes.CLEAR_LOCATION_ERROR });
 };
 

@@ -44,7 +44,6 @@ const StarInput = ({ setErrorMessage }) => {
   useEffect(() => {
     clearStarError(starDispatch, setErrorMessage);
     starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
-    setErrorMessage((prev) => ({ ...prev, draw: '', download: '' }));
   }, [searchTerm, starName, starHip, starRadec, starInputType, radecFormat, starDispatch, setErrorMessage]);
 
   useEffect(() => {

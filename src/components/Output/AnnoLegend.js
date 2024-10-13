@@ -2,7 +2,8 @@
 import React from 'react';
 import { Box, Stack, Grid, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+// import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { styled } from '@mui/system';
 import { PT_DETAIL, LINE_DETAIL } from '../../utils/constants';
 import CustomDivider from '../UI/CustomDivider';
@@ -113,7 +114,7 @@ const AnnoLegend = ({ anno }) => {
                     title={PT_DETAIL[item.name].detail}
                   >
                     <IconButton size="small" sx={{ padding: 0, ml: 0.5 }}>
-                      <HelpOutlineIcon sx={{ fontSize: '1rem', color: 'primary.main', mt: '-3px' }} />
+                      <InfoOutlinedIcon sx={{ fontSize: '1rem', color: 'primary.main', mt: '-3px' }} />
                     </IconButton>
                   </DetailTooltip>
                 </Typography>

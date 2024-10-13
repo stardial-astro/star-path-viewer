@@ -2,16 +2,26 @@
 import axios from 'axios';
 import reverseGeocode from './reverseGeocode';
 
+// const ipGeoServiceUrl = 'https://ipapi.co/json';
+const ipGeoServiceUrl = 'https://ipinfo.io/json';
+
 const fetchIpLocation = async () => {
   try {
-    const response = await axios.get('https://ipapi.co/json/',
-      {
-        timeout: 10000,
-      });
+    const response = await axios.get(ipGeoServiceUrl, {
+      timeout: 5000,
+    });
     const data = response.data;
+    /* https://ipapi.co/json */
+    // return {
+    //   latitude: data.latitude,
+    //   longitude: data.longitude,
+    // };
+
+    /* https://ipinfo.io/json */
+    const [latitude, longitude] = data.loc.split(',');
     return {
-      latitude: data.latitude,
-      longitude: data.longitude,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
     };
   } catch (error) {
     if (error.code === 'ECONNABORTED') {
@@ -45,7 +55,7 @@ const fetchGeolocation = async (service) => {
           },
           {
             enableHighAccuracy: false,
-            timeout: 5000,
+            timeout: 6000,
             maximumAge: 300000,  // 5 minutes
           }
         );

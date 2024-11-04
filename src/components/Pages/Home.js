@@ -12,8 +12,7 @@ import DiagramFetcher from '../Input/DiagramFetcher';
 import InfoDisplay from '../Output/InfoDisplay';
 import ImageDisplay from '../Output/ImageDisplay';
 import AnnoDisplay from '../Output/AnnoDisplay';
-// import Notice from '../Navigation/Notice';
-// import Config from '../../Config';
+import Notice from '../Navigation/Notice';
 // import { Helmet } from 'react-helmet';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -55,9 +54,10 @@ const Home = () => {
       <LocationInputProvider>
         <DateInputProvider>
           <StarInputProvider>
-            {/* {Config.notice && (
-              <Notice />
-            )} */}
+            {/* Display a notice */}
+            <Notice />
+
+            {/* Main body */}
             <Box
               sx={{
                 display: 'flex',

@@ -1,17 +1,35 @@
 // src/components/Navigation/Notice.js
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Alert } from '@mui/material';
-import Config from '../../Config';
 
-const Notice = (notice) => {
+const startTime = new Date(Date.UTC(2024, 10, 5, 12, 0, 0));  // month - 1
+const endTime = new Date(Date.UTC(2024, 10, 5, 12, 30, 0));  // month - 1
+
+// const msg = '';
+const msg = `The web hosting service is upgrading
+from ${startTime.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
+to ${endTime.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}.
+Please come back later.`;
+
+const Notice = () => {
+  const isInTimeRange = useMemo(() => {
+    const now = new Date();
+    return now >= startTime && now <= endTime;
+  }, []);
+
   return (
-    <Alert
-      severity="warning"
-      sx={{ width: '100%', mt: 1, mb: 1, textAlign: 'left' }}
-    >
-      {Config.notice}
-    </Alert>
+    <>
+      {msg && isInTimeRange && (
+        <Alert
+          severity="warning"
+          sx={{ width: '100%', mt: 1, mb: 1, textAlign: 'left' }}
+        >
+          {msg}
+        </Alert>
+  
+      )}
+    </>
   );
 };
 
-export default Notice;
+export default React.memo(Notice);

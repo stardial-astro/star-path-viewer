@@ -138,7 +138,7 @@ const InfoDisplay = ({ info }) => {
           )}
           <Box display="flex" alignItems="start" flexWrap="wrap">
             <Typography variant="body1" mr={{ xs: 0.6, sm: 1, md: 1 }} sx={labelStyle}>
-              [Hipparchus Catalogue Number]
+              [Hipparcos Catalogue Number]
             </Typography>
             <Typography variant="body1" sx={detailStyle}>
               {info.hip}

@@ -2,11 +2,12 @@
 import React, { useMemo } from 'react';
 import { Alert } from '@mui/material';
 
-const startTime = new Date(Date.UTC(2024, 10, 5, 12, 0, 0));  // month - 1
-const endTime = new Date(Date.UTC(2024, 10, 5, 12, 30, 0));  // month - 1
+const startTime = new Date(Date.UTC(2024, 11, 11, 6, 50, 0));  // month - 1
+const endTime = new Date(Date.UTC(2024, 11, 11, 7, 10, 0));  // month - 1
 
 // const msg = '';
-const msg = `The web hosting service is upgrading
+// const msg = `The web hosting service is upgrading
+const msg = `The server is upgrading
 from ${startTime.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}
 to ${endTime.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })}.
 Please come back later.`;

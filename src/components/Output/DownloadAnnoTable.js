@@ -14,8 +14,10 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
     name: item.name,
     alt: formatDecimalDgrees(item.alt).replace(/°/g, '\u00B0'),
     az: formatDecimalDgrees(item.az).replace(/°/g, '\u00B0'),
-    time_local: `${dateTimeToStr({ dateTime: item.time_local, delim: 'T' })}${tzStr}`,
-    time_local_julian: `${dateTimeToStr({ dateTime: item.time_local_julian, delim: 'T' })}${tzStr}`,
+    time_standard: `${dateTimeToStr({ dateTime: item.time_standard, delim: 'T' })}${tzStr}`,
+    time_standard_julian: `${dateTimeToStr({ dateTime: item.time_standard_julian, delim: 'T' })}${tzStr}`,
+    time_local_mean: `${dateTimeToStr({ dateTime: item.time_local_mean, delim: 'T' })}${tzStr}`,
+    time_local_mean_julian: `${dateTimeToStr({ dateTime: item.time_local_mean_julian, delim: 'T' })}${tzStr}`,
     time_ut1: dateTimeToStr({ dateTime: item.time_ut1, delim: 'T' }),
     time_ut1_julian: dateTimeToStr({ dateTime: item.time_ut1_julian, delim: 'T' }),
   })), [anno, tzStr]);
@@ -27,13 +29,25 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
     if (format === 'csv') {
       try {
         const csvContent = [
-          ['Point', 'Altitude', 'Azimuth', 'Standard Time (Gregorian)', 'Standard Time (Julian)', 'UT1 (Gregorian)', 'UT1 (Julian)'],
+          [
+            'Point',
+            'Altitude',
+            'Azimuth',
+            'Standard Time (Gregorian)',
+            'Standard Time (Julian)',
+            'Local Mean Time (Gregorian)',
+            'Local Mean Time (Julian)',
+            'UT1 (Gregorian)',
+            'UT1 (Julian)'
+          ],
           ...annoExport.map((item) => [
             item.name,
             `"${item.alt.replace(/"/g, '""')}"`,
             `"${item.az.replace(/"/g, '""')}"`,
-            item.time_local,
-            item.time_local_julian,
+            item.time_standard,
+            item.time_standard_julian,
+            item.time_local_mean,
+            item.time_local_mean_julian,
             item.time_ut1,
             item.time_ut1_julian,
           ])
@@ -54,8 +68,10 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
           Point: item.name,
           Altitude: item.alt,
           Azimuth: item.az,
-          'Standard Time (Gregorian)': item.time_local,
-          'Standard Time (Julian)': item.time_local_julian,
+          'Standard Time (Gregorian)': item.time_standard,
+          'Standard Time (Julian)': item.time_standard_julian,
+          'Local Mean Time (Gregorian)': item.time_local_mean,
+          'Local Mean Time (Julian)': item.time_local_mean_julian,
           'UT1 (Gregorian)': item.time_ut1,
           'UT1 (Julian)': item.time_ut1_julian,
         })), null, 2);
@@ -72,8 +88,10 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
           Point: item.name,
           Altitude: item.alt,
           Azimuth: item.az,
-          'Standard Time (Gregorian)': item.time_local,
-          'Standard Time (Julian)': item.time_local_julian,
+          'Standard Time (Gregorian)': item.time_standard,
+          'Standard Time (Julian)': item.time_standard_julian,
+          'Local Mean Time (Gregorian)': item.time_local_mean,
+          'Local Mean Time (Julian)': item.time_local_mean_julian,
           'UT1 (Gregorian)': item.time_ut1,
           'UT1 (Julian)': item.time_ut1_julian,
         })));

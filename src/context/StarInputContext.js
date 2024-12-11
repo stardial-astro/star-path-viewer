@@ -108,7 +108,7 @@ const starNullErrorReducer = (state, action) => {
     case actionTypes.SET_STAR_NAME_NULL_ERROR:
       return { ...state, name: 'Please select a planet.' };
     case actionTypes.SET_STAR_HIP_NULL_ERROR:
-      return { ...state, hip: 'Please search and select a Hipparchus Catalogue number.' };
+      return { ...state, hip: 'Please search and select a Hipparcos Catalogue number.' };
     case actionTypes.SET_STAR_RA_NULL_ERROR:
       return { ...state, ra: 'Please enter a right ascension.' };
     case actionTypes.SET_STAR_DEC_NULL_ERROR:

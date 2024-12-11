@@ -69,9 +69,9 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
     /* ---------------------------------------------------------------------- */
     } else if (format === 'png') {
       /* Assuming the current DPI is 96 (standard for SVGs) */
-      const scaleFactor = parseFloat(dpi) / 96;
-      const newWidthPx = widthPx * scaleFactor;
-      const newHeightPx = heightPx * scaleFactor;
+      const pngScaleFactor = parseFloat(dpi) / 96;
+      const newWidthPx = widthPx * pngScaleFactor;
+      const newHeightPx = heightPx * pngScaleFactor;
 
       const canvas = document.createElement('canvas');
       if (!canvas || !canvas.getContext) {
@@ -107,9 +107,10 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
       });
     /* ---------------------------------------------------------------------- */
     } else if (format === 'pdf') {
+      const pdfScaleFactor = 1;
       const pdfDoc = new jsPDF({
         unit: 'pt',
-        format: [widthPx, heightPx],
+        format: [widthPx * pdfScaleFactor, heightPx * pdfScaleFactor],
       });
 
       /* Set metadata for the PDF */
@@ -128,8 +129,8 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
         .svg(svgElement, {
           x: 0,
           y: 0,
-          width: widthPx,
-          height: heightPx,
+          width: widthPx * pdfScaleFactor,
+          height: heightPx * pdfScaleFactor,
         })
         .then(() => {
           pdfDoc.save(filename);

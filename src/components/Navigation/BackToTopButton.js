@@ -8,11 +8,12 @@ const StyledFab = styled(Fab)(({ theme }) => ({
   position: 'fixed',
   bottom: theme.spacing(2),
   right: theme.spacing(2),
-  opacity: 0.5, // Initial opacity
+  opacity: 0.5,
   backgroundColor: theme.palette.grey[300],
   border: `1px solid ${theme.palette.action.disabled}`,
   '&:hover': {
-    opacity: 1, // Fully opaque when hovered
+    opacity: 1,  // Fully opaque when hovered
+    backgroundColor: 'white',
     color: theme.palette.primary.main,
     border: `1px solid ${theme.palette.primary.main}`,
   },

@@ -59,7 +59,7 @@ const StarHipInput = ({ setErrorMessage }) => {
   useEffect(() => {
     if (suggestions.length > 0) {
       if (suggestions[0].display_name === HIP_OUT_OF_RANGE) {
-        starDispatch({ type: actionTypes.SET_STAR_HIP_ERROR, payload: `The Hipparchus Catalogue number must be in the range [${HIP_MIN}, ${HIP_MAX}].` });
+        starDispatch({ type: actionTypes.SET_STAR_HIP_ERROR, payload: `The Hipparcos Catalogue number must be in the range [${HIP_MIN}, ${HIP_MAX}].` });
         starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
         starDispatch({ type: actionTypes.SET_STAR_VALID, payload: false });
         return;
@@ -170,7 +170,7 @@ const StarHipInput = ({ setErrorMessage }) => {
         suggestions[0].display_name !== HIP_OUT_OF_RANGE &&  // redundant, suggestions have been cleared already
         suggestions[0].display_name !== HIP_NOT_FOUND  // redundant, suggestions have been cleared already
       ) {
-        /* If the search term is a valid Hipparchus Catalogue number, set it */
+        /* If the search term is a valid Hipparcos Catalogue number, set it */
         isSelecting.current = true;
         starDispatch({ type: actionTypes.SET_STAR_HIP, payload: suggestions[0].hip });
         starDispatch({ type: actionTypes.SET_STAR_NAME, payload: suggestions[0].name });
@@ -231,7 +231,7 @@ const StarHipInput = ({ setErrorMessage }) => {
         <TextField
           {...params}
           required
-          label="Search Hipparchus Catalogue number"
+          label="Search Hipparcos Catalogue number"
           placeholder="Enter a number or a name"
           size="small"
           variant="outlined"

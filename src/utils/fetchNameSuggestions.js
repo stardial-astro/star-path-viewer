@@ -14,7 +14,7 @@ const fetchAndCacheNames = async () => {
     const data = response.data;
     return data;
   } catch (error) {
-    throw new Error('Failed to fetch the Hipparchus Catalogue.');
+    throw new Error('Failed to fetch the Hipparcos Catalogue.');
   }
 };
 

@@ -34,7 +34,7 @@ const StarInputTypeToggle = () => {
       <ToggleButton value={TYPE_NAME} aria-label="Input Name">
         Planet
       </ToggleButton>
-      <ToggleButton value={TYPE_HIP} aria-label="Input Hipparchus">
+      <ToggleButton value={TYPE_HIP} aria-label="Input Hipparcos">
         Star
       </ToggleButton>
       <ToggleButton value={TYPE_RADEC} aria-label="Input Radec">

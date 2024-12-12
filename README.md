@@ -35,7 +35,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 - :sunrise: Calculates the star's **rising/setting/meridian-transit times** based on the provided date, location, and star.
 - :sunrise_over_mountains: Marks the [civil and nautical twilights](https://en.wikipedia.org/wiki/Twilight).
 - :classical_building: Covers dates from **3001 BCE to 3000 CE**.
-- :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catelogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate positions of planets and stars for any given time.
+- :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate the positions of planets and stars for any given time.
 - :telescope: Includes [proper motion](https://en.wikipedia.org/wiki/Proper_motion) of a star if the Hipparcos Catalogue number is provided.
 - :night_with_stars: Displays star paths with distinct line styles for daytime, twilight stages, and nighttime.
 - :clock1: Provides **[standard time](https://en.wikipedia.org/wiki/Standard_time)**, **[local mean time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1 time](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference (*no Daylight Saving Time (DST) adjustments in this project*).
@@ -44,7 +44,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 
 - :mag: Offers various location input options, including location search, geolocation lookup, or manual latitude and longitude entry.
 - :calendar: Accepts the **[Gregorian](https://en.wikipedia.org/wiki/Gregorian_calendar)** or **[Julian](https://en.wikipedia.org/wiki/Julian_calendar)** calendar date input.
-- :magic_wand: Allows users to quickly retrieve **equinox** or **solstice** dates by inputing just the year and location, instead of a full date.
+- :magic_wand: Allows users to quickly retrieve **equinox** or **solstice** dates by inputting just the year and location, instead of a full date.
 - :star: Supports star or planet input by **name**, **Hipparcos Catalogue number**, or [ICRS coordinates](https://en.wikipedia.org/wiki/International_Celestial_Reference_System_and_its_realizations) **[(RA, Dec)](https://en.wikipedia.org/wiki/Equatorial_coordinate_system)**.
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or names, supporting [Bayer designations](https://en.wikipedia.org/wiki/Bayer_designation), proper names, and Chinese names (traditional, simplified, and pinyin) (see [Resources](#resources)).
 - :framed_picture: SVG diagrams are available for download in SVG, PNG, or PDF formats.
@@ -61,6 +61,8 @@ An astronomical tool for tracing the positions of planets and stars on any chose
    - Enter `RA` in HMS format and `Dec` in DMS format, or both in decimal degrees.
 4. Click `DRAW STAR PATH` to generate a diagram and a table of rising/setting/meridian-transit/twilight times.
 
+> :bulb: Note that in our source code, the imported package [Skyfield](https://rhodesmill.org/skyfield) defines the sunrise and sunset "[as the moment when the center of the sun is 50 arcminutes below the horizon, to account for both the average *solar radius of 16 arcminutes* and for roughly *34 arcminutes of atmospheric refraction* at the horizon](https://rhodesmill.org/skyfield/almanac.html#risings-and-settings)."
+
 ## Services
 
 This app relies on the following services:
@@ -71,7 +73,7 @@ This app relies on the following services:
 
 3. **[Baidu Web Service API](https://lbsyun.baidu.com/faq/api?title=webapi)** - If a connection to Nominatim cannot be established, the system will switch to this alternative geocoding service.
 
-> :bulb: The geocoding service is autometically determined when the website loads. If you are outside mainland China but notice that Baidu is being used, refreshing the page should resolve it and select Nominatim as intended.
+> :bulb: The geocoding service is automatically determined when the website loads. If you are outside mainland China but notice that Baidu is being used, refreshing the page should resolve it and select Nominatim as intended.
 
 ## Resources
 

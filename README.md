@@ -2,7 +2,7 @@
 
 An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/version-v1.1.0-blue)](#features) [![node](https://img.shields.io/badge/Node.js-22.12.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com) [![npm](https://img.shields.io/badge/npm-10.9.2-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.7-007FFF?logo=mui&logoColor=white)](https://mui.com)
+[![Version](https://img.shields.io/badge/version-v1.2.0-blue)](#features) [![node](https://img.shields.io/badge/Node.js-22.12.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com) [![npm](https://img.shields.io/badge/npm-10.9.2-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.7-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
 [<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
 
@@ -61,7 +61,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
    - Enter `RA` in HMS format and `Dec` in DMS format, or both in decimal degrees.
 4. Click `DRAW STAR PATH` to generate a diagram and a table of rising/setting/meridian-transit/twilight times.
 
-> :bulb: Note that in our source code, the imported package [Skyfield](https://rhodesmill.org/skyfield) defines the sunrise and sunset "[as the moment when the center of the sun is 50 arcminutes below the horizon, to account for both the average *solar radius of 16 arcminutes* and for roughly *34 arcminutes of atmospheric refraction* at the horizon](https://rhodesmill.org/skyfield/almanac.html#risings-and-settings)."
+> :bulb: Note that the [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) effect has been accounted for.
 
 ## Services
 
@@ -100,6 +100,9 @@ This app relies on the following services:
 - R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
 
 ## Changelog
+
+- [v1.2.0] 2024-12-16
+  - Included atmospheric refraction in position calculation.
 
 - [v1.1.0] 2024-12-10
   - Added Local Mean Time (LMT) columns.

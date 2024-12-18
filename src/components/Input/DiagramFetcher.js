@@ -67,8 +67,11 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
     clearNullError(locationDispatch, dateDispatch, starDispatch);
     setSuccess(false);
 
+    const isDevMode = window.location.hash.includes('#dev');
+
     /* Check input values ----------------------------------------------------*/
-    // console.log("Set: ", location, date, flag, cal, starName, starHip, starRadec, starInputType);
+    isDevMode && console.log("Set: ", location, date, flag, cal, starName, starHip, starRadec, starInputType);
+
     const isValid = validateInputSync(
       location, locationInputType,
       date, flag,
@@ -103,7 +106,8 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
       params.ra = parseFloat(starRadec.ra).toString();
       params.dec = parseFloat(starRadec.dec).toString();
     }
-    // console.log("params", params);
+
+    isDevMode && console.log("params", params);
 
     /* Plot ------------------------------------------------------------------*/
     try {
@@ -142,8 +146,11 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
       //   dateDispatch({ type: dateActionTypes.SET_DAY, payload: res_day });
       // }
       setInfo(newInfo);
-      // console.log("info: ", newInfo);
-      // console.log(response.data.annotations);
+
+      if (isDevMode) {
+        console.log("info: ", newInfo);
+        console.log(response.data.annotations);
+      }
 
       const sanitizedSvg = sanitizeSvg(response.data.svgData);
 

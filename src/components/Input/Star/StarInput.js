@@ -30,16 +30,6 @@ const StarInput = ({ setErrorMessage }) => {
     clearStarError(starDispatch, setErrorMessage);
   }, [starDispatch, setErrorMessage]);
 
-  // useEffect(() => {
-  //   onStarChange({
-  //     name: star.name,
-  //     hip: star.hip,
-  //     ra: star.ra,
-  //     dec: star.dec,
-  //     type: starInputType,
-  //   });
-  // }, [star, starInputType, onStarChange]);  // DEPRECATED
-
   /* Reset error when user starts typing */
   useEffect(() => {
     clearStarError(starDispatch, setErrorMessage);

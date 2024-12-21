@@ -1,5 +1,5 @@
 // src/components/Input/Location/LocationInput.js
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Stack, Snackbar, Alert } from '@mui/material';
 import Config from '../../../Config';
@@ -27,23 +27,31 @@ const LocationInput = ({ setErrorMessage }) => {
     locationDispatch,
   } = useLocationInput();
 
+  const servicePromiseRef = useRef(null);
+
   /* Initialize */
   useEffect(() => {
     /* Choose geocoding service */
     const setService = async () => {
       if (serviceChosen === null) {
-        const service = await determineService();
-        setServiceChosen(service);
+        /* If there's already a pending or resolved promise, use it */
+        if (!servicePromiseRef.current) {
+          /* Start the service determination and store the promise in the ref */
+          servicePromiseRef.current = determineService().then(service => {
+            setServiceChosen(service);
+            return service;  // Store the resolved value in the ref
+          }).catch(() => {
+            servicePromiseRef.current = null;
+          });
+        }
+        /* Await the existing or newly created promise */
+        await servicePromiseRef.current;
       }
     };
     clearLocationError(locationDispatch, setErrorMessage);
     // fetchCurrentLocation(serviceChosen, locationDispatch, lastSelectedTerm, setErrorMessage);
     setService();
   }, [serviceChosen, setServiceChosen, locationDispatch, setErrorMessage]);
-
-  // useEffect(() => {
-  //   onLocationChange({ ...location, type: locationInputType });
-  // }, [location, locationInputType, onLocationChange]);  // DEPRECATED
 
   /* Reset error when user starts typing */
   useEffect(() => {

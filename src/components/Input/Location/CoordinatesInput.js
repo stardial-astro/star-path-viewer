@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 import { Grid, TextField, InputAdornment, CircularProgress } from '@mui/material';
 import { useLocationInput } from '../../../context/LocationInputContext';
 import * as actionTypes from '../../../context/locationInputActionTypes';
+import { LATITUDE, LONGITUDE } from '../../../utils/constants';
 
 const CoordinatesInput = () => {
   const {
@@ -14,7 +15,7 @@ const CoordinatesInput = () => {
 
   const handleInputChange = useCallback((event) => {
     const { name, value } = event.target;
-    if (name === 'lat') {
+    if (name === LATITUDE) {
       locationDispatch({ type: actionTypes.SET_LAT, payload: value });
     } else {
       locationDispatch({ type: actionTypes.SET_LNG, payload: value });
@@ -31,7 +32,7 @@ const CoordinatesInput = () => {
             placeholder="Enter the latitude in decimal degrees"
             size="small"
             variant="outlined"
-            name="lat"
+            name={LATITUDE}
             type="number"
             value={location.lat}
             onChange={handleInputChange}
@@ -56,7 +57,7 @@ const CoordinatesInput = () => {
             placeholder="Enter the longitude in decimal degrees"
             size="small"
             variant="outlined"
-            name="lng"
+            name={LONGITUDE}
             type="number"
             value={location.lng}
             onChange={handleInputChange}

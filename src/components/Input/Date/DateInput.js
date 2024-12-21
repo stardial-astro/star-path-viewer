@@ -43,12 +43,6 @@ const DateInput = ({ setErrorMessage, location }) => {
     // dateRef.current = initialDate;
   }, [dateDispatch, setErrorMessage]);
 
-  // useEffect(() => {
-  //   if (!dateAdjusting && !dateFetching) {
-  //     onDateChange({ ...date, flag, cal });
-  //   }
-  // }, [date, flag, cal, onDateChange, dateAdjusting, dateFetching]);  // DEPRECATED
-
   /* Reset error when user starts typing */
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);

@@ -11,6 +11,7 @@ const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
   const debouncedFetchTimeZone = useMemo(
     () =>
       debounce(async (lat, lng) => {
+        const isDevMode = window.location.hash.includes('#dev');
         const latFloat = parseFloat(lat);
         const lngFloat = parseFloat(lng);
 
@@ -21,7 +22,7 @@ const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
             /* Only update if this request is the latest one */
             if (requestId === latestTzRequest.current) {
               locationDispatch({ type: actionTypes.SET_TZ, payload: tz });
-              // console.log(tz);
+              isDevMode && console.log("[Timezone]", tz);
             }
           } catch (error) {
             if (requestId === latestTzRequest.current) {

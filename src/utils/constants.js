@@ -89,3 +89,6 @@ export const ADDR_NOT_FOUND = 'not-found';
 
 export const HIP_OUT_OF_RANGE = 'out-of-range';
 export const HIP_NOT_FOUND = 'not-found';
+
+export const LATITUDE = 'lat';
+export const LONGITUDE = 'lng';

@@ -2,13 +2,16 @@
 import checkNominatimAccessibility from './checkNominatimAccessibility';
 
 const determineService = async () => {
-  const isInCn = window.location.hash === '#dev&cn';
+  const hash = window.location.hash;
+  const isDevMode = hash.includes('#dev');
+  const isInCn = hash.includes('#cn') || hash.includes('&cn');
 
   const isNominatimAccessible = isInCn ? false : await checkNominatimAccessibility();
+  const service = isNominatimAccessible ? 'nominatim' : 'baidu';
 
-  isInCn && console.log("Using Baidu API...");
+  isDevMode && console.log(`[Geocoding API] ${service}`);
 
-  return isNominatimAccessible ? 'nominatim' : 'baidu';
+  return service;
 };
 
 export default determineService;

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import { Box, Stack, Grid, Typography } from '@mui/material';
 import { formatDateTime, formatDateTimeISO, decimalToHMS, formatHMS } from '../../utils/dateUtils';
 import { formatCoordinate, formatDecimalDgrees } from '../../utils/coordUtils';
+import { LATITUDE, LONGITUDE } from '../../utils/constants';
 import CustomDivider from '../UI/CustomDivider';
 
 const capitalize = (string) => {
@@ -22,8 +23,8 @@ const detailStyle = {
 
 const InfoDisplay = ({ info }) => {
   // console.log('Rendering InfoDisplay');
-  const latStr = useMemo(() => formatCoordinate(info.lat, 'lat'), [info.lat]);
-  const lngStr = useMemo(() => formatCoordinate(info.lng, 'lng'), [info.lng]);
+  const latStr = useMemo(() => formatCoordinate(info.lat, LATITUDE), [info.lat]);
+  const lngStr = useMemo(() => formatCoordinate(info.lng, LONGITUDE), [info.lng]);
 
   const dateStrG = useMemo(() => formatDateTime({
     year: parseInt(info.dateG.year),

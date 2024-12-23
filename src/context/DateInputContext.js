@@ -132,7 +132,7 @@ const dateInputReducer = (state, action) => {
     case actionTypes.SET_DATE_FETCHING_OFF:
       return { ...state, dateFetching: false };
 
-      case actionTypes.SET_DATE_VALID:
+    case actionTypes.SET_DATE_VALID:
       return { ...state, dateValid: action.payload };
 
     default:

@@ -1,6 +1,7 @@
 // src/utils/fetchGeolocation.js
 import axios from 'axios';
 import reverseGeocode from './reverseGeocode';
+import { getIsDevMode } from './devMode';
 
 // const ipGeoServiceUrl = 'https://ipapi.co/json';
 const ipGeoServiceUrl = 'https://ipinfo.io/json';
@@ -32,8 +33,6 @@ const fetchIpLocation = async () => {
 };
 
 const fetchGeolocation = async (service) => {
-  const isDevMode = window.location.hash.includes('#dev');
-
   if ("geolocation" in navigator) {
     try {
       /* Attempt to get the latitude and longitude using navigator.geolocation */
@@ -41,7 +40,7 @@ const fetchGeolocation = async (service) => {
         navigator.geolocation.getCurrentPosition(
           (position) => resolve(position),
           async (error) => {
-            isDevMode && console.error(error.message);
+            getIsDevMode() && console.error(error.message);
             /* If geolocation fails, fallback to IP-based geolocation */
             try {
               const ipLocation = await fetchIpLocation();

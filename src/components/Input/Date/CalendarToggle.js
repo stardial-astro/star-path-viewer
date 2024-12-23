@@ -30,7 +30,7 @@ const CalendarToggle = () => {
         <CustomFormControlLabel
           size="small"
           name="Gregorian"
-          value=""
+          value={GREGORIAN}
           control={<Radio />}
           label="Gregorian Calendar"
           checked={cal === GREGORIAN}

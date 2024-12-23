@@ -1,6 +1,7 @@
 // utils/fetchEquinoxSolstice.js
 import axios from 'axios';
 import Config from '../Config';
+import { getIsDevMode } from './devMode';
 
 export const fetchEquinoxSolstice = async (lat, lng, tz, year, flag, signal) => {
   try {
@@ -9,6 +10,8 @@ export const fetchEquinoxSolstice = async (lat, lng, tz, year, flag, signal) => 
       timeout: Config.serverGetTimeout,
       signal,
     });
+
+    getIsDevMode() && console.log(`[${flag}]`, response.data.results);
 
     const month = response.data.results[1];
     const day = response.data.results[2];

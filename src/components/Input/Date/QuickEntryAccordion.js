@@ -4,7 +4,7 @@ import { Box, Grid, Typography, Accordion, AccordionSummary, AccordionDetails } 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
-import { EQX_SOL_NAMES } from '../../../utils/constants';
+import { EQX_SOL_NAMES, GREGORIAN } from '../../../utils/constants';
 import CustomToggleButton from '../../UI/CustomToggleButton';
 
 const QuickEntryAccordion = () => {
@@ -23,7 +23,7 @@ const QuickEntryAccordion = () => {
         queryDateFromRef.current = 'click';
         dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
         dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: false });
-        dateDispatch({ type: actionTypes.SET_CAL, payload: '' });  // Force to use Gregorian
+        dateDispatch({ type: actionTypes.SET_CAL, payload: GREGORIAN });  // Force to use Gregorian
       }
     }
   }, [flag, queryDateFromRef, dateDispatch]);
@@ -42,7 +42,7 @@ const QuickEntryAccordion = () => {
         <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="flex-start" pr={1} flexWrap="wrap">
           <Box flex="1 0 auto" textAlign="left" mr={1}>
             <Typography color="primary" variant="body1">
-              Quick Entry
+              {!!flag ? `Checked: ${EQX_SOL_NAMES[flag]}`: 'Quick Entry'}
             </Typography>
           </Box>
           {/* {date.year && dateFetching && (

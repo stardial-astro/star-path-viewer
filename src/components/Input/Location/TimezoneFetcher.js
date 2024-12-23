@@ -3,15 +3,15 @@ import React, { useEffect, useMemo } from 'react';
 import Config from '../../../Config';
 import { useLocationInput } from '../../../context/LocationInputContext';
 import * as actionTypes from '../../../context/locationInputActionTypes';
+import { getIsDevMode } from '../../../utils/devMode';
 import debounce from 'lodash/debounce';
 
 const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
   const { locationDispatch } = useLocationInput();
-  
+
   const debouncedFetchTimeZone = useMemo(
     () =>
       debounce(async (lat, lng) => {
-        const isDevMode = window.location.hash.includes('#dev');
         const latFloat = parseFloat(lat);
         const lngFloat = parseFloat(lng);
 
@@ -22,7 +22,7 @@ const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
             /* Only update if this request is the latest one */
             if (requestId === latestTzRequest.current) {
               locationDispatch({ type: actionTypes.SET_TZ, payload: tz });
-              isDevMode && console.log("[Timezone]", tz);
+              getIsDevMode() && console.log("[Timezone]", tz);
             }
           } catch (error) {
             if (requestId === latestTzRequest.current) {

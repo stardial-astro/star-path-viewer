@@ -8,6 +8,7 @@ import { LocationInputProvider } from '../../context/LocationInputContext';
 import { DateInputProvider } from '../../context/DateInputContext';
 import { StarInputProvider } from '../../context/StarInputContext';
 import { GREGORIAN } from '../../utils/constants';
+import { enableDevMode, getIsDevMode, triggerDevModeCount } from '../../utils/devMode';
 import DiagramFetcher from '../Input/DiagramFetcher';
 import InfoDisplay from '../Output/InfoDisplay';
 import ImageDisplay from '../Output/ImageDisplay';
@@ -33,11 +34,22 @@ const Home = () => {
     eqxSolTime: '',
   });
 
+  let clickCount = 0;
+
   const clearImage = useCallback(() => {
     setDiagramId('');
     setSvgData('');
     setAnno([]);
   }, []);
+
+  const handleTitleClick = () => {
+    if (getIsDevMode()) return;
+    clickCount++;
+    if (clickCount >= triggerDevModeCount) {
+      enableDevMode();
+      clickCount = 0;
+    }
+  };
 
   return (
     <HelmetProvider>
@@ -98,6 +110,7 @@ const Home = () => {
                   objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
                   cursor: 'default',
                 }}
+                onClick={handleTitleClick}
               />
             </Box>
 

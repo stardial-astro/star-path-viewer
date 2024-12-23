@@ -11,6 +11,7 @@ import { useStarInput } from '../../context/StarInputContext';
 import { STARS, JULIAN, TYPE_NAME, TYPE_HIP, TYPE_RADEC } from '../../utils/constants';
 import { validateLocationInputSync, validateDateInputSync, validateInputSync, clearNullError } from '../../utils/inputUtils';
 import { sanitizeSvg } from '../../utils/svgUtils';
+import { getIsDevMode } from '../../utils/devMode';
 import LocationInput from './Location/LocationInput';
 import DateInput from './Date/DateInput';
 import StarInput from './Star/StarInput';
@@ -67,7 +68,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
     clearNullError(locationDispatch, dateDispatch, starDispatch);
     setSuccess(false);
 
-    const isDevMode = window.location.hash.includes('#dev');
+    const isDevMode = getIsDevMode();
 
     /* Check input values ----------------------------------------------------*/
     isDevMode && console.log("[Inputs]", location, date, flag, cal, starName, starHip, starRadec, starInputType);

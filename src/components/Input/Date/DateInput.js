@@ -34,13 +34,16 @@ const DateInput = ({ setErrorMessage, location }) => {
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
     dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
-    // const initialDate = {
-    //   year: now.getFullYear().toString(),
-    //   month: (now.getMonth() + 1).toString(),
-    //   day: now.getDate().toString(),
-    // };
-    // dateDispatch({ type: actionTypes.SET_DATE, payload: initialDate });
-    // dateRef.current = initialDate;
+    if (window.location.hash.includes('#today')) {
+      const now = new Date();
+      const initialDate = {
+        year: now.getFullYear().toString(),
+        month: (now.getMonth() + 1).toString(),
+        day: now.getDate().toString(),
+      };
+      dateDispatch({ type: actionTypes.SET_DATE, payload: initialDate });
+      // dateRef.current = initialDate;
+    }
   }, [dateDispatch, setErrorMessage]);
 
   /* Reset error when user starts typing */

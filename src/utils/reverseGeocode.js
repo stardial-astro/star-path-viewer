@@ -26,7 +26,12 @@ const reverseGeocodeWithNominatim = async (lat, lng) => {
 
 const reverseGeocodeWithBaidu = async (lat, lng) => {
   const timeout = 5000;
-  const url = `${baiduReverseUrl}?ak=${process.env.REACT_APP_BAIDU_API_KEY}&location=${lat},${lng}&output=json&coordtype=wgs84ll`;
+  const url = `${baiduReverseUrl}?` +
+    `ak=${process.env.REACT_APP_BAIDU_API_KEY}&` +
+    `location=${lat},${lng}&` +
+    'output=json&' +
+    'coordtype=wgs84ll' +
+    'region_data_source=2';
   const response = await fetchJsonp(url, {
     jsonpCallback: 'callback',
     timeout: timeout,

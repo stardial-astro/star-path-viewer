@@ -82,36 +82,28 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              {/* Hidden title */}
+              {/* Title image */}
               <Typography
                 component="h1"
                 sx={{
-                  position: 'absolute',
-                  top: 10,
-                  left: 0,
                   width: '100%',
-                  height: '100%',
-                  zIndex: -1,
-                  color: 'transparent',
-                  margin: 0,
-                  overflow: 'hidden',  // Prevent any visual glitches
-                  // textIndent: '-9999px',  // Further hide from screen
-                  fontSize: '1rem',
+                  height: 'auto',
+                  lineHeight: 0,
+                  overflow: 'hidden'
                 }}
               >
-                Star Path Viewer
+                <img
+                  src={TitleImage}
+                  alt="Star Path Viewer"
+                  style={{
+                    maxHeight: '2.1rem',
+                    minHeight: '1rem',
+                    objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
+                    cursor: 'default',
+                  }}
+                  onClick={handleTitleClick}
+                />
               </Typography>
-              {/* The actual title image displayed */}
-              <img
-                src={TitleImage}
-                alt="Star Path Viewer"
-                style={{
-                  maxHeight: '2.1rem',
-                  objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
-                  cursor: 'default',
-                }}
-                onClick={handleTitleClick}
-              />
             </Box>
 
             <Typography

@@ -101,7 +101,7 @@ const About = () => {
           <Link href="https://www.cosmos.esa.int/web/hipparcos/catalogues" target="_blank" rel="noopener noreferrer">
             Hipparcos Catalogue
           </Link>
-          {' '}to precisely calculate and depict the path of a star or planet over the course of the day and night on any specific date in either the Gregorian or Julian calendar, from ancient times to far into the future, in the local horizontal coordinate system. For a comprehensive visual experience, different line styles on the diagram distinguish the path during the day, night, and twilight stages. Key moments in the celestial object's trajectory, such as rising, meridian transit, and setting times, are also marked. <em>Star Path Viewer</em> particularly highlights the transitions between different twilight stages and provides the celestial object's positional information at these times.
+          {' '}to precisely calculate and depict the path of a star or planet over the course of the day and night on any specific date in either the Gregorian or Julian calendar, from ancient times to far into the future, in the local horizontal coordinate system. For a comprehensive visual experience, different line styles on the diagram distinguish the path during the day, night, and twilight stages. Key moments in the celestial body's trajectory, such as rising, meridian transit, and setting times, are also marked. <em>Star Path Viewer</em> particularly highlights the transitions between different twilight stages and provides the target object's positional information at these times.
         </Typography>
         <Typography variant="body1" textAlign="left">
           For more detailed information about this website, please visit our{' '}

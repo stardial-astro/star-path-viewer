@@ -14,8 +14,8 @@ const pad = number => number.toString().padStart(2, '0');
  * @returns {number} The decimal hours of the given HMS values.
  */
 const hmsToDecimal = ({ sign, hours, minutes, seconds }) => {
-  const decimalHours = Math.abs(hours) + (minutes / 60) + (seconds / 3600);
-  return sign * decimalHours;
+  const absDecimalHours = Math.abs(hours) + (minutes / 60) + (seconds / 3600);
+  return sign * absDecimalHours;
 };
 
 /**
@@ -75,7 +75,7 @@ const formatDecimalHours = (decimalHours) => {
 };
 
 /**
- * Formats the datetime into strings in the format 'January 1, 2000 CE' and '12:00:00[.000]'.
+ * Formats the datetime into strings in the format 'January 1, 2000 CE' and '12:00:00'.
  *
  * @param {Object} params - An object containing `year`, `month`, `day`, `hour`, `minute`, `second`, and some switches.
  * @param {number} params.year - Year. 0 is 1 BCE.
@@ -102,7 +102,7 @@ const formatDateTime = ({ year, month = 1, day = 1, hour = 12, minute = 0, secon
 };
 
 /**
- * Formats the datetime into ISO format strings '2000-01-01' and '12:00:00[.000]'.
+ * Formats the datetime into ISO format strings '+2000-01-01' and '12:00:00'.
  *
  * @param {Object} params - An object containing `year`, `month`, `day`, `hour`, `minute`, and `second`.
  * @param {number} params.year - Year. 0 is 1 BCE.
@@ -114,7 +114,8 @@ const formatDateTime = ({ year, month = 1, day = 1, hour = 12, minute = 0, secon
  * @returns {Object} An object containing two formatted strings: `date` and `time`.
  */
 const formatDateTimeISO = ({ year, month = 1, day = 1, hour = 12, minute = 0, second = 0 }) => {
-  const dateStr = [year, pad(month), pad(day)].join('-');
+  const yearStr = year >= 0 ? '+' + year.toString().padStart(4, '0') : '-' + (-year).toString().padStart(4, '0');
+  const dateStr = [yearStr, pad(month), pad(day)].join('-');
   // const secondStr = Number.isInteger(second) ? pad(second) : second.toFixed(3).padStart(6, '0');
   const secondStr = second.toFixed().padStart(2, '0');
   const timeStr = `${pad(hour)}:${pad(minute)}:${secondStr}`;

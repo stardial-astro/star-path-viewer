@@ -6,7 +6,7 @@ import Config from '../../../Config';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
 import useDebouncedFetchDate from '../../../hooks/useDebouncedFetchDate';
-import { adjustDate, validateDateSync, clearDateError } from '../../../utils/dateInputUtils';
+import { adjustDate, validateDateSync, validateYearSync, clearDateError } from '../../../utils/dateInputUtils';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
 import QuickEntryAccordion from './QuickEntryAccordion';
@@ -114,7 +114,7 @@ const DateInput = ({ setErrorMessage, location }) => {
   const debouncedValidateDate = useMemo(
     () =>
       debounce((date, flag, cal) => {
-        const validationResult = validateDateSync(date, flag, cal);
+        const validationResult = flag ? validateYearSync(date) : validateDateSync(date, cal);
         const isValid = !Object.values(validationResult).some((item) => !!item);
         dateDispatch({ type: actionTypes.SET_DATE_ERROR, payload: validationResult });
         if (!flag || (date.year && locationRef.current.lat && locationRef.current.lng)) {

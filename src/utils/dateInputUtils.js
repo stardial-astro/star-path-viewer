@@ -139,8 +139,8 @@ const adjustDate = (date, cal, dateDispatch) => {
 };
 
 /* Validate the date */
-const validateDateSync = (date, flag, cal) => {
-  // console.log('Validating...', date);
+const validateDateSync = (date, cal) => {
+  // console.log('Validating date...', date);
   let newDateError = { general: '', year: '', month: '', day: '' };
   const ephDateMin = cal === JULIAN ? EPH_DATE_MIN_JULIAN : EPH_DATE_MIN;
   const ephDateMax = cal === JULIAN ? EPH_DATE_MAX_JULIAN : EPH_DATE_MAX;
@@ -158,15 +158,40 @@ const validateDateSync = (date, flag, cal) => {
 
     if (
       (year < ephDateMin[0] ||
-        (year === ephDateMin[0] && (flag ||
-          month < ephDateMin[1] || (month === ephDateMin[1] && day < ephDateMin[2])))) ||
+        (year === ephDateMin[0] &&
+          (month < ephDateMin[1] || (month === ephDateMin[1] && day < ephDateMin[2])))) ||
       (year > ephDateMax[0] ||
-        (year === ephDateMax[0] && (flag ||
-          month > ephDateMax[1] || (month === ephDateMax[1] && day > ephDateMax[2]))))
+        (year === ephDateMax[0] &&
+          (month > ephDateMax[1] || (month === ephDateMax[1] && day > ephDateMax[2]))))
     ) {
       return {
         ...newDateError,
         general: `Out of the ephemeris date range: ${dateToStr({ date: ephDateMin })}/${dateToStr({ date: ephDateMax })} (${cal === JULIAN ? 'Julian' : 'Gregorian'})`,
+      };
+    }
+  }
+
+  return newDateError;
+};
+
+/* Validate the year */
+const validateYearSync = (date) => {
+  // console.log('Validating year...', date);
+  let newDateError = { general: '', year: '', month: '', day: '' };
+  const ephDateMin = EPH_DATE_MIN;
+  const ephDateMax = EPH_DATE_MAX;
+
+  if (!/^-?\d*$/.test(date.year)) {
+    return { ...newDateError, year: 'The year must be an integer.' };
+  }
+
+  if (date.year) {
+    const year = parseInt(date.year);
+
+    if (year <= ephDateMin[0] || year >= ephDateMax[0]) {
+      return {
+        ...newDateError,
+        general: `Out of the year range: ${ephDateMin[0]+1}/+${ephDateMax[0]-1}`,
       };
     }
   }
@@ -184,5 +209,6 @@ export {
   fetchDate,
   adjustDate,
   validateDateSync,
+  validateYearSync,
   clearDateError,
 };

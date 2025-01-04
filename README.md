@@ -2,7 +2,11 @@
 
 An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/version-v1.2.0-blue)](#features) [![node](https://img.shields.io/badge/Node.js-22.12.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com) [![npm](https://img.shields.io/badge/npm-10.9.2-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com) [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev) [![mui](https://img.shields.io/badge/MUI-5.16.7-007FFF?logo=mui&logoColor=white)](https://mui.com)
+[![Version](https://img.shields.io/badge/version-v1.2.0-blue)](#features)
+[![node](https://img.shields.io/badge/Node.js-22.12.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
+[![npm](https://img.shields.io/badge/npm-10.9.2-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com)
+[![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev)
+[![mui](https://img.shields.io/badge/MUI-5.16.7-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
 [<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
 
@@ -83,7 +87,7 @@ This app relies on the following services:
 
 - Bayer Designation and Proper Name [[FTP (ident4, ident6)](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables)]
 
-- Timezone: [Timezone Boundary Builder](https://github.com/evansiroky/timezone-boundary-builder)
+- Time zones: [Timezone Boundary Builder](https://github.com/evansiroky/timezone-boundary-builder)
 
 - Chinese Star Names: [Hong Kong Observatory](https://web.archive.org/web/20120209032035/http://www.lcsd.gov.hk/CE/Museum/Space/Research/StarName/c_research_chinengstars.htm)
 

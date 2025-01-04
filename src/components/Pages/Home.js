@@ -97,7 +97,7 @@ const Home = () => {
                   alt="Star Path Viewer"
                   style={{
                     maxHeight: '2.1rem',
-                    minHeight: '1rem',
+                    // minHeight: '1rem', // Not working in Safari
                     objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
                     cursor: 'default',
                   }}

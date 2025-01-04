@@ -166,7 +166,7 @@ const validateDateSync = (date, flag, cal) => {
     ) {
       return {
         ...newDateError,
-        general: `Out of the ephemeris date range: ${dateToStr({ date: ephDateMin })} \u2013 ${dateToStr({ date: ephDateMax })} (${cal === JULIAN ? 'Julian' : 'Gregorian'})`,
+        general: `Out of the ephemeris date range: ${dateToStr({ date: ephDateMin })}/${dateToStr({ date: ephDateMax })} (${cal === JULIAN ? 'Julian' : 'Gregorian'})`,
       };
     }
   }

@@ -18,7 +18,10 @@ const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
         if (latFloat >= -90 && latFloat <= 90 && lngFloat >= -180 && lngFloat <= 180) {
           const requestId = ++latestTzRequest.current;  // Increment and capture the current request ID
           try {
-            const [tz] = await window.GeoTZ.find(latFloat, lngFloat);
+            let [tz] = await window.GeoTZ.find(latFloat, lngFloat);
+            if (tz === 'Asia/Urumqi') {
+              tz = 'Asia/Shanghai';
+            }
             /* Only update if this request is the latest one */
             if (requestId === latestTzRequest.current) {
               locationDispatch({ type: actionTypes.SET_TZ, payload: tz });

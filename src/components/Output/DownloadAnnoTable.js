@@ -4,23 +4,23 @@ import { Stack, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { saveAs } from 'file-saver';
 import { dateTimeToStr, formatTimezone } from '../../utils/dateUtils';
-import { formatDecimalDgrees } from '../../utils/coordUtils';
+import { formatDecimalDegrees } from '../../utils/coordUtils';
 import * as XLSX from 'xlsx';
 
 const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
-  const tzStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
+  const offsetStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
 
   const annoExport = useMemo(() => anno.map((item) => ({
     name: item.name,
-    alt: formatDecimalDgrees(item.alt).replace(/°/g, '\u00B0'),
-    az: formatDecimalDgrees(item.az).replace(/°/g, '\u00B0'),
-    time_standard: `${dateTimeToStr({ dateTime: item.time_standard, delim: 'T' })}${tzStr}`,
-    time_standard_julian: `${dateTimeToStr({ dateTime: item.time_standard_julian, delim: 'T' })}${tzStr}`,
-    time_local_mean: `${dateTimeToStr({ dateTime: item.time_local_mean, delim: 'T' })}${tzStr}`,
-    time_local_mean_julian: `${dateTimeToStr({ dateTime: item.time_local_mean_julian, delim: 'T' })}${tzStr}`,
-    time_ut1: dateTimeToStr({ dateTime: item.time_ut1, delim: 'T' }),
-    time_ut1_julian: dateTimeToStr({ dateTime: item.time_ut1_julian, delim: 'T' }),
-  })), [anno, tzStr]);
+    alt: formatDecimalDegrees(item.alt).replace(/°/g, '\u00B0'),
+    az: formatDecimalDegrees(item.az).replace(/°/g, '\u00B0'),
+    time_standard: `${dateTimeToStr({ dateTime: item.time_standard })} UT1${offsetStr}`,
+    time_standard_julian: `${dateTimeToStr({ dateTime: item.time_standard_julian })} UT1${offsetStr}`,
+    time_local_mean: `${dateTimeToStr({ dateTime: item.time_local_mean })}`,
+    time_local_mean_julian: `${dateTimeToStr({ dateTime: item.time_local_mean_julian })}`,
+    time_ut1: dateTimeToStr({ dateTime: item.time_ut1 }),
+    time_ut1_julian: dateTimeToStr({ dateTime: item.time_ut1_julian }),
+  })), [anno, offsetStr]);
 
   const handleDownload = useCallback((format) => {
     const filename = `${filenameBase}.${format}`;

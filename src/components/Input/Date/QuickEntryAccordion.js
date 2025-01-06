@@ -4,7 +4,7 @@ import { Box, Grid, Typography, Accordion, AccordionSummary, AccordionDetails } 
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
-import { EQX_SOL_NAMES, GREGORIAN } from '../../../utils/constants';
+import { EQX_SOL_NAMES, GREGORIAN, QUERY_FROM_CLICK } from '../../../utils/constants';
 import CustomToggleButton from '../../UI/CustomToggleButton';
 
 const QuickEntryAccordion = () => {
@@ -20,7 +20,7 @@ const QuickEntryAccordion = () => {
     } else {
       dateDispatch({ type: actionTypes.SET_FLAG, payload: newFlag });  // Select another
       if (newFlag) {
-        queryDateFromRef.current = 'click';
+        queryDateFromRef.current = QUERY_FROM_CLICK;
         dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
         dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: false });
         dateDispatch({ type: actionTypes.SET_CAL, payload: GREGORIAN });  // Force to use Gregorian

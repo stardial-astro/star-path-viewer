@@ -73,7 +73,7 @@ const formatDMS = ({ sign, degrees, minutes, seconds }) => {
  * @see decimalToDMS
  * @see formatDMS
  */
-const formatDecimalDgrees = (decimalDegrees) => {
+const formatDecimalDegrees = (decimalDegrees) => {
   const dms = decimalToDMS(decimalDegrees);
   return formatDMS(dms);
 };
@@ -135,7 +135,7 @@ export {
   dmsToDecimal,
   decimalToDMS,
   formatDMS,
-  formatDecimalDgrees,
+  formatDecimalDegrees,
   dmsToHMS,
   hmsToDMS,
   formatCoordinate,

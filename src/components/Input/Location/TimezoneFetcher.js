@@ -9,7 +9,7 @@ import debounce from 'lodash/debounce';
 const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
   const { locationDispatch } = useLocationInput();
 
-  const debouncedFetchTimeZone = useMemo(
+  const debouncedFetchTimezone = useMemo(
     () =>
       debounce(async (lat, lng) => {
         const latFloat = parseFloat(lat);
@@ -40,13 +40,13 @@ const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
   );
 
   useEffect(() => {
-    debouncedFetchTimeZone(lat, lng);
+    debouncedFetchTimezone(lat, lng);
 
     /* Cleanup the debounced function on unmount */
     return () => {
-      debouncedFetchTimeZone.cancel();
+      debouncedFetchTimezone.cancel();
     };
-  }, [lat, lng, debouncedFetchTimeZone]);
+  }, [lat, lng, debouncedFetchTimezone]);
 
   return null;
 };

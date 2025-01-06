@@ -1,6 +1,6 @@
 {
   "name": "star-path-viewer",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "homepage": "https://star-path-viewer.pages.dev/",
   "private": true,
   "dependencies": {
@@ -25,7 +25,7 @@
     "react-web-share": "^2.0.2",
     "svg2pdf.js": "^2.2.4",
     "web-vitals": "^4.2.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -33,7 +33,7 @@
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
-    "eslint": "^9.16.0",
+    "eslint": "^8.57.0",
     "eslint-config-react-app": "^7.0.1",
     "react-scripts": "^5.0.1"
   },

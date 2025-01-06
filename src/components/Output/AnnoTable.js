@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { dateTimeToStr, formatTimezone } from '../../utils/dateUtils';
-import { formatDecimalDgrees } from '../../utils/coordUtils';
+import { formatDecimalDegrees } from '../../utils/coordUtils';
 
 const redAsterisk = <span style={{ color: 'red' }}>*</span>;
 
@@ -60,8 +60,8 @@ const AnnoTable = ({ anno }) => {
             {anno.map((item, index) => (
               <StyledTableRow key={index}>
                 <TableCell component="th" scope="row" sx={{ ...cellStyleHead, ...stickyStyle }}>{item.name}</TableCell>
-                <TableCell sx={cellStyleRight}>{formatDecimalDgrees(item.alt)}</TableCell>
-                <TableCell sx={cellStyleRight}>{formatDecimalDgrees(item.az)}</TableCell>
+                <TableCell sx={cellStyleRight}>{formatDecimalDegrees(item.alt)}</TableCell>
+                <TableCell sx={cellStyleRight}>{formatDecimalDegrees(item.az)}</TableCell>
                 <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_standard })}</TableCell>
                 <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_standard_julian })}</TableCell>
                 <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_local_mean })}</TableCell>

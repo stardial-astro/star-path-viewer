@@ -7,6 +7,7 @@ import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
 import useDebouncedFetchDate from '../../../hooks/useDebouncedFetchDate';
 import { adjustDate, validateDateSync, validateYearSync, clearDateError } from '../../../utils/dateInputUtils';
+import { QUERY_FROM_CLICK, QUERY_FROM_CHANGE } from '../../../utils/constants';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
 import QuickEntryAccordion from './QuickEntryAccordion';
@@ -81,7 +82,7 @@ const DateInput = ({ setErrorMessage, location }) => {
       locationRef.current.tz !== location.tz
     ) {
       if (flag) {
-        queryDateFromRef.current = 'change';
+        queryDateFromRef.current = QUERY_FROM_CHANGE;
         dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
       }
       locationRef.current = location;
@@ -126,7 +127,7 @@ const DateInput = ({ setErrorMessage, location }) => {
 
   useEffect(() => {
     if (dateFetching) {  // Start fetching
-      if (queryDateFromRef.current === 'click') {
+      if (queryDateFromRef.current === QUERY_FROM_CLICK) {
         debouncedFetchDate(date, flag, locationRef);
       } else {
         debouncedFetchDateDelayed(date, flag, locationRef);

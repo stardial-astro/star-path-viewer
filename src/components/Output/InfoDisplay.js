@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import { Box, Stack, Grid, Typography } from '@mui/material';
 import { formatDateTime, formatDateTimeISO, decimalToHMS, formatHMS } from '../../utils/dateUtils';
-import { formatCoordinate, formatDecimalDgrees } from '../../utils/coordUtils';
+import { formatCoordinate, formatDecimalDegrees } from '../../utils/coordUtils';
 import { LATITUDE, LONGITUDE } from '../../utils/constants';
 import CustomDivider from '../UI/CustomDivider';
 
@@ -56,7 +56,7 @@ const InfoDisplay = ({ info }) => {
   }).date, [info]);
 
   const raStr = useMemo(() => info.ra !== null && info.ra !== undefined ? formatHMS(decimalToHMS(info.ra / 15)) : '', [info.ra]);
-  const decStr = useMemo(() => info.dec !== null && info.dec !== undefined ? formatDecimalDgrees(info.dec) : '', [info.dec]);
+  const decStr = useMemo(() => info.dec !== null && info.dec !== undefined ? formatDecimalDegrees(info.dec) : '', [info.dec]);
 
   // const eqxSolTimeStr = useMemo(() => {
   //   if (EQX_SOL_NAMES.hasOwnProperty(info.flag) && info.eqxSolTime.length === 6) {

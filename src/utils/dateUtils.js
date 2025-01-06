@@ -102,7 +102,7 @@ const formatDateTime = ({ year, month = 1, day = 1, hour = 12, minute = 0, secon
 };
 
 /**
- * Formats the datetime into ISO format strings '+2000-01-01' and '12:00:00'.
+ * Formats the datetime into ISO 8601 format strings '+2000-01-01' and '12:00:00'.
  *
  * @param {Object} params - An object containing `year`, `month`, `day`, `hour`, `minute`, and `second`.
  * @param {number} params.year - Year. 0 is 1 BCE.
@@ -180,17 +180,17 @@ const dateToStr = ({ date, iso = true, monthFirst = true, abbr = false }) => {
 };
 
 /**
- * Formats a decimal UTC offset into a string.
+ * Formats a decimal UT1 offset in hours into a string.
  * Calls `decimalToHMS` to convert the decimal hours to an HMS object.
  *
- * @param {number} tz - Decimal UTC offset.
- * @returns {string} The formatted UTC offset string.
+ * @param {number} offset_in_hours - Decimal UT1 offset in hours.
+ * @returns {string} The formatted UT1 offset string.
  *
  * @see decimalToHMS
  */
-const formatTimezone = (tz) => {
-  const hms = decimalToHMS(tz);
-  return `${tz < 0 ? '-' : '+'}${pad(hms.hours)}:${pad(hms.minutes)}`;
+const formatTimezone = (offset_in_hours) => {
+  const hms = decimalToHMS(offset_in_hours);
+  return `${offset_in_hours < 0 ? '-' : '+'}${pad(hms.hours)}:${pad(hms.minutes)}`;
 };
 
 export {

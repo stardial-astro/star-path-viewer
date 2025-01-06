@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { Grid, TextField, MenuItem, InputAdornment, CircularProgress } from '@mui/material';
 import { useDateInput } from '../../../context/DateInputContext';
 import * as actionTypes from '../../../context/dateInputActionTypes';
-import { MONTHS } from '../../../utils/constants';
+import { MONTHS, QUERY_FROM_CHANGE } from '../../../utils/constants';
 
 const DateFields = () => {
   const {
@@ -35,7 +35,7 @@ const DateFields = () => {
     if (!flag) {
       dateDispatch({ type: actionTypes.SET_DATE_ADJUSTING_ON });
     } else {
-      queryDateFromRef.current = 'change';
+      queryDateFromRef.current = QUERY_FROM_CHANGE;
       dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
     }
   }, [flag, dateDispatch, queryDateFromRef]);

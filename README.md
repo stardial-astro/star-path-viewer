@@ -2,7 +2,7 @@
 
 An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/version-v1.2.0-blue)](#features)
+[![Version](https://img.shields.io/badge/version-v1.2.1-blue)](#features)
 [![node](https://img.shields.io/badge/Node.js-22.12.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
 [![npm](https://img.shields.io/badge/npm-10.9.2-CB3837?logo=npm&logoColor=white)](https://www.npmjs.com)
 [![react](https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=white)](https://react.dev)
@@ -42,7 +42,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 - :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate the positions of planets and stars for any given time.
 - :telescope: Includes [proper motion](https://en.wikipedia.org/wiki/Proper_motion) of a star if the Hipparcos Catalogue number is provided.
 - :night_with_stars: Displays star paths with distinct line styles for daytime, twilight stages, and nighttime.
-- :clock1: Provides **[standard time](https://en.wikipedia.org/wiki/Standard_time)**, **[local mean time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1 time](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference (*no Daylight Saving Time (DST) adjustments in this project*).
+- :clock1: Provides **[standard time](https://en.wikipedia.org/wiki/Standard_time)**, **[local mean time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1 time](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference. (*The offsets are from UT1 and no Daylight Saving Time (DST) adjustments in this project.*)
 
 ### User Interface
 
@@ -87,7 +87,7 @@ This app relies on the following services:
 
 - Bayer Designation and Proper Name [[FTP (ident4, ident6)](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables)]
 
-- Time zones: [Timezone Boundary Builder](https://github.com/evansiroky/timezone-boundary-builder)
+- Time Zones: [Timezone Boundary Builder](https://github.com/evansiroky/timezone-boundary-builder)
 
 - Chinese Star Names: [Hong Kong Observatory](https://web.archive.org/web/20120209032035/http://www.lcsd.gov.hk/CE/Museum/Space/Research/StarName/c_research_chinengstars.htm)
 
@@ -104,6 +104,9 @@ This app relies on the following services:
 - R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
 
 ## Changelog
+
+- [v1.2.1] 2025-01-05
+  - Minor bug fixes.
 
 - [v1.2.0] 2024-12-16
   - Included atmospheric refraction in position calculation.

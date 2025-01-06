@@ -92,3 +92,6 @@ export const HIP_NOT_FOUND = 'not-found';
 
 export const LATITUDE = 'lat';
 export const LONGITUDE = 'lng';
+
+export const QUERY_FROM_CLICK = 'click';
+export const QUERY_FROM_CHANGE = 'change';

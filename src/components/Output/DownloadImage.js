@@ -14,11 +14,24 @@ const capitalize = (string) => {
 
 const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage }) => {
   // console.log('Rendering DownloadImage');
-  const dateStrIsoG = useMemo(() => formatDateTimeISO({
-    year: parseInt(info.dateG.year),
-    month: parseInt(info.dateG.month),
-    day: parseInt(info.dateG.day),
-  }).date, [info]);
+  const dateStrIsoG = useMemo(() => (
+    'Date (Gregorian): ' +
+    formatDateTimeISO({
+      year: parseInt(info.dateG.year),
+      month: parseInt(info.dateG.month),
+      day: parseInt(info.dateG.day),
+  }).date), [info.dateG]);
+
+  const locationStr = useMemo(() => (
+    'Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3)
+  ), [info.lat, info.lng]);
+
+  const starStr = useMemo(() => (
+    'Celestial Object' + (
+      (info.name && !info.hip && ': ' + capitalize(info.name)) ||
+      (info.hip && ' (HIP): ' + info.hip) ||
+      ' (RA/Dec): ' + (info.ra.toFixed(3) + '/' + info.dec.toFixed(3))
+  )), [info.name, info.hip, info.ra, info.dec]);
 
   const handleDownload = useCallback(async (format) => {
     const svgElement = document.getElementById('svg-container').querySelector('svg');
@@ -39,15 +52,9 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
 
       /* Append metadata to the SVG */
       const newMetadata = '\n  <title>' + filenameBase + '</title>\n' +
-                          '  <desc>Date (Gregorian): ' + dateStrIsoG + '</desc>\n' +
-                          '  <desc>Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3) + '</desc>\n' +
-                          '  <desc>Celestial Object' +
-                          (
-                            (info.name && !info.hip && ': ' + capitalize(info.name)) ||
-                            (info.hip && ' (HIP): ' + info.hip) ||
-                            ' (RA/Dec): ' + (info.ra.toFixed(3) + '/' + info.dec.toFixed(3))
-                          ) +
-                          '</desc>\n';
+                          '  <desc>' + dateStrIsoG + '</desc>\n' +
+                          '  <desc>' + locationStr + '</desc>\n' +
+                          '  <desc>' + starStr + '</desc>\n';
 
       let svgWithMetadata;
       if (svgData.includes('<metadata>')) {
@@ -116,13 +123,7 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
       /* Set metadata for the PDF */
       pdfDoc.setProperties({
         title: filenameBase,
-        subject: 'Date (Gregorian): ' + dateStrIsoG +
-                ', Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3) +
-                ', Celestial Object' + (
-                  (info.name && !info.hip && ': ' + capitalize(info.name)) ||
-                  (info.hip && ' (HIP): ' + info.hip) ||
-                  ' (RA/Dec): ' + (info.ra.toFixed(3) + '/' + info.dec.toFixed(3))
-                ),
+        subject: dateStrIsoG + ', ' + locationStr + ', ' + starStr,
       });
 
       pdfDoc
@@ -140,7 +141,7 @@ const DownloadImage = ({ svgData, info, filenameBase, dpi = 300, setErrorMessage
         });
     }
     /* ---------------------------------------------------------------------- */
-  }, [svgData, info, filenameBase, dpi, dateStrIsoG, setErrorMessage]);
+  }, [svgData, filenameBase, dpi, dateStrIsoG, locationStr, starStr, setErrorMessage]);
 
   return (
     <Stack direction='row' spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent='center'>

@@ -27,22 +27,22 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
       dispatch({ type: actionTypes.SET_CACHED_NAMES, payload: data });  // Cache the data
     }
 
-    /* Case-insensitive */
-    const normalizedQuery = query.toLowerCase();
+    /* Case-insensitive search */
+    const normalizedQuery = query.toLowerCase().replace(/\s+/g, " ");  // already trimmed
 
     /* Filter suggestions */
     const filteredSuggestions = data
       .filter((item) => {
         /* Concatenate all fields of the item as a string */
         const concatenatedFields = Object.values(item).join(' ').toLowerCase();
-        return concatenatedFields.includes(normalizedQuery);
+        return concatenatedFields.includes(normalizedQuery) || concatenatedFields.replace(/_/g, ' ').includes(normalizedQuery);
       })
       .slice(0, topN);
 
     const hip = parseInt(query, 10);
 
-    /* If the query is a number (no matter valid or not) without a name, prepare the entry */
-    const selectedSuggestions = /^\d*$/.test(query) && !filteredSuggestions.find((item) => item.hip.toString() === query)
+    /* If the query is a number but not a HIP with names, set it as a HIP and prepare the entry */
+    const selectedSuggestions = /^\d+$/.test(query) && !filteredSuggestions.find((item) => item.hip.toString() === query)
       ? [{
         hip: query,
         name: '',
@@ -52,6 +52,7 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
         display_name: hip >= HIP_MIN && hip <= HIP_MAX ? query : HIP_OUT_OF_RANGE,
       }]
       : [];
+    /* Return all suggestions */
     if (filteredSuggestions.length > 0) {
       return selectedSuggestions.concat(filteredSuggestions.map((item) => ({
         hip: item.hip.toString(),

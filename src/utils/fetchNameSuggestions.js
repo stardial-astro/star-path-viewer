@@ -34,8 +34,14 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
     const filteredSuggestions = data
       .filter((item) => {
         /* Concatenate all fields of the item as a string */
-        const concatenatedFields = Object.values(item).join(' ').toLowerCase();
-        return concatenatedFields.includes(normalizedQuery) || concatenatedFields.replace(/_/g, ' ').includes(normalizedQuery);
+        const concatenatedFields = Object.values(item).join(' ').toLowerCase().replace(/\./g, "");
+        const concatenatedFieldsAlt = concatenatedFields.replace(/chi/g, 'xi');
+        return (
+          concatenatedFields.includes(normalizedQuery) ||
+          concatenatedFields.replace(/_/g, ' ').includes(normalizedQuery) ||
+          concatenatedFieldsAlt.includes(normalizedQuery) ||
+          concatenatedFieldsAlt.replace(/_/g, ' ').includes(normalizedQuery)
+        );
       })
       .slice(0, topN);
 
@@ -56,7 +62,7 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
     if (filteredSuggestions.length > 0) {
       return selectedSuggestions.concat(filteredSuggestions.map((item) => ({
         hip: item.hip.toString(),
-        name: item.name,
+        name: item.name.replace(/\./g, ""),
         name_zh: item.name_zh || '',
         name_zh_hk: item.name_zh_hk || '',
         pinyin: item.pinyin || '',

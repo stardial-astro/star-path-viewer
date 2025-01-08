@@ -7,6 +7,18 @@ import { HIP_MIN, HIP_MAX, HIP_OUT_OF_RANGE, HIP_NOT_FOUND } from './constants';
 const starNameUrl = 'https://stardial-astro.github.io/star-path-data/json/hip_ident_zh.json';
 const topN = 10;
 
+const normalizePinyin = (input) => {
+  return input
+    .toLowerCase()
+    .replace(/\s+/g, " ")
+    .replace(/([ln])(v|yu)/g, "$1ü")  // Enable typing 'v' and 'yu' for 'ü'
+    .normalize("NFC");  // Ensure Unicode normalization
+};
+
+const matchesQuery = (str, query) => {
+  return str.includes(query) || str.replace(/_/g, ' ').includes(query);  // Compatible for both 'x_Xxx' and 'x Xxx'
+};
+
 const fetchAndCacheNames = async () => {
   try {
     const timeout = 5000;
@@ -28,20 +40,17 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
     }
 
     /* Case-insensitive search */
-    const normalizedQuery = query.toLowerCase().replace(/\s+/g, " ");  // already trimmed
+    const normalizedQuery = normalizePinyin(query);  // `query` is already trimmed
 
     /* Filter suggestions */
     const filteredSuggestions = data
       .filter((item) => {
         /* Concatenate all fields of the item as a string */
-        const concatenatedFields = Object.values(item).join(' ').toLowerCase().replace(/\./g, "");
-        const concatenatedFieldsAlt = concatenatedFields.replace(/chi/g, 'xi');
-        return (
-          concatenatedFields.includes(normalizedQuery) ||
-          concatenatedFields.replace(/_/g, ' ').includes(normalizedQuery) ||
-          concatenatedFieldsAlt.includes(normalizedQuery) ||
-          concatenatedFieldsAlt.replace(/_/g, ' ').includes(normalizedQuery)
-        );
+        let concatenatedFields = Object.values(item).join(', ')
+          .toLowerCase()
+          .replace(/\./g, "");  // Remove '.' in 'mu._Xxx', 'nu._Xxx' and 'pi._Xxx'
+        concatenatedFields += ', ' + concatenatedFields.replace(/chi_/g, 'xi_').replace(/ü/g, "u");  // For compatibility
+        return matchesQuery(concatenatedFields, normalizedQuery);
       })
       .slice(0, topN);
 
@@ -62,7 +71,7 @@ const fetchNameSuggestions = async (query, cachedNames, dispatch) => {
     if (filteredSuggestions.length > 0) {
       return selectedSuggestions.concat(filteredSuggestions.map((item) => ({
         hip: item.hip.toString(),
-        name: item.name.replace(/\./g, ""),
+        name: item.name.replace(/\./g, ""),  // Remove '.' in 'mu._Xxx', 'nu._Xxx' and 'pi._Xxx'
         name_zh: item.name_zh || '',
         name_zh_hk: item.name_zh_hk || '',
         pinyin: item.pinyin || '',

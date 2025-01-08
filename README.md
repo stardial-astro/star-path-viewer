@@ -85,7 +85,7 @@ This app relies on the following services:
 
 - [The Hipparcos and Tycho Catalogues](https://www.cosmos.esa.int/web/hipparcos/catalogues) [[FTP](https://cdsarc.cds.unistra.fr/ftp/cats/I/239)]
 
-- Bayer Designation and Proper Name [[FTP (ident4, ident6)](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables)]
+- Bayer Designation and Proper Name [[FTP](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables) (ident4, ident6)]
 
 - Time Zones: [Timezone Boundary Builder](https://github.com/evansiroky/timezone-boundary-builder)
 

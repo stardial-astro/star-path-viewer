@@ -67,6 +67,8 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 
 > :bulb: Note that the [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) effect has been accounted for.
 
+See [our wiki page](https://github.com/stardial-astro/star-path-viewer/wiki/1.-Guides) for a detailed guide.
+
 ## Services
 
 This app relies on the following services:

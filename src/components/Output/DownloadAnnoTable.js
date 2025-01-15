@@ -52,7 +52,7 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
             item.time_ut1_julian,
           ])
         ];
-        const csvString = csvContent.map(e => e.join(",")).join("\n");
+        const csvString = csvContent.map(e => e.join(',')).join('\n') + '\n';
         /* Add BOM (UTF-8 BOM) */
         const csvWithBom = '\uFEFF' + csvString;
         const blob = new Blob([csvWithBom], { type: 'text/csv;charset=utf-8;' });
@@ -74,7 +74,7 @@ const DownloadAnnoTable = ({ anno, filenameBase, setErrorMessage }) => {
           'Local Mean Time (Julian)': item.time_local_mean_julian,
           'UT1 (Gregorian)': item.time_ut1,
           'UT1 (Julian)': item.time_ut1_julian,
-        })), null, 2);
+        })), null, 2) + '\n';
         const blob = new Blob([jsonContent], { type: 'application/json;charset=utf-8;' });
         saveAs(blob, filename);
       } catch (error) {

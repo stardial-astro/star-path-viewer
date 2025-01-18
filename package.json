@@ -30,11 +30,18 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/plugin-transform-private-property-in-object": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
+    "@testing-library/react": "^16.2.0",
+    "@testing-library/user-event": "^14.6.0",
+    "babel-jest": "^29.7.0",
+    "canvas": "^3.0.1",
     "eslint": "^8.57.0",
     "eslint-config-react-app": "^7.0.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "react-scripts": "^5.0.1"
   },
   "resolutions": {
@@ -45,7 +52,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "start:ssl": "serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

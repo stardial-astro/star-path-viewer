@@ -65,7 +65,7 @@ const CustomAppBar = () => {
               <RouterLink to="/about">
                 <img
                   src={LogoText}
-                  alt="Logo"
+                  alt="About Stardial"
                   style={{
                     maxHeight: '1.3rem',
                     maxWidth: '82.58px',

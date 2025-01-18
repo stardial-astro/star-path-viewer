@@ -26,12 +26,12 @@ const Footer = () => {
       >
         <Typography variant="body2" component="p" color="action.active">
           &copy; {new Date().getFullYear()} Stardial. Created by{' '}
-          <Link href="https://github.com/claude-hao" target="_blank" rel="noopener noreferrer">
-            Zhibo Hao
-          </Link>
-          ,{' '}
           <Link href="https://github.com/lydiazly" target="_blank" rel="noopener noreferrer">
             Lydia Zhang
+          </Link>
+          ,{' '}
+          <Link href="https://github.com/claude-hao" target="_blank" rel="noopener noreferrer">
+            Zhibo Hao
           </Link>
           , and Jinsong Guo.
         </Typography>

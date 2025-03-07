@@ -31,7 +31,7 @@ const StyledFab = styled(Fab)(({ theme }) => ({
 const ScrollTop = ({ children }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
-    threshold: 150, // When the button appears
+    threshold: 150,  // When the button appears
   });
 
   const handleClick = useCallback((event) => {
@@ -54,7 +54,7 @@ const BackToTopButton = () => {
   const button = useMemo(
     () => (
       <Tooltip title="Back to Top" placement="left">
-        <StyledFab color="inherit" size="small" aria-label="scroll back to top">
+        <StyledFab color="inherit" size="small" aria-label="Scroll back to top">
           <KeyboardArrowUpIcon />
         </StyledFab>
       </Tooltip>

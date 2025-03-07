@@ -6,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@fontsource/roboto": "^5.1.0",
+    "@fontsource/roboto": "^5.2.5",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
     "@mui/system": "^5.16.7",
@@ -30,12 +30,12 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/plugin-transform-private-property-in-object": "^7.25.9",
-    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
-    "@testing-library/user-event": "^14.6.0",
+    "@testing-library/user-event": "^14.6.1",
     "babel-jest": "^29.7.0",
     "canvas": "^3.0.1",
     "eslint": "^8.57.0",
@@ -53,6 +53,8 @@
     "build": "react-scripts build",
     "start:ssl": "serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

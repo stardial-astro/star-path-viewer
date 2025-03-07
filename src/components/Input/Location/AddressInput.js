@@ -240,7 +240,7 @@ const AddressInput = ({ setErrorMessage }) => {
               <InputAdornment position="start" sx={{ ml: 1, mr: -1 }}>
                 {!suggestionsLoading && !locationLoading ? (
                   <Tooltip title="Find My Location">
-                    <IconButton aria-label="gps" edge="start" onClick={handleGpsClick}>
+                    <IconButton aria-label="GPS" edge="start" onClick={handleGpsClick}>
                       <GpsFixedIcon size={20} sx={gpsBtnStyle} />
                     </IconButton>
                   </Tooltip>

@@ -29,10 +29,10 @@ const LocationInputTypeToggle = () => {
       aria-label="Input type"
       fullWidth
     >
-      <ToggleButton value={TYPE_ADDR} aria-label="Search Address">
+      <ToggleButton value={TYPE_ADDR} aria-label="Search address">
         Search Address
       </ToggleButton>
-      <ToggleButton value={TYPE_COORD} aria-label="Enter Coordinates">
+      <ToggleButton value={TYPE_COORD} aria-label="Enter coordinates">
         Enter Coordinates
       </ToggleButton>
     </ToggleButtonGroup>

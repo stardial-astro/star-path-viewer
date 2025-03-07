@@ -19,10 +19,11 @@ const About = () => {
         <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
-      <Box sx={{ marginTop: 4 }}>
+      <Box data-testid="about-page" sx={{ marginTop: 4 }}>
         <img
           src={Logo}
           alt="Logo"
+          data-testid="about-logo"
           style={{
             maxWidth: '20%',
             minWidth: '130px',
@@ -31,6 +32,7 @@ const About = () => {
         />
       </Box>
 
+      {/* Title */}
       <Box
         sx={{
           display: 'flex',
@@ -43,38 +45,30 @@ const About = () => {
           width: '100%',
         }}
       >
-        {/* Hidden SEO-friendly title */}
+        {/* Title image */}
         <Typography
           component="h1"
+          data-testid="about-title"
           sx={{
-            position: 'absolute',
-            top: 10,
-            left: 0,
             width: '100%',
-            height: '100%',
-            zIndex: -1,
-            color: 'transparent',
-            margin: 0,
-            overflow: 'hidden',  // Prevent any visual glitches
-            // textIndent: '-9999px',  // Further hide from screen
-            fontSize: '1rem',
+            height: 'auto',
+            lineHeight: 0,
+            overflow: 'hidden'
           }}
         >
-          About Us
+          <img
+            src={AboutImage}
+            alt="About Us"
+            style={{
+              maxHeight: '2.1rem',
+              objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
+              cursor: 'default',
+            }}
+          />
         </Typography>
-        {/* The actual title image displayed */}
-        <img
-          src={AboutImage}
-          alt="About Us"
-          style={{
-            maxHeight: '2.1rem',
-            objectFit: 'contain',  // Maintain aspect ratio and contain the image within the Box
-            cursor: 'default',
-          }}
-        />
       </Box>
 
-      <Box display="flex" flexWrap="wrap" gap="1rem" marginX={{ xs: 1.5, sm: 2.5, md: 3 }} paddingLeft={1.8}>
+      <Box data-testid="about-body" display="flex" flexWrap="wrap" gap="1rem" marginX={{ xs: 1.5, sm: 2.5, md: 3 }} paddingLeft={1.8}>
         <Typography variant="body1" textAlign="left">
           We are{' '}
           <Link href="https://github.com/stardial-astro" target="_blank" rel="noopener noreferrer">

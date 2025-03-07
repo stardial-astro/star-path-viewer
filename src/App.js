@@ -1,10 +1,14 @@
 // src/App.js
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import '@fontsource/roboto/400-italic.css';
 import './App.css';
 import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { CssBaseline, Container, Box } from '@mui/material';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Config from './Config';
+import { Routes, Route } from 'react-router-dom';
 import { ServiceProvider } from './context/ServiceContext';
 import Home from './components/Pages/Home';
 import About from './components/Pages/About';
@@ -13,44 +17,32 @@ import BackToTopButton from './components/Navigation/BackToTopButton';
 import CustomAppBar from './components/Navigation/CustomAppBar';
 import Footer from './components/Navigation/Footer';
 
-const theme = createTheme();  // Create the default theme
-
 const App = () => {
+  const theme = createTheme();  // Create the default theme
+
   return (
     <ServiceProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router basename={Config.basename}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              width: '100%',
-              minHeight: '100vh',
-              textAlign: 'center',
-            }}
-          >
-            {/* Anchor Element for Back to Top Button */}
-            <Box id="back-to-top-anchor" />
+        <Box className="app-container">
+          {/* Anchor Element for Back to Top Button */}
+          <Box id="back-to-top-anchor" />
 
-            <CustomAppBar />
+          <CustomAppBar />
 
-            <Container maxWidth="md" sx={{ flex: '1 0 auto', pt: 0, pb: 0 }}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                {/* The catch-all route for 404 */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </Container>
+          <Container maxWidth="md" sx={{ flex: '1 0 auto', pt: 0, pb: 0 }}>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              {/* The catch-all route for 404 */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Container>
 
-            <Footer />
+          <Footer />
 
-            <BackToTopButton />
-          </Box>
-        </Router>
+          <BackToTopButton />
+        </Box>
       </ThemeProvider>
     </ServiceProvider>
   );

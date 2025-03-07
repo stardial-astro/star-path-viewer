@@ -7,7 +7,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link as RouterLink } from 'react-router-dom';
 import { RWebShare } from 'react-web-share';
-import { useLocation } from 'react-router-dom'; // Import the useLocation hook
+import { useLocation } from 'react-router-dom';
 import Config from '../../Config';
 import LogoText from '../../assets/logo-text.svg';
 
@@ -62,7 +62,7 @@ const CustomAppBar = () => {
         <Box display="flex" justifyContent="flex-start" alignItems="center" minWidth="82px" gap={1.5}>
           {currentRoute.pathname === '/' ? (
             <Tooltip title="About Us" placement="bottom-start">
-              <RouterLink to="/about">
+              <RouterLink to="/about" aria-label="About">
                 <img
                   src={LogoText}
                   alt="About Stardial"

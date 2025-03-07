@@ -42,9 +42,9 @@ const RadecRaHmsInput = () => {
   }, [starRaHMS, starDispatch]);
 
   return (
-    <Grid container item xs={12} sm={12} md={5.9} rowSpacing={2} columnSpacing={1.5} alignItems="center" justifyContent="space-between">
-      <Grid item xs={12} sm={0.9} md={1.2} mr={{ xs: 0, sm: -0.5, md: -0.5 }} my={{ xs: -1, sm: 0, md: 0 }}>
-        <Typography variant="body1">
+    <Grid container item xs={12} sm={12} md={5.85} rowSpacing={2} columnSpacing={1.5} alignItems="center" justifyContent="space-between">
+      <Grid item xs={12} sm={0.9} md={1.2} ml={{ xs: 0.5, sm: 0, md: 0 }} mr={{ xs: 0, sm: -0.5, md: -0.5 }} my={{ xs: -1, sm: 0, md: 0 }}>
+        <Typography variant="body1" textAlign={{ xs: 'left', sm: 'center', md: 'center' }}>
           RA
         </Typography>
       </Grid>

@@ -31,13 +31,13 @@ const StarInputTypeToggle = () => {
       aria-label="Input type"
       fullWidth
     >
-      <ToggleButton value={TYPE_NAME} aria-label="Input Name">
+      <ToggleButton value={TYPE_NAME} aria-label="Input name">
         Planet
       </ToggleButton>
-      <ToggleButton value={TYPE_HIP} aria-label="Input Hipparcos">
+      <ToggleButton value={TYPE_HIP} aria-label="Input HIP">
         Star
       </ToggleButton>
-      <ToggleButton value={TYPE_RADEC} aria-label="Input Radec">
+      <ToggleButton value={TYPE_RADEC} aria-label="Input radec">
         RA/Dec (J2000)
       </ToggleButton>
     </ToggleButtonGroup>

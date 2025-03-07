@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 const NotFound = () => {
   return (
     <Box
+      data-testid="not-found-page"
       sx={{
         display: 'flex',
         flexDirection: 'column',

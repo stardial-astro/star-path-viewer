@@ -1,8 +1,7 @@
 // src/components/Pages/Home.js
 import React, { useState, useCallback } from 'react';
-import { useTheme } from '@mui/material/styles';
+// import { useTheme } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
-// import { Link as RouterLink } from 'react-router-dom';
 import TitleImage from '../../assets/title-image.svg';
 import { LocationInputProvider } from '../../context/LocationInputContext';
 import { DateInputProvider } from '../../context/DateInputContext';
@@ -19,7 +18,7 @@ import { Helmet, HelmetProvider } from 'react-helmet-async';
 
 const Home = () => {
   // console.log('Rendering Home');
-  const theme = useTheme();
+  // const theme = useTheme();
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState({});
   const [diagramId, setDiagramId] = useState('');
@@ -69,8 +68,9 @@ const Home = () => {
             {/* Display a notice */}
             <Notice />
 
-            {/* Main body */}
+            {/* Title */}
             <Box
+              data-testid="home-page"
               sx={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -85,6 +85,7 @@ const Home = () => {
               {/* Title image */}
               <Typography
                 component="h1"
+                data-testid="home-title"
                 sx={{
                   width: '100%',
                   height: 'auto',
@@ -109,25 +110,24 @@ const Home = () => {
             <Typography
               variant="subtitle1"
               component="h2"
+              data-testid="home-subtitle"
               color="action.active"
               fontWeight={400}
               sx={{
                 mt: 0.5,
-                mb: { xs: 1, sm: 2, md: 2 },
-                fontSize: '0.7rem',
-                [theme.breakpoints.up('sm')]: {
-                  fontSize: 'subtitle2.fontSize',
-                },
-                [theme.breakpoints.up('md')]: {
-                  fontSize: 'subtitle1.fontSize',
-                },
+                mb: { xs: 1, sm: 1, md: 1 },
+                fontSize: {
+                  xs: '0.7rem',
+                  sm: 'subtitle2.fontSize',
+                  md: 'subtitle1.fontSize',
+                }
               }}
             >
               {/* &mdash;&nbsp;Trace a&nbsp;star&nbsp;on any&nbsp;date from &#8209;3000&#8209;01&#8209;29 to 3000&#8209;05&#8209;06&nbsp;&mdash; */}
               &mdash;&nbsp;Trace a&nbsp;star&nbsp;on any&nbsp;date between 3001&nbsp;BCE and 3000&nbsp;CE&nbsp;&mdash;
             </Typography>
 
-            <Box id="draw" sx={{ width: '100%', justifyContent: 'center' }}>
+            <Box id="draw" data-testid="draw-btn" sx={{ width: '100%', justifyContent: 'center' }}>
               <DiagramFetcher
                 setDiagramId={setDiagramId}
                 setInfo={setInfo}
@@ -141,7 +141,7 @@ const Home = () => {
             </Box>
 
             {success && (
-              <Box sx={{ width: '100%', justifyContent: 'center' }}>
+              <Box data-testid="output" sx={{ width: '100%', justifyContent: 'center' }}>
                 <Box id="information" mt={2}>
                   <InfoDisplay info={info} />
                 </Box>

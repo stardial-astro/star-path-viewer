@@ -50,11 +50,6 @@ export default defineConfig({
               return `component-${dir.toLowerCase()}-root`;;
             }
           }
-          /* Regular component directories */
-          const componentMatch = id.match(/\/components\/([^/]+)\//);
-          if (componentMatch && !heavyDirs.includes(componentMatch[1])) {
-            return `component-${componentMatch[1].toLowerCase()}`;
-          }
         }
       }
     }

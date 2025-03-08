@@ -1,6 +1,6 @@
 // src/hooks/useDebouncedFetchDate.js
 import { useMemo } from 'react';
-import { fetchDate } from '../utils/dateInputUtils';
+import { fetchDate } from '@utils/dateInputUtils';
 import debounce from 'lodash/debounce';
 
 const useDebouncedFetchDate = (

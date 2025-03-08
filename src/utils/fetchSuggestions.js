@@ -32,7 +32,7 @@ const fetchSuggestionsWithNominatim = async (query) => {
 const fetchSuggestionsWithBaidu = async (query) => {
   const timeout = 5000;
   const url = `${baiduSearchUrl}?` +
-    `ak=${process.env.REACT_APP_BAIDU_API_KEY}&` +
+    `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
     `query=${query}&` +
     'region=全国&' +
     'output=json&' +

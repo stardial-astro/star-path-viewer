@@ -1,5 +1,5 @@
 // src/utils/starInputUtils.js
-import * as actionTypes from '../context/starInputActionTypes';
+import * as actionTypes from '@context/starInputActionTypes';
 import { HIP_MIN, HIP_MAX, TYPE_HIP, TYPE_RADEC, FORMAT_DD } from './constants';
 
 const constructNameZh = (item) => {

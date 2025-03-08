@@ -1,6 +1,6 @@
 // utils/fetchEquinoxSolstice.js
 import axios from 'axios';
-import Config from '../Config';
+import Config from '@/Config';
 import { getIsDevMode } from './devMode';
 
 export const fetchEquinoxSolstice = async (lat, lng, tz, year, flag, signal) => {

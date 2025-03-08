@@ -1,7 +1,7 @@
 // src/utils/inputUtils.js
-import * as locationActionTypes from '../context/locationInputActionTypes';
-import * as dateActionTypes from '../context/dateInputActionTypes';
-import * as starActionTypes from '../context/starInputActionTypes';
+import * as locationActionTypes from '@context/locationInputActionTypes';
+import * as dateActionTypes from '@context/dateInputActionTypes';
+import * as starActionTypes from '@context/starInputActionTypes';
 import { TYPE_ADDR, TYPE_NAME, TYPE_HIP, TYPE_RADEC } from './constants';
 
 /* Validate the location */

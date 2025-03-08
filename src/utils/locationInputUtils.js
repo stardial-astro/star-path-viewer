@@ -1,6 +1,6 @@
 // src/utils/locationInputUtils.js
 import fetchGeolocation from './fetchGeolocation';
-import * as actionTypes from '../context/locationInputActionTypes';
+import * as actionTypes from '@context/locationInputActionTypes';
 import { TYPE_COORD, ADDR_UNKNOWN } from './constants';
 
 const fetchCurrentLocation = async (service, lastSelectedTerm, locationDispatch, setErrorMessage) => {

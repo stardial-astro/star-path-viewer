@@ -1,6 +1,6 @@
 // src/hooks/useDebouncedFetchNameSuggestions.js
 import { useMemo } from 'react';
-import { fetchNameSuggestions } from '../utils/fetchNameSuggestions';
+import { fetchNameSuggestions } from '@utils/fetchNameSuggestions';
 import debounce from 'lodash/debounce';
 
 const useDebouncedFetchNameSuggestions = (

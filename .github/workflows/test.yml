@@ -1,37 +1,39 @@
-name: React Tests
+name: React Vite CI/CD
 
 on:
   push:
-    branches:
-      - cloudflare-deploy
+    branches: [ dev-cf-vite, main ]
   pull_request:
-    branches:
-      - cloudflare-deploy
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '22.12.0'
-        
-    - name: Install dependencies
-      run: yarn install
-      
-    - name: Run tests
-      run: yarn test
+        cache: 'yarn'
 
-    - name: Cache dependencies
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "dir=$(node .yarn/releases/yarn-1.22.22.cjs cache dir)" >> $GITHUB_OUTPUT
+      
+    - name: Cache yarn dependencies
       uses: actions/cache@v3
+      id: yarn-cache
       with:
-        path: |
-          ~/.yarn/cache
-          ~/.cache/yarn
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Run Vitest
+      run: yarn test

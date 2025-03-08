@@ -1,6 +1,6 @@
 // src/utils/fetchNameSuggestions.js
 import axios from 'axios';
-import * as actionTypes from '../context/starInputActionTypes';
+import * as actionTypes from '@context/starInputActionTypes';
 import { HIP_MIN, HIP_MAX, HIP_OUT_OF_RANGE, HIP_NOT_FOUND } from './constants';
 
 // const starNameUrl = 'https://stardial-astro.github.io/star-path-data/json/hip_ident.json';

@@ -1,6 +1,6 @@
 // src/utils/dateInputUtils.js
 import { EPH_DATE_MIN, EPH_DATE_MAX, EPH_DATE_MIN_JULIAN, EPH_DATE_MAX_JULIAN } from './constants';
-import * as actionTypes from '../context/dateInputActionTypes';
+import * as actionTypes from '@context/dateInputActionTypes';
 import { JULIAN } from './constants';
 import { dateToStr } from './dateUtils';
 import { fetchEquinoxSolstice } from './fetchEquinoxSolstice';

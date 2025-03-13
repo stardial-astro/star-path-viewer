@@ -50,8 +50,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "start:ssl": "serve -s build --ssl-cert localhost.pem --ssl-key localhost-key.pem",
+    "build": "BUILD_PATH=dist react-scripts build",
+    "start:ssl": "serve -s dist --ssl-cert localhost.pem --ssl-key localhost-key.pem",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",

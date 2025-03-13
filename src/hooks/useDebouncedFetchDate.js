@@ -1,7 +1,8 @@
 // src/hooks/useDebouncedFetchDate.js
 import { useMemo } from 'react';
 import { fetchDate } from '@utils/dateInputUtils';
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 const useDebouncedFetchDate = (
   abortControllerRef,

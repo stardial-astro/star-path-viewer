@@ -12,7 +12,8 @@ import LocationInputTypeToggle from './LocationInputTypeToggle';
 import AddressInput from './AddressInput';
 import CoordinatesInput from './CoordinatesInput';
 import TimezoneFetcher from './TimezoneFetcher';
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 const alertStyle = { width: '100%', textAlign: 'left' };
 

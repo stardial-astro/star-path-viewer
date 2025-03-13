@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 import Config from '@/Config';
 import LogoText from '@assets/logo-text.svg';
 
-const baseUrl = `${window.location.origin}${Config.basename}`;
+// const baseUrl = `${window.location.origin}${Config.basename}`;
 
 const barIconStyle = {
   width: '1.3rem',
@@ -112,7 +112,7 @@ const CustomAppBar = () => {
             disableNative={false}
             data={{
               text: `${import.meta.env.VITE_APP_NAME}: An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.`,
-              url: baseUrl,
+              url: import.meta.env.BASE_URL,
               title: `Check out ${import.meta.env.VITE_APP_NAME}`,
             }}
             onClick={handleShareSuccess}

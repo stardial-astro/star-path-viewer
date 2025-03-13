@@ -4,7 +4,8 @@ import Config from '@/Config';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import { getIsDevMode } from '@utils/devMode';
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 const TimezoneFetcher = ({ lat, lng, latestTzRequest }) => {
   const { locationDispatch } = useLocationInput();

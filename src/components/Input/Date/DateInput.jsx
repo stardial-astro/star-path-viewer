@@ -11,7 +11,8 @@ import { QUERY_FROM_CLICK, QUERY_FROM_CHANGE } from '@utils/constants';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
 import QuickEntryAccordion from './QuickEntryAccordion';
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 const DateInput = ({ setErrorMessage, location }) => {
   // console.log('Rendering DateInput');

@@ -16,7 +16,7 @@
     "fetch-jsonp": "^1.3.0",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.2",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -45,14 +45,15 @@
   "resolutions": {
     "postcss": ">=8.4.31",
     "nth-check": ">=2.0.1",
-    "dompurify": ">=3.2.4"
+    "dompurify": ">=3.2.4",
+    "@types/react": "^18.3.1"
   },
   "scripts": {
-    "start": "vite start",
+    "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview",
-    "start:ssl": "HTTPS=true vite",
-    "preview:ssl": "HTTPS=true vite preview",
+    "preview": "vite preview --host",
+    "dev:ssl": "HTTPS=true vite --host",
+    "preview:ssl": "HTTPS=true vite preview --host",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

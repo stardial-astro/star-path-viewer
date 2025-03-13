@@ -11,7 +11,8 @@ import StarInputTypeToggle from './StarInputTypeToggle';
 import StarNameInput from './StarNameInput';
 import StarHipInput from './StarHipInput';
 import RadecInput from './RadecInput';
-import debounce from 'lodash/debounce';
+// import debounce from 'lodash/debounce';
+import debounce from 'lodash-es/debounce';
 
 const StarInput = ({ setErrorMessage }) => {
   // console.log('Rendering StarInput');

@@ -34,6 +34,9 @@ const StarInput = ({ setErrorMessage }) => {
   useEffect(() => {
     clearStarError(starDispatch, setErrorMessage);
     starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
+    if (starName) {
+      starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
+    }
   }, [searchTerm, starName, starHip, starRadec, starInputType, radecFormat, starDispatch, setErrorMessage]);
 
   useEffect(() => {

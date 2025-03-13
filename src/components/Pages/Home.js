@@ -95,7 +95,7 @@ const Home = () => {
               >
                 <img
                   src={TitleImage}
-                  alt="Star Path Viewer"
+                  alt={process.env.REACT_APP_NAME}
                   style={{
                     maxHeight: '2.1rem',
                     // minHeight: '1rem', // Not working in Safari

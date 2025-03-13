@@ -77,13 +77,13 @@ const About = () => {
           , a development team passionate about science and the humanities. Our goal is to create precise, user-friendly, and intuitive astronomical tools to support research in history and social sciences.
         </Typography>
         <Typography variant="body1" textAlign="left">
-          <em>Star Path Viewer</em> is our first application designed to help historians intuitively understand the apparent motion of a celestial object on any given date. This open-source scientific tool provides an accurate approach to replicating the view of stars crossing the sky that ancient stargazers would have seen.
+          <em>{process.env.REACT_APP_NAME}</em> is our first application designed to help historians intuitively understand the apparent motion of a celestial object on any given date. This open-source scientific tool provides an accurate approach to replicating the view of stars crossing the sky that ancient stargazers would have seen.
         </Typography>
         <Typography variant="body1" textAlign="left">
           Accurately evaluating the position of a star or planet in ancient times is crucial for historians when dating historical events by correlating astrometric data with records. The visibility of stars during twilight stages is especially significant in the study of pre-modern astronomy. For example, the Chinese had a long tradition of observing and calculating the culmination of key stars before dawn or after dusk. These observations were used as seasonal markers to maintain calendrical accuracy and stability. In these cases, determining the times when certain stars become visible after dark and disappear before sunrise is essential for analyzing the foundational texts of the Chinese astronomical tradition and many other historical documents.
         </Typography>
         <Typography variant="body1" textAlign="left">
-          To meet these needs, <em>Star Path Viewer</em> integrates with{' '}
+          To meet these needs, <em>{process.env.REACT_APP_NAME}</em> integrates with{' '}
           <Link href="https://rhodesmill.org/skyfield" target="_blank" rel="noopener noreferrer">
             Skyfield
           </Link>
@@ -95,7 +95,7 @@ const About = () => {
           <Link href="https://www.cosmos.esa.int/web/hipparcos/catalogues" target="_blank" rel="noopener noreferrer">
             Hipparcos Catalogue
           </Link>
-          {' '}to precisely calculate and depict the path of a star or planet over the course of the day and night on any specific date in either the Gregorian or Julian calendar, from ancient times to far into the future, in the local horizontal coordinate system. For a comprehensive visual experience, different line styles on the diagram distinguish the path during the day, night, and twilight stages. Key moments in the celestial body's trajectory, such as rising, meridian transit, and setting times, are also marked. <em>Star Path Viewer</em> particularly highlights the transitions between different twilight stages and provides the target object's positional information at these times.
+          {' '}to precisely calculate and depict the path of a star or planet over the course of the day and night on any specific date in either the Gregorian or Julian calendar, from ancient times to far into the future, in the local horizontal coordinate system. For a comprehensive visual experience, different line styles on the diagram distinguish the path during the day, night, and twilight stages. Key moments in the celestial body's trajectory, such as rising, meridian transit, and setting times, are also marked. <em>{process.env.REACT_APP_NAME}</em> particularly highlights the transitions between different twilight stages and provides the target object's positional information at these times.
         </Typography>
         <Typography variant="body1" textAlign="left">
           For more detailed information about this website, please visit our{' '}

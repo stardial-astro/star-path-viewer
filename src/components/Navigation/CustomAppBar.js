@@ -111,9 +111,9 @@ const CustomAppBar = () => {
           <RWebShare
             disableNative={false}
             data={{
-              text: "Star Path Viewer: An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.",
+              text: `${process.env.REACT_APP_NAME}: An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.`,
               url: baseUrl,
-              title: "Check out Star Path Viewer",
+              title: `Check out ${process.env.REACT_APP_NAME}`,
             }}
             onClick={handleShareSuccess}
           >

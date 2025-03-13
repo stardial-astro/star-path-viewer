@@ -2,6 +2,8 @@
 import React from 'react';
 import { Container, Box, Typography, Link } from '@mui/material';
 import CustomDivider from '../UI/CustomDivider';
+import ccSvg from '../../assets/cc.svg';
+import bySvg from '../../assets/by.svg';
 
 const Footer = () => {
   return (
@@ -50,14 +52,14 @@ const Footer = () => {
             CC BY 4.0
             <Box
               component="img"
-              src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1"
+              src={ccSvg}
               alt="CC logo"
               color="action.active"
               sx={{ height: '0.8rem!important', ml: 0.5, mb: 0.2, verticalAlign: 'text-bottom', opacity: 0.54 }}
             />
             <Box
               component="img"
-              src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1"
+              src={bySvg}
               alt="BY logo"
               sx={{ height: '0.8rem!important', ml: 0.5, mb: 0.2, verticalAlign: 'text-bottom', opacity: 0.54 }}
             />

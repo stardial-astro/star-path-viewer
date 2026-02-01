@@ -2,6 +2,7 @@
 import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
 import { ADDR_NOT_FOUND } from './constants';
+import { getIsDevMode } from './devMode';
 
 const nominatimSearchUrl = 'https://nominatim.openstreetmap.org/search';
 const baiduSearchUrl = 'https://api.map.baidu.com/place/v2/suggestion';
@@ -16,6 +17,7 @@ const fetchSuggestionsWithNominatim = async (query) => {
     },
     timeout,
   });
+  getIsDevMode() && console.log("[Address Suggestions]", response);
   if (response.data.length > 0) {
     return response.data.map((item) => ({
       lat: item.lat,

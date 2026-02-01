@@ -11,7 +11,7 @@ export const fetchEquinoxSolstice = async (lat, lng, tz, year, flag, signal) => 
       signal,
     });
 
-    getIsDevMode() && console.log(`[${flag}]`, response.data.results);
+    getIsDevMode() && console.log(`[${flag}]`, response);
 
     const month = response.data.results[1];
     const day = response.data.results[2];

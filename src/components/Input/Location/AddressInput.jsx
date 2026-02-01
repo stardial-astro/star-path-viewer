@@ -9,6 +9,7 @@ import useDebouncedFetchSuggestions from '@hooks/useDebouncedFetchSuggestions';
 import { ADDR_UNKNOWN, ADDR_NOT_FOUND } from '@utils/constants';
 import { fetchCurrentLocation } from '@utils/locationInputUtils';
 import { clearLocationError } from '@utils/locationInputUtils';
+import { getIsDevMode } from '@utils/devMode';
 
 const gpsBtnStyle = {
   color: "action.active",
@@ -122,6 +123,7 @@ const AddressInput = ({ setErrorMessage }) => {
       locationDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: selectedSuggestion.display_name });
       locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
       lastSelectedTerm.current = selectedSuggestion.display_name;
+      getIsDevMode() && console.log("[Selected Address]", selectedSuggestion);
     }
   }, [suggestions, isSelecting, lastSelectedTerm, locationDispatch]);
 

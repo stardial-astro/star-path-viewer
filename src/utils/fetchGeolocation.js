@@ -34,13 +34,14 @@ const fetchIpLocation = async () => {
 
 const fetchGeolocation = async (service) => {
   if ("geolocation" in navigator) {
+    const isDevMode = getIsDevMode();
     try {
       /* Attempt to get the latitude and longitude using navigator.geolocation */
       const position = await new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(
           (position) => resolve(position),
           async (error) => {
-            getIsDevMode() && console.error(error.message);
+            isDevMode && console.error(error.message);
             /* If geolocation fails, fallback to IP-based geolocation */
             try {
               const ipLocation = await fetchIpLocation();
@@ -63,9 +64,11 @@ const fetchGeolocation = async (service) => {
       });
 
       const { latitude, longitude } = position.coords;
+      isDevMode && console.log("[lat/lng]", latitude, longitude);
 
       /* Get the address from the latitude and longitude */
       const locationData = await reverseGeocode(latitude, longitude, service);
+      isDevMode && console.log("[Location]", locationData);
       return {
         lat: latitude.toString(),
         lng: longitude.toString(),

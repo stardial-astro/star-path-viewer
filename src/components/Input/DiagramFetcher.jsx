@@ -71,7 +71,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
     const isDevMode = getIsDevMode();
 
     /* Check input values ----------------------------------------------------*/
-    isDevMode && console.log("[Inputs]", location, date, flag, cal, starName, starHip, starRadec, starInputType);
+    isDevMode && console.log('[Inputs]', location, date, flag, cal, starName, starHip, starRadec, starInputType);
 
     const isValid = validateInputSync(
       location, locationInputType,
@@ -108,7 +108,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
       params.dec = parseFloat(starRadec.dec).toString();
     }
 
-    isDevMode && console.log("[Query]", params);
+    isDevMode && console.log('[Query]', params);
 
     /* Plot ------------------------------------------------------------------*/
     try {
@@ -149,7 +149,7 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
       setInfo(newInfo);
 
       if (isDevMode) {
-        console.log("[Results]", newInfo);
+        console.log('[Results]', newInfo);
         console.log(response.data.annotations);
       }
 

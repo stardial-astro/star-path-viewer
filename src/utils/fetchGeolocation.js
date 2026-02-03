@@ -64,11 +64,11 @@ const fetchGeolocation = async (service) => {
       });
 
       const { latitude, longitude } = position.coords;
-      isDevMode && console.log("[lat/lng]", latitude, longitude);
+      isDevMode && console.log('[lat/lng]', latitude, longitude);
 
       /* Get the address from the latitude and longitude */
       const locationData = await reverseGeocode(latitude, longitude, service);
-      isDevMode && console.log("[Location]", locationData);
+      isDevMode && console.log('[Location]', locationData);
       return {
         lat: latitude.toString(),
         lng: longitude.toString(),

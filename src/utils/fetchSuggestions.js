@@ -3,21 +3,27 @@ import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
 import { ADDR_NOT_FOUND } from './constants';
 import { getIsDevMode } from './devMode';
+import * as pack from '@/../package.json';
 
 const nominatimSearchUrl = 'https://nominatim.openstreetmap.org/search';
 const baiduSearchUrl = 'https://api.map.baidu.com/place/v2/suggestion';
 
 const fetchSuggestionsWithNominatim = async (query) => {
+  const email = 'stardial.astro@gmail.com';
+  const userAgent = `StarPathViewer/${pack.version} (${email})`;
   const timeout = 5000;
   const response = await axios.get(nominatimSearchUrl, {
     params: {
       q: query,
       format: 'json',
       addressdetails: 1,
+      email: email,
     },
+    // Nominatim requires a User-Agent to avoid 403 blocks
+    headers: { 'User-Agent': userAgent },
     timeout,
   });
-  getIsDevMode() && console.log("[Address Suggestions]", response);
+  getIsDevMode() && console.log('[Address Suggestions]', response);
   if (response.data.length > 0) {
     return response.data.map((item) => ({
       lat: item.lat,
@@ -33,7 +39,8 @@ const fetchSuggestionsWithNominatim = async (query) => {
 
 const fetchSuggestionsWithBaidu = async (query) => {
   const timeout = 5000;
-  const url = `${baiduSearchUrl}?` +
+  const url =
+    `${baiduSearchUrl}?` +
     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
     `query=${query}&` +
     'region=全国&' +
@@ -65,7 +72,14 @@ const fetchSuggestions = async (query, service) => {
       return await fetchSuggestionsWithBaidu(query);
     }
   } catch (error) {
-    return [{ display_name: 'Service not available. Please enter the coordinates manually. ⤴', id: '', addresstype: '' }];
+    return [
+      {
+        display_name:
+          'Service not available. Please enter the coordinates manually. ⤴',
+        id: '',
+        addresstype: '',
+      },
+    ];
   }
 };
 

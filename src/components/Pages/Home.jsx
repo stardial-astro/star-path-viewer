@@ -95,7 +95,7 @@ const Home = () => {
               >
                 <img
                   src={TitleImage}
-                  alt={import.meta.env.VITE_APP_NAME}
+                  alt="Star Path Viewer"
                   style={{
                     maxHeight: '2.1rem',
                     // minHeight: '1rem', // Not working in Safari

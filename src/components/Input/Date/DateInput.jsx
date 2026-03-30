@@ -1,42 +1,39 @@
 // src/components/Input/Date/DateInput.jsx
-import React, { useEffect, useRef, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { Stack, Typography } from '@mui/material';
-import Config from '@/Config';
+import { memo, useEffect } from 'react';
+import { Stack } from '@mui/material';
+import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
+import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
-import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
-import { adjustDate, validateDateSync, validateYearSync, clearDateError } from '@utils/dateInputUtils';
-import { QUERY_FROM_CLICK, QUERY_FROM_CHANGE } from '@utils/constants';
+import * as locationActionTypes from '@context/locationInputActionTypes';
+import { clearDateError } from '@utils/dateInputUtils';
+import { ErrorHelperText } from '@components/UI/HelperText';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
 import QuickEntryAccordion from './QuickEntryAccordion';
-// import debounce from 'lodash/debounce';
-import debounce from 'lodash-es/debounce';
 
-const DateInput = ({ setErrorMessage, location }) => {
+const DateInput = () => {
   // console.log('Rendering DateInput');
-  const {
-    date,
-    flag,  // 've', 'ss', 'ae', 'ws'
-    cal,  // '': Gregorian, 'j': Julian
-    dateAdjusting,
-    dateFetching,
-    dateError,
-    abortControllerRef,
-    queryDateFromRef,  // 'click', 'change'
-    latestDateRequest,
-    dateDispatch,
-  } = useDateInput();
-  // const dateRef = useRef(date);
-  // const flagRef = useRef(flag);
-  const locationRef = useRef(location);
+  const { setErrorMessage } = useHome();
+  const { flag, cal, dateError, dateDispatch } = useDateInput();
+  const { locationDispatch } = useLocationInput();
 
-  /* Initialize */
+  /* ------------------------------------------------------------------|
+   * Initialize
+   * ------------------------------------------------------------------|
+   */
   useEffect(() => {
+    /* Clear errors & null errors */
     clearDateError(dateDispatch, setErrorMessage);
     dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
-    if (window.location.hash.includes('#today')) {
+    /* Clear date */
+    dateDispatch({ type: actionTypes.CLEAR_DATE });
+    /* Reset validity */
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
+
+    /* Set today's date */
+    const hashes = window.location.hash.substring(1).split('&');
+    if (hashes.includes('today')) {
       const now = new Date();
       const initialDate = {
         year: now.getFullYear().toString(),
@@ -44,122 +41,58 @@ const DateInput = ({ setErrorMessage, location }) => {
         day: now.getDate().toString(),
       };
       dateDispatch({ type: actionTypes.SET_DATE, payload: initialDate });
-      // dateRef.current = initialDate;
     }
   }, [dateDispatch, setErrorMessage]);
 
-  /* Reset error when user starts typing */
+  /* ------------------------------------------------------------------|
+   * Clear errors when user starts typing
+   * ------------------------------------------------------------------|
+   */
+  /* [DateFields] Clear errors & null errors when user starts typing date */
+
+  /* Clear errors when toggles flag */
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
-    // if (date.year && date.month && date.day) {
-    //   dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
-    // }
-  }, [date, flag, cal, dateDispatch, setErrorMessage]);
-
-  useEffect(() => {
-    dateDispatch({ type: actionTypes.CLEAR_YEAR_NULL_ERROR });
-  }, [date.year, flag, cal, dateDispatch]);
-
-  useEffect(() => {
-    dateDispatch({ type: actionTypes.CLEAR_MONTH_NULL_ERROR });
-  }, [date.month, flag, cal, dateDispatch]);
-
-  useEffect(() => {
-    dateDispatch({ type: actionTypes.CLEAR_DAY_NULL_ERROR });
-  }, [date.day, flag, cal, dateDispatch]);
-
-  // useEffect(() => {
-  //   dateRef.current = date;
-  // }, [date]);
-
-  // useEffect(() => {
-  //   flagRef.current = flag;
-  // }, [flag]);
-
-  useEffect(() => {
-    if (
-      locationRef.current.lat !== location.lat ||
-      locationRef.current.lng !== location.lng ||
-      locationRef.current.tz !== location.tz
-    ) {
-      if (flag) {
-        queryDateFromRef.current = QUERY_FROM_CHANGE;
-        dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
-      }
-      locationRef.current = location;
+    /* Only if no flag, reset validity and clear date and location null errors */
+    if (!flag) {
+      dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
+      locationDispatch({
+        type: locationActionTypes.SET_LOCATION_VALID,
+        payload: true,
+      });
+      dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
+      locationDispatch({ type: locationActionTypes.CLEAR_ADDRESS_NULL_ERROR });
+      locationDispatch({ type: locationActionTypes.CLEAR_LOCATION_NULL_ERROR });
     }
-  }, [location, flag, queryDateFromRef, dateDispatch]);
+  }, [flag, dateDispatch, locationDispatch, setErrorMessage]);
 
-  const debouncedFetchDate = useDebouncedFetchDate(
-    abortControllerRef,
-    latestDateRequest,
-    queryDateFromRef,
-    dateDispatch,
-    setErrorMessage,
-    Config.TypingDelay
-  );
-
-  const debouncedFetchDateDelayed = useDebouncedFetchDate(
-    abortControllerRef,
-    latestDateRequest,
-    queryDateFromRef,
-    dateDispatch,
-    setErrorMessage,
-    Config.TypingDelay + 300
-  );
-
-  const debouncedAdjustDate = useMemo(
-    () => debounce(adjustDate, Config.TypingDelay),
-    []
-  );
-
-  const debouncedValidateDate = useMemo(
-    () =>
-      debounce((date, flag, cal) => {
-        const validationResult = flag ? validateYearSync(date) : validateDateSync(date, cal);
-        const isValid = !Object.values(validationResult).some((item) => !!item);
-        dateDispatch({ type: actionTypes.SET_DATE_ERROR, payload: validationResult });
-        if (!flag || (date.year && locationRef.current.lat && locationRef.current.lng)) {
-          dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: isValid });
-        }
-      }, Config.TypingDelay),
-    [dateDispatch]
-  );
-
+  /* Clear errors & null errors and reset validity when toggles calendar */
   useEffect(() => {
-    if (dateFetching) {  // Start fetching
-      if (queryDateFromRef.current === QUERY_FROM_CLICK) {
-        debouncedFetchDate(date, flag, locationRef);
-      } else {
-        debouncedFetchDateDelayed(date, flag, locationRef);
-      }
-    }
-    /* Cleanup function */
-    return () => {
-      debouncedFetchDate.cancel();
-      debouncedFetchDateDelayed.cancel();
-    };
-  }, [date, flag, dateFetching, queryDateFromRef, debouncedFetchDate, debouncedFetchDateDelayed]);
+    clearDateError(dateDispatch, setErrorMessage);
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
+    dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
+  }, [cal, dateDispatch, locationDispatch, setErrorMessage]);
 
-  useEffect(() => {
-    if (dateAdjusting) {  // Start adjusting
-      debouncedAdjustDate(date, cal, dateDispatch);
-    }
-    /* Cleanup function */
-    return () => {
-      debouncedAdjustDate.cancel();
-    };
-  }, [date, cal, dateAdjusting, debouncedAdjustDate, dateDispatch]);
+  /* ------------------------------------------------------------------|
+   * Update refs
+   * ------------------------------------------------------------------|
+   */
+  /* [QuickEntryAccordion] Update flagRef when toggles */
 
-  useEffect(() => {
-    if (!dateAdjusting && !dateFetching && !abortControllerRef.current) {
-      debouncedValidateDate(date, flag, cal);
-    }
-    /* Cleanup function */
-    return () => {
-      debouncedValidateDate.cancel();
-    };
-  }, [date, flag, cal, dateAdjusting, dateFetching, abortControllerRef, debouncedValidateDate]);
+  /* ------------------------------------------------------------------|
+   * Clear stale data & set defaults on input change
+   * ------------------------------------------------------------------|
+   */
+  /* [CalendarToggle] When toggles calendar, KEEP the date values */
+  /* [QuickEntryAccordion] When toggles flag, KEEP the date values
+   * > If flag is set, force to select Gregorian immediately
+   */
+
+  /* ------------------------------------------------------------------|
+   * Fetch data
+   * ------------------------------------------------------------------|
+   */
+  /* [DateFields] Fetch date on debounced input change */
 
   return (
     <Stack direction="column">
@@ -168,9 +101,7 @@ const DateInput = ({ setErrorMessage, location }) => {
         <DateFields />
 
         {dateError.general && (
-          <Typography color="error" variant="body2" sx={{ marginTop: '4px', marginX: '14px', fontSize: 'caption.fontSize', textAlign: 'left' }}>
-            {dateError.general}
-          </Typography>
+          <ErrorHelperText variant="body2">{dateError.general}</ErrorHelperText>
         )}
       </div>
 
@@ -181,12 +112,4 @@ const DateInput = ({ setErrorMessage, location }) => {
   );
 };
 
-DateInput.propTypes = {
-  setErrorMessage: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    lat: PropTypes.string.isRequired,
-    lng: PropTypes.string.isRequired,
-  }).isRequired,
-};
-
-export default React.memo(DateInput);
+export default memo(DateInput);

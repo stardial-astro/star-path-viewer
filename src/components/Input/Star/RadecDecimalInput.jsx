@@ -1,76 +1,85 @@
 // src/components/Input/Star/RadecDecimalInput.jsx
-import React, { useCallback } from 'react';
-import { Grid, TextField } from '@mui/material';
+import { memo, useCallback } from 'react';
+import { Grid } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
-// import { decimalToDMS } from '@utils/coordUtils';
-// import { decimalToHMS } from '@utils/dateUtils';
+// import { decimalToDms } from '@utils/coordUtils';
+// import { decimalToHms } from '@utils/dateUtils';
+import CustomNumberField from '@/components/UI/CustomNumberField';
+
+const RA_LABEL = 'Right Ascension (RA)';
+const DEC_LABEL = 'Declination (Dec)';
+
+const RA_PLACEHOLDER = 'Enter in decimal degrees';
+const DEC_PLACEHOLDER = 'Enter in decimal degrees';
+
+const RA_NAME = 'ra';
+const DEC_NAME = 'dec';
 
 const RadecDecimalInput = () => {
   const {
     starRadec,
-    // starRaHMS,
-    // starDecDMS,
-    starError, starNullError,
+    // starRaHms,
+    // starDecDms,
+    starError,
+    starNullError,
     starDispatch,
   } = useStarInput();
 
-  const handleInputChange = useCallback((event) => {
-    const { name, value } = event.target;
-    if (name === 'ra') {
-      starDispatch({ type: actionTypes.SET_STAR_RA, payload: value });
-    } else {
-      starDispatch({ type: actionTypes.SET_STAR_DEC, payload: value });
-    }
-    /* Convert decimal degrees to HMS/DMS */
-    // const newRadec = { raHMS: starRaHMS, decDMS: starDecDMS };
-    // if (name === 'ra' && value) {
-    //   const hms = decimalToHMS(parseFloat(value) / 15);
-    //   newRadec.raHMS.hours = `${hms.sign < 0 ? '-' : ''}${hms.hours}`;
-    //   newRadec.raHMS.minutes = hms.minutes.toString();
-    //   newRadec.raHMS.seconds = hms.seconds.toString();
-    //   starDispatch({ type: actionTypes.SET_STAR_RA_HMS, payload: newRadec.raHMS });
-    // } else if (name === 'dec' && value) {
-    //   const dms = decimalToDMS(parseFloat(value));
-    //   newRadec.decDMS.degrees = `${dms.sign < 0 ? '-' : ''}${dms.degrees}`;
-    //   newRadec.decDMS.minutes = dms.minutes.toString();
-    //   newRadec.decDMS.seconds = dms.seconds.toString();
-    //   starDispatch({ type: actionTypes.SET_STAR_DEC_DMS, payload: newRadec.decDMS });
-    // }
-  }, [starDispatch]);
+  /** @type {(event: ChangeEvent) => void} */
+  const handleInputChange = useCallback(
+    (event) => {
+      const { name, value } = event.target;
+      if (name === RA_NAME) {
+        starDispatch({ type: actionTypes.SET_STAR_RA, payload: value });
+      } else {
+        starDispatch({ type: actionTypes.SET_STAR_DEC, payload: value });
+      }
+      /* Convert decimal degrees to HMS/DMS */
+      // const newRadec = { raHms: starRaHms, decDms: starDecDms };
+      // if (name === 'ra' && value) {
+      //   const hms = decimalToHms(parseFloat(value) / 15);
+      //   newRadec.raHms.hours = `${hms.sign < 0 ? '-' : ''}${hms.hours}`;
+      //   newRadec.raHms.minutes = hms.minutes.toString();
+      //   newRadec.raHms.seconds = hms.seconds.toString();
+      //   starDispatch({ type: actionTypes.SET_STAR_RA_HMS, payload: newRadec.raHms });
+      // } else if (name === 'dec' && value) {
+      //   const dms = decimalToDms(parseFloat(value));
+      //   newRadec.decDms.degrees = `${dms.sign < 0 ? '-' : ''}${dms.degrees}`;
+      //   newRadec.decDms.minutes = dms.minutes.toString();
+      //   newRadec.decDms.seconds = dms.seconds.toString();
+      //   starDispatch({ type: actionTypes.SET_STAR_DEC_DMS, payload: newRadec.decDms });
+      // }
+    },
+    [starDispatch],
+  );
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-      <Grid item xs={12} sm={6} md={6}>
-        <TextField
-          required
-          label="Right Ascension (RA)"
-          placeholder="Enter in decimal degrees"
-          size="small"
-          variant="outlined"
-          name="ra"
-          type="number"
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+        <CustomNumberField
+          label={RA_LABEL}
+          placeholder={RA_PLACEHOLDER}
+          name={RA_NAME}
           value={starRadec.ra}
           onChange={handleInputChange}
-          onWheel={(event) => event.target.blur()}
-          fullWidth
+          min={0}
+          max={360}
+          allowOutOfRange={true}
           error={!!starError.ra || !!starNullError.ra}
           helperText={starError.ra || starNullError.ra}
         />
       </Grid>
-      <Grid item xs={12} sm={6} md={6}>
-        <TextField
-          required
-          label="Declination (Dec)"
-          placeholder="Enter in decimal degrees"
-          size="small"
-          variant="outlined"
-          name="dec"
-          type="number"
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+        <CustomNumberField
+          label={DEC_LABEL}
+          placeholder={DEC_PLACEHOLDER}
+          name={DEC_NAME}
           value={starRadec.dec}
           onChange={handleInputChange}
-          onWheel={(event) => event.target.blur()}
-          fullWidth
+          min={-90}
+          max={90}
+          allowOutOfRange={true}
           error={!!starError.dec || !!starNullError.dec}
           helperText={starError.dec || starNullError.dec}
         />
@@ -79,4 +88,4 @@ const RadecDecimalInput = () => {
   );
 };
 
-export default React.memo(RadecDecimalInput);
+export default memo(RadecDecimalInput);

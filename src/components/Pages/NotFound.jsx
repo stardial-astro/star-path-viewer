@@ -1,7 +1,7 @@
 // src/components/Pages/NotFound.jsx
-import React from 'react';
+import { memo } from 'react';
 import { Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 const NotFound = () => {
   return (
@@ -12,21 +12,33 @@ const NotFound = () => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 4,
         textAlign: 'center',
+        mt: 4,
       }}
     >
-      <Typography variant="subtitle1" component="h1" fontSize="h4.fontSize" color="action.active" gutterBottom>
+      <Typography
+        variant="subtitle1"
+        component="h1"
+        fontSize="h4.fontSize"
+        gutterBottom
+        sx={{ color: 'action.active' }}
+      >
         404
       </Typography>
-      <Typography variant="body1" component="div" fontSize="h5.fontSize" color="action.active" gutterBottom>
+      <Typography
+        variant="body1"
+        component="div"
+        fontSize="h5.fontSize"
+        gutterBottom
+        sx={{ color: 'action.active' }}
+      >
         Oops! Page not found :(
       </Typography>
       <Button variant="contained" component={Link} to="/" sx={{ mt: 4 }}>
-        Go to Home
+        Go Back
       </Button>
     </Box>
   );
 };
 
-export default React.memo(NotFound);
+export default memo(NotFound);

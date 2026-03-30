@@ -3,83 +3,141 @@ import axios from 'axios';
 import reverseGeocode from './reverseGeocode';
 import { getIsDevMode } from './devMode';
 
-// const ipGeoServiceUrl = 'https://ipapi.co/json';
+const GEO_TIMEOUT = 6_000;
+const GEO_IP_TIMEOUT = 5_000;
+
 const ipGeoServiceUrl = 'https://ipinfo.io/json';
 
-const fetchIpLocation = async () => {
+const NO_DATA_ERR_MSG = 'No data returned from ipinfo.io';
+const GEO_ABORT_MSG =
+  'Geolocation request timed out. Please try again or enter the coordinates manually. ⤴';
+const GEO_ERR_MSG =
+  'Unable to determine the current location. Please enter the coordinates manually. ⤴';
+const NO_GEO_MSG =
+  'Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴';
+
+const isDevMode = getIsDevMode();
+
+/**
+ * Fetches IP geolocation.
+ * @param {AbortSignal} signal
+ * @returns {Promise<CoordObj | null>} The data.
+ * @throws {Error} If request failed.
+ */
+const fetchIpLocation = async (signal) => {
+  if (signal?.aborted) return null;
+
   try {
     const response = await axios.get(ipGeoServiceUrl, {
-      timeout: 5000,
+      timeout: GEO_IP_TIMEOUT,
+      signal,
     });
     const data = response.data;
-    /* https://ipapi.co/json */
-    // return {
-    //   latitude: data.latitude,
-    //   longitude: data.longitude,
-    // };
+    if (!data) throw new Error(NO_DATA_ERR_MSG);
 
-    /* https://ipinfo.io/json */
+    /* https://ipinfo.io/json
+     * {
+     *  "ip": "xxx.xxx.xxx.xxx",
+     *  "city": "Vancouver",
+     *  "region": "British Columbia",
+     *  "country": "CA",
+     *  "loc": "49.2497,-123.1193",
+     *  "org": "AS398721 OXIO",
+     *  "postal": "...",
+     *  "timezone": "America/Vancouver",
+     *  "readme": "https://ipinfo.io/missingauth"
+     *}
+     */
+    isDevMode && console.debug('[IP]', data.ip);
+    /** @type {string[]} */
     const [latitude, longitude] = data.loc.split(',');
     return {
       latitude: parseFloat(latitude),
       longitude: parseFloat(longitude),
     };
-  } catch (error) {
-    if (error.code === 'ECONNABORTED') {
-      throw new Error('Request timed out. Please try again or enter the coordinates manually. ⤴');
+  } catch (err) {
+    if (axios.isCancel(err)) throw err;
+    console.error(
+      'Error fetching IP geolocation:',
+      Error.isError(err) ? err.message : err,
+    );
+    /* Timed out or unreachable */
+    if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
+      throw new Error(GEO_ABORT_MSG, { cause: err });
     }
-    throw new Error('Unable to determine the current location. Please enter the coordinates manually. ⤴');
+    throw new Error(GEO_ERR_MSG, { cause: err });
   }
 };
 
-const fetchGeolocation = async (service) => {
-  if ("geolocation" in navigator) {
-    const isDevMode = getIsDevMode();
-    try {
-      /* Attempt to get the latitude and longitude using navigator.geolocation */
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-          (position) => resolve(position),
-          async (error) => {
-            isDevMode && console.error(error.message);
-            /* If geolocation fails, fallback to IP-based geolocation */
-            try {
-              const ipLocation = await fetchIpLocation();
-              resolve({
-                coords: {
-                  latitude: ipLocation.latitude,
-                  longitude: ipLocation.longitude,
-                },
-              });
-            } catch (ipError) {
-              reject(ipError);
+/**
+ * Fetches geolocation using `navigator.geolocation`.
+ * @param {GeoService} service - The geocoding service.
+ * @param {number} geoMaxAge
+ * @param {AbortSignal} signal
+ * @returns {Promise<AddressItem | null>} The address object, or `null` if aborted.
+ * @throws {Error} If request failed.
+ */
+const fetchGeolocation = async (service, geoMaxAge, signal) => {
+  if (signal?.aborted) return null;
+
+  if ('geolocation' in navigator) {
+    isDevMode && console.debug('> Querying geolocation...');
+    /** @type {GeolocationPosition | { coords: CoordObj } | null} */
+    const position = await new Promise((resolve, reject) => {
+      /* Get the latitude and longitude using navigator.geolocation */
+      navigator.geolocation.getCurrentPosition(
+        /* Success */
+        (position) => resolve(position),
+
+        /* If fails, fallback to IP geolocation */
+        async (err) => {
+          if (signal?.aborted) resolve(null);
+          console.warn('getCurrentPosition failed:', err.message);
+          isDevMode && console.debug('> Querying IP geolocation...');
+          try {
+            const ipLocation = await fetchIpLocation(signal);
+            resolve(
+              ipLocation
+                ? {
+                    coords: {
+                      latitude: ipLocation.latitude,
+                      longitude: ipLocation.longitude,
+                    },
+                  }
+                : null,
+            );
+          } catch (ipErr) {
+            if (axios.isCancel(ipErr)) {
+              isDevMode && console.debug('IP geolocation fetching cancelled.');
+              resolve(null);
             }
-          },
-          {
-            enableHighAccuracy: false,
-            timeout: 6000,
-            maximumAge: 300000,  // 5 minutes
+            reject(ipErr);
           }
-        );
-      });
+        },
 
-      const { latitude, longitude } = position.coords;
-      isDevMode && console.log('[lat/lng]', latitude, longitude);
+        {
+          enableHighAccuracy: false,
+          timeout: GEO_TIMEOUT,
+          maximumAge: geoMaxAge,
+        },
+      );
+    });
 
-      /* Get the address from the latitude and longitude */
-      const locationData = await reverseGeocode(latitude, longitude, service);
-      isDevMode && console.log('[Location]', locationData);
-      return {
-        lat: latitude.toString(),
-        lng: longitude.toString(),
-        display_name: locationData.display_name,
-        id: locationData.id,
-      };
-    } catch (error) {
-      throw new Error(error.message);
-    }
+    if (!position || signal?.aborted) return null;
+
+    const { latitude, longitude } = position.coords;
+    /* Mock for testing Baidu (tz will still be the actual one) ----- */
+    // const { latitude, longitude } = { latitude: 31.23, longitude: 121.474 };
+    /* -------------------------------------------------------------- */
+
+    /* Get the address from the latitude and longitude */
+    const res = await reverseGeocode({ latitude, longitude }, service, signal);
+    if (!res) return null;
+    isDevMode && console.debug('[Location]', res);
+    return res;
   } else {
-    throw new Error('Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴');
+    /* Geolocation not supported by this browser */
+    throw new Error(NO_GEO_MSG);
   }
 };
 

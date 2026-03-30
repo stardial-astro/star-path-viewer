@@ -1,89 +1,73 @@
 // src/components/Input/Star/StarInput.jsx
-import React, { useEffect, useMemo } from 'react';
-import PropTypes from 'prop-types';
+import { memo } from 'react';
 import { Stack } from '@mui/material';
-import Config from '@/Config';
 import { useStarInput } from '@context/StarInputContext';
-import * as actionTypes from '@context/starInputActionTypes';
-import { TYPE_NAME, TYPE_HIP } from '@utils/constants';
-import { validateStarSync, clearStarError } from '@utils/starInputUtils';
+import { STAR_INPUT_TYPES } from '@utils/constants';
 import StarInputTypeToggle from './StarInputTypeToggle';
 import StarNameInput from './StarNameInput';
 import StarHipInput from './StarHipInput';
 import RadecInput from './RadecInput';
-// import debounce from 'lodash/debounce';
-import debounce from 'lodash-es/debounce';
 
-const StarInput = ({ setErrorMessage }) => {
+const StarInput = () => {
   // console.log('Rendering StarInput');
-  const {
-    starName,
-    starHip,
-    starRadec, starRaHMS, starDecDMS,
-    starInputType,  // 'name', 'hip', 'radec'
-    radecFormat,  // 'decimal', 'dms'
-    searchTerm,
-    starDispatch,
-  } = useStarInput();
+  const { starInputType } = useStarInput();
 
-  /* Initialize */
-  useEffect(() => {
-    clearStarError(starDispatch, setErrorMessage);
-  }, [starDispatch, setErrorMessage]);
+  /* ------------------------------------------------------------------|
+   * Initialize
+   * ------------------------------------------------------------------|
+   */
+  /* [StarNameInput] Clear errors & null errors;
+   * clear name, HIP, suggestions, RA/Dec and resets validity
+   * > Also clears lastSelectedTermRef in [StarHipInput]
+   */
+  /* [StarHipInput] Clear errors & null errors */
+  /* [RadecInput] Clear errors & null errors */
 
-  /* Reset error when user starts typing */
-  useEffect(() => {
-    clearStarError(starDispatch, setErrorMessage);
-    starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
-    if (starName) {
-      starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
-    }
-  }, [searchTerm, starName, starHip, starRadec, starInputType, radecFormat, starDispatch, setErrorMessage]);
+  /* ------------------------------------------------------------------|
+   * Clear errors when user starts typing
+   * ------------------------------------------------------------------|
+   */
+  /* [StarNameInput] Clear errors & null errors when user selects a name option */
+  /* [StarHipInput] Clear errors & null errors when user starts typing in HIP search bar */
+  /* [RadecInput] Clear errors & null errors when user starts typing RA/Dec */
+  /* [RadecInput] Clear errors & null and reset validity when toggles RA/Dec format */
 
-  useEffect(() => {
-    starDispatch({ type: actionTypes.CLEAR_STAR_NAME_NULL_ERROR });
-  }, [starName, starInputType, starDispatch]);
+  /* ------------------------------------------------------------------|
+   * Update refs
+   * ------------------------------------------------------------------|
+   */
 
-  useEffect(() => {
-    starDispatch({ type: actionTypes.CLEAR_STAR_HIP_NULL_ERROR });
-  }, [starHip, starInputType, starDispatch]);
+  /* ------------------------------------------------------------------|
+   * Clear stale data on input change
+   * ------------------------------------------------------------------|
+   */
+  /* [StarInputTypeToggle] When toggles, clear name, HIP, suggestions, RA/Dec and resets validity */
+  /* [StarHipInput] Clear name, HIP, suggestions, and lastSelectedTermRef
+   * > Also clears lastSelectedTermRef
+   * if debounced searchTerm is cleared
+   */
+  /* [RadecFormatToggle] When toggles, clear RA/Dec */
 
-  useEffect(() => {
-    starDispatch({ type: actionTypes.CLEAR_STAR_RA_NULL_ERROR });
-  }, [starRadec.ra, starInputType, radecFormat, starDispatch]);
+  /* ------------------------------------------------------------------|
+   * Validate input
+   * ------------------------------------------------------------------|
+   */
+  /* [StarNameInput] Set valid if selects a star */
+  // /* [StarHipInput] Validate HIP on HIP change */
 
-  useEffect(() => {
-    starDispatch({ type: actionTypes.CLEAR_STAR_DEC_NULL_ERROR });
-  }, [starRadec.dec, starInputType, radecFormat, starDispatch]);
-
-  const debouncedValidateStar = useMemo(
-    () => debounce((starInputType, radecFormat, starHip, starRadec, starRaHMS, starDecDMS) => {
-      const validationResult = validateStarSync(
-        starInputType, radecFormat,
-        starHip, starRadec, starRaHMS, starDecDMS
-      );
-      const isValid = !Object.values(validationResult).some(item => !!item);
-      starDispatch({ type: actionTypes.SET_STAR_ERROR, payload: validationResult });
-      starDispatch({ type: actionTypes.SET_STAR_VALID, payload: isValid });
-    }, Config.TypingDelay / 2),
-    [starDispatch]
-  );
-
-  useEffect(() => {
-    debouncedValidateStar(starInputType, radecFormat, starHip, starRadec, starRaHMS, starDecDMS);
-    /* Cleanup function */
-    return () => {
-      debouncedValidateStar.cancel();
-    };
-  }, [starHip, starRadec, starRaHMS, starDecDMS, starInputType, radecFormat, debouncedValidateStar]);
+  /* ------------------------------------------------------------------|
+   * Fetch data
+   * ------------------------------------------------------------------|
+   */
+  /* [StarHipInput] Fetch suggestions on debounced searchTerm change */
 
   return (
     <Stack direction="column">
       <StarInputTypeToggle />
-      {starInputType === TYPE_NAME ? (
+      {starInputType === STAR_INPUT_TYPES.name ? (
         <StarNameInput />
-      ) : starInputType === TYPE_HIP ? (
-        <StarHipInput setErrorMessage={setErrorMessage} />
+      ) : starInputType === STAR_INPUT_TYPES.hip ? (
+        <StarHipInput />
       ) : (
         <RadecInput />
       )}
@@ -91,8 +75,4 @@ const StarInput = ({ setErrorMessage }) => {
   );
 };
 
-StarInput.propTypes = {
-  setErrorMessage: PropTypes.func.isRequired,
-};
-
-export default React.memo(StarInput);
+export default memo(StarInput);

@@ -1,49 +1,103 @@
 // src/hooks/useDebouncedFetchDate.js
-import { useMemo } from 'react';
-import { fetchDate } from '@utils/dateInputUtils';
-// import debounce from 'lodash/debounce';
-import debounce from 'lodash-es/debounce';
+import { useEffect } from 'react';
+import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
+import * as actionTypes from '@context/dateInputActionTypes';
+import config from '@utils/config';
+import { SERVER_ERR_PREFIX, EPH_RANGE_ERR_PREFIX } from '@utils/constants';
+import fetchDate from '@utils/fetchDate';
+import { getIsDevMode } from '@utils/devMode';
 
+const QUERY_KEY = 'date';
+
+/** dev: 5 minutes; prod: 1 hour */
+const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
+/** 1 hour */
+const GC_MS = 60 * 60_000;
+
+/**
+ * Calls `fetchDate` to fetch the equinox/solstice date.
+ * - Skips fetching if the input is cleared
+ * - If only `tz` is empty, ignores it since `tz` can be determined by the server
+ * - Updates `date` on status change
+ * - Clears `errorMessage.server`
+ * Uses TanStack Query:
+ * - Pauses while offline and resume/refetch when connectivity returns
+ * - Automatic caching
+ * - Prevents multiple identical requests
+ * - Retries on error (delay with exponential backoff)
+ * - Syncs `dateFetching`
+ * @param {string} year
+ * @param {Flag} flag
+ * @param {string} lat
+ * @param {string} lng
+ * @param {string} tz
+ * @param {ReactDispatch} dispatch
+ * @param {ReactSetState<ErrorObj>} setErrorMessage
+ */
 const useDebouncedFetchDate = (
-  abortControllerRef,
-  latestDateRequest,
-  queryDateFromRef,
-  dateDispatch,
+  year,
+  flag,
+  lat,
+  lng,
+  tz,
+  dispatch,
   setErrorMessage,
-  typingDelay
 ) => {
-  return useMemo(
-    () =>
-      debounce(
-        async (date, flag, locationRef) => {
-          // console.log('Last controller: ', abortControllerRef.current?.signal);
-          if (abortControllerRef.current) {
-            // console.log('Aborting...');
-            abortControllerRef.current.abort();  // Cancel the previous request
-          }
-          const controller = new AbortController();
-          // console.log('New controller: ', controller?.signal);
-          abortControllerRef.current = controller;
-          const requestId = ++latestDateRequest.current;  // Increment and capture the current request ID
+  const isEnabled = !!flag && !!year && !!lat && !!lng;
+  const { data, error, isFetching } = useQuery({
+    queryKey: [QUERY_KEY, year, flag, lat, lng, tz],
+    queryFn: () => fetchDate(year, flag, lat, lng, tz),
+    enabled: isEnabled,
+    networkMode: 'online',
+    staleTime: STALE_MS,
+    gcTime: GC_MS,
+    retry: (failureCount, error) => {
+      if (
+        axios.isCancel(error) ||
+        error.message.startsWith(EPH_RANGE_ERR_PREFIX)
+      ) {
+        return false;
+      }
+      return failureCount < config.MAX_RETRIES;
+    },
+    retryDelay: (attemptIndex) =>
+      Math.min(config.RETRY_DELAY * 2 ** attemptIndex, config.RETRY_DELAY_MAX),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
 
-          await fetchDate(
-            date,
-            flag,
-            locationRef,
-            dateDispatch,
-            setErrorMessage,
-            controller.signal,
-            abortControllerRef,
-            requestId,
-            latestDateRequest
-          );
+  useEffect(() => {
+    /* Sync loading state */
+    dispatch({
+      type: isFetching
+        ? actionTypes.SET_DATE_FETCHING_ON
+        : actionTypes.SET_DATE_FETCHING_OFF,
+    });
+  }, [isFetching, dispatch]);
 
-          queryDateFromRef.current = '';
-        },
-        typingDelay
-      ),
-    [abortControllerRef, latestDateRequest, queryDateFromRef, dateDispatch, setErrorMessage, typingDelay]
-  );
+  useEffect(() => {
+    if (error) {
+      let msg = error.message;
+      if (msg.startsWith(SERVER_ERR_PREFIX)) {
+        /* Show server errors */
+        msg = msg.substring(SERVER_ERR_PREFIX.length).trim();
+        setErrorMessage((prev) => ({ ...prev, server: msg }));
+      } else if (msg.startsWith(EPH_RANGE_ERR_PREFIX)) {
+        dispatch({ type: actionTypes.SET_GENERAL_DATE_ERROR, payload: msg });
+      } else {
+        /* Show other errors and set invalid */
+        setErrorMessage((prev) => ({ ...prev, date: msg }));
+        dispatch({ type: actionTypes.SET_DATE_VALID, payload: false });
+      }
+    } else if (data) {
+      /* Update state and skip any following validation */
+      dispatch({ type: actionTypes.SET_DATE, payload: data });
+      dispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
+      setErrorMessage((prev) => ({ ...prev, server: '' }));
+    }
+  }, [data, error, dispatch, setErrorMessage]);
 };
 
 export default useDebouncedFetchDate;

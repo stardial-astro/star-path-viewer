@@ -1,23 +1,28 @@
 // src/context/DateInputContext.jsx
-import React, { createContext, useContext, useReducer, useRef } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import { createContext, useContext, useReducer, useRef } from 'react';
 import * as actionTypes from './dateInputActionTypes';
-import { GREGORIAN } from '@utils/constants';
+import { CALS } from '@utils/constants';
 
-const DateInputContext = createContext();
+/** @type {React.Context<*>} */
+const DateInputContext = createContext(null);
 
+/** @type {DateInitialState} */
 const initialState = {
   date: { year: '', month: '', day: '' },
-  flag: '',  // 've', 'ss', 'ae', 'ws'
-  cal: GREGORIAN,  // '': Gregorian, 'j': Julian
-  disabledMonths: {},
-  lastDay: 31,
-  dateAdjusting: false,
+  flag: '',
+  cal: CALS.gregorian,
   dateFetching: false,
   dateError: { general: '', year: '', month: '', day: '' },
   dateNullError: { year: '', month: '', day: '' },
   dateValid: true,
 };
 
+/**
+ * @param {DateObj} state
+ * @param {Action} action
+ * @returns {DateObj}
+ */
 const dateReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_YEAR:
@@ -27,15 +32,19 @@ const dateReducer = (state, action) => {
     case actionTypes.SET_DAY:
       return { ...state, day: action.payload };
     case actionTypes.SET_DATE:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
+    case actionTypes.CLEAR_DATE:
+      return { year: '', month: '', day: '' };
     default:
       return state;
   }
 };
 
+/**
+ * @param {DateErrorObj} state
+ * @param {Action} action
+ * @returns {DateErrorObj}
+ */
 const dateErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_GENERAL_DATE_ERROR:
@@ -47,10 +56,7 @@ const dateErrorReducer = (state, action) => {
     case actionTypes.SET_DAY_ERROR:
       return { ...state, day: action.payload };
     case actionTypes.SET_DATE_ERROR:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_DATE_ERROR:
       return { general: '', year: '', month: '', day: '' };
     default:
@@ -58,6 +64,11 @@ const dateErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {DateNullErrorObj} state
+ * @param {Action} action
+ * @returns {DateNullErrorObj}
+ */
 const dateNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_YEAR_NULL_ERROR:
@@ -79,12 +90,18 @@ const dateNullErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {DateInitialState} state
+ * @param {Action} action
+ * @returns {DateInitialState}
+ */
 const dateInputReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_YEAR:
     case actionTypes.SET_MONTH:
     case actionTypes.SET_DAY:
     case actionTypes.SET_DATE:
+    case actionTypes.CLEAR_DATE:
       return {
         ...state,
         date: dateReducer(state.date, action),
@@ -118,15 +135,6 @@ const dateInputReducer = (state, action) => {
     case actionTypes.SET_CAL:
       return { ...state, cal: action.payload };
 
-    case actionTypes.SET_DISABLED_MONTHS:
-      return { ...state, disabledMonths: action.payload };
-    case actionTypes.SET_LAST_DAY:
-      return { ...state, lastDay: action.payload };
-
-    case actionTypes.SET_DATE_ADJUSTING_ON:
-      return { ...state, dateAdjusting: true };
-    case actionTypes.SET_DATE_ADJUSTING_OFF:
-      return { ...state, dateAdjusting: false };
     case actionTypes.SET_DATE_FETCHING_ON:
       return { ...state, dateFetching: true };
     case actionTypes.SET_DATE_FETCHING_OFF:
@@ -140,19 +148,21 @@ const dateInputReducer = (state, action) => {
   }
 };
 
+/**
+ * Provides the date input context to its children components.
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ */
 export const DateInputProvider = ({ children }) => {
   const [dateState, dateDispatch] = useReducer(dateInputReducer, initialState);
-  const abortControllerRef = useRef(null);
-  const queryDateFromRef = useRef('');  // 'click', 'change'
-  const latestDateRequest = useRef(0);
+  /** @type {ReactRef<Flag>} */
+  const flagRef = useRef('');
 
   return (
     <DateInputContext.Provider
       value={{
         ...dateState,
-        abortControllerRef,
-        queryDateFromRef,
-        latestDateRequest,
+        flagRef,
         dateDispatch,
       }}
     >
@@ -161,4 +171,16 @@ export const DateInputProvider = ({ children }) => {
   );
 };
 
-export const useDateInput = () => useContext(DateInputContext);
+/**
+ * Custom hook to use the DateInputContext.
+ * Ensures the hook is used within an DateInputProvider.
+ * @returns {DateContextType} The date input context value.
+ * @throws {Error} If used outside of an DateInputProvider.
+ */
+export const useDateInput = () => {
+  const context = useContext(DateInputContext);
+  if (!context) {
+    throw new Error('useDateInput must be used within an DateInputProvider');
+  }
+  return context;
+};

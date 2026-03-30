@@ -1,97 +1,119 @@
 // src/utils/starInputUtils.js
 import * as actionTypes from '@context/starInputActionTypes';
-import { HIP_MIN, HIP_MAX, TYPE_HIP, TYPE_RADEC, FORMAT_DD } from './constants';
+import {
+  HIP_MIN,
+  HIP_MAX,
+  RADEC_TYPES,
+  HIP_INVALID_PREFIX,
+  HIP_OUT_OF_RANGE_MSG,
+} from './constants';
 
+/** @param {StarItem} item */
 const constructNameZh = (item) => {
   if (item.name_zh) {
-    return (
-      item.name_zh === item.name_zh_hk
-        ? `${item.name_zh}, ${item.pinyin}`
-        : `${item.name_zh}, ${item.name_zh_hk}, ${item.pinyin}`
-    );
+    return item.name_zh === item.name_zh_hk
+      ? `${item.name_zh}, ${item.pinyin}`
+      : `${item.name_zh}, ${item.name_zh_hk}, ${item.pinyin}`;
   } else {
     return '';
   }
 };
 
-/* Validate the star */
-const validateStarSync = (
-  starInputType, radecFormat,
-  starHip, starRadec, starRaHMS, starDecDMS
-) => {
-  let newStarError = { name: '', hip: '', ra: '', dec: '' };
-
-  if (starInputType === TYPE_HIP) {
-    if (!/^\d*$/.test(starHip)) {
-      return { ...newStarError, hip: 'Invalid Hipparcos Catalogue number.' };
-    }
-    if (starHip) {
-      const hip = parseInt(starHip);
-      if (hip < HIP_MIN || hip > HIP_MAX) {
-        return { ...newStarError, hip: `The Hipparcos Catalogue number must be in the range [${HIP_MIN}, ${HIP_MAX}].` };
-      }
-    }
-  } else if (starInputType === TYPE_RADEC) {
-    if (radecFormat === FORMAT_DD) {
-      if (!/^\d*(\.\d+)?$/.test(starRadec.ra)) {
-        return { ...newStarError, ra: 'The right ascension must be a positive decimal.' };
-      }
-      if (!/^-?\d*(\.\d+)?$/.test(starRadec.dec)) {
-        return { ...newStarError, dec: 'The declination must be a decimal.' };
-      }
-
-      if (starRadec.ra) {
-        const ra = parseFloat(starRadec.ra);
-        if (ra < 0 || ra >= 360) {
-          return { ...newStarError, ra: 'The right ascension must be in the range [0°, 360°).' };
-        }
-      }
-    } else {
-      if (!/^\d*$/.test(starRaHMS.hours)) {
-        return { ...newStarError, ra: 'The hours must be a positive integer.' };
-      }
-      if (!/^-?\d*$/.test(starDecDMS.degrees)) {
-        return { ...newStarError, dec: 'The degrees must be an integer.' };
-      }
-      if (!/^\d*$/.test(starRaHMS.minutes)) {
-        return { ...newStarError, ra: 'The minutes must be a positive integer.' };
-      }
-      if (!/^\d*$/.test(starDecDMS.minutes)) {
-        return { ...newStarError, dec: 'The minutes must be a positive integer.' };
-      }
-      if (!/^\d*(\.\d+)?$/.test(starRaHMS.seconds)) {
-        return { ...newStarError, ra: 'The seconds must be a positive decimal.' };
-      }
-      if (!/^\d*(\.\d+)?$/.test(starDecDMS.seconds)) {
-        return { ...newStarError, dec: 'The seconds must be a positive decimal.' };
-      }
-
-      if (starRadec.ra) {
-        const ra = parseFloat(starRadec.ra);
-        if (ra < 0 || ra >= 360) {
-          return { ...newStarError, ra: 'The right ascension must be in the range [0h, 24h).' };
-        }
-      }
-    }
-
-    if (starRadec.dec) {
-      const dec = parseFloat(starRadec.dec);
-      if (dec < -90 || dec > 90) {
-        return { ...newStarError, dec: 'The declination must be in the range [-90°, 90°].' };
-      }
+/**
+ * Validates the HIP of the star.
+ * @param {string} starHip - The star's HIP number.
+ * @returns {{ isValid: boolean, invalidError: StarErrorObj }}
+ */
+const validateStarHipSync = (starHip) => {
+  // console.log('Validating HIP...', starHip);
+  let isValid = true;
+  /** @type {StarErrorObj} */
+  const invalidError = { name: '', hip: '', ra: '', dec: '' };
+  if (starHip) {
+    const hipInt = parseInt(starHip);
+    if (isNaN(hipInt)) {
+      isValid = false;
+      invalidError.hip = HIP_INVALID_PREFIX + starHip;
+    } else if (hipInt < HIP_MIN || hipInt > HIP_MAX) {
+      isValid = false;
+      invalidError.hip = HIP_OUT_OF_RANGE_MSG;
     }
   }
-
-  return newStarError;
+  return { isValid, invalidError };
 };
 
-const clearStarError = (starDispatch, setErrorMessage) => {
+/**
+ * Validates the RA/Dec of the star.
+ * @param {RadecType} radecFormat
+ * @param {RadecObj} starRadec - The RA/Dec object.
+ * @returns {{ isValid: boolean, invalidError: StarErrorObj }}
+ */
+const validateStarRadecSync = (radecFormat, starRadec) => {
+  // console.log(
+  //   'Validating RA/Dec...',
+  //   radecFormat,
+  //   starRadec,
+  //   starRaHms,
+  //   starDecDms,
+  // );
+  let isValid = true;
+  /** @type {StarErrorObj} */
+  const invalidError = { name: '', hip: '', ra: '', dec: '' };
+
+  if (starRadec.ra) {
+    const raFloat = parseFloat(starRadec.ra);
+    if (raFloat < 0 || raFloat >= 360) {
+      isValid = false;
+      invalidError.ra =
+        radecFormat === RADEC_TYPES.dd
+          ? 'The right ascension must be in the range [0°, 360°).'
+          : 'The right ascension must be in the range [0h, 24h).';
+    }
+  }
+  if (starRadec.dec) {
+    const decFloat = parseFloat(starRadec.dec);
+    if (decFloat < -90 || decFloat > 90) {
+      isValid = false;
+      invalidError.dec = 'The declination must be in the range [-90°, 90°].';
+    }
+  }
+  return { isValid, invalidError };
+};
+
+/**
+ * Clears RA/star/draw/download errors except null errors.
+ * @param {ReactDispatch} dispatch
+ * @param {ReactSetState<ErrorObj>} setErrorMessage
+ */
+const clearRaError = (dispatch, setErrorMessage) => {
   setErrorMessage((prev) => ({ ...prev, star: '', draw: '', download: '' }));
-  starDispatch({ type: actionTypes.CLEAR_STAR_ERROR });
+  dispatch({ type: actionTypes.SET_STAR_RA_ERROR, payload: '' });
+};
+/**
+ * Clears Dec/star/draw/download errors except null errors.
+ * @param {ReactDispatch} dispatch
+ * @param {ReactSetState<ErrorObj>} setErrorMessage
+ */
+const clearDecError = (dispatch, setErrorMessage) => {
+  setErrorMessage((prev) => ({ ...prev, star: '', draw: '', download: '' }));
+  dispatch({ type: actionTypes.SET_STAR_DEC_ERROR, payload: '' });
+};
+
+/**
+ * Clears star-related/draw/download errors except null errors.
+ * @param {ReactDispatch} dispatch
+ * @param {ReactSetState<ErrorObj>} setErrorMessage
+ */
+const clearStarError = (dispatch, setErrorMessage) => {
+  setErrorMessage((prev) => ({ ...prev, star: '', draw: '', download: '' }));
+  dispatch({ type: actionTypes.CLEAR_STAR_ERROR });
 };
 
 export {
   constructNameZh,
-  validateStarSync,
+  validateStarHipSync,
+  validateStarRadecSync,
+  clearRaError,
+  clearDecError,
   clearStarError,
 };

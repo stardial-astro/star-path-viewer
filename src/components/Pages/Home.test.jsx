@@ -1,32 +1,25 @@
 // src/components/Pages/Home.test.jsx
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { render, screen } from '@/test-utils';
+import { HomeProvider } from '@context/HomeContext';
 import { describe, test, expect } from 'vitest';
-import { ServiceProvider } from '@context/ServiceContext';
 import Home from './Home';
 
-/* A helper function to include all providers */
+/**
+ * A helper function to include all providers.
+ * @param {*} ui
+ * @param {*} [options={}]
+ */
 const renderWithProviders = (ui, options = {}) => {
-  const theme = createTheme();
-  return render(
-    <ServiceProvider>
-      <ThemeProvider theme={theme}>
-        <BrowserRouter>
-          {ui}
-        </BrowserRouter>
-      </ThemeProvider>
-    </ServiceProvider>,
-    options
-  );
+  return render(<HomeProvider>{ui}</HomeProvider>, options);
 };
 
 describe('Home Page', () => {
   /* Basic render test */
   test('renders without crashing', () => {
     renderWithProviders(<Home />);
-    expect(screen.getByTestId('home-subtitle')).toHaveTextContent('Trace a star on any date between 3001 BCE and 3000 CE');
+    expect(screen.getByTestId('home-subtitle')).toHaveTextContent(
+      'Trace a star on any date between 3001 BCE and 3000 CE',
+    );
   });
 
   /* Test for alt text on title image */
@@ -39,6 +32,7 @@ describe('Home Page', () => {
   test('has main layout sections', () => {
     renderWithProviders(<Home />);
     expect(screen.getByTestId('home-title')).toBeInTheDocument();
+    expect(screen.getByTestId('input')).toBeInTheDocument();
     expect(screen.getByTestId('draw-btn')).toBeInTheDocument();
   });
 });

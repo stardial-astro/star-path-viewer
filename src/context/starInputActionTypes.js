@@ -2,6 +2,7 @@
 export const SET_STAR_NAME = 'SET_STAR_NAME';
 export const SET_STAR_NAME_ZH = 'SET_STAR_NAME_ZH';
 export const SET_STAR_HIP = 'SET_STAR_HIP';
+/** Clears `starHip`, `starName`, and `starHipZh` */
 export const CLEAR_STAR_HIP_AND_NAME = 'CLEAR_STAR_HIP_AND_NAME';
 
 export const SET_STAR_RA = 'SET_STAR_RA';
@@ -46,10 +47,5 @@ export const CLEAR_SEARCH_TERM = 'CLEAR_SEARCH_TERM';
 
 export const SET_SUGGESTIONS = 'SET_SUGGESTIONS';
 export const CLEAR_SUGGESTIONS = 'CLEAR_SUGGESTIONS';
-
-export const SET_HIGHLIGHTED_INDEX = 'SET_HIGHLIGHTED_INDEX';
-export const CLEAR_HIGHLIGHTED_INDEX = 'CLEAR_HIGHLIGHTED_INDEX';
-
-export const SET_CACHED_NAMES = 'SET_CACHED_NAMES';
 
 export const SET_STAR_VALID = 'SET_STAR_VALID';

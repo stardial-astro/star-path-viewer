@@ -1,42 +1,69 @@
 // src/components/Input/Location/LocationInputTypeToggle.jsx
-import React, { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
-import { TYPE_ADDR, TYPE_COORD } from '@utils/constants';
+import { LOC_INPUT_TYPES } from '@utils/constants';
+
+const GROUP_LABEL = 'Input type';
+const ADDR_LABEL = 'Search address';
+const COORD_LABEL = 'Enter coordinates';
+const ADDR_BTN_TEXT = 'Search Address';
+const COORD_BTN_TEXT = 'Enter Coordinates';
 
 const LocationInputTypeToggle = () => {
-  const { locationInputType, locationDispatch } = useLocationInput();
+  const {
+    locationInputType,
+    locationInputTypeRef,
+    resetLocationValues,
+    locationDispatch,
+  } = useLocationInput();
 
-  const handleInputTypeChange = useCallback((event, newInputType) => {
-    if (newInputType !== null) {
-      /* Clear the fields */
-      if (newInputType === TYPE_ADDR) {
-        locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });  // This clears the location obj as well
+  /* [AddressInput] When toggles to address mode, clear errors; clear null errors
+   * and reset validity if no flag
+   */
+  /* [CoordinatesInput] When toggles to coordinate mode, clear errors; clear null errors
+   * and reset validity if no flag;
+   */
+
+  /** @type {(event: ReactMouseEvent, value: LocInputType | null) => void} */
+  const handleInputTypeChange = useCallback(
+    (event, value) => {
+      /* Block deselection (when value is null) */
+      if (value === null) return;
+      locationInputTypeRef.current = value;
+      locationDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: value });
+      /* When toggles to address mode, clear location and suggestions */
+      if (value === LOC_INPUT_TYPES.addr) {
+        resetLocationValues();
+        /* Clearing debounced searchTerm also clears lastSelectedTermRef below */
       }
-
-      locationDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: newInputType });
-    }
-  }, [locationDispatch]);
+      /* When toggles to coordinate mode, KEEP location and suggestions
+       * (so if there is a reverse geocoding unavailable warning triggered by
+       * id === LOC_UNKNOWN_ID, it keeps open)
+       */
+    },
+    [locationInputTypeRef, resetLocationValues, locationDispatch],
+  );
 
   return (
     <ToggleButtonGroup
+      exclusive
+      aria-label={GROUP_LABEL}
       color="primary"
       size="small"
       value={locationInputType}
-      exclusive
       onChange={handleInputTypeChange}
-      aria-label="Input type"
       fullWidth
     >
-      <ToggleButton value={TYPE_ADDR} aria-label="Search address">
-        Search Address
+      <ToggleButton value={LOC_INPUT_TYPES.addr} aria-label={ADDR_LABEL}>
+        {ADDR_BTN_TEXT}
       </ToggleButton>
-      <ToggleButton value={TYPE_COORD} aria-label="Enter coordinates">
-        Enter Coordinates
+      <ToggleButton value={LOC_INPUT_TYPES.coord} aria-label={COORD_LABEL}>
+        {COORD_BTN_TEXT}
       </ToggleButton>
     </ToggleButtonGroup>
   );
 };
 
-export default React.memo(LocationInputTypeToggle);
+export default memo(LocationInputTypeToggle);

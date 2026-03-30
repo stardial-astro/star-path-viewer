@@ -1,74 +1,102 @@
 // src/components/Input/Date/QuickEntryAccordion.jsx
-import React, { useCallback } from 'react';
-import { Box, Grid, Typography, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { memo, useCallback } from 'react';
+import {
+  Box,
+  Grid,
+  Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Tooltip,
+} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
-import { EQX_SOL_NAMES, GREGORIAN, QUERY_FROM_CLICK } from '@utils/constants';
+import { EQX_SOL_NAMES, CALS } from '@utils/constants';
 import CustomToggleButton from '@components/UI/CustomToggleButton';
 
-const QuickEntryAccordion = () => {
-  const {
-    flag,  // 've', 'ss', 'ae', 'ws'
-    queryDateFromRef,
-    dateDispatch,
-  } = useDateInput();
+const expandIcon = <ExpandMoreIcon sx={{ color: 'primary.main' }} />;
 
-  const handleFlagChange = useCallback((event, newFlag) => {
-    if (flag === newFlag) {
-      dateDispatch({ type: actionTypes.SET_FLAG, payload: '' });  // Deselect
-    } else {
-      dateDispatch({ type: actionTypes.SET_FLAG, payload: newFlag });  // Select another
-      if (newFlag) {
-        queryDateFromRef.current = QUERY_FROM_CLICK;
-        dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
-        dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: false });
-        dateDispatch({ type: actionTypes.SET_CAL, payload: GREGORIAN });  // Force to use Gregorian
+const QuickEntryAccordion = () => {
+  // console.log('Rendering QuickEntryAccordion');
+  const { errorMessage } = useHome();
+  const { flag, flagRef, dateDispatch } = useDateInput();
+
+  /* When toggles flag, KEEP the date values */
+
+  /** @type {(event: ReactMouseEvent, value: Flag) => void} */
+  const handleFlagChange = useCallback(
+    (event, value) => {
+      /* value won't be empty */
+      if (flag === value) {
+        /* If clicks the same button, deselect */
+        flagRef.current = '';
+        dateDispatch({ type: actionTypes.SET_FLAG, payload: '' });
+      } else {
+        /* If selects another, set the value */
+        flagRef.current = value;
+        dateDispatch({ type: actionTypes.SET_FLAG, payload: value });
+        /* Force to select Gregorian immediately */
+        dateDispatch({ type: actionTypes.SET_CAL, payload: CALS.gregorian });
       }
-    }
-  }, [flag, queryDateFromRef, dateDispatch]);
+    },
+    [flag, flagRef, dateDispatch],
+  );
 
   return (
     <Accordion defaultExpanded disableGutters>
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon sx={{ color: 'primary.main' }} />}
+        expandIcon={expandIcon}
         sx={{
           minHeight: 0,
           '& .MuiAccordionSummary-content': {
-            marginY: 1,
-          }
+            my: 1,
+          },
         }}
       >
-        <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} alignItems="flex-start" pr={1} flexWrap="wrap">
-          <Box flex="1 0 auto" textAlign="left" mr={1}>
-            <Typography color="primary" variant="body1">
-              {!!flag ? `Checked: ${EQX_SOL_NAMES[flag]}`: 'Quick Entry'}
+        <Box
+          display="flex"
+          flexDirection={{ xs: 'column', sm: 'row' }}
+          alignItems="flex-start"
+          flexWrap="wrap"
+          sx={{ pr: 1 }}
+        >
+          <Box flex="1 0 auto" textAlign="left" sx={{ mr: 1 }}>
+            <Typography variant="body1" sx={{ color: 'primary.main' }}>
+              {flag ? `Checked: ${EQX_SOL_NAMES[flag]}` : 'Quick Entry'}
             </Typography>
           </Box>
-          {/* {date.year && dateFetching && (
-            <Box display="flex" alignItems="center" textAlign="left" flexWrap="wrap">
-              <Typography color="action.active" variant="body1">
-                &gt; Quering the {EQX_SOL_NAMES[flag]} of this year at this location ...
-              </Typography>
-            </Box>
-          )} */}
         </Box>
       </AccordionSummary>
-      <AccordionDetails sx={{ paddingX: 1.5, paddingTop: 0, paddingBottom: 1.5 }}>
+      <AccordionDetails sx={{ px: 1.5, pt: 0, pb: 1.5 }}>
         <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
           {Object.entries(EQX_SOL_NAMES).map(([key, value]) => (
-            <Grid item xs={12} sm={6} md={3} key={key}>
-              <CustomToggleButton
-                color="primary"
-                size="small"
-                aria-label={value}
-                value={key}
-                selected={flag === key}
-                onChange={handleFlagChange}
-                fullWidth
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={key}>
+              <Tooltip
+                title={
+                  flag !== key
+                    ? `Click to fill in the ${value} date`
+                    : 'Click again to deselect'
+                }
+                enterDelay={1000}
+                enterNextDelay={500}
               >
-                {value}
-              </CustomToggleButton>
+                <div>
+                  <CustomToggleButton
+                    aria-label={value}
+                    color="primary"
+                    size="small"
+                    disabled={!!errorMessage.server}
+                    value={key}
+                    selected={flag === key}
+                    onChange={handleFlagChange}
+                    fullWidth
+                  >
+                    {value}
+                  </CustomToggleButton>
+                </div>
+              </Tooltip>
             </Grid>
           ))}
         </Grid>
@@ -77,4 +105,4 @@ const QuickEntryAccordion = () => {
   );
 };
 
-export default React.memo(QuickEntryAccordion);
+export default memo(QuickEntryAccordion);

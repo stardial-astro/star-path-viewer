@@ -1,91 +1,187 @@
 // src/components/Input/DiagramFetcher.jsx
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import { Box, Stack, Alert, Button, Typography, CircularProgress } from '@mui/material';
+import { memo, useState, useEffect, useCallback } from 'react';
+import {
+  Box,
+  Stack,
+  Button,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Config from '@/Config';
+import queryClient from '@/queryClient';
+import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import { useDateInput } from '@context/DateInputContext';
 import { useStarInput } from '@context/StarInputContext';
-import { STARS, JULIAN, TYPE_NAME, TYPE_HIP, TYPE_RADEC } from '@utils/constants';
-import { validateLocationInputSync, validateDateInputSync, validateInputSync, clearNullError } from '@utils/inputUtils';
-import { sanitizeSvg } from '@utils/svgUtils';
+import * as actionTypes from '@context/locationInputActionTypes';
+import config from '@utils/config';
+import {
+  STAR_INPUT_TYPES,
+  WARNING_PREFIX,
+  SERVER_ERR_PREFIX,
+} from '@utils/constants';
+import {
+  isLocationInputCompleteSync,
+  isDateInputCompleteSync,
+  isInputCompleteSync,
+  clearNullError,
+} from '@utils/inputUtils';
+import fetchDiagram from '@utils/fetchDiagram';
 import { getIsDevMode } from '@utils/devMode';
 import CustomDivider from '@components/UI/CustomDivider';
+import CustomAlert from '@components/UI/CustomAlert';
 import LocationInput from './Location/LocationInput';
 import DateInput from './Date/DateInput';
 import StarInput from './Star/StarInput';
 
-const warningPrefix = 'WARNING:';
+const QUERY_KEY = 'diagram';
 
-const alertStyle = { width: '100%', textAlign: 'left' };
+/** dev: 5 minutes; prod: 1 hour */
+const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
+/** 1 hour */
+const GC_MS = 60 * 60_000;
 
-const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess, clearImage, errorMessage, setErrorMessage }) => {
+const INPUT_ID = 'input-fields';
+const LOC_ID = 'location';
+const DATE_ID = 'date';
+const STAR_ID = 'star';
+const DRAW_BTN_ID = 'draw-btn';
+
+const DRAW_BTN_LABEL = 'Draw';
+
+const LOC_TITLE = 'LOCATION';
+const DATE_TITLE = 'LOCAL DATE';
+const STAR_TITLE = 'CELESTIAL OBJECT';
+
+const DRAW_BTN_TEXT = 'Draw Star Path';
+const DRAW_WAIT_MSG = 'Please wait. This may take a few seconds.';
+
+const circularProgress = (
+  <CircularProgress color="inherit" size="1rem" sx={{ mr: 1 }} />
+);
+
+const DiagramFetcher = () => {
   // console.log('Rendering DiagramFetcher');
   const {
-    location,  // id: ''(not-found), 'unknown'
-    locationInputType,  // 'address', 'coordinates'
-    locationValid,
-    locationDispatch,
-  } = useLocationInput();
+    offlineState,
+    setSuccess,
+    errorMessage,
+    setErrorMessage,
+    setDiagramId,
+    setSvgData,
+    setAnno,
+    setInfo,
+    clearImage,
+  } = useHome();
+  const { location, locationInputType, locationValid, locationDispatch } =
+    useLocationInput();
+  const { date, flag, cal, dateValid, dateDispatch } = useDateInput();
   const {
-    date,
-    flag,  // 've', 'ss', 'ae', 'ws'
-    cal,  // '': Gregorian, 'j': Julian
-    dateValid,
-    dateDispatch,
-  } = useDateInput();
-  const {
-    starName, starNameZh, starHip, starRadec,
-    starInputType,  // 'name', 'hip', 'radec'
+    starName,
+    starNameZh,
+    starHip,
+    starRadec,
+    starInputType,
     starValid,
     starDispatch,
   } = useStarInput();
   // const [errorMessage, setErrorMessage] = useState({});
   const [loading, setLoading] = useState(false);
 
-  /* Reset error when user starts typing */
-  // useEffect(() => {
-  //   clearNullError(locationDispatch, dateDispatch, starDispatch);
-  //   setErrorMessage((prev) => ({ ...prev, draw: '', download: '' }));
-  // }, [location, locationInputType, date, flag, cal, starName, starHip, starRadec, starInputType, locationDispatch, dateDispatch, starDispatch]);
+  const isDrawDisabled =
+    loading ||
+    !dateValid ||
+    !locationValid ||
+    !starValid ||
+    !!errorMessage.server ||
+    !!errorMessage.location ||
+    !!errorMessage.date ||
+    !!errorMessage.star ||
+    !!errorMessage.draw;
 
+  /* ------------------------------------------------------------------|
+   * Clear errors when user starts typing
+   * ------------------------------------------------------------------|
+   */
+  /* [LocationInput] [DateInput] [StarInput] Clear errors & null errors when user starts typing */
+
+  /* ------------------------------------------------------------------|
+   * Validate input
+   * ------------------------------------------------------------------|
+   */
+  /* [LocationInput] [DateInput] [StarInput] Validate non-empty input */
+
+  /* Check whether location & date input fields are complete when flag is set */
   useEffect(() => {
     if (flag) {
-      validateLocationInputSync(location, locationInputType, locationDispatch);
-      validateDateInputSync(date, flag, dateDispatch);
+      isLocationInputCompleteSync(
+        location,
+        locationInputType,
+        locationDispatch,
+      );
+      isDateInputCompleteSync(date, flag, dateDispatch);
     }
   }, [location, locationInputType, date, flag, locationDispatch, dateDispatch]);
 
+  /* ------------------------------------------------------------------|
+   * Draw
+   * ------------------------------------------------------------------|
+   */
+  /**
+   * Fetches diagram.
+   * Only calls `fetchDiagram` if data is stale or missing.
+   * - skips fetching if offline or loading
+   * - Updates `diagramId`, `info`, `svgData`, and `anno` if successful
+   * Uses TanStack Query:
+   * - Automatic caching
+   * - Prevents multiple identical requests
+   * - Retries on error (delay with exponential backoff)
+   */
   const handleDraw = useCallback(async () => {
-    if (loading) {
-      return;
-    }
-
-    clearImage();  // Clear the SVG data before making the API call
-    /* Clear any previous error message before making the API call */
-    clearNullError(locationDispatch, dateDispatch, starDispatch);
-    setSuccess(false);
+    /* Skip fetching if offline or loading */
+    if (offlineState.dialogOpen || offlineState.dismissed || loading) return;
 
     const isDevMode = getIsDevMode();
 
-    /* Check input values ----------------------------------------------------*/
-    isDevMode && console.log('[Inputs]', location, date, flag, cal, starName, starHip, starRadec, starInputType);
+    /* Clear any previous image and null errors before making the API call */
+    clearNullError(locationDispatch, dateDispatch, starDispatch);
+    clearImage();
+    setSuccess(false);
 
-    const isValid = validateInputSync(
-      location, locationInputType,
-      date, flag,
-      starName, starHip, starRadec, starInputType,
+    isDevMode &&
+      console.debug(
+        '[Inputs]',
+        location,
+        date,
+        flag,
+        cal,
+        starName,
+        starHip,
+        starRadec,
+        starInputType,
+      );
+
+    /* Check whether all input fields are complete ------------------ */
+    const isComplete = isInputCompleteSync(
+      /* Location */
+      location,
+      locationInputType,
+      /* Date */
+      date,
+      flag,
+      /* Star */
+      starName,
+      starHip,
+      starRadec,
+      starInputType,
       locationDispatch,
       dateDispatch,
-      starDispatch
+      starDispatch,
     );
-    if (!isValid) {
-      return;
-    }
+    if (!isComplete) return;
 
-    /* Assign parameters -----------------------------------------------------*/
+    /* Assign parameters -------------------------------------------- */
+    /** @type {ParamObj} */
     const params = {
       lat: parseFloat(location.lat).toString(),
       lng: parseFloat(location.lng).toString(),
@@ -93,172 +189,191 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
       month: parseInt(date.month).toString(),
       day: parseInt(date.day).toString(),
       cal: cal,
+      flag: flag,
     };
-
-    if (location.tz) {
-      params.tz = location.tz;
-    }
-
-    if (starInputType === TYPE_NAME) {
-      params.name = STARS[starName];
-    } else if (starInputType === TYPE_HIP) {
+    /* If tz is fetched, append it */
+    if (location.tz) params.tz = location.tz;
+    /* Add star name, HIP, and RA/Dec according to starInputType */
+    if (starInputType === STAR_INPUT_TYPES.name) {
+      params.name = starName.toLowerCase();
+    } else if (starInputType === STAR_INPUT_TYPES.hip) {
       params.hip = parseInt(starHip).toString();
-    } else if (starInputType === TYPE_RADEC) {
+    } else if (starInputType === STAR_INPUT_TYPES.radec) {
       params.ra = parseFloat(starRadec.ra).toString();
       params.dec = parseFloat(starRadec.dec).toString();
     }
+    isDevMode && console.debug('[Query]', params);
 
-    isDevMode && console.log('[Query]', params);
+    /* Plot --------------------------------------------------------- */
+    const controller = new AbortController();
+    setLoading(true);
 
-    /* Plot ------------------------------------------------------------------*/
     try {
-      setLoading(true);
-      const response = await axios.get(`${Config.serverUrl}/diagram`, {
-        params,
-        timeout: Config.serverGetDiagramTimeout,
+      /* Fetch diagram */
+      const res = await queryClient.fetchQuery({
+        queryKey: [QUERY_KEY, params],
+        queryFn: () => fetchDiagram(params, controller.signal),
+        staleTime: STALE_MS,
+        gcTime: GC_MS,
+        retry: (failureCount, _error) => {
+          if (controller.signal.aborted) return false;
+          return failureCount < config.MAX_RETRIES - 1;
+        },
+        retryDelay: config.RETRY_DELAY,
       });
 
-      const newInfo = ['lat', 'lng', 'tz', 'offset', 'flag', 'cal', 'name', 'hip', 'ra', 'dec'].reduce((info, key) => {
-        if (response.data && response.data.hasOwnProperty(key)) info[key] = response.data[key];
-        return info;
-      }, {});
+      if (!res) return;
 
-      if (cal === JULIAN) {
-        newInfo.dateG = { year: response.data.year, month: response.data.month, day: response.data.day };
-        newInfo.dateJ = { year: parseInt(date.year), month: parseInt(date.month), day: parseInt(date.day) };
-      } else {
-        newInfo.dateG = { year: parseInt(date.year), month: parseInt(date.month), day: parseInt(date.day) };
-        newInfo.dateJ = { year: response.data.year, month: response.data.month, day: response.data.day };
-      }
-
+      const newInfo = res.info;
+      /* Insert/Update names into info when querying HIP */
       if (newInfo.hip) {
         newInfo.name = starName;
         newInfo.nameZh = starNameZh;
       }
+      /* Update tz if determined by server */
+      if (!params.tz) {
+        locationDispatch({ type: actionTypes.SET_TZ, payload: newInfo.tz });
+      }
 
-      newInfo.eqxSolTime = [];
-      // if (response.data.flag && response.data.eqxSolTime.length > 0) {
-      //   const res_month = response.data.eqxSolTime[1].toString();
-      //   const res_day = response.data.eqxSolTime[2].toString();
-      //   newInfo.eqxSolTime = response.data.eqxSolTime;
-      //   newInfo.dateG.month = res_month;
-      //   newInfo.dateG.day = res_day;
-      //   dateDispatch({ type: dateActionTypes.SET_MONTH, payload: res_month });
-      //   dateDispatch({ type: dateActionTypes.SET_DAY, payload: res_day });
-      // }
+      /* Update state if not aborted and no errors */
+      setDiagramId(res.diagramId);
       setInfo(newInfo);
+      setSvgData(res.svgData);
+      setAnno(res.anno);
 
-      if (isDevMode) {
-        console.log('[Results]', newInfo);
-        console.log(response.data.annotations);
-      }
-
-      const sanitizedSvg = sanitizeSvg(response.data.svgData);
-
-      setDiagramId(response.data.diagramId);
-      setSvgData(sanitizedSvg);
-      setAnno(response.data.annotations);
-
-      /* Clear any previous error message */
+      /* Clear any errors & null errors */
+      setErrorMessage({});
       clearNullError(locationDispatch, dateDispatch, starDispatch);
-
       setSuccess(true);
-
-    } catch (error) {
-      if (error.response) {
-        // setErrorMessage((prev) => ({ ...prev, draw: `Error ${error.response.status}: ${error.response.data?.error || error.message || 'unknown error'}` }));
-        setErrorMessage((prev) => ({ ...prev, draw: `${error.response.data?.error || error.message || 'unknown error'}` }));
-      } else {
-        setErrorMessage((prev) => ({ ...prev, draw: 'Unable to connect to the server.' }));
+    } catch (err) {
+      if (Error.isError(err)) {
+        if (err.message.startsWith(SERVER_ERR_PREFIX)) {
+          /* Show server errors */
+          const msg = err.message.substring(SERVER_ERR_PREFIX.length).trim();
+          setErrorMessage((prev) => ({ ...prev, server: msg }));
+        } else {
+          /* Show other errors */
+          setErrorMessage((prev) => ({ ...prev, draw: err.message }));
+        }
       }
-      clearImage();  // Clear SVG on error
       setSuccess(false);
-
     } finally {
       setLoading(false);
     }
-  }, [location, locationInputType, date, flag, cal, starName, starNameZh, starHip, starRadec, starInputType, loading, clearImage, setDiagramId, setInfo, setSvgData, setAnno, setSuccess, locationDispatch, dateDispatch, starDispatch, setErrorMessage]);
+  }, [
+    location,
+    locationInputType,
+    date,
+    flag,
+    cal,
+    starName,
+    starNameZh,
+    starHip,
+    starRadec,
+    starInputType,
+    offlineState,
+    loading,
+    clearImage,
+    setDiagramId,
+    setInfo,
+    setSvgData,
+    setAnno,
+    setSuccess,
+    locationDispatch,
+    dateDispatch,
+    starDispatch,
+    setErrorMessage,
+  ]);
 
   return (
     <Stack direction="column" spacing={3}>
-      <Stack id="input-fields" direction="column" spacing={1.5}>
-        <Stack id="location" direction="column" spacing={1}>
-          <CustomDivider>LOCATION</CustomDivider>
-          <LocationInput setErrorMessage={setErrorMessage} />
+      <Stack id={INPUT_ID} direction="column" spacing={1.5}>
+        <Stack id={LOC_ID} direction="column" spacing={1}>
+          <CustomDivider>{LOC_TITLE}</CustomDivider>
+          <LocationInput />
           {errorMessage.location && (
-            <Alert severity="error" sx={alertStyle} onClose={() => setErrorMessage((prev) => ({ ...prev, location: '' }))}>
+            <CustomAlert
+              onClose={() =>
+                setErrorMessage((prev) => ({ ...prev, location: '' }))
+              }
+            >
               {errorMessage.location}
-            </Alert>
+            </CustomAlert>
           )}
         </Stack>
 
-        <Stack id="date" direction="column" spacing={1}>
-          <CustomDivider>LOCAL DATE</CustomDivider>
-          <DateInput
-            setErrorMessage={setErrorMessage}
-            location={{ lat: location.lat, lng: location.lng, tz: location.tz }}
-          />
+        <Stack id={DATE_ID} direction="column" spacing={1}>
+          <CustomDivider>{DATE_TITLE}</CustomDivider>
+          <DateInput />
           {errorMessage.date && (
-            <Alert severity="error" sx={alertStyle} onClose={() => setErrorMessage((prev) => ({ ...prev, date: '' }))}>
+            <CustomAlert
+              onClose={() => setErrorMessage((prev) => ({ ...prev, date: '' }))}
+            >
               {errorMessage.date}
-            </Alert>
+            </CustomAlert>
           )}
         </Stack>
 
-        <Stack id="star" direction="column" spacing={1}>
-          <CustomDivider>CELESTIAL OBJECT</CustomDivider>
-          <StarInput setErrorMessage={setErrorMessage} />
+        <Stack id={STAR_ID} direction="column" spacing={1}>
+          <CustomDivider>{STAR_TITLE}</CustomDivider>
+          <StarInput />
           {errorMessage.star && (
-            <Alert severity="error" sx={alertStyle} onClose={() => setErrorMessage((prev) => ({ ...prev, star: '' }))}>
+            <CustomAlert
+              onClose={() => setErrorMessage((prev) => ({ ...prev, star: '' }))}
+            >
               {errorMessage.star}
-            </Alert>
+            </CustomAlert>
           )}
         </Stack>
       </Stack>
 
-      <Stack id="draw" direction="column" spacing={1}>
+      <Stack
+        id={DRAW_BTN_ID}
+        data-testid={DRAW_BTN_ID}
+        direction="column"
+        spacing={1}
+      >
         <Button
+          aria-label={DRAW_BTN_LABEL}
           variant="contained"
           color="primary"
           size="large"
-          aria-label="Draw"
-          startIcon={
-            <Box display="flex" alignItems="center" sx={{ pb: '1.5px', ml: -2.5 }}>
-              {loading
-              ? <CircularProgress color="inherit" size="1rem" sx={{ mr: 1 }} />
-              : <ArrowForwardIcon />
-              }
-            </Box>
-          }
-          sx={{ marginTop: 3 }}
-          disabled={
-            loading ||
-            !dateValid || !locationValid || !starValid ||
-            !!errorMessage.location || !!errorMessage.date || !!errorMessage.star ||
-            !!errorMessage.draw
-          }
+          disabled={isDrawDisabled}
           onClick={handleDraw}
           fullWidth
+          sx={{ mt: 3 }}
+          startIcon={
+            <Box
+              display="flex"
+              alignItems="center"
+              sx={{ pb: '1.5px', ml: -2.5 }}
+            >
+              {loading ? circularProgress : <ArrowForwardIcon />}
+            </Box>
+          }
         >
-          Draw Star Path
+          {DRAW_BTN_TEXT}
         </Button>
 
         {errorMessage.draw && (
-          <Alert
-            severity={errorMessage.draw.startsWith(warningPrefix) ? "warning" : "error"}
-            sx={alertStyle}
+          <CustomAlert
+            severity={
+              errorMessage.draw.startsWith(WARNING_PREFIX) ? 'warning' : 'error'
+            }
             onClose={() => setErrorMessage((prev) => ({ ...prev, draw: '' }))}
           >
-            {errorMessage.draw.startsWith(warningPrefix)
-            ? errorMessage.draw.substring(warningPrefix.length).trim()
-            : errorMessage.draw
-            }
-          </Alert>
+            {errorMessage.draw.startsWith(WARNING_PREFIX)
+              ? errorMessage.draw.substring(WARNING_PREFIX.length).trim()
+              : errorMessage.draw}
+          </CustomAlert>
         )}
 
         {loading && (
-          <Typography color="action.active" variant="body1" sx={{ pt: 1, textAlign: 'center' }}>
-            <em>Please wait. This may take a few seconds.</em>
+          <Typography
+            variant="body1"
+            sx={{ color: 'action.active', pt: 1, textAlign: 'center' }}
+          >
+            <em>{DRAW_WAIT_MSG}</em>
           </Typography>
         )}
       </Stack>
@@ -266,15 +381,4 @@ const DiagramFetcher = ({ setDiagramId, setInfo, setSvgData, setAnno, setSuccess
   );
 };
 
-DiagramFetcher.propTypes = {
-  setDiagramId: PropTypes.func.isRequired,
-  setInfo: PropTypes.func.isRequired,
-  setSvgData: PropTypes.func.isRequired,
-  setAnno: PropTypes.func.isRequired,
-  setSuccess: PropTypes.func.isRequired,
-  clearImage: PropTypes.func.isRequired,
-  errorMessage: PropTypes.object.isRequired,
-  setErrorMessage: PropTypes.func.isRequired,
-};
-
-export default React.memo(DiagramFetcher);
+export default memo(DiagramFetcher);

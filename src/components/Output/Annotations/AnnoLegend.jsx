@@ -1,37 +1,50 @@
 // src/components/Output/Annotations/AnnoLegend.jsx
-import React from 'react';
-import { Box, Stack, Grid, Typography, IconButton } from '@mui/material';
+import { memo } from 'react';
+import { useTheme } from '@mui/material/styles';
+import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 // import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { styled } from '@mui/system';
+import { styled, lighten } from '@mui/material/styles';
 import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';
+import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/UI/CustomDivider';
 
 const labelStyle = { textAlign: 'left', fontWeight: 500, minWidth: '1.5rem' };
 const detailStyle = { textAlign: 'left', color: 'text.primary', ml: 1.5 };
 
+/**
+ * @param {object} param
+ * @param {string} param.type
+ */
 const Line = ({ type }) => (
   <Box
-    sx={{
+    sx={({ palette }) => ({
       display: 'inline-block',
       width: '31px',
       height: '0px',
-      borderBottom: type === 'dotted' ? '2px dotted rgba(0, 0, 0, 0.35)' :
-                    type === 'solid' ? '3px solid black' :
-                    type === 'lightDashed' ? '3px dashed rgba(0, 0, 0, 0.35)' :
-                    type === 'darkDashed' ? '3px dashed black' :
-                    'none',
+      borderBottom:
+        type === 'dotted'
+          ? `2px dotted ${palette.text.disabled}`
+          : type === 'solid'
+            ? `3px solid ${palette.text.primary}`
+            : type === 'lightDashed'
+              ? `3px dashed ${palette.text.disabled}`
+              : type === 'darkDashed'
+                ? `3px dashed ${palette.text.primary}`
+                : 'none',
       verticalAlign: 'middle',
       mb: '1px',
       mr: 1,
-    }}
+    })}
   />
 );
 
-const Dot = () => (
+/** @param {*} param */
+const Dot = ({ isDarkMode }) => (
   <Box
     sx={{
+      filter: colorFilter(isDarkMode),
       display: 'inline-block',
       width: '7px',
       height: '7px',
@@ -49,7 +62,7 @@ const DetailTooltip = styled(({ className, ...props }) => (
     {...props}
     placement="top-start"
     enterTouchDelay={0}
-    leaveTouchDelay={20000}
+    leaveTouchDelay={20_000}
     slotProps={{
       popper: {
         modifiers: [
@@ -60,61 +73,97 @@ const DetailTooltip = styled(({ className, ...props }) => (
             },
           },
         ],
-        sx: {
-          [`&.${tooltipClasses.popper}[data-popper-placement*="top"] .${tooltipClasses.tooltip}`]:
-            {
-              marginBottom: 2,
-            },
-        }
       },
     }}
     classes={{ popper: className }}
   />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    backgroundColor: theme.palette.background.paper,
     color: theme.palette.primary.main,
+    backgroundColor: theme.palette.background.paper,
     maxWidth: 480,
     fontSize: theme.typography.body2.fontSize,
     fontWeight: 400,
     border: `1px solid ${theme.palette.primary.main}`,
-    boxShadow: '0px 2px 6px rgba(0, 0, 0, 0.1)',
+    boxShadow: `0px 2px 6px ${theme.palette.action.disabledBackground}`,
+    ...theme.applyStyles('dark', {
+      backgroundColor: lighten(theme.palette.background.paper, 0.1),
+      border: `1px solid ${theme.palette.primary.main}`,
+    }),
   },
 }));
 
+/**
+ * @param {object} params
+ * @param {AnnoItem[]} params.anno - Filtered annotations.
+ *                                 Only `annoItem.name` is used here.
+ */
 const AnnoLegend = ({ anno }) => {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   return (
     <>
-      <CustomDivider sx={{ mt: 1.5, mb: 0.5 }} />
-      <Grid container pr={0.5} rowSpacing={0.5} columnSpacing={0} sx={{ maxWidth: '100%', margin: 'auto' }}>
-        <Grid container item xs={12} sm={6.7} md={6.6}>
-          <Stack direction="column" spacing={0.5} ml={{ xs: '4%', sm: '26%', md: 20 }}>
-            {Object.keys(LINE_DETAIL).map((type, index) => (
-              <Box key={index} display="flex" alignItems="center" flexWrap="wrap">
-                <Line type={type} />
+      <CustomDivider sx={{ mt: 1.5, mb: 1 }} />
+      <Grid
+        container
+        rowSpacing={0.5}
+        columnSpacing={0}
+        sx={{ m: 'auto', pr: 0.5 }}
+      >
+        <Grid container size={{ xs: 12, sm: 6.7, md: 6.6 }}>
+          <Stack
+            direction="column"
+            spacing={0.5}
+            ml={{ xs: '4%', sm: '26%', md: 20 }}
+          >
+            {Object.entries(LINE_DETAIL).map(([key, value], index) => (
+              <Box
+                key={index}
+                display="flex"
+                alignItems="center"
+                flexWrap="wrap"
+              >
+                <Line type={key} />
                 <Typography variant="body2" sx={detailStyle}>
-                  {LINE_DETAIL[type]}
+                  {value}
                 </Typography>
               </Box>
             ))}
           </Stack>
         </Grid>
 
-        <Grid container item xs={12} sm={5.3} md={5.4}>
-          <Stack direction="column" spacing={0.5} ml={{ xs: '4%', sm: 2, md: 2 }}>
+        <Grid container size={{ xs: 12, sm: 5.3, md: 5.4 }}>
+          <Stack
+            direction="column"
+            spacing={0.5}
+            ml={{ xs: '4%', sm: 2, md: 2 }}
+          >
             {anno.map((item, index) => (
-              <Box key={index} display="flex" alignItems="start" flexWrap="wrap">
-                <Dot />
-                <Typography variant="body2" color="red" sx={labelStyle}>
+              <Box
+                key={index}
+                display="flex"
+                alignItems="start"
+                flexWrap="wrap"
+              >
+                <Dot isDarkMode={isDarkMode} />
+                <Typography
+                  variant="body2"
+                  color="red"
+                  sx={{ filter: colorFilter(isDarkMode), ...labelStyle }}
+                >
                   {item.name}
                 </Typography>
                 <Typography variant="body2" sx={detailStyle}>
                   {PT_DETAIL[item.name].name}
-                  <DetailTooltip
-                    title={PT_DETAIL[item.name].detail}
-                  >
-                    <IconButton size="small" sx={{ padding: 0, ml: 0.5 }}>
-                      <InfoOutlinedIcon sx={{ fontSize: '1rem', color: 'primary.main', mt: '-3px' }} />
+                  <DetailTooltip title={PT_DETAIL[item.name].detail}>
+                    <IconButton size="small" sx={{ p: 0, ml: 0.5 }}>
+                      <InfoOutlinedIcon
+                        sx={{
+                          fontSize: '1rem',
+                          color: 'primary.main',
+                          mt: '-3px',
+                        }}
+                      />
                     </IconButton>
                   </DetailTooltip>
                 </Typography>
@@ -128,4 +177,4 @@ const AnnoLegend = ({ anno }) => {
   );
 };
 
-export default React.memo(AnnoLegend);
+export default memo(AnnoLegend);

@@ -1,44 +1,64 @@
 // src/utils/fetchSuggestions.js
 import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
-import { ADDR_NOT_FOUND } from './constants';
+import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
 import { getIsDevMode } from './devMode';
-import * as pack from '@/../package.json';
 
-const nominatimSearchUrl = 'https://nominatim.openstreetmap.org/search';
-const baiduSearchUrl = 'https://api.map.baidu.com/place/v2/suggestion';
+const NOMINATIM_TIMEOUT = 5_000;
+const BAIDU_TIMEOUT = 5_000;
 
+const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
+const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
+
+const isDevMode = getIsDevMode();
+
+/**
+ * @param {string} str
+ * @param {number} limit
+ */
+const getTailSegments = (str, limit = 3) => {
+  if (!str) return '';
+  return str.split(/;\s*/).filter(Boolean).slice(-limit).join('|');
+};
+
+/**
+ * @param {string} query
+ * @returns {Promise<AddressItem[]>} An array of address objects.
+ * @throws {Error} If location is not found.
+ */
 const fetchSuggestionsWithNominatim = async (query) => {
-  const email = 'stardial.astro@gmail.com';
-  const userAgent = `StarPathViewer/${pack.version} (${email})`;
-  const timeout = 5000;
   const response = await axios.get(nominatimSearchUrl, {
     params: {
       q: query,
       format: 'json',
       addressdetails: 1,
-      email: email,
+      email: import.meta.env.VITE_EMAIL,
     },
-    // Nominatim requires a User-Agent to avoid 403 blocks
-    headers: { 'User-Agent': userAgent },
-    timeout,
+    timeout: NOMINATIM_TIMEOUT,
   });
-  getIsDevMode() && console.log('[Address Suggestions]', response);
-  if (response.data.length > 0) {
-    return response.data.map((item) => ({
+  /** @type {NominatimSchema[]} */
+  const data = response.data;
+  isDevMode && console.debug('[Query]', query, '\n[Locations]', data);
+  if (Array.isArray(data) && data.length > 0) {
+    /* item.lat and item.lon are strings */
+    return data.map((item) => ({
       lat: item.lat,
       lng: item.lon,
       display_name: item.display_name,
       id: item.osm_id?.toString() || `${item.lat},${item.lon}`,
-      addresstype: item.addresstype || '',
+      addresstype: getTailSegments(item.addresstype),
     }));
   } else {
-    return [{ display_name: ADDR_NOT_FOUND, id: '', addresstype: '' }];
+    throw new Error(LOCATION_NOT_FOUND_MSG);
   }
 };
 
+/**
+ * @param {string} query
+ * @returns {Promise<AddressItem[]>} An array of address objects.
+ * @throws {Error} If location is not found.
+ */
 const fetchSuggestionsWithBaidu = async (query) => {
-  const timeout = 5000;
   const url =
     `${baiduSearchUrl}?` +
     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
@@ -48,38 +68,54 @@ const fetchSuggestionsWithBaidu = async (query) => {
     'ret_coordtype=gcj02ll';
   const response = await fetchJsonp(url, {
     jsonpCallback: 'callback',
-    timeout: timeout,
+    timeout: BAIDU_TIMEOUT,
   });
-  const data = await response.json();
-  if (data.result && data.result.length > 0) {
-    return data.result.map((item) => ({
+  const res = await response.json();
+  isDevMode && console.debug('[Query]', query, '\n[Locations]', res);
+  /** @type {BaiduSearchSchema[]} */
+  const data = res?.result;
+  if (Array.isArray(data) && data.length > 0) {
+    return data.map((item) => ({
       lat: item.location.lat.toString(),
       lng: item.location.lng.toString(),
-      display_name: item.address || item.name,
+      display_name: [item.address, item.name].filter(Boolean).join(' '),
       id: item.uid || `${item.location.lat},${item.location.lng}`,
-      addresstype: item.tag || '',
+      addresstype: getTailSegments(item.tag),
     }));
   } else {
-    return [{ display_name: ADDR_NOT_FOUND, id: '', addresstype: '' }];
+    throw new Error(LOCATION_NOT_FOUND_MSG);
   }
 };
 
+/**
+ * Fetched address suggestions.
+ * @param {string} query - Case insensitive.
+ * @param {GeoService} service - The geocoding service.
+ * @returns {Promise<AddressItem[] | null>} An array of address objects, or `null` if aborted.
+ * @throws {Error} If request failed or location is not found.
+ */
 const fetchSuggestions = async (query, service) => {
+  isDevMode && console.debug('> Fetching address suggestions...');
+  /** @type {AddressItem[]} */
+  let res;
   try {
-    if (service === 'nominatim') {
-      return await fetchSuggestionsWithNominatim(query);
+    if (service === SERVICES.baidu) {
+      res = await fetchSuggestionsWithBaidu(query);
     } else {
-      return await fetchSuggestionsWithBaidu(query);
+      res = await fetchSuggestionsWithNominatim(query);
     }
-  } catch (error) {
-    return [
-      {
-        display_name:
-          'Service not available. Please enter the coordinates manually. ⤴',
-        id: '',
-        addresstype: '',
-      },
-    ];
+    return res;
+  } catch (err) {
+    if (axios.isCancel(err)) {
+      isDevMode && console.debug('Location fetching cancelled. Query:', query);
+      return null;
+    }
+    if (Error.isError(err) && err.message === LOCATION_NOT_FOUND_MSG) throw err;
+    console.error(
+      'Error fetching locations:',
+      Error.isError(err) ? err.message : err,
+    );
+    throw new Error(SERVICE_ERR_MSG, { cause: err });
   }
 };
 

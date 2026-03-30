@@ -1,195 +1,355 @@
 // src/components/Input/Location/AddressInput.jsx
-import React, { useEffect, useCallback, useRef } from 'react';
-import { Box, Stack, Autocomplete, TextField, IconButton, Tooltip, CircularProgress, InputAdornment, Typography, Chip } from '@mui/material';
+import {
+  memo,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useEffectEvent,
+} from 'react';
+import {
+  Box,
+  Stack,
+  Autocomplete,
+  Tooltip,
+  InputAdornment,
+  CircularProgress,
+  Typography,
+  Chip,
+} from '@mui/material';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
-import Config from '@/Config';
+import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
+import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import useDebouncedFetchSuggestions from '@hooks/useDebouncedFetchSuggestions';
-import { ADDR_UNKNOWN, ADDR_NOT_FOUND } from '@utils/constants';
-import { fetchCurrentLocation } from '@utils/locationInputUtils';
+import useDebounce from '@hooks/useDebounce';
+import config from '@utils/config';
+import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from '@utils/constants';
+import fetchCurrentLocation from '@utils/fetchCurrentLocation';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { getIsDevMode } from '@utils/devMode';
+import CustomTextField from '@components/UI/CustomTextField';
+import BarIconButton from '@components/UI/BarIconButton';
 
-const gpsBtnStyle = {
-  color: "action.active",
-  p: '2px',
-  '&:hover': {
-    color: 'primary.main',
-  },
-  cursor: 'pointer',
-};
+const INPUT_LABEL = 'Search address';
+const SELECT_WARN = "You haven't select a location from the results.";
+const PLACEHOLDER = 'Enter a place, city, county, state, or country';
+const GPS_LABEL = 'GPS';
+const GPS_TOOLTIP_TITLE = 'Find My Location';
 
-const AddressInput = ({ setErrorMessage }) => {
+const gpsIcon = (
+  <GpsFixedIcon
+    fontSize="small"
+    sx={{
+      cursor: 'pointer',
+    }}
+  />
+);
+
+const circularProgress = (
+  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 1 }} />
+);
+
+const AddressInput = () => {
+  // console.log('Rendering AddressInput');
+  const { offlineState, errorMessage, setErrorMessage } = useHome();
   const {
+    setSkipTz,
     searchTerm,
     suggestions,
-    highlightedIndex,
-    locationLoading,
+    gpsLoading,
     suggestionsLoading,
-    locationError, locationNullError,
-    serviceChosen,
-    latestSuggestionRequest,
-    isSelecting,
-    lastSelectedTerm,
+    locationError,
+    locationNullError,
+    geoService,
+    locationInputTypeRef,
+    resetLocationValues,
     locationDispatch,
   } = useLocationInput();
+  const { flag } = useDateInput();
+
+  const [open, setOpen] = useState(false);
+  /* For refetching */
+  const [refreshCount, setRefreshCount] = useState(0);
+  /* Whether to skip fetching suggestions */
+  const [skipFetch, setSkipFetch] = useState(true);
+  const lastSelectedTermRef = useRef('');
+  /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
 
-  /* Clear suggestions and reset highlightedIndex */
-  useEffect(() => {
-    if (!searchTerm) {
-      locationDispatch({ type: actionTypes.CLEAR_LOCATION });
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-      locationDispatch({ type: actionTypes.CLEAR_HIGHLIGHTED_INDEX });
-      lastSelectedTerm.current = '';
+  /* Increase delay when chars < 3 */
+  const dynamicDelay =
+    config.TYPING_DELAY +
+    (searchTerm.length > 0 && searchTerm.length < 3 ? 300 : 0);
+  const debouncedSearchTerm = useDebounce(searchTerm, dynamicDelay);
+
+  const onInit = useEffectEvent(() => {
+    /* Clear errors */
+    clearLocationError(locationDispatch, setErrorMessage);
+    /* Clear null errors if no flag */
+    if (!flag) {
+      locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
+      /* Reset validity */
+      locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
     }
-  }, [searchTerm, lastSelectedTerm, locationDispatch]);
+    /* Clear location and suggestions */
+    resetLocationValues();
+    /* Clearing debounced searchTerm also clears lastSelectedTermRef below */
+  });
 
+  /* Initialize */
   useEffect(() => {
-    if (suggestions.length > 0) {
-      if (suggestions[0].display_name === ADDR_NOT_FOUND) {
-        locationDispatch({ type: actionTypes.SET_ADDRESS_ERROR, payload: 'Location not found.' });
-        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-        locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
-        return;
-      }
-      inputRef.current.focus();
-      /* Set highlightedIndex to 0 after fetching suggestions */
-      if (highlightedIndex < 0) {
-        locationDispatch({ type: actionTypes.SET_HIGHLIGHTED_INDEX, payload: 0 });
+    onInit();
+  }, []);
+
+  /* Clear errors & null errors when user starts typing in search bar; reset validity */
+  useEffect(() => {
+    clearLocationError(locationDispatch, setErrorMessage);
+    if (searchTerm) {
+      locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
+      locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
+    }
+    /* Reset validity */
+    locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
+  }, [searchTerm, locationDispatch, setErrorMessage]);
+
+  /* Clear suggestions and lastSelectedTermRef if debounced searchTerm is cleared */
+  useEffect(() => {
+    if (!debouncedSearchTerm) {
+      lastSelectedTermRef.current = '';
+      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+      if (locationInputTypeRef.current === LOC_INPUT_TYPES.addr) {
+        /* When in address mode, also clear location */
+        locationDispatch({ type: actionTypes.CLEAR_LOCATION });
+      } else {
+        /* When in coordinate mode, only clear id */
+        locationDispatch({ type: actionTypes.SET_ID, payload: '' });
       }
     }
-  }, [suggestions, highlightedIndex, locationDispatch]);
+  }, [debouncedSearchTerm, locationInputTypeRef, locationDispatch]);
 
-  const handleGpsClick = useCallback(
-    () => {
-      clearLocationError(locationDispatch, setErrorMessage);
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-      locationDispatch({ type: actionTypes.CLEAR_HIGHLIGHTED_INDEX });
-      fetchCurrentLocation(serviceChosen, lastSelectedTerm, locationDispatch, setErrorMessage);
-    },
-    [serviceChosen, lastSelectedTerm, locationDispatch, setErrorMessage]
-  );
-
-  const debouncedFetchSuggestions = useDebouncedFetchSuggestions(
-    serviceChosen,
-    isSelecting,
-    latestSuggestionRequest,
-    actionTypes,
+  /* Fetch suggestions on debounced searchTerm change */
+  useDebouncedFetchSuggestions(
+    debouncedSearchTerm,
+    geoService,
+    refreshCount,
+    skipFetch,
+    gpsLoading,
     locationDispatch,
     setErrorMessage,
-    Config.TypingDelay + 300
   );
 
-  /* Cleanup the debounced function on unmount */
+  /* Watch fetched suggestions and focus */
   useEffect(() => {
-    return () => {
-      debouncedFetchSuggestions.cancel();
-    };
-  }, [debouncedFetchSuggestions]);
+    /* If empty, skip */
+    if (suggestions.length === 0) return;
+    /* If have multiple options, focus and open options */
+    if (suggestions.length > 1) inputRef.current?.focus(); // TODO
+  }, [suggestions, locationDispatch]);
 
-  const handleSearchChange = useCallback(
-    (event, newSearchTerm) => {
-      locationDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: newSearchTerm });
-      const trimmedNewSearchTerm = newSearchTerm.trim();
-      isSelecting.current = false;
-      debouncedFetchSuggestions(trimmedNewSearchTerm);
-      if (!trimmedNewSearchTerm) {
+  /**
+   * Helper function to select the option.
+   * - Sets `location` and `searchTerm`
+   * - Updates `lastSelectedTermRef`
+   * @type {(option: AddressItem) => void}
+   */
+  const selectOption = useCallback(
+    (option) => {
+      /* Skip if reverse geocoding failed (should already toggled to coordinate mode) */
+      if (option.id === LOC_UNKNOWN_ID) return;
+      /* If option is invalid, clear */
+      if (!option.id) {
+        locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+        locationDispatch({ type: actionTypes.CLEAR_LOCATION });
+        locationDispatch({
+          type: actionTypes.SET_LOCATION_VALID,
+          payload: false,
+        });
+        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+        return;
+      }
+      /* If valid, select this option */
+      locationDispatch({
+        type: actionTypes.SET_LOCATION,
+        payload: {
+          lat: option.lat,
+          lng: option.lng,
+          id: option.id,
+        },
+      });
+      lastSelectedTermRef.current = option.display_name;
+      locationDispatch({
+        type: actionTypes.SET_SEARCH_TERM,
+        payload: option.display_name,
+      });
+      getIsDevMode() && console.debug('[Selected location]', option);
+    },
+    [locationDispatch],
+  );
+
+  /**
+   * Fetches geolocation when GPS button is clicked.
+   * - Takes over the searching
+   * - Updates `lastSelectedTermRef`
+   */
+  const handleGpsClick = useCallback(async () => {
+    /* Skip fetching if offline or no service defined */
+    if (offlineState.dialogOpen || offlineState.dismissed || !geoService) {
+      return null;
+    }
+    /* Do not fetch suggestions */
+    setSkipFetch(true);
+    /* Do not fetch tz using API */
+    setSkipTz(true);
+    /* Clear errors & null errors and suggestions */
+    clearLocationError(locationDispatch, setErrorMessage);
+    locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
+    locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
+    locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+    /* Reset validity */
+    locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
+    /* Fetch geolocation and update location & searchTerm */
+    const err = await fetchCurrentLocation(
+      geoService,
+      lastSelectedTermRef,
+      locationDispatch,
+    );
+    if (err) {
+      setErrorMessage((prev) => ({ ...prev, location: err.message }));
+    }
+  }, [offlineState, geoService, setSkipTz, locationDispatch, setErrorMessage]);
+
+  /**
+   * Updates when `onInputChange` fires.
+   * - `reason`: `'input'`, `'reset'`, `'clear'`, `'blur'`, `'selectOption'`, `'removeOption'`
+   * - Only updates if user is actually typing (`reason` is not 'reset')
+   *   and is not loading GPS
+   * - Only fetches suggestions if user is typing and `value` is non-blank
+   * @type {(event: ReactSyntheticEvent, value: string, reason: string) => void}
+   */
+  const handleInputChange = useCallback(
+    (event, value, reason) => {
+      /* Skip if triggered by programmatic change (select or hit Enter before fetching)
+       * or GPS is loading (setting GPS result doesn't trigger this)
+       */
+      if ((reason !== 'input' && reason !== 'clear') || gpsLoading) return;
+      /* Clear suggestions and lastSelectedTermRef before fetching */
+      lastSelectedTermRef.current = '';
+      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+      /* Update searchTerm only when value is non-blank */
+      if (value.trim()) {
+        /* Ready to fetch suggestions */
+        setSkipFetch(false);
+        locationDispatch({
+          type: actionTypes.SET_SEARCH_TERM,
+          payload: value,
+        });
+      } else {
+        /* Clear searchTerm if value is blank */
         locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
       }
     },
-    [isSelecting, locationDispatch, debouncedFetchSuggestions]
+    [gpsLoading, locationDispatch],
   );
 
-  const handleSelect = useCallback((event, value) => {
-    if (!value || !value.id || value.id === ADDR_UNKNOWN || value.id === ADDR_NOT_FOUND) {
-      locationDispatch({ type: actionTypes.CLEAR_LOCATION });
-      locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
-      locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+  /**
+   * Selects the option when `onChange` fires.
+   * - `reason`: `'createOption'`, `'selectOption'`, `'removeOption'`, `'blur'`, `'clear'`
+   * - If presses Enter but no data returned yet, `value` is a string, skips
+   * - Set `location` and `searchTerm`
+   * - Skips fetching suggestions
+   * - Updates `lastSelectedTermRef`
+   * - Clears suggestions
+   * @type {(event: ReactSyntheticEvent, value: string | AddressItem | null, reason: string) => void}
+   */
+  const handleSelect = useCallback(
+    (event, value, reason) => {
+      /* Skip if not triggered by selecting an option */
+      if (reason !== 'selectOption' || typeof value === 'string' || !value)
+        return;
+      /* Do not fetch suggestions */
+      setSkipFetch(true);
+      /* Ready to fetch tz */
+      setSkipTz(false);
+      selectOption(value);
+      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+    },
+    [setSkipTz, selectOption, locationDispatch],
+  );
+
+  /** @type {(event: any) => void} */
+  const handleKeyDown = useCallback(
+    (event) => {
+      if (event.key === 'Enter') {
+        /* If fetching or no results, prevent the default 'select' behavior */
+        if (gpsLoading || suggestionsLoading || suggestions.length === 0) {
+          event.defaultMuiPrevented = true;
+        }
+      }
+    },
+    [suggestions, gpsLoading, suggestionsLoading],
+  );
+
+  /** @type {() => void} */
+  const handleBlur = useCallback(() => {
+    /* If fetching, searchTerm is empty, or selected, skip and close */
+    if (
+      gpsLoading ||
+      suggestionsLoading ||
+      !searchTerm ||
+      searchTerm === lastSelectedTermRef.current ||
+      /* Reverse geocoding failed (should already toggled to coordinate mode) */
+      (suggestions.length > 0 && suggestions[0].display_name === LOC_UNKNOWN)
+    ) {
+      setOpen(false);
       return;
     }
-
-    const selectedSuggestion = suggestions.find(
-      (suggestion) => suggestion.id === value.id
-    );
-    if (selectedSuggestion) {
-      isSelecting.current = true;
-      locationDispatch({ type: actionTypes.SET_LOCATION, payload: {
-        lat: selectedSuggestion.lat,
-        lng: selectedSuggestion.lng,
-        id: selectedSuggestion.id,
-      } });
-      locationDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: selectedSuggestion.display_name });
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-      lastSelectedTerm.current = selectedSuggestion.display_name;
-      getIsDevMode() && console.log("[Selected Address]", selectedSuggestion);
+    /* When loosing focus, auto-select or warn */
+    if (suggestions.length > 0 && suggestions[0].display_name === searchTerm) {
+      /* If the search term itself is a valid address, select this option and close */
+      selectOption(suggestions[0]);
+      setOpen(false);
+    } else if (suggestions.length > 0) {
+      /* If none has been selected, warn and set invalid */
+      locationDispatch({
+        type: actionTypes.SET_ADDRESS_ERROR,
+        payload: SELECT_WARN,
+      });
+      locationDispatch({
+        type: actionTypes.SET_LOCATION_VALID,
+        payload: false,
+      });
+    } else if (
+      !locationError.address &&
+      !errorMessage.location &&
+      !gpsLoading
+    ) {
+      // TODO: this should not happen
+      /* If searchTerm is not empty but nothing returned yet for this new search
+       * and not querying GPS, fetch again
+       */
+      lastSelectedTermRef.current = '';
+      setSkipFetch(false);
+      setRefreshCount((prev) => prev + 1);
+      getIsDevMode() && console.debug('⚠️ Refetching locations...');
     }
-  }, [suggestions, isSelecting, lastSelectedTerm, locationDispatch]);
+  }, [
+    searchTerm,
+    suggestions,
+    gpsLoading,
+    suggestionsLoading,
+    locationError,
+    errorMessage,
+    selectOption,
+    locationDispatch,
+  ]);
 
-  const handleKeyDown = useCallback((event) => {
-    if (event.key === 'Enter') {
-      /* Prevent default 'Enter' behavior */
-      event.defaultMuiPrevented = true;
-
-      if (highlightedIndex >= 0 && highlightedIndex < suggestions.length) {
-        /* Select the highlighted suggestion */
-        const highlightedSuggestion = suggestions[highlightedIndex];
-        if (highlightedSuggestion.id && highlightedSuggestion.id !== ADDR_UNKNOWN) {
-          isSelecting.current = true;
-          locationDispatch({ type: actionTypes.SET_LOCATION, payload: {
-            lat: highlightedSuggestion.lat,
-            lng: highlightedSuggestion.lng,
-            id: highlightedSuggestion.id,
-          } });
-          locationDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: highlightedSuggestion.display_name });
-          locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-          lastSelectedTerm.current = highlightedSuggestion.display_name;
-        }
-      } else if (searchTerm !== lastSelectedTerm.current && searchTerm && suggestions.length === 0 && !locationLoading && !suggestionsLoading) {
-        /* If failed to fetch suggestions due to any unknown reasons last time, fetch again */
-        isSelecting.current = false;
-        debouncedFetchSuggestions(searchTerm.trim());
-      }
-    }
-  }, [searchTerm, suggestions, highlightedIndex, locationLoading, suggestionsLoading, isSelecting, lastSelectedTerm, locationDispatch, debouncedFetchSuggestions]);
-
-  const handleHighlightChange = useCallback((event, option, reason) => {
-    if (reason === 'keyboard' || reason === 'mouse') {
-      const index = suggestions.findIndex((suggestion) => suggestion.id === option.id);
-      locationDispatch({ type: actionTypes.SET_HIGHLIGHTED_INDEX, payload: index });
-    }
-  }, [suggestions, locationDispatch]);
-
-  const handleBlur = useCallback(() => {
-    if (searchTerm !== lastSelectedTerm.current) {
-      if (
-        searchTerm && suggestions.length > 0 &&
-        suggestions[0].display_name === searchTerm &&
-        suggestions[0].display_name !== ADDR_UNKNOWN &&
-        suggestions[0].display_name !== ADDR_NOT_FOUND  // redundant, suggestions have been cleared already
-      ) {
-        /* If the search term is a valid address, set it */
-        isSelecting.current = true;
-        locationDispatch({ type: actionTypes.SET_LOCATION, payload: {
-          lat: suggestions[0].lat,
-          lng: suggestions[0].lng,
-          id: suggestions[0].id,
-        } });
-        lastSelectedTerm.current = searchTerm;
-      } else if (searchTerm) {
-        if (suggestions.length > 0) {
-          /* If no option has been selected, warn */
-          locationDispatch({ type: actionTypes.SET_ADDRESS_ERROR, payload: 'Please select a location from the suggestions.' });
-          locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
-        } else {
-          /* If failed to fetch suggestions due to any unknown reasons last time, fetch again */
-          isSelecting.current = false;
-          debouncedFetchSuggestions(searchTerm.trim());
-        }
-      }
-    }
-  }, [searchTerm, suggestions, isSelecting, lastSelectedTerm, locationDispatch, debouncedFetchSuggestions]);
+  /** @type {(event: ReactSyntheticEvent, reason: string) => void} */
+  const handleClose = (event, reason) => {
+    if (reason === 'blur') return;
+    setOpen(false);
+  };
 
   return (
     <Autocomplete
@@ -197,65 +357,79 @@ const AddressInput = ({ setErrorMessage }) => {
       clearOnEscape
       autoHighlight
       openOnFocus
-      disabled={!serviceChosen}
-      options={searchTerm.trim() ? suggestions : []}
-      getOptionLabel={(option) => option.display_name}
+      disabled={!geoService}
+      options={suggestions}
+      getOptionLabel={(option) =>
+        typeof option === 'string' ? option : option.display_name
+      }
       inputValue={searchTerm}
-      onInputChange={handleSearchChange}
+      isOptionEqualToValue={(option, value) => option.id === value.id}
+      forcePopupIcon={suggestions.length > 0}
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={handleClose}
+      onInputChange={handleInputChange}
       onChange={handleSelect}
       onKeyDown={handleKeyDown}
-      onHighlightChange={handleHighlightChange}
       onBlur={handleBlur}
-      filterOptions={(x) => x}
+      blurOnSelect="touch" // disable for mobile devices to hide the virtual keyboard
+      filterOptions={(x) => x} // bypass MUI's internal filtering logic
       loading={suggestionsLoading}
-      renderOption={(props, option) => (
-        <li
-          {...props}
-          key={option.id}
-          style={!option.id || option.id === ADDR_UNKNOWN ? { pointerEvents: 'none', color: 'InactiveCaptionText', fontStyle: 'italic' } : {}}
-        >
-          <Stack direction="row" spacing={1} sx={{ width: '100%', justifyContent: 'space-between' }}>
-            <Typography>
-              {option.display_name}
-            </Typography>
+      renderOption={({ key, ...props }, option) => (
+        <li key={key} {...props}>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ width: '100%', justifyContent: 'space-between' }}
+          >
+            <Typography>{option.display_name}</Typography>
             <Box>
-              {option.addresstype ? <Chip label={option.addresstype} size="small" color="primary" variant="outlined" /> : ''}
+              {option.addresstype ? (
+                <Chip
+                  label={option.addresstype}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
+              ) : (
+                ''
+              )}
             </Box>
           </Stack>
         </li>
       )}
       renderInput={(params) => (
-        <TextField
+        <CustomTextField
           {...params}
-          required
-          label="Search address"
-          placeholder="Enter a place, city, county, state, or country"
-          size="small"
-          variant="outlined"
-          fullWidth
+          label={INPUT_LABEL}
+          placeholder={PLACEHOLDER}
+          inputRef={inputRef}
           error={!!locationError.address || !!locationNullError.address}
           helperText={locationError.address || locationNullError.address}
-          inputRef={inputRef}
-          InputProps={{
-            ...params.InputProps,
-            startAdornment: (
-              <InputAdornment position="start" sx={{ ml: 1, mr: -1 }}>
-                {!suggestionsLoading && !locationLoading ? (
-                  <Tooltip title="Find My Location">
-                    <IconButton aria-label="GPS" edge="start" onClick={handleGpsClick}>
-                      <GpsFixedIcon size={20} sx={gpsBtnStyle} />
-                    </IconButton>
-                  </Tooltip>
-                ) : (
-                  <CircularProgress size={20} sx={{ color: "action.disabled", mr: 1 }} />
-                )}
-              </InputAdornment>
-            ),
-          }}
+          startAdornment={
+            <InputAdornment position="start" sx={{ ml: 0.5, mr: -0.4 }}>
+              {!suggestionsLoading && !gpsLoading ? (
+                <Tooltip title={GPS_TOOLTIP_TITLE}>
+                  <div>
+                    <BarIconButton
+                      aria-label={GPS_LABEL}
+                      edge="start"
+                      onClick={handleGpsClick}
+                      sx={{ py: 0.5 }}
+                    >
+                      {gpsIcon}
+                    </BarIconButton>
+                  </div>
+                </Tooltip>
+              ) : (
+                circularProgress
+              )}
+            </InputAdornment>
+          }
         />
       )}
     />
   );
 };
 
-export default React.memo(AddressInput);
+export default memo(AddressInput);

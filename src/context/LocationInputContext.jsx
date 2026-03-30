@@ -1,24 +1,56 @@
 // src/context/LocationInputContext.jsx
-import React, { createContext, useContext, useReducer, useRef } from 'react';
-import { useService } from './ServiceContext';
+/* eslint-disable react-refresh/only-export-components */
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useState,
+  useRef,
+  useCallback,
+} from 'react';
 import * as actionTypes from './locationInputActionTypes';
-import { TYPE_ADDR } from '@utils/constants';
+import { STORAGE_KEYS, LOC_INPUT_TYPES } from '@utils/constants';
 
-const LocationInputContext = createContext();
+/** 1 hour */
+const SERVICE_STALE_MS = 60 * 60_000;
 
+/**
+ * Loads the geocoding service name from `localStorage`.
+ * @returns {GeoService | null} The geocoding service name, or `null` if stale or missing.
+ */
+const getInitialService = () => {
+  const raw = localStorage.getItem(STORAGE_KEYS.service);
+  if (!raw) return null;
+  /** @type {{service: GeoService, timestamp: number}} */
+  const { service, timestamp } = JSON.parse(raw);
+  if (Date.now() - timestamp > SERVICE_STALE_MS) return null;
+  console.debug('📦 [Geocoding service]', service);
+  return service;
+};
+
+const initialService = getInitialService();
+
+/** @type {React.Context<*>} */
+const LocationInputContext = createContext(null);
+
+/** @type {LocationInitialState} */
 const initialState = {
-  location: { lat: '', lng: '', id: '', tz: '' },  // id: ''(not-found), 'unknown'
-  locationInputType: TYPE_ADDR,  // 'address', 'coordinates'
+  location: { lat: '', lng: '', id: '', tz: '' },
+  locationInputType: LOC_INPUT_TYPES.addr,
   searchTerm: '',
   suggestions: [],
-  highlightedIndex: -1,
-  locationLoading: false,
+  gpsLoading: false,
   suggestionsLoading: false,
   locationError: { address: '', lat: '', lng: '' },
   locationNullError: { address: '', lat: '', lng: '' },
   locationValid: true,
 };
 
+/**
+ * @param {LocationObj} state
+ * @param {Action} action
+ * @returns {LocationObj}
+ */
 const locationReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_LAT:
@@ -30,10 +62,7 @@ const locationReducer = (state, action) => {
     case actionTypes.SET_TZ:
       return { ...state, tz: action.payload };
     case actionTypes.SET_LOCATION:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_LOCATION:
       return { lat: '', lng: '', id: '', tz: '' };
     default:
@@ -41,6 +70,11 @@ const locationReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {LocationErrorObj} state
+ * @param {Action} action
+ * @returns {LocationErrorObj}
+ */
 const locationErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_ADDRESS_ERROR:
@@ -50,10 +84,7 @@ const locationErrorReducer = (state, action) => {
     case actionTypes.SET_LNG_ERROR:
       return { ...state, lng: action.payload };
     case actionTypes.SET_LOCATION_ERROR:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_LOCATION_ERROR:
       return { address: '', lat: '', lng: '' };
     default:
@@ -61,6 +92,11 @@ const locationErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {LocationNullErrorObj} state
+ * @param {Action} action
+ * @returns {LocationNullErrorObj}
+ */
 const locationNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_ADDRESS_NULL_ERROR:
@@ -82,6 +118,11 @@ const locationNullErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {LocationInitialState} state
+ * @param {Action} action
+ * @returns {LocationInitialState}
+ */
 const locationInputReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_LAT:
@@ -114,7 +155,10 @@ const locationInputReducer = (state, action) => {
     case actionTypes.CLEAR_LOCATION_NULL_ERROR:
       return {
         ...state,
-        locationNullError: locationNullErrorReducer(state.locationNullError, action),
+        locationNullError: locationNullErrorReducer(
+          state.locationNullError,
+          action,
+        ),
       };
 
     case actionTypes.SET_INPUT_TYPE:
@@ -130,15 +174,10 @@ const locationInputReducer = (state, action) => {
     case actionTypes.CLEAR_SUGGESTIONS:
       return { ...state, suggestions: [] };
 
-    case actionTypes.SET_HIGHLIGHTED_INDEX:
-      return { ...state, highlightedIndex: action.payload };
-    case actionTypes.CLEAR_HIGHLIGHTED_INDEX:
-      return { ...state, highlightedIndex: -1 };
-
-    case actionTypes.SET_LOCATION_LOADING_ON:
-      return { ...state, locationLoading: true };
-    case actionTypes.SET_LOCATION_LOADING_OFF:
-      return { ...state, locationLoading: false };
+    case actionTypes.SET_GPS_LOADING_ON:
+      return { ...state, gpsLoading: true };
+    case actionTypes.SET_GPS_LOADING_OFF:
+      return { ...state, gpsLoading: false };
     case actionTypes.SET_SUGGESTIONS_LOADING_ON:
       return { ...state, suggestionsLoading: true };
     case actionTypes.SET_SUGGESTIONS_LOADING_OFF:
@@ -151,26 +190,77 @@ const locationInputReducer = (state, action) => {
   }
 };
 
+/**
+ * Provides the location input context to its children components.
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ */
 export const LocationInputProvider = ({ children }) => {
-  const [locationState, locationDispatch] = useReducer(locationInputReducer, initialState);
-  const { serviceChosen, setServiceChosen } = useService();
-  const latestTzRequest = useRef(0);
-  const latestSuggestionRequest = useRef(0);
-  const isSelecting = useRef(false);
-  const lastSelectedTerm = useRef(null);
+  const [locationState, locationDispatch] = useReducer(
+    locationInputReducer,
+    initialState,
+  );
+  const [geoService, setGeoService] = useState(initialService);
+  const [skipTz, setSkipTz] = useState(false);
+  const locationInputTypeRef = useRef(LOC_INPUT_TYPES.addr);
+
+  /**
+   * Sets `geoService` and stores in `localStorage`.
+   * @type {(service: GeoService | null, noLocal?: boolean) => void}
+   */
+  const updateService = useCallback((service, noLocal = false) => {
+    setGeoService(service);
+    if (!noLocal) {
+      localStorage.setItem(
+        STORAGE_KEYS.service,
+        JSON.stringify({ service, timestamp: Date.now() }),
+      );
+    } else {
+      localStorage.removeItem(STORAGE_KEYS.service);
+    }
+  }, []);
+
+  /**
+   * Clears location and suggestions.
+   * @type {() => void}
+   */
+  const resetLocationValues = useCallback(() => {
+    /* Clear location and suggestions */
+    locationDispatch({ type: actionTypes.CLEAR_LOCATION });
+    locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+    locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+  }, []);
 
   return (
-    <LocationInputContext.Provider value={{
-      ...locationState,
-      serviceChosen, setServiceChosen,
-      latestTzRequest, latestSuggestionRequest,
-      isSelecting,
-      lastSelectedTerm,
-      locationDispatch,
-    }}>
+    <LocationInputContext.Provider
+      value={{
+        ...locationState,
+        geoService,
+        skipTz,
+        setSkipTz,
+        setGeoService: updateService,
+        locationInputTypeRef,
+        resetLocationValues,
+        locationDispatch,
+      }}
+    >
       {children}
     </LocationInputContext.Provider>
   );
 };
 
-export const useLocationInput = () => useContext(LocationInputContext);
+/**
+ * Custom hook to use the LocationInputContext.
+ * Ensures the hook is used within an LocationInputProvider.
+ * @returns {LocationContextType} The location input context value.
+ * @throws {Error} If used outside of an LocationInputProvider.
+ */
+export const useLocationInput = () => {
+  const context = useContext(LocationInputContext);
+  if (!context) {
+    throw new Error(
+      'useLocationInput must be used within an LocationInputProvider',
+    );
+  }
+  return context;
+};

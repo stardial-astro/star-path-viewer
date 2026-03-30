@@ -1,4 +1,4 @@
-// https://unpkg.com/browser-geo-tz@0.2.0/dist/geotz.js
+// https://unpkg.com/browser-geo-tz@0.2.1/dist/geotz.js
 (() => {
   var __create = Object.create;
   var __defProp = Object.defineProperty;
@@ -1630,7 +1630,10 @@
   function init(geoDataSource = "https://cdn.jsdelivr.net/npm/geo-tz@latest/data/timezones-1970.geojson.geo.dat", tzDataSource = "https://cdn.jsdelivr.net/npm/geo-tz@latest/data/timezones-1970.geojson.index.json") {
     const geoData = typeof geoDataSource === "string" ? async (start, end) => {
       const response = await fetch(geoDataSource, {
-        headers: { Range: `bytes=${start}-${end}` }
+        headers: {
+          Range: `bytes=${start}-${end}`,
+          "Accept-Encoding": "identity"
+        }
       });
       return await response.arrayBuffer();
     } : geoDataSource;

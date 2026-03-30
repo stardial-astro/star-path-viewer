@@ -1,28 +1,63 @@
 // src/context/StarInputContext.jsx
-import React, { createContext, useContext, useReducer, useRef } from 'react';
+/* eslint-disable react-refresh/only-export-components */
+import {
+  createContext,
+  useContext,
+  useReducer,
+  useState,
+  useCallback,
+} from 'react';
 import * as actionTypes from './starInputActionTypes';
-import { TYPE_NAME, FORMAT_DMS } from '@utils/constants';
+import { STORAGE_KEYS, STAR_INPUT_TYPES, RADEC_TYPES } from '@utils/constants';
+import { getIsDevMode } from '@utils/devMode';
 
-const StarInputContext = createContext();
+/** 6 hours */
+const HIP_STALE_MS = 6 * 60 * 60_000;
 
+const isDevMode = getIsDevMode();
+
+/**
+ * Loads the HIP list from `localStorage`.
+ * @returns {HipItem[] | null} The HIP list, or `null` if stale or missing.
+ */
+const getInitialHipList = () => {
+  const raw = localStorage.getItem(STORAGE_KEYS.hip);
+  if (!raw) return null;
+  /** @type {{data: HipItem[], timestamp: number}} */
+  const { data, timestamp } = JSON.parse(raw);
+  if (Date.now() - timestamp > HIP_STALE_MS) return null;
+  isDevMode &&
+    console.debug('📦 [HIP list]', data.length, 'entries');
+  return data;
+};
+
+const initialHipList = getInitialHipList();
+
+/** @type {React.Context<*>} */
+const StarInputContext = createContext(null);
+
+/** @type {StarInitialState} */
 const initialState = {
   starName: '',
   starNameZh: '',
   starHip: '',
   starRadec: { ra: '', dec: '' },
-  starRaHMS: { hours: '', minutes: '', seconds: '' },
-  starDecDMS: { degrees: '', minutes: '', seconds: '' },
-  starInputType: TYPE_NAME,  // 'name', 'hip', 'radec'
-  radecFormat: FORMAT_DMS,  // 'decimal', 'dms'
+  starRaHms: { hours: '', minutes: '', seconds: '' },
+  starDecDms: { degrees: '', minutes: '', seconds: '' },
+  starInputType: STAR_INPUT_TYPES.name,
+  radecFormat: RADEC_TYPES.dms,
   searchTerm: '',
   suggestions: [],
-  highlightedIndex: -1,
-  cachedNames: null,
   starError: { name: '', hip: '', ra: '', dec: '' },
   starNullError: { name: '', hip: '', ra: '', dec: '' },
   starValid: true,
 };
 
+/**
+ * @param {RadecObj} state
+ * @param {Action} action
+ * @returns {RadecObj}
+ */
 const starRadecReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_RA:
@@ -30,10 +65,7 @@ const starRadecReducer = (state, action) => {
     case actionTypes.SET_STAR_DEC:
       return { ...state, dec: action.payload };
     case actionTypes.SET_STAR_RADEC:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_STAR_RADEC:
       return { ra: '', dec: '' };
     default:
@@ -41,6 +73,11 @@ const starRadecReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {RaHmsObj} state
+ * @param {Action} action
+ * @returns {RaHmsObj}
+ */
 const starRaHmsReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_RA_HOURS:
@@ -50,10 +87,7 @@ const starRaHmsReducer = (state, action) => {
     case actionTypes.SET_STAR_RA_SECONDS:
       return { ...state, seconds: action.payload };
     case actionTypes.SET_STAR_RA_HMS:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_STAR_RA_HMS:
       return { hours: '', minutes: '', seconds: '' };
     default:
@@ -61,6 +95,11 @@ const starRaHmsReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {DecDmsObj} state
+ * @param {Action} action
+ * @returns {DecDmsObj}
+ */
 const starDecDmsReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_DEC_DEGREES:
@@ -70,10 +109,7 @@ const starDecDmsReducer = (state, action) => {
     case actionTypes.SET_STAR_DEC_SECONDS:
       return { ...state, seconds: action.payload };
     case actionTypes.SET_STAR_DEC_DMS:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_STAR_DEC_DMS:
       return { degrees: '', minutes: '', seconds: '' };
     default:
@@ -81,6 +117,11 @@ const starDecDmsReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {StarErrorObj} state
+ * @param {Action} action
+ * @returns {StarErrorObj}
+ */
 const starErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_NAME_ERROR:
@@ -92,10 +133,7 @@ const starErrorReducer = (state, action) => {
     case actionTypes.SET_STAR_DEC_ERROR:
       return { ...state, dec: action.payload };
     case actionTypes.SET_STAR_ERROR:
-      return {
-        ...state,
-        ...action.payload,
-      };
+      return { ...state, ...action.payload };
     case actionTypes.CLEAR_STAR_ERROR:
       return { name: '', hip: '', ra: '', dec: '' };
     default:
@@ -103,12 +141,20 @@ const starErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {StarNullErrorObj} state
+ * @param {Action} action
+ * @returns {StarNullErrorObj}
+ */
 const starNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_NAME_NULL_ERROR:
       return { ...state, name: 'Please select a planet.' };
     case actionTypes.SET_STAR_HIP_NULL_ERROR:
-      return { ...state, hip: 'Please search and select a Hipparcos Catalogue number.' };
+      return {
+        ...state,
+        hip: 'Please search and select a Hipparcos Catalogue number.',
+      };
     case actionTypes.SET_STAR_RA_NULL_ERROR:
       return { ...state, ra: 'Please enter a right ascension.' };
     case actionTypes.SET_STAR_DEC_NULL_ERROR:
@@ -128,6 +174,11 @@ const starNullErrorReducer = (state, action) => {
   }
 };
 
+/**
+ * @param {StarInitialState} state
+ * @param {Action} action
+ * @returns {StarInitialState}
+ */
 const starInputReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_NAME:
@@ -155,7 +206,7 @@ const starInputReducer = (state, action) => {
     case actionTypes.CLEAR_STAR_RA_HMS:
       return {
         ...state,
-        starRaHMS: starRaHmsReducer(state.starRaHMS, action),
+        starRaHms: starRaHmsReducer(state.starRaHms, action),
       };
 
     case actionTypes.SET_STAR_DEC_DEGREES:
@@ -165,7 +216,7 @@ const starInputReducer = (state, action) => {
     case actionTypes.CLEAR_STAR_DEC_DMS:
       return {
         ...state,
-        starDecDMS: starDecDmsReducer(state.starDecDMS, action),
+        starDecDms: starDecDmsReducer(state.starDecDms, action),
       };
 
     case actionTypes.SET_STAR_NAME_ERROR:
@@ -208,14 +259,6 @@ const starInputReducer = (state, action) => {
     case actionTypes.CLEAR_SUGGESTIONS:
       return { ...state, suggestions: [] };
 
-    case actionTypes.SET_HIGHLIGHTED_INDEX:
-      return { ...state, highlightedIndex: action.payload };
-    case actionTypes.CLEAR_HIGHLIGHTED_INDEX:
-      return { ...state, highlightedIndex: -1 };
-    
-    case actionTypes.SET_CACHED_NAMES:
-      return { ...state, cachedNames: action.payload };
-
     case actionTypes.SET_STAR_VALID:
       return { ...state, starValid: action.payload };
     default:
@@ -223,23 +266,70 @@ const starInputReducer = (state, action) => {
   }
 };
 
+/**
+ * Provides the star input context to its children components.
+ * @param {object} props
+ * @param {React.ReactNode} props.children
+ */
 export const StarInputProvider = ({ children }) => {
   const [starState, starDispatch] = useReducer(starInputReducer, initialState);
-  const latestSuggestionRequest = useRef(0);
-  const isSelecting = useRef(false);
-  const lastSelectedTerm = useRef(null);
+  const [hipList, setHipList] = useState(initialHipList);
+
+  /**
+   * Sets `hipList` and stores in `localStorage`.
+   * @type {(data: HipItem[]) => void}
+   */
+  const updateHipList = useCallback((data) => {
+    setHipList(data);
+    localStorage.setItem(
+      STORAGE_KEYS.hip,
+      JSON.stringify({ data, timestamp: Date.now() }),
+    );
+  }, []);
+
+  /**
+   * Clears name, HIP, suggestions, RA/Dec, and resets validity.
+   * @type {() => void}
+   */
+  const resetStarValues = useCallback(() => {
+    /* Clear name, HIP, and suggestions */
+    starDispatch({ type: actionTypes.CLEAR_STAR_HIP_AND_NAME });
+    starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+    starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+    /* Clearing debounced searchTerm also clears lastSelectedTermRef in [StarHipInput] */
+    /* Clear RA/Dec */
+    starDispatch({ type: actionTypes.CLEAR_STAR_RADEC });
+    starDispatch({ type: actionTypes.CLEAR_STAR_RA_HMS });
+    starDispatch({ type: actionTypes.CLEAR_STAR_DEC_DMS });
+    /* Reset validity */
+    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
+  }, []);
 
   return (
-    <StarInputContext.Provider value={{
-      ...starState,
-      latestSuggestionRequest,
-      isSelecting,
-      lastSelectedTerm,
-      starDispatch,
-    }}>
+    <StarInputContext.Provider
+      value={{
+        ...starState,
+        hipList,
+        setHipList: updateHipList,
+        resetStarValues,
+        starDispatch,
+      }}
+    >
       {children}
     </StarInputContext.Provider>
   );
 };
 
-export const useStarInput = () => useContext(StarInputContext);
+/**
+ * Custom hook to use the StarInputContext.
+ * Ensures the hook is used within an StarInputProvider.
+ * @returns {StarContextType} The star input context value.
+ * @throws {Error} If used outside of an StarInputProvider.
+ */
+export const useStarInput = () => {
+  const context = useContext(StarInputContext);
+  if (!context) {
+    throw new Error('useStarInput must be used within an StarInputProvider');
+  }
+  return context;
+};

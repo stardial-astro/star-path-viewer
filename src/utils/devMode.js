@@ -1,12 +1,18 @@
-// devMode.js
-/* A singleton utility to set `isDevMode` to true for console output. */
-let isDevMode = false;
+// src/utils/devMode.js
+/* A singleton utility to set `isDevMode` to true for verbose console output. */
 
-export const triggerDevModeCount = 10;
+/** `true` if in development environment. */
+let isDevMode = import.meta.env.DEV === true;
 
+/**
+ * Sets `isDevMode` to `true` for verbose console output.
+ */
 export const enableDevMode = () => {
-    isDevMode = true;
-    console.log('****** Dev Mode Enabled ******');
+  isDevMode = true;
+  console.debug('****** Dev Mode Enabled ******');
 };
 
+/**
+ * @returns {boolean} The value of `isDevMode`.
+ */
 export const getIsDevMode = () => isDevMode;

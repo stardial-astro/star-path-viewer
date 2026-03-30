@@ -1,5 +1,5 @@
 // src/components/Navigation/Footer.jsx
-import React from 'react';
+import { memo } from 'react';
 import { Container, Box, Typography, Link } from '@mui/material';
 import CustomDivider from '@components/UI/CustomDivider';
 import ccSvg from '@assets/cc.svg';
@@ -8,9 +8,8 @@ import bySvg from '@assets/by.svg';
 const Footer = () => {
   return (
     <Container
-      maxWidth="md"
       sx={{
-        flexShrink: 0,
+        maxWidth: 'md',
         px: 0,
       }}
     >
@@ -19,30 +18,38 @@ const Footer = () => {
       <Box
         component="footer"
         sx={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          color: 'text.disabled',
           pt: 0,
           pb: 0.8,
           px: { xs: 2, sm: 0, md: 0 },
-          textAlign: 'center',
           width: '100%',
         }}
       >
-        <Typography variant="body2" component="p" color="action.active">
+        <Typography variant="body2" component="p" sx={{ textAlign: 'left' }}>
           &copy; {new Date().getFullYear()} Stardial. Created by{' '}
-          <Link href="https://github.com/lydiazly" target="_blank" rel="noopener noreferrer">
+          <Link
+            href="https://github.com/lydiazly"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Lydia Zhang
           </Link>
           ,{' '}
-          <Link href="https://github.com/claude-hao" target="_blank" rel="noopener noreferrer">
+          <Link
+            href="https://github.com/claude-hao"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Zhibo Hao
           </Link>
           , and Jinsong Guo.
         </Typography>
 
-        <Typography variant="body2" component="p" color="action.active">
-          <Box component="span">
-            All non-logo images on this site
-          </Box>
-          {' are licensed under '}
+        <Typography variant="body2" component="p" sx={{ textAlign: 'left' }}>
+          Source code and data are licensed under{' '}
           <Link
             href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1"
             target="_blank"
@@ -54,14 +61,25 @@ const Footer = () => {
               component="img"
               src={ccSvg}
               alt="CC logo"
-              color="action.active"
-              sx={{ height: '0.8rem!important', ml: 0.5, mb: 0.2, verticalAlign: 'text-bottom', opacity: 0.54 }}
+              sx={{
+                height: '0.8rem!important',
+                ml: 0.5,
+                mb: 0.2,
+                verticalAlign: 'text-bottom',
+                opacity: 0.4,
+              }}
             />
             <Box
               component="img"
               src={bySvg}
               alt="BY logo"
-              sx={{ height: '0.8rem!important', ml: 0.5, mb: 0.2, verticalAlign: 'text-bottom', opacity: 0.54 }}
+              sx={{
+                height: '0.8rem!important',
+                ml: 0.5,
+                mb: 0.2,
+                verticalAlign: 'text-bottom',
+                opacity: 0.4,
+              }}
             />
           </Link>
         </Typography>
@@ -70,4 +88,4 @@ const Footer = () => {
   );
 };
 
-export default React.memo(Footer);
+export default memo(Footer);

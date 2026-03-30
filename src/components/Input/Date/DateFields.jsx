@@ -1,128 +1,182 @@
 // src/components/Input/Date/DateFields.jsx
-import React, { useCallback } from 'react';
-import { Grid, TextField, MenuItem, InputAdornment, CircularProgress } from '@mui/material';
+import {
+  memo,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+  useDeferredValue,
+} from 'react';
+import { Grid } from '@mui/material';
+import config from '@utils/config';
+import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
+import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
-import { MONTHS, QUERY_FROM_CHANGE } from '@utils/constants';
+import useDebounce from '@hooks/useDebounce';
+import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
+import { EPH_RANGE } from '@utils/constants';
+import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
+import CustomNumberField from '@/components/UI/CustomNumberField';
+import MonthInput from './MonthInput';
+
+const YEAR_LABEL = 'Year';
+const DAY_LABEL = 'Day';
+
+const YEAR_NAME = YEAR_LABEL.toLowerCase();
+const DAY_NAME = DAY_LABEL.toLowerCase();
+
+const YEAR_MIN = EPH_RANGE.min[0];
+const YEAR_MAX = EPH_RANGE.max[0];
 
 const DateFields = () => {
+  // console.log('Rendering DateFields');
+  const { setErrorMessage } = useHome();
   const {
     date,
-    flag,  // 've', 'ss', 'ae', 'ws'
-    disabledMonths,
-    lastDay,
+    flag,
+    cal,
     dateFetching,
-    dateError, dateNullError,
-    queryDateFromRef,
+    dateError,
+    dateNullError,
     dateDispatch,
   } = useDateInput();
+  const { location } = useLocationInput();
 
-  const handleInputChange = useCallback((event) => {
-    const { name, value } = event.target;
-    switch (name) {
-      case 'year':
-        dateDispatch({ type: actionTypes.SET_YEAR, payload: value });
-        break;
-      case 'month':
-        dateDispatch({ type: actionTypes.SET_MONTH, payload: value });
-        break;
-      case 'day':
-        dateDispatch({ type: actionTypes.SET_DAY, payload: value });
-        break;
-      default:
-        return;
+  const isUserEdit = useRef(false);
+
+  /* Increase delay when flag is set */
+  const dynamicDelay = flag
+    ? config.TYPING_DELAY + 300
+    : config.TYPING_DELAY / 2;
+  const debouncedYear = useDebounce(date.year, dynamicDelay);
+  const debouncedDay = useDebounce(date.day, config.TYPING_DELAY / 2);
+  const debouncedFlag = useDebounce(flag, config.TYPING_DELAY / 2);
+  const debouncedLat = useDebounce(location.lat, config.TYPING_DELAY + 300);
+  const debouncedLng = useDebounce(location.lng, config.TYPING_DELAY + 300);
+
+  const deferredCal = useDeferredValue(cal);
+
+  const { correctedDate, dateParams, hasCorrection } = useMemo(
+    () =>
+      clampDateSync(
+        { year: debouncedYear, month: date.month, day: debouncedDay },
+        deferredCal,
+      ),
+    [debouncedYear, date.month, debouncedDay, deferredCal],
+  );
+
+  /* Clear errors & null errors in each field when user starts typing date */
+  useEffect(() => {
+    clearDateError(dateDispatch, setErrorMessage);
+    if (date.year) {
+      dateDispatch({ type: actionTypes.CLEAR_YEAR_NULL_ERROR });
     }
-    if (!flag) {
-      dateDispatch({ type: actionTypes.SET_DATE_ADJUSTING_ON });
-    } else {
-      queryDateFromRef.current = QUERY_FROM_CHANGE;
-      dateDispatch({ type: actionTypes.SET_DATE_FETCHING_ON });
+  }, [date.year, dateDispatch, setErrorMessage]);
+
+  useEffect(() => {
+    clearDateError(dateDispatch, setErrorMessage);
+    if (date.month) {
+      dateDispatch({ type: actionTypes.CLEAR_MONTH_NULL_ERROR });
     }
-  }, [flag, dateDispatch, queryDateFromRef]);
+  }, [date.month, dateDispatch, setErrorMessage]);
+
+  useEffect(() => {
+    clearDateError(dateDispatch, setErrorMessage);
+    if (date.day) {
+      dateDispatch({ type: actionTypes.CLEAR_DAY_NULL_ERROR });
+    }
+  }, [date.day, dateDispatch, setErrorMessage]);
+
+  /* Clamp date on change */
+  useEffect(() => {
+    if (!isUserEdit.current || flag) return;
+    isUserEdit.current = false;
+    if (hasCorrection) {
+      dateDispatch({ type: actionTypes.SET_DATE, payload: correctedDate });
+    }
+  }, [flag, hasCorrection, correctedDate, dateDispatch]);
+
+  /* Fetch date on debounced input change */
+  useDebouncedFetchDate(
+    debouncedYear,
+    debouncedFlag,
+    debouncedLat,
+    debouncedLng,
+    location.tz,
+    dateDispatch,
+    setErrorMessage,
+  );
+
+  /** @type {(event: ReactChangeEvent | ChangeEvent) => void} */
+  const handleInputChange = useCallback(
+    (event) => {
+      const { name, value } = event.target;
+      isUserEdit.current = true;
+      // dateDispatch({
+      //   type: actionTypes.SET_DATE,
+      //   payload: { ...date, [name]: value },
+      // });
+      switch (name) {
+        case 'year':
+          dateDispatch({ type: actionTypes.SET_YEAR, payload: value });
+          break;
+        case 'month':
+          dateDispatch({ type: actionTypes.SET_MONTH, payload: value });
+          break;
+        case 'day':
+          dateDispatch({ type: actionTypes.SET_DAY, payload: value });
+          break;
+        default:
+          return;
+      }
+    },
+    [dateDispatch],
+  );
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-      <Grid item xs={12} sm={4} md={4}>
-        <TextField
-          required
-          label="Year"
-          size="small"
-          variant="outlined"
-          name="year"
-          type="number"
+      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+        <CustomNumberField
+          label={YEAR_LABEL}
+          name={YEAR_NAME}
           value={date.year}
-          inputProps={{ min: -5000, max: 5000 }}
           onChange={handleInputChange}
-          onWheel={(event) => event.target.blur()}
-          fullWidth
-          error={!!dateError.year || !!dateError.general || !!dateNullError.year}
+          intOnly={true}
+          min={YEAR_MIN}
+          max={YEAR_MAX}
+          allowOutOfRange={false}
+          error={
+            !!dateError.year || !!dateError.general || !!dateNullError.year
+          }
           helperText={dateError.year || dateNullError.year}
         />
       </Grid>
-      <Grid item xs={12} sm={4} md={4}>
-        <TextField
-          required
-          select
-          label="Month"
-          InputLabelProps={{ htmlFor: 'month-select' }}
-          inputProps={{ id: 'month-select' }}
-          size="small"
-          variant="outlined"
-          name="month"
-          value={date.month}
+      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+        <MonthInput
+          min={dateParams.monthMin}
+          max={dateParams.monthMax}
           onChange={handleInputChange}
-          disabled={!!flag}
-          fullWidth
-          error={!!dateError.month || !!dateError.general || !!dateNullError.month}
-          helperText={dateError.month || dateNullError.month}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: !flag ? null : '#f5f5f5',
-            },
-          }}
-          InputProps={{
-            endAdornment: date.year && dateFetching ? (
-              <InputAdornment position="end" sx={{ mr: 2 }}>
-                <CircularProgress size={20} sx={{ color: 'action.disabled' }} />
-              </InputAdornment>
-            ) : null,
-          }}
-        >
-          <MenuItem key="none" value="" sx={{ color: 'action.active' }}>-- Select a month --</MenuItem>
-          {MONTHS.slice(1).map((month, index) => (
-            <MenuItem key={index} value={(index + 1).toString()} disabled={!!disabledMonths[index + 1]}>
-              {month.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        />
       </Grid>
-      <Grid item xs={12} sm={4} md={4}>
-        <TextField
-          required
-          label="Day"
-          size="small"
-          variant="outlined"
-          name="day"
-          type="number"
+      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+        <CustomNumberField
+          label={DAY_LABEL}
+          name={DAY_NAME}
           value={date.day}
           onChange={handleInputChange}
-          onWheel={(event) => event.target.blur()}
-          inputProps={{ min: 1, max: lastDay }}
+          intOnly={true}
+          min={dateParams.dayMin}
+          max={dateParams.dayMax}
+          allowOutOfRange={true}
           disabled={!!flag}
-          fullWidth
+          loading={date.year && dateFetching}
           error={!!dateError.day || !!dateError.general || !!dateNullError.day}
           helperText={dateError.day || dateNullError.day}
           sx={{
-            '& .MuiOutlinedInput-root': {
-              backgroundColor: !flag ? null : '#f5f5f5',
+            '& .MuiInputBase-root.Mui-disabled': {
+              backgroundColor: 'action.hover',
             },
-          }}
-          InputProps={{
-            endAdornment: date.year && dateFetching ? (
-              <InputAdornment position="end">
-                <CircularProgress size={20} sx={{ color: 'action.disabled' }} />
-              </InputAdornment>
-            ) : null,
           }}
         />
       </Grid>
@@ -130,4 +184,4 @@ const DateFields = () => {
   );
 };
 
-export default React.memo(DateFields);
+export default memo(DateFields);

@@ -1,84 +1,170 @@
 // src/components/Output/Annotations/AnnoTable.jsx
-import React, { useMemo } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import { dateTimeToStr, formatTimezone } from '@utils/dateUtils';
+import { memo, useMemo } from 'react';
+import { useTheme } from '@mui/material/styles';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+} from '@mui/material';
+import { styled, lighten } from '@mui/material/styles';
+import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
-const redAsterisk = <span style={{ color: 'red' }}>*</span>;
+/** @param {*} theme */
+const redAsterisk = (theme) => (
+  <span style={{ color: theme.palette.error.main }}>*</span>
+);
 
-const headStyle = { px: 1.5, textAlign: 'center' };
-const cellStyleHead = { px: 1, py: 1.5, textAlign: 'center', fontWeight: 500 };
-const cellStyleCenter = { px: 1, py: 1.5, textAlign: 'center' };
-const cellStyleRight = { pl: 1.2, pr: 1, py: 1.5, textAlign: 'right' };
 const timeMinWidth = '6.2rem';
 
-const stickyStyle = {
+const StyledHeadCell = styled(TableCell)(() => ({
+  textAlign: 'center',
+  paddingLeft: '12px',
+  paddingRight: '12px',
+}));
+
+const StyledCenterAlignCell = styled(TableCell)(() => ({
+  textAlign: 'center',
+  paddingLeft: '8px',
+  paddingRight: '8px',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+}));
+
+const StyledRightAlignCell = styled(TableCell)(() => ({
+  textAlign: 'right',
+  paddingLeft: '9.6px',
+  paddingRight: '8px',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+}));
+
+const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   position: 'sticky',
   left: 0,
-  backgroundColor: 'white',
+  textAlign: 'center',
+  backgroundColor: lighten(theme.palette.background.paper, 0.1),
+  borderRight: `1px solid ${theme.palette.action.disabledBackground}`,
   zIndex: 1,
-  borderRight: '1px solid rgba(224, 224, 224, 1)',
-};
+}));
 
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
+const StyledRow = styled(TableRow)(({ theme }) => ({
   // '&:nth-of-type(odd)': {
   //   backgroundColor: theme.palette.action.hover,
   // },
-  // Hide last border
+  /* Hide last border */
   '&:last-child td, &:last-child th': {
     borderBottom: 0,
   },
 }));
 
+/**
+ * @param {object} params
+ * @param {AnnoItem[]} params.anno - Filtered annotations.
+ */
 const AnnoTable = ({ anno }) => {
+  const theme = useTheme();
   const tzStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
+      <TableContainer
+        component={Paper}
+        sx={{ overflow: 'auto', colorScheme: theme.palette.mode }}
+      >
         <Table size="small" sx={{ borderCollapse: 'separate' }}>
           <TableHead>
             <TableRow>
-              <TableCell rowSpan={2} sx={{ ...headStyle, ...stickyStyle, px: 1.2 }}>Point</TableCell>
-              <TableCell rowSpan={2} sx={headStyle}>Altitude</TableCell>
-              <TableCell rowSpan={2} sx={headStyle}>Azimuth</TableCell>
-              <TableCell colSpan={2} sx={headStyle}>{`Standard Time (${tzStr})`} {redAsterisk}</TableCell>
-              <TableCell colSpan={2} sx={headStyle}>Local Mean Time (LMT)</TableCell>
-              <TableCell colSpan={2} sx={headStyle}>Universal Time (UT1)</TableCell>
+              <StyledStickyColumn
+                rowSpan={2}
+                sx={{
+                  px: 1.2,
+                }}
+              >
+                Point
+              </StyledStickyColumn>
+              <StyledHeadCell rowSpan={2}>Altitude</StyledHeadCell>
+              <StyledHeadCell rowSpan={2}>Azimuth</StyledHeadCell>
+              <StyledHeadCell colSpan={2}>
+                {`Standard Time (${tzStr})`} {redAsterisk(theme)}
+              </StyledHeadCell>
+              <StyledHeadCell colSpan={2}>Local Mean Time (LMT)</StyledHeadCell>
+              <StyledHeadCell colSpan={2}>Universal Time (UT1)</StyledHeadCell>
             </TableRow>
             <TableRow>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Gregorian</TableCell>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Julian</TableCell>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Gregorian</TableCell>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Julian</TableCell>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Gregorian</TableCell>
-              <TableCell sx={{ ...headStyle, minWidth: timeMinWidth }}>Julian</TableCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Gregorian
+              </StyledHeadCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Julian
+              </StyledHeadCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Gregorian
+              </StyledHeadCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Julian
+              </StyledHeadCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Gregorian
+              </StyledHeadCell>
+              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
+                Julian
+              </StyledHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {anno.map((item, index) => (
-              <StyledTableRow key={index}>
-                <TableCell component="th" scope="row" sx={{ ...cellStyleHead, ...stickyStyle }}>{item.name}</TableCell>
-                <TableCell sx={cellStyleRight}>{formatDecimalDegrees(item.alt)}</TableCell>
-                <TableCell sx={cellStyleRight}>{formatDecimalDegrees(item.az)}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_standard })}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_standard_julian })}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_local_mean })}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_local_mean_julian })}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_ut1 })}</TableCell>
-                <TableCell sx={cellStyleCenter}>{dateTimeToStr({ dateTime: item.time_ut1_julian })}</TableCell>
-              </StyledTableRow>
+              <StyledRow key={index}>
+                <StyledStickyColumn
+                  component="th"
+                  scope="row"
+                  sx={{ px: 1, py: 1.5, fontWeight: 500 }}
+                >
+                  {item.name}
+                </StyledStickyColumn>
+                <StyledRightAlignCell>
+                  {formatDecimalDegrees(item.alt)}
+                </StyledRightAlignCell>
+                <StyledRightAlignCell>
+                  {formatDecimalDegrees(item.az)}
+                </StyledRightAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_standard })}
+                </StyledCenterAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_standard_julian })}
+                </StyledCenterAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_local_mean })}
+                </StyledCenterAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_local_mean_julian })}
+                </StyledCenterAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_ut1 })}
+                </StyledCenterAlignCell>
+                <StyledCenterAlignCell>
+                  {datetimeToStr({ datetimeArr: item.time_ut1_julian })}
+                </StyledCenterAlignCell>
+              </StyledRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left', mt: 1, ml: 1 }}>
-        {redAsterisk} No Daylight Saving Time (DST) adjustments.
+      <Typography
+        variant="body2"
+        sx={{ textAlign: 'left', color: 'text.secondary', mt: 1, ml: 1 }}
+      >
+        {redAsterisk(theme)} No Daylight Saving Time (DST) adjustments.
       </Typography>
     </>
   );
 };
 
-export default React.memo(AnnoTable);
+export default memo(AnnoTable);

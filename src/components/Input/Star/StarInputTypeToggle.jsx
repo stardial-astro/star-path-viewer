@@ -1,47 +1,55 @@
 // src/components/Input/Star/StarInputTypeToggle.jsx
-import React, { useCallback } from 'react';
+import { memo, useCallback } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
-import { TYPE_NAME, TYPE_HIP, TYPE_RADEC } from '@utils/constants';
+import { STAR_INPUT_TYPES } from '@utils/constants';
+
+const STAR_INPUT_TYPE_LABEL = 'Star input type';
+
+const NAME_LABEL = 'Input name';
+const HIP_LABEL = 'Input HIP';
+const RADEC_LABEL = 'Input radec';
+const NAME_BTN_TEXT = 'Planet';
+const HIP_BTN_TEXT = 'Star';
+const RADEC_BTN_TEXT = 'RA/Dec (J2000)';
 
 const StarInputTypeToggle = () => {
-  const { starInputType, starDispatch } = useStarInput();
+  const { starInputType, resetStarValues, starDispatch } = useStarInput();
 
-  const handleInputTypeChange = useCallback((event, newInputType) => {
-    if (newInputType !== null) {
-      /* Clear the fields */
-      starDispatch({ type: actionTypes.CLEAR_STAR_HIP_AND_NAME });
-      starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
-      starDispatch({ type: actionTypes.CLEAR_STAR_RADEC });
-      starDispatch({ type: actionTypes.CLEAR_STAR_RA_HMS });
-      starDispatch({ type: actionTypes.CLEAR_STAR_DEC_DMS });
-
-      starDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: newInputType });
-    }
-  }, [starDispatch]);
+  /** @type {(event: ReactMouseEvent, value: StarInputType) => void} */
+  const handleInputTypeChange = useCallback(
+    (event, value) => {
+      /* Block deselection (when value is null) */
+      if (value === null) return;
+      starDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: value });
+      /* Clear name, HIP, suggestions, RA/Dec and resets validity */
+      resetStarValues();
+    },
+    [resetStarValues, starDispatch],
+  );
 
   return (
     <ToggleButtonGroup
+      exclusive
+      aria-label={STAR_INPUT_TYPE_LABEL}
       color="primary"
       size="small"
       value={starInputType}
-      exclusive
       onChange={handleInputTypeChange}
-      aria-label="Input type"
       fullWidth
     >
-      <ToggleButton value={TYPE_NAME} aria-label="Input name">
-        Planet
+      <ToggleButton value={STAR_INPUT_TYPES.name} aria-label={NAME_LABEL}>
+        {NAME_BTN_TEXT}
       </ToggleButton>
-      <ToggleButton value={TYPE_HIP} aria-label="Input HIP">
-        Star
+      <ToggleButton value={STAR_INPUT_TYPES.hip} aria-label={HIP_LABEL}>
+        {HIP_BTN_TEXT}
       </ToggleButton>
-      <ToggleButton value={TYPE_RADEC} aria-label="Input radec">
-        RA/Dec (J2000)
+      <ToggleButton value={STAR_INPUT_TYPES.radec} aria-label={RADEC_LABEL}>
+        {RADEC_BTN_TEXT}
       </ToggleButton>
     </ToggleButtonGroup>
   );
 };
 
-export default React.memo(StarInputTypeToggle);
+export default memo(StarInputTypeToggle);

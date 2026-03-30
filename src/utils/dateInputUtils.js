@@ -1,214 +1,180 @@
 // src/utils/dateInputUtils.js
-import { EPH_DATE_MIN, EPH_DATE_MAX, EPH_DATE_MIN_JULIAN, EPH_DATE_MAX_JULIAN } from './constants';
 import * as actionTypes from '@context/dateInputActionTypes';
-import { JULIAN } from './constants';
+import {
+  EPH_RANGE,
+  EPH_RANGE_JULIAN,
+  EPH_RANGE_ERR_PREFIX,
+  CALS,
+} from './constants';
 import { dateToStr } from './dateUtils';
-import { fetchEquinoxSolstice } from './fetchEquinoxSolstice';
 
-/* Fetch the date of the equinox/solstice in the given year */
-const fetchDate = async (date, flag, locationRef, dateDispatch, setErrorMessage, signal, abortControllerRef, requestId, latestDateRequest) => {
-  // console.log('Fetching date...', date.year, locationRef.current, flag);
-  // const date = dateRef.current;
-  // const flag = flagRef.current;
-  const location = locationRef.current;
-
-  if (!flag || !date.year || !location.lat || !location.lng || !location.tz) {
-    dateDispatch({ type: actionTypes.SET_DATE_FETCHING_OFF });
-    abortControllerRef.current = null;
-    return;
+/**
+ * Clamps the value to min/max.
+ * @param {number} value
+ * @param {number} min
+ * @param {number} max
+ * @returns {number} The updated value.
+ */
+const clamp = (value, min, max) => {
+  if (min > max) return value;
+  if (value < min) {
+    value = min;
+  } else if (value > max) {
+    value = max;
   }
-
-  const year = parseInt(date.year);
-
-  if (year <= EPH_DATE_MIN[0] || year >= EPH_DATE_MAX[0]) {
-    dateDispatch({ type: actionTypes.SET_DATE_FETCHING_OFF });
-    abortControllerRef.current = null;
-    return;
-  }
-
-  try {
-    const { month: newMonth, day: newDay } = await fetchEquinoxSolstice(location.lat, location.lng, location.tz, year, flag, signal);
-    if (requestId === latestDateRequest.current) {
-      if (!(newMonth > 0 && newDay > 0)) {
-        setErrorMessage((prev) => ({ ...prev, date: 'Unable to fetch the date.' }));
-        dateDispatch({ type: actionTypes.SET_DATE_FETCHING_OFF });
-        abortControllerRef.current = null;
-        return;
-      }
-
-      const month = newMonth;
-      const day = newDay;
-      /* Reset month and day if needed */
-      const newDate = {
-        ...date,
-        month: month.toString(),
-        day: day.toString(),
-      };
-      dateDispatch({ type: actionTypes.SET_DATE, payload: newDate });
-      dateDispatch({ type: actionTypes.SET_DATE_FETCHING_OFF });
-      dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
-      abortControllerRef.current = null;
-    }
-  } catch (error) {
-    if (error.name !== 'CanceledError' && requestId === latestDateRequest.current) {
-      setErrorMessage((prev) => ({ ...prev, date: error.message }));
-      dateDispatch({ type: actionTypes.SET_DATE_FETCHING_OFF });
-      abortControllerRef.current = null;
-    }
-    // else {
-    //   console.log(`Request for ${date.year}-${flag} canceled.`);
-    // }
-  }
+  return value;
 };
 
-/* Adjust the date based on the selected calendar and flag */
-const adjustDate = (date, cal, dateDispatch) => {
-  // console.log('Adjusting...', date);
-  // const date = dateRef.current;
-  if (!date.year) {
-    dateDispatch({ type: actionTypes.SET_DATE_ADJUSTING_OFF });
-    return;
-  }
-
-  const year = parseInt(date.year);
-  let month = parseInt(date.month) || 1;
-  let day = parseInt(date.day) || 1;
-
-  const ephDateMin = cal === JULIAN ? EPH_DATE_MIN_JULIAN : EPH_DATE_MIN;
-  const ephDateMax = cal === JULIAN ? EPH_DATE_MAX_JULIAN : EPH_DATE_MAX;
-  const newDisabledMonths = {};
+/**
+ * Derives month and day ranges from the date and the selected calendar.
+ * - Returns updated `monthMin`, `monthMax`, `dayMin`, and `dayMax`
+ * @param {DateObj} date
+ * @param {Cal} cal
+ * @returns {DateParams}
+ */
+const deriveRangeFromDate = (date, cal) => {
+  let monthMin = 1;
+  let monthMax = 12;
   let dayMin = 1;
   let dayMax = 31;
 
+  const yearInt = parseInt(date.year);
+  const monthInt = parseInt(date.month) || 0;
+
+  const { min: ephDateMin, max: ephDateMax } =
+    cal === CALS.julian ? EPH_RANGE_JULIAN : EPH_RANGE;
+
   /* Reset the last day of a month */
-  if (month === 2) {
-    dayMax = (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28;
-  } else if ([4, 6, 9, 11].includes(month)) {
+  if (monthInt === 2) {
+    dayMax =
+      date.year &&
+      yearInt % 4 === 0 &&
+      (yearInt % 100 !== 0 || yearInt % 400 === 0)
+        ? 29
+        : 28;
+  } else if ([4, 6, 9, 11].includes(monthInt)) {
     dayMax = 30;
   }
+  // getIsDevMode() && console.debug('Current day range:', dayMin, dayMax);
+  if (!date.year) return { monthMin, monthMax, dayMin, dayMax };
 
-  /* Enable all month options */
-  Object.keys(newDisabledMonths).forEach((key) => {
-    newDisabledMonths[key] = false;
-  });
-
-  if (year === ephDateMin[0]) {
-    /* Disable the month options before ephDateMin */
-    for (let i = ephDateMin[1] - 1; i >= 1; i--) {
-      newDisabledMonths[i] = true;
-    }
-
-    if (date.month && month <= ephDateMin[1]) {
-      month = ephDateMin[1];
+  /* If year is given, reset according to the ephemeris date range and calendar */
+  if (yearInt === ephDateMin[0]) {
+    /* Reset monthMin */
+    monthMin = ephDateMin[1];
+    // getIsDevMode() && console.debug('Updated month range:', monthMin, monthMax);
+    /* If month is given, reset dayMin */
+    if (monthInt > 0 && monthInt <= ephDateMin[1]) {
       dayMin = ephDateMin[2];
+      // getIsDevMode() && console.debug('Updated day range:', dayMin, dayMax);
     }
-  } else if (year === ephDateMax[0]) {
-    /* Disable the month options after ephDateMax */
-    for (let i = ephDateMax[1] + 1; i <= 12; i++) {
-      newDisabledMonths[i] = true;
-    }
-
-    if (date.month && month >= ephDateMax[1]) {
-      month = ephDateMax[1];
+  } else if (yearInt === ephDateMax[0]) {
+    /* Reset monthMax */
+    monthMax = ephDateMax[1];
+    // getIsDevMode() && console.debug('Updated month range:', monthMin, monthMax);
+    /* If month is given, reset dayMax */
+    if (monthInt >= ephDateMax[1]) {
       dayMax = ephDateMax[2];
-    } else if (month === ephDateMax[1]) {
-      dayMax = ephDateMax[2];
+      // getIsDevMode() && console.debug('Updated day range:', dayMin, dayMax);
     }
   }
 
-  if (date.day && day < dayMin) {
-    day = dayMin;
-  }
-  if (date.day && day > dayMax) {
-    day = dayMax;
-  }
-
-  dateDispatch({ type: actionTypes.SET_DISABLED_MONTHS, payload: newDisabledMonths });
-  dateDispatch({ type: actionTypes.SET_LAST_DAY, payload: dayMax });
-
-  /* Reset month and day if needed */
-  if (month.toString() !== date.month || day.toString() !== date.day) {
-    const newDate = {
-      ...date,
-      month: date.month ? month.toString() : '',
-      day: date.day ? day.toString() : '',
-    };
-    dateDispatch({ type: actionTypes.SET_DATE, payload: newDate });
-  }
-  dateDispatch({ type: actionTypes.SET_DATE_ADJUSTING_OFF });
+  return { monthMin, monthMax, dayMin, dayMax };
 };
 
-/* Validate the date */
+/**
+ * Corrects the date based on `monthMin`, `monthMax`, `dayMin`, and `dayMax`.
+ * - Updates `month` and `day`
+ * @param {DateObj} date
+ * @param {Cal} cal
+ * @returns {{correctedDate: DateObj, dateParams: DateParams, hasCorrection: boolean}}
+ */
+const clampDateSync = (date, cal) => {
+  // console.log('Clamping date...', date, cal);
+  const { monthMin, monthMax, dayMin, dayMax } = deriveRangeFromDate(date, cal);
+  const correctedDate = {
+    ...date,
+    month: date.month
+      ? clamp(parseInt(date.month), monthMin, monthMax).toString()
+      : '',
+    day: date.day ? clamp(parseInt(date.day), dayMin, dayMax).toString() : '',
+  };
+  return {
+    correctedDate,
+    dateParams: { monthMin, monthMax, dayMin, dayMax },
+    hasCorrection:
+      correctedDate.day !== date.day || correctedDate.month !== date.month,
+  };
+};
+
+/**
+ * Validates the date. Date should be within the ephemeris range.
+ * @param {DateObj} date
+ * @param {Cal} cal
+ * @returns {{ isValid: boolean, invalidError: DateErrorObj }}
+ */
 const validateDateSync = (date, cal) => {
-  // console.log('Validating date...', date);
-  let newDateError = { general: '', year: '', month: '', day: '' };
-  const ephDateMin = cal === JULIAN ? EPH_DATE_MIN_JULIAN : EPH_DATE_MIN;
-  const ephDateMax = cal === JULIAN ? EPH_DATE_MAX_JULIAN : EPH_DATE_MAX;
+  // console.log('Validating date...', date, cal);
+  let isValid = true;
+  /** @type {DateErrorObj} */
+  const invalidError = { general: '', year: '', month: '', day: '' };
 
-  for (let key of ['year', 'month', 'day']) {
-    if (!/^-?\d*$/.test(date[key])) {
-      return { ...newDateError, [key]: `The ${key} must be an integer.` };
-    }
-  }
-
+  /* If year is provided and valid, check the range */
   if (date.year) {
-    const year = parseInt(date.year);
-    const month = parseInt(date.month);
-    const day = parseInt(date.day);
-
+    const yearInt = parseInt(date.year);
+    const monthInt = parseInt(date.month) || 0;
+    const dayInt = parseInt(date.day) || 0;
+    const { min: ephDateMin, max: ephDateMax } =
+      cal === CALS.julian ? EPH_RANGE_JULIAN : EPH_RANGE;
     if (
-      (year < ephDateMin[0] ||
-        (year === ephDateMin[0] &&
-          (month < ephDateMin[1] || (month === ephDateMin[1] && day < ephDateMin[2])))) ||
-      (year > ephDateMax[0] ||
-        (year === ephDateMax[0] &&
-          (month > ephDateMax[1] || (month === ephDateMax[1] && day > ephDateMax[2]))))
+      yearInt < ephDateMin[0] ||
+      (yearInt === ephDateMin[0] &&
+        ((monthInt > 0 && monthInt < ephDateMin[1]) ||
+          (monthInt === ephDateMin[1] &&
+            dayInt > 0 &&
+            dayInt < ephDateMin[2]))) ||
+      yearInt > ephDateMax[0] ||
+      (yearInt === ephDateMax[0] &&
+        (monthInt > ephDateMax[1] ||
+          (monthInt === ephDateMax[1] && dayInt > ephDateMax[2])))
     ) {
-      return {
-        ...newDateError,
-        general: `Out of the ephemeris date range: ${dateToStr({ date: ephDateMin })}/${dateToStr({ date: ephDateMax })} (${cal === JULIAN ? 'Julian' : 'Gregorian'})`,
-      };
+      isValid = false;
+      invalidError.general =
+        EPH_RANGE_ERR_PREFIX +
+        `${dateToStr({ dateArr: ephDateMin })}/${dateToStr({ dateArr: ephDateMax })} ` +
+        `(${cal === CALS.julian ? 'Julian' : 'Gregorian'})`;
     }
   }
-
-  return newDateError;
+  return { isValid, invalidError };
 };
 
-/* Validate the year */
-const validateYearSync = (date) => {
-  // console.log('Validating year...', date);
-  let newDateError = { general: '', year: '', month: '', day: '' };
-  const ephDateMin = EPH_DATE_MIN;
-  const ephDateMax = EPH_DATE_MAX;
-
-  if (!/^-?\d*$/.test(date.year)) {
-    return { ...newDateError, year: 'The year must be an integer.' };
+/**
+ * Validates the year. Year should be within the ephemeris range.
+ * @param {string} year
+ * @returns {string} The error message
+ */
+const validateYearSync = (year) => {
+  // console.log('Validating year...', year);
+  /* If year is provided and valid, check the range */
+  const yearInt = parseInt(year);
+  if (yearInt <= EPH_RANGE.min[0] || yearInt >= EPH_RANGE.max[0]) {
+    return (
+      EPH_RANGE_ERR_PREFIX +
+      `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })} ` +
+      '(Gregorian)'
+    );
   }
-
-  if (date.year) {
-    const year = parseInt(date.year);
-
-    if (year <= ephDateMin[0] || year >= ephDateMax[0]) {
-      return {
-        ...newDateError,
-        general: `Out of the year range: ${ephDateMin[0]+1}/+${ephDateMax[0]-1}`,
-      };
-    }
-  }
-
-  return newDateError;
+  return '';
 };
 
-/* Clear any date-related errors */
-const clearDateError = (dateDispatch, setErrorMessage) => {
+/**
+ * Clears date-related/draw/download errors except null errors.
+ * @param {ReactDispatch} dispatch
+ * @param {ReactSetState<ErrorObj>} setErrorMessage
+ */
+const clearDateError = (dispatch, setErrorMessage) => {
   setErrorMessage((prev) => ({ ...prev, date: '', draw: '', download: '' }));
-  dateDispatch({ type: actionTypes.CLEAR_DATE_ERROR });
+  dispatch({ type: actionTypes.CLEAR_DATE_ERROR });
 };
 
-export {
-  fetchDate,
-  adjustDate,
-  validateDateSync,
-  validateYearSync,
-  clearDateError,
-};
+export { clampDateSync, validateDateSync, validateYearSync, clearDateError };

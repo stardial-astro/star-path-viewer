@@ -1,145 +1,128 @@
 // src/components/Input/Location/LocationInput.jsx
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { Stack, Snackbar, Alert } from '@mui/material';
-import Config from '@/Config';
+import { memo, useCallback } from 'react';
+import { Stack, Snackbar } from '@mui/material';
+import config from '@utils/config';
+import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
-import { TYPE_ADDR, TYPE_COORD, ADDR_UNKNOWN } from '@utils/constants';
-import { validateLocationSync, clearLocationError } from '@utils/locationInputUtils';
-import determineService from '@utils/determineService';
+import useDebounce from '@hooks/useDebounce';
+import useDebouncedFetchTimezone from '@hooks/useDebouncedFetchTimezone';
+import useDetermineService from '@hooks/useDetermineService';
+import {
+  LOC_INPUT_TYPES,
+  LOC_UNKNOWN_ID,
+  REVERSE_GEO_ERR_MSG,
+} from '@utils/constants';
+import CustomAlert from '@components/UI/CustomAlert';
 import LocationInputTypeToggle from './LocationInputTypeToggle';
 import AddressInput from './AddressInput';
 import CoordinatesInput from './CoordinatesInput';
-import TimezoneFetcher from './TimezoneFetcher';
-// import debounce from 'lodash/debounce';
-import debounce from 'lodash-es/debounce';
 
-const alertStyle = { width: '100%', textAlign: 'left' };
-
-const LocationInput = ({ setErrorMessage }) => {
+const LocationInput = () => {
   // console.log('Rendering LocationInput');
+  const { isDelayedOnline, offlineState } = useHome();
   const {
-    location,  // id: ''(not-found), 'unknown'
-    locationInputType,  // 'address', 'coordinates'
-    searchTerm,
-    serviceChosen, setServiceChosen,
-    latestTzRequest,
+    skipTz,
+    location,
+    locationInputType,
+    geoService,
+    setGeoService,
     locationDispatch,
   } = useLocationInput();
 
-  const servicePromiseRef = useRef(null);
+  const debouncedLocation = useDebounce(location, config.TYPING_DELAY / 2);
 
-  /* Initialize */
-  useEffect(() => {
-    /* Choose geocoding service */
-    const setService = async () => {
-      if (serviceChosen === null) {
-        /* If there's already a pending or resolved promise, use it */
-        if (!servicePromiseRef.current) {
-          /* Start the service determination and store the promise in the ref */
-          servicePromiseRef.current = determineService().then(service => {
-            setServiceChosen(service);
-            return service;  // Store the resolved value in the ref
-          }).catch(() => {
-            servicePromiseRef.current = null;
-          });
-        }
-        /* Await the existing or newly created promise */
-        await servicePromiseRef.current;
-      }
-    };
-    clearLocationError(locationDispatch, setErrorMessage);
-    // fetchCurrentLocation(serviceChosen, locationDispatch, lastSelectedTerm, setErrorMessage);
-    setService();
-  }, [serviceChosen, setServiceChosen, locationDispatch, setErrorMessage]);
+  /* ------------------------------------------------------------------|
+   * Initialize
+   * ------------------------------------------------------------------|
+   */
+  /* [AddressInput] Clear errors; clear null errors and reset validity if no flag;
+   * clear location and suggestions
+   * > Clearing debounced searchTerm also clears lastSelectedTermRef in [AddressInput]
+   */
+  /* [CoordinatesInput] Clear errors; clear null errors and reset validity if no flag;
+   * KEEP location and suggestions
+   * (so if there is a reverse geocoding unavailable warning triggered by
+   * id === LOC_UNKNOWN_ID, it keeps open)
+   */
 
-  /* Reset error when user starts typing */
-  useEffect(() => {
-    clearLocationError(locationDispatch, setErrorMessage);
-    locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
-    /* Clear address and tz if lat or lng is empty */
-    if (searchTerm.trim() && locationInputType === TYPE_COORD && (!location.lat || !location.lng)) {
-      locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-      locationDispatch({ type: actionTypes.SET_ID, payload: '' });
-      locationDispatch({ type: actionTypes.SET_TZ, payload: '' });
-    }
-  }, [searchTerm, location, locationInputType, locationDispatch, setErrorMessage]);
+  /* Determine the geocoding service */
+  useDetermineService(isDelayedOnline, offlineState, geoService, setGeoService);
 
-  /* Clear tz if lat or lng is empty */
-  useEffect(() => {
-    if (location.tz && (!location.lat || !location.lng)) {
-      locationDispatch({ type: actionTypes.SET_TZ, payload: '' });
-    }
-  }, [location, locationDispatch]);
+  /* ------------------------------------------------------------------|
+   * Clear errors when user starts typing
+   * ------------------------------------------------------------------|
+   */
+  /* [AddressInput] Clear errors & null errors when user starts typing in search bar; reset validity */
+  /* [CoordinatesInput] Clear errors & null errors when user starts typing coordinates */
 
-  useEffect(() => {
-    locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
-  }, [searchTerm, locationInputType, locationDispatch]);
+  /* ------------------------------------------------------------------|
+   * Update refs
+   * ------------------------------------------------------------------|
+   */
+  /* [LocationInputTypeToggle] Update locationInputTypeRef when toggles */
 
-  useEffect(() => {
-    locationDispatch({ type: actionTypes.CLEAR_LAT_NULL_ERROR });
-  }, [location.lat, locationInputType, locationDispatch]);
+  /* ------------------------------------------------------------------|
+   * Clear stale data on input change
+   * ------------------------------------------------------------------|
+   */
+  /* [AddressInput] Clear suggestions and lastSelectedTermRef if
+   * debounced searchTerm is cleared
+   * > When in address mode, also clear location
+   * > When in coordinate mode, only clear id
+   */
+  /* [LocationInputTypeToggle]
+   * > When toggles to address mode, clear location and suggestions
+   * > When toggles to coordinate mode, KEEP location and suggestions
+   * (so if there is a reverse geocoding unavailable warning triggered by
+   * id === LOC_UNKNOWN_ID, it keeps open)
+   */
 
-  useEffect(() => {
-    locationDispatch({ type: actionTypes.CLEAR_LNG_NULL_ERROR });
-  }, [location.lng, locationInputType, locationDispatch]);
+  /* ------------------------------------------------------------------|
+   * Fetch data
+   * ------------------------------------------------------------------|
+   */
+  /* [AddressInput] Fetch suggestions on debounced searchTerm change */
 
-  const debouncedValidateLocation = useMemo(
-    () => debounce((locationInputType, location) => {
-      const validationResult = validateLocationSync(locationInputType, location);
-      const isValid = !Object.values(validationResult).some((item) => !!item);
-      locationDispatch({ type: actionTypes.SET_LOCATION_ERROR, payload: validationResult });
-      locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: isValid });
-    }, Config.TypingDelay / 2),
-    [locationDispatch]
+  /* Fetch and update tz on debounced location change */
+  useDebouncedFetchTimezone(
+    debouncedLocation.lat,
+    debouncedLocation.lng,
+    skipTz,
+    locationDispatch,
   );
 
-  useEffect(() => {
-    debouncedValidateLocation(locationInputType, location);
-    /* Cleanup function */
-    return () => {
-      debouncedValidateLocation.cancel();
-    };
-  }, [location, locationInputType, debouncedValidateLocation]);
-
-  const handleSnackbarClose = useCallback((event, reason) => {
+  /* ------------------------------------------------------------------|
+   * Handlers
+   * ------------------------------------------------------------------|
+   */
+  const handleSnackbarClose = useCallback(() => {
     locationDispatch({ type: actionTypes.SET_ID, payload: '' });
   }, [locationDispatch]);
 
   return (
     <Stack direction="column" spacing={2}>
       <LocationInputTypeToggle />
-      {locationInputType === TYPE_ADDR ? (
-        <AddressInput setErrorMessage={setErrorMessage} />
+      {locationInputType === LOC_INPUT_TYPES.addr ? (
+        <AddressInput />
       ) : (
         <CoordinatesInput />
       )}
-      <TimezoneFetcher
-        lat={location.lat}
-        lng={location.lng}
-        latestTzRequest={latestTzRequest}
-      />
       <Snackbar
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        open={location.id === ADDR_UNKNOWN}
-        autoHideDuration={12000}
+        open={location.id === LOC_UNKNOWN_ID}
+        autoHideDuration={12_000}
         onClose={handleSnackbarClose}
         sx={(theme) => ({
           boxShadow: theme.shadows[2],
         })}
       >
-        <Alert severity="warning" sx={alertStyle} onClose={handleSnackbarClose}>
-          Sorry, we couldn't fetch the address, but you can use these GPS coordinates of this location. ↓
-        </Alert>
+        <CustomAlert severity="warning" onClose={handleSnackbarClose}>
+          {REVERSE_GEO_ERR_MSG}
+        </CustomAlert>
       </Snackbar>
     </Stack>
   );
 };
 
-LocationInput.propTypes = {
-  setErrorMessage: PropTypes.func.isRequired,
-};
-
-export default React.memo(LocationInput);
+export default memo(LocationInput);

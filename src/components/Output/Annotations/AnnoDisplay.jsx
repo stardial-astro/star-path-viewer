@@ -1,13 +1,20 @@
 // src/components/Output/Annotations/AnnoDisplay.jsx
-import React, { useMemo } from 'react';
-import { Box, Stack, Alert } from '@mui/material';
+import { memo, useMemo } from 'react';
+import { Box, Stack } from '@mui/material';
+import { useHome } from '@context/HomeContext';
+import CustomAlert from '@components/UI/CustomAlert';
 import AnnoLegend from './AnnoLegend';
 import AnnoTable from './AnnoTable';
 import DownloadAnnoTable from './DownloadAnnoTable';
 
-const AnnoDisplay = ({ anno, diagramId, errorMessage, setErrorMessage }) => {
+const AnnoDisplay = () => {
   // console.log('Rendering AnnoDisplay');
-  const filteredAnno = useMemo(() => anno.filter(item => item.is_displayed), [anno]);
+  const { errorMessage, setErrorMessage, diagramId, anno } = useHome();
+
+  const filteredAnno = useMemo(
+    () => anno.filter((item) => item.is_displayed),
+    [anno],
+  );
 
   return (
     <>
@@ -20,16 +27,20 @@ const AnnoDisplay = ({ anno, diagramId, errorMessage, setErrorMessage }) => {
         <DownloadAnnoTable
           anno={filteredAnno}
           filenameBase={`tb_${diagramId}`}
-          setErrorMessage={setErrorMessage}
         />
         {errorMessage.download && errorMessage.download.includes('table') && (
-          <Alert severity="error" sx={{ width: '100%', mt: 1, textAlign: 'left' }} onClose={() => setErrorMessage((prev) => ({ ...prev, download: '' }))}>
+          <CustomAlert
+            sx={{ mt: 1 }}
+            onClose={() =>
+              setErrorMessage((prev) => ({ ...prev, download: '' }))
+            }
+          >
             {errorMessage.download}
-          </Alert>
+          </CustomAlert>
         )}
       </Stack>
     </>
   );
 };
 
-export default React.memo(AnnoDisplay);
+export default memo(AnnoDisplay);

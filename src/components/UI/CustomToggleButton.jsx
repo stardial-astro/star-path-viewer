@@ -1,4 +1,4 @@
-// src/components/UI/CustomToggleButton.js
+// src/components/UI/CustomToggleButton.jsx
 import ToggleButton from '@mui/material/ToggleButton';
 import { styled } from '@mui/material/styles';
 
@@ -16,6 +16,10 @@ const CustomToggleButton = styled(ToggleButton)(({ theme }) => ({
     '&:hover': {
       backgroundColor: theme.palette.primary.dark, // MUI's default hover color for contained buttons
     },
+  },
+  '&.Mui-disabled': {
+    backgroundColor: theme.palette.action.disabledBackground,
+    border: 'none',
   },
 }));
 

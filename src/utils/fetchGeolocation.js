@@ -16,8 +16,6 @@ const GEO_ERR_MSG =
 const NO_GEO_MSG =
   'Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴';
 
-const isDevMode = getIsDevMode();
-
 /**
  * Fetches IP geolocation.
  * @param {AbortSignal} signal
@@ -48,7 +46,7 @@ const fetchIpLocation = async (signal) => {
      *  "readme": "https://ipinfo.io/missingauth"
      *}
      */
-    isDevMode && console.debug('[IP]', data.ip);
+    getIsDevMode() && console.debug('[IP]', data.ip);
     /** @type {string[]} */
     const [latitude, longitude] = data.loc.split(',');
     return {
@@ -80,6 +78,7 @@ const fetchIpLocation = async (signal) => {
 const fetchGeolocation = async (service, geoMaxAge, signal) => {
   if (signal?.aborted) return null;
 
+  const isDevMode = getIsDevMode();
   if ('geolocation' in navigator) {
     isDevMode && console.debug('> Querying geolocation...');
     /** @type {GeolocationPosition | { coords: CoordObj } | null} */

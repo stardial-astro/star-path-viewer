@@ -10,8 +10,6 @@ const BAIDU_TIMEOUT = 5_000;
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
 
-const isDevMode = getIsDevMode();
-
 /**
  * @param {string} str
  * @param {number} limit
@@ -38,7 +36,7 @@ const fetchSuggestionsWithNominatim = async (query) => {
   });
   /** @type {NominatimSchema[]} */
   const data = response.data;
-  isDevMode && console.debug('[Query]', query, '\n[Locations]', data);
+  getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', data);
   if (Array.isArray(data) && data.length > 0) {
     /* item.lat and item.lon are strings */
     return data.map((item) => ({
@@ -71,7 +69,7 @@ const fetchSuggestionsWithBaidu = async (query) => {
     timeout: BAIDU_TIMEOUT,
   });
   const res = await response.json();
-  isDevMode && console.debug('[Query]', query, '\n[Locations]', res);
+  getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', res);
   /** @type {BaiduSearchSchema[]} */
   const data = res?.result;
   if (Array.isArray(data) && data.length > 0) {
@@ -95,6 +93,7 @@ const fetchSuggestionsWithBaidu = async (query) => {
  * @throws {Error} If request failed or location is not found.
  */
 const fetchSuggestions = async (query, service) => {
+  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching address suggestions...');
   /** @type {AddressItem[]} */
   let res;

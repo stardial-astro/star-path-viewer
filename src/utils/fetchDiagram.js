@@ -12,8 +12,6 @@ const DIAGRAM_ERR_MSG =
 
 const diagramUrl = `${import.meta.env.VITE_SERVER_URL}/diagram`;
 
-const isDevMode = getIsDevMode();
-
 /**
  * Fetches diagram and prepares info & sanitized SVG.
  * @param {ParamObj} params - Query parameters.
@@ -24,6 +22,7 @@ const isDevMode = getIsDevMode();
 const fetchDiagram = async (params, signal) => {
   if (signal?.aborted) return null;
 
+  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching diagram...');
   /** @type {DiagramSchema} */
   let data;

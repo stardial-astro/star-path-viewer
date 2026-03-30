@@ -53,12 +53,7 @@ const useDebouncedFetchDate = (
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (
-        axios.isCancel(error) ||
-        error.message.startsWith(EPH_RANGE_ERR_PREFIX)
-      ) {
-        return false;
-      }
+      if (axios.isCancel(error)) return false;
       return failureCount < config.MAX_RETRIES;
     },
     retryDelay: (attemptIndex) =>

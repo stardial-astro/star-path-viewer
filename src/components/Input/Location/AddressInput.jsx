@@ -34,9 +34,14 @@ import BarIconButton from '@components/UI/BarIconButton';
 
 const INPUT_LABEL = 'Search address';
 const SELECT_WARN = "You haven't select a location from the results.";
-const PLACEHOLDER = 'Enter a place, city, county, state, or country';
+
 const GPS_LABEL = 'GPS';
 const GPS_TOOLTIP_TITLE = 'Find My Location';
+
+const PLACEHOLDER = 'Enter a place, city, county, state, or country';
+const CHECKING_PLACEHOLDER = 'Checking geocoding service...';
+const NO_SERVICE_PLACEHOLDER =
+  'Unknown geocoding service - Please reload the page';
 
 const gpsIcon = (
   <GpsFixedIcon
@@ -402,7 +407,13 @@ const AddressInput = () => {
         <CustomTextField
           {...params}
           label={INPUT_LABEL}
-          placeholder={PLACEHOLDER}
+          placeholder={
+            !geoService && !errorMessage.location
+              ? CHECKING_PLACEHOLDER
+              : !geoService
+                ? NO_SERVICE_PLACEHOLDER
+                : PLACEHOLDER
+          }
           inputRef={inputRef}
           error={!!locationError.address || !!locationNullError.address}
           helperText={locationError.address || locationNullError.address}

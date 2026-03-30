@@ -58,10 +58,11 @@ const useDetermineService = (
   useEffect(() => {
     if (offlineState.dialogOpen) {
       /* Clear from local storage */
-      // localStorage.removeItem(STORAGE_KEYS.service);
-      /* Clear all */
-      setGeoService(null, true);
+      localStorage.removeItem(STORAGE_KEYS.service);
       getIsDevMode() && console.debug('Cleared:', STORAGE_KEYS.service);
+      /* Clear all */
+      // setGeoService(null, true);
+      // getIsDevMode() && console.debug('Cleared: geoService');
     }
   }, [offlineState.dialogOpen, setGeoService]);
 
@@ -72,7 +73,7 @@ const useDetermineService = (
       isAccessible !== false ? SERVICES.nominatim : SERVICES.baidu;
     /* Update state and ref */
     setGeoService(service, forceInCn);
-    console.debug('🌎 [Geocoding service]', service);
+    isAccessible !== null && console.debug('🌎 [Geocoding service]', service);
   }, [isPaused, isAccessible, setGeoService]);
 };
 

@@ -14,8 +14,6 @@ import { getIsDevMode } from '@utils/devMode';
 /** 6 hours */
 const HIP_STALE_MS = 6 * 60 * 60_000;
 
-const isDevMode = getIsDevMode();
-
 /**
  * Loads the HIP list from `localStorage`.
  * @returns {HipItem[] | null} The HIP list, or `null` if stale or missing.
@@ -26,8 +24,8 @@ const getInitialHipList = () => {
   /** @type {{data: HipItem[], timestamp: number}} */
   const { data, timestamp } = JSON.parse(raw);
   if (Date.now() - timestamp > HIP_STALE_MS) return null;
-  isDevMode &&
-    console.debug('📦 [HIP list]', data.length, 'entries');
+  getIsDevMode() &&
+    console.debug('📦 [HIP list]', data.length, 'entries (from storage)');
   return data;
 };
 

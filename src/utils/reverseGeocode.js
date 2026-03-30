@@ -12,8 +12,6 @@ const NO_DATA_ERR_MSG = 'No data returned from ';
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
 const baiduReverseUrl = import.meta.env.VITE_BAIDU_REVERSE_URL;
 
-const isDevMode = getIsDevMode();
-
 /**
  * @param {CoordObj} coords
  * @param {AbortSignal} signal
@@ -37,7 +35,7 @@ const reverseGeocodeWithNominatim = async (coords, signal) => {
   /** @type {NominatimSchema} */
   const data = response.data;
   if (!data) throw new Error(NO_DATA_ERR_MSG + nominatimReverseUrl);
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Address]', data);
+  getIsDevMode() && console.debug('[lat,lng]', coords, '\n[Address]', data);
   const display_name = data.display_name;
   const id =
     data?.osm_id?.toString() || `${coords.latitude},${coords.longitude}`;
@@ -69,7 +67,7 @@ const reverseGeocodeWithBaidu = async (coords) => {
   });
   const res = await response.json();
   if (!res) throw new Error(NO_DATA_ERR_MSG + baiduReverseUrl);
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Address]', res);
+  getIsDevMode() && console.debug('[lat,lng]', coords, '\n[Address]', res);
   /** @type {BaiduReverseSchema} */
   const data = res.result;
   const display_name = data?.formatted_address;
@@ -110,7 +108,7 @@ const reverseGeocode = async (coords, service, signal) => {
         err.message === 'cancelled' ||
         err.name === 'AbortError'
       ) {
-        isDevMode && console.debug('Reverse geocoding cancelled.');
+        getIsDevMode() && console.debug('Reverse geocoding cancelled.');
         return null;
       }
       console.error('Reverse geocoding error:', err.message);

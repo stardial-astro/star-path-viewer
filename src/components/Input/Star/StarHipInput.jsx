@@ -26,9 +26,10 @@ import CustomTextField from '@components/UI/CustomTextField';
 
 const INPUT_LABEL = 'Search Hipparcos Catalogue number';
 const SELECT_WARN = "You haven't select a star from the results.";
+
 const PLACEHOLDER = 'Enter a number or a name';
-const LOADING_TEXT = 'Loading data...';
-const NO_DATA_TEXT = 'Data not loaded';
+const LOADING_PLACEHOLDER = 'Loading data...';
+const NO_DATA_PLACEHOLDER = 'Data not loaded - Please reload the page';
 
 const hipStyle = { textAlign: 'left', mr: 1 };
 const nameStyle = { textAlign: 'left', color: 'primary.main' };
@@ -329,7 +330,11 @@ const StarHipInput = () => {
           {...params}
           label={INPUT_LABEL}
           placeholder={
-            isLoading ? LOADING_TEXT : !hipList ? NO_DATA_TEXT : PLACEHOLDER
+            isLoading
+              ? LOADING_PLACEHOLDER
+              : !hipList
+                ? NO_DATA_PLACEHOLDER
+                : PLACEHOLDER
           }
           inputRef={inputRef}
           error={!!starError.hip || !!starNullError.hip}

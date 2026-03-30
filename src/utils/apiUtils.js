@@ -17,8 +17,6 @@ const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const eqxSolUrl = `${serverUrl}/equinox`;
 
-const isDevMode = getIsDevMode();
-
 /**
  * Parses and returns errors when `axios` request to the **server** failed.
  * @param {*} err
@@ -52,6 +50,7 @@ const parseApiError = (err) => {
  * @throws {Error} If request failed.
  */
 const checkServerAccessibility = async () => {
+  const isDevMode = getIsDevMode();
   try {
     isDevMode && console.debug('> Checking if server is up...');
     const params = { tz: 'Etc/GMT', year: '-1000', flag: 've' };
@@ -104,6 +103,7 @@ const checkServerAccessibility = async () => {
  * @returns {Promise<boolean>} `true` if the service is accessible.
  */
 const checkNominatimAccessibility = async (forceInCn) => {
+  const isDevMode = getIsDevMode();
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isInCn = CN_TIMEZONES.has(tz) || forceInCn;
   if (isInCn) {

@@ -1,8 +1,6 @@
 // src/utils/fetchTimezone.js
 import { getIsDevMode } from './devMode';
 
-const isDevMode = getIsDevMode();
-
 /**
  * Calls `window.GeoTZ.find` to find the time zone IDs at the given GPS coordinates.
  * - Warns if failed (`tz` will be determined by the server)
@@ -12,6 +10,7 @@ const isDevMode = getIsDevMode();
  * @throws {Error} If tz is not found or invalid.
  */
 const fetchTimezone = async (lat, lng) => {
+  const isDevMode = getIsDevMode();
   try {
     /* Fetch the time zone IDs */
     const res = await window.GeoTZ.find(parseFloat(lat), parseFloat(lng));

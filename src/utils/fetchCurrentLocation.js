@@ -8,8 +8,6 @@ import { getIsDevMode } from './devMode';
 
 const QUERY_KEY = 'gps';
 
-const isDevMode = getIsDevMode();
-
 /** dev: 5 minutes; prod: 30 minutes */
 const STALE_MS = getIsDevMode() ? 5 * 60_000 : 30 * 60_000;
 /** 30 minutes */
@@ -85,7 +83,7 @@ const fetchCurrentLocation = async (service, lastSelectedTermRef, dispatch) => {
     return null;
   } catch (err) {
     if (controller.signal.aborted) {
-      isDevMode && console.debug('GPS query cancelled.');
+      getIsDevMode() && console.debug('GPS query cancelled.');
       return null;
     }
     return Error.isError(err) ? err : new Error(`GPS query failed: ${err}`);

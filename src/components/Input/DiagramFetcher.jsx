@@ -141,13 +141,12 @@ const DiagramFetcher = () => {
     /* Skip fetching if offline or loading */
     if (offlineState.dialogOpen || offlineState.dismissed || loading) return;
 
-    const isDevMode = getIsDevMode();
-
     /* Clear any previous image and null errors before making the API call */
     clearNullError(locationDispatch, dateDispatch, starDispatch);
     clearImage();
     setSuccess(false);
 
+    const isDevMode = getIsDevMode();
     isDevMode &&
       console.debug(
         '[Inputs]',

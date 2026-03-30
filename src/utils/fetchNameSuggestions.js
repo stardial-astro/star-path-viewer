@@ -20,8 +20,6 @@ const HIP_LIST_INVALID_MSG =
 const limit = 30;
 const starNamesUrl = import.meta.env.VITE_STAR_NAMES_URL;
 
-const isDevMode = getIsDevMode();
-
 /**
  * Normalizes Pinyin.
  * - Squashes spaces
@@ -100,6 +98,7 @@ const itemContainsQuery = (item, query) => {
  * @throws {Error} If request failed or result is invalid.
  */
 const fetchAndCacheHipList = async (setHipList) => {
+  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching HIP list...');
 
   try {
@@ -143,6 +142,7 @@ const fetchAndCacheHipList = async (setHipList) => {
  * @throws {Error} If HIP is out of range, not found, or failed to fetch valid data.
  */
 const fetchNameSuggestions = async (query, hipList, setHipList) => {
+  const isDevMode = getIsDevMode();
   let data = hipList;
   /* Fetch and cache the HIP list */
   if (!data || (Array.isArray(data) && data.length === 0)) {

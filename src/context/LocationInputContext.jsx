@@ -24,7 +24,7 @@ const getInitialService = () => {
   /** @type {{service: GeoService, timestamp: number}} */
   const { service, timestamp } = JSON.parse(raw);
   if (Date.now() - timestamp > SERVICE_STALE_MS) return null;
-  console.debug('📦 [Geocoding service]', service);
+  console.debug('📦 [Geocoding service]', service, ' (from storage)');
   return service;
 };
 

@@ -12,8 +12,6 @@ const DATE_ERR_MSG =
 
 const eqxSolUrl = `${import.meta.env.VITE_SERVER_URL}/equinox`;
 
-const isDevMode = getIsDevMode();
-
 /**
  * Fetches the equinox/solstice date in the given year at the location
  * and returns the updated date.
@@ -26,6 +24,7 @@ const isDevMode = getIsDevMode();
  * @throws {Error} If request failed or result is invalid.
  */
 const fetchDate = async (year, flag, lat, lng, tz) => {
+  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching equinox/solstice date...');
   const invalidError = validateYearSync(year);
   if (invalidError) throw new Error(invalidError);

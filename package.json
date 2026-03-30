@@ -1,6 +1,6 @@
 {
   "name": "star-path-viewer",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "homepage": "https://star-path-viewer.pages.dev/",
   "description": "An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.",
   "private": true,

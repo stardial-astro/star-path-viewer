@@ -1807,7 +1807,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.14.0":
+"axios@npm:1.14.0":
   version: 1.14.0
   resolution: "axios@npm:1.14.0"
   dependencies:
@@ -5227,7 +5227,7 @@ __metadata:
     "@types/react-dom": "npm:^19.2.3"
     "@vitejs/plugin-react": "npm:^6.0.1"
     "@vitest/coverage-v8": "npm:^4.1.1"
-    axios: "npm:^1.14.0"
+    axios: "npm:1.14.0"
     canvg: "npm:^4.0.3"
     dompurify: "npm:^3.3.3"
     eslint: "npm:^10.1.0"

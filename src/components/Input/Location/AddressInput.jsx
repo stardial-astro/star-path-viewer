@@ -188,6 +188,7 @@ const AddressInput = () => {
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
       });
+      locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
       getIsDevMode() && console.debug('[Selected location]', option);
     },
     [locationDispatch],

@@ -170,6 +170,7 @@ const StarHipInput = () => {
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
       });
+      starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
       getIsDevMode() && console.debug('[Selected star]', option);
     },
     [starDispatch],

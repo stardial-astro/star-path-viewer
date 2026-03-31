@@ -99,7 +99,7 @@ const RadecDecDmsInput = () => {
           intOnly={true}
           min={-90}
           max={90}
-          allowOutOfRange={true}
+          allowOutOfRange={false}
           error={!!starError.dec || !!starNullError.dec}
         />
       </Grid>

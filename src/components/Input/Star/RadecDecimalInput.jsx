@@ -65,7 +65,7 @@ const RadecDecimalInput = () => {
           onChange={handleInputChange}
           min={0}
           max={360}
-          allowOutOfRange={true}
+          allowOutOfRange={false}
           error={!!starError.ra || !!starNullError.ra}
           helperText={starError.ra || starNullError.ra}
         />
@@ -79,7 +79,7 @@ const RadecDecimalInput = () => {
           onChange={handleInputChange}
           min={-90}
           max={90}
-          allowOutOfRange={true}
+          allowOutOfRange={false}
           error={!!starError.dec || !!starNullError.dec}
           helperText={starError.dec || starNullError.dec}
         />

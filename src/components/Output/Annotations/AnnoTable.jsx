@@ -53,7 +53,7 @@ const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   zIndex: 1,
 }));
 
-const StyledRow = styled(TableRow)(({ theme }) => ({
+const StyledRow = styled(TableRow)(() => ({
   // '&:nth-of-type(odd)': {
   //   backgroundColor: theme.palette.action.hover,
   // },

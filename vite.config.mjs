@@ -39,6 +39,7 @@ export default defineConfig({
         : undefined,
   },
   build: {
+    chunkSizeWarningLimit: 1000,
     /* Configuration for chunk splitting */
     rollupOptions: {
       output: {
@@ -48,12 +49,12 @@ export default defineConfig({
               return 'vendor-mui';
             } else if (id.includes('xlsx')) {
               return 'vendor-xlsx';
-            } else if (id.includes('html2canvas')) {
-              return 'vendor-html2canvas';
             } else if (id.includes('svg2pdf.js')) {
               return 'vendor-svg2pdf.js';
             } else if (id.includes('canvg')) {
               return 'vendor-canvg';
+            } else if (id.includes('html2canvas')) {
+              return 'vendor-html2canvas';
             } else if (id.includes('jspdf')) {
               return 'vendor-jspdf';
             } else if (id.includes('file-saver')) {

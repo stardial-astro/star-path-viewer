@@ -8,16 +8,16 @@ import {
   useDeferredValue,
 } from 'react';
 import { Grid } from '@mui/material';
-import config from '@utils/config';
 import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
 import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
+import config from '@utils/config';
 import { EPH_RANGE } from '@utils/constants';
 import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
-import CustomNumberField from '@/components/UI/CustomNumberField';
+import CustomNumberField from '@components/UI/CustomNumberField';
 import MonthInput from './MonthInput';
 
 const YEAR_LABEL = 'Year';
@@ -168,7 +168,7 @@ const DateFields = () => {
           intOnly={true}
           min={dateParams.dayMin}
           max={dateParams.dayMax}
-          allowOutOfRange={true}
+          allowOutOfRange={false}
           disabled={!!flag}
           loading={date.year && dateFetching}
           error={!!dateError.day || !!dateError.general || !!dateNullError.day}

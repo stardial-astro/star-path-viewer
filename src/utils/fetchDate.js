@@ -2,7 +2,6 @@
 import axios from 'axios';
 import config from './config';
 import { parseApiError } from './apiUtils';
-import { validateYearSync } from './dateInputUtils';
 import { getIsDevMode } from './devMode';
 
 const NO_DATA_ERR_MSG =
@@ -21,13 +20,11 @@ const eqxSolUrl = `${import.meta.env.VITE_SERVER_URL}/equinox`;
  * @param {string} lng - Longitude (-180 <= `lng` <=180).
  * @param {string} tz - The time zone ID.
  * @returns {Promise<DateObj | null>} The updated date object, or `null` if aborted.
- * @throws {Error} If request failed or result is invalid.
+ * @throws {Error} If request failed.
  */
 const fetchDate = async (year, flag, lat, lng, tz) => {
   const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching equinox/solstice date...');
-  const invalidError = validateYearSync(year);
-  if (invalidError) throw new Error(invalidError);
   try {
     /* Fetch the equinox/solstice date */
     const response = await axios.get(eqxSolUrl, {

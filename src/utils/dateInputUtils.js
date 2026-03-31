@@ -8,6 +8,9 @@ import {
 } from './constants';
 import { dateToStr } from './dateUtils';
 
+const ephYearMin = EPH_RANGE.min[0];
+const ephYearMax = EPH_RANGE.max[0];
+
 /**
  * Clamps the value to min/max.
  * @param {number} value
@@ -151,20 +154,13 @@ const validateDateSync = (date, cal) => {
 /**
  * Validates the year. Year should be within the ephemeris range.
  * @param {string} year
- * @returns {string} The error message
+ * @returns {boolean} `true` if valid.
  */
 const validateYearSync = (year) => {
   // console.log('Validating year...', year);
   /* If year is provided and valid, check the range */
   const yearInt = parseInt(year);
-  if (yearInt <= EPH_RANGE.min[0] || yearInt >= EPH_RANGE.max[0]) {
-    return (
-      EPH_RANGE_ERR_PREFIX +
-      `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })} ` +
-      '(Gregorian)'
-    );
-  }
-  return '';
+  return !year || (yearInt > ephYearMin && yearInt < ephYearMax);
 };
 
 /**

@@ -3,7 +3,6 @@ import { memo } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-// import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { styled, lighten } from '@mui/material/styles';
 import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';

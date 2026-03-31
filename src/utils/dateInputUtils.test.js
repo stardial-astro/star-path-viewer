@@ -1,6 +1,6 @@
 // src/utils/dateInputUtils.test.js
 import { describe, it, expect } from 'vitest';
-import { CALS, EPH_RANGE_ERR_PREFIX } from './constants';
+import { CALS } from './constants';
 import { clampDateSync, validateYearSync } from './dateInputUtils';
 
 describe('clampDateSync', () => {
@@ -22,10 +22,10 @@ describe('clampDateSync', () => {
 describe('validateYearSync', () => {
   it.each`
     input      | expected
-    ${''}      | ${''}
-    ${'2999'}  | ${''}
-    ${'3000'}  | ${EPH_RANGE_ERR_PREFIX + '-3000-01-29/+3000-05-06 (Gregorian)'}
-    ${'-3000'} | ${EPH_RANGE_ERR_PREFIX + '-3000-01-29/+3000-05-06 (Gregorian)'}
+    ${''}      | ${true}
+    ${'2999'}  | ${true}
+    ${'3000'}  | ${false}
+    ${'-3000'} | ${false}
   `('validates $input → message: $expected', ({ input, expected }) => {
     expect(validateYearSync(input)).toEqual(expected);
   });

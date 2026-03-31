@@ -4,7 +4,13 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/dateInputActionTypes';
 import config from '@utils/config';
-import { SERVER_ERR_PREFIX, EPH_RANGE_ERR_PREFIX } from '@utils/constants';
+import {
+  EPH_RANGE,
+  SERVER_ERR_PREFIX,
+  EPH_RANGE_ERR_PREFIX,
+} from '@utils/constants';
+import { dateToStr } from '@utils/dateUtils';
+import { validateYearSync } from '@utils/dateInputUtils';
 import fetchDate from '@utils/fetchDate';
 import { getIsDevMode } from '@utils/devMode';
 
@@ -14,6 +20,11 @@ const QUERY_KEY = 'date';
 const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
 /** 1 hour */
 const GC_MS = 60 * 60_000;
+
+const EPH_RANGE_ERR_G =
+  EPH_RANGE_ERR_PREFIX +
+  `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })} ` +
+  '(Gregorian)';
 
 /**
  * Calls `fetchDate` to fetch the equinox/solstice date.
@@ -44,7 +55,8 @@ const useDebouncedFetchDate = (
   dispatch,
   setErrorMessage,
 ) => {
-  const isEnabled = !!flag && !!year && !!lat && !!lng;
+  const isYearValid = validateYearSync(year);
+  const isEnabled = !!flag && !!year && !!lat && !!lng && isYearValid;
   const { data, error, isFetching } = useQuery({
     queryKey: [QUERY_KEY, year, flag, lat, lng, tz],
     queryFn: () => fetchDate(year, flag, lat, lng, tz),
@@ -64,6 +76,16 @@ const useDebouncedFetchDate = (
   });
 
   useEffect(() => {
+    /* Show the error if out of range */
+    if (flag && !isYearValid) {
+      dispatch({
+        type: actionTypes.SET_GENERAL_DATE_ERROR,
+        payload: EPH_RANGE_ERR_G,
+      });
+    }
+  }, [isYearValid, flag, dispatch]);
+
+  useEffect(() => {
     /* Sync loading state */
     dispatch({
       type: isFetching
@@ -79,8 +101,6 @@ const useDebouncedFetchDate = (
         /* Show server errors */
         msg = msg.substring(SERVER_ERR_PREFIX.length).trim();
         setErrorMessage((prev) => ({ ...prev, server: msg }));
-      } else if (msg.startsWith(EPH_RANGE_ERR_PREFIX)) {
-        dispatch({ type: actionTypes.SET_GENERAL_DATE_ERROR, payload: msg });
       } else {
         /* Show other errors and set invalid */
         setErrorMessage((prev) => ({ ...prev, date: msg }));

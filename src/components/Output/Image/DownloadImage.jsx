@@ -1,11 +1,11 @@
 // src/components/Output/Image/DownloadImage.jsx
-import { memo, useMemo, useCallback } from 'react';
+import { memo, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Stack, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { saveAs } from 'file-saver';
-import { Canvg } from 'canvg';
-import { jsPDF } from 'jspdf';
-import 'svg2pdf.js';
+// import { Canvg } from 'canvg';
+// import { jsPDF } from 'jspdf';
+// import 'svg2pdf.js';
 import { useHome } from '@context/HomeContext';
 import { formatDatetimeIso } from '@utils/dateUtils';
 import { capitalize } from '@utils/outputUtils';
@@ -22,6 +22,21 @@ const PDF_FMT = 'pdf';
 const DownloadImage = ({ filenameBase, dpi = 300 }) => {
   // console.log('Rendering DownloadImage');
   const { setErrorMessage, svgData, info } = useHome();
+
+  /* Dynamic import */
+  /** @type {ReactRef} */
+  const libsRef = useRef(null);
+  useEffect(() => {
+    const loadLibs = async () => {
+      const [{ Canvg }, { jsPDF }] = await Promise.all([
+        import('canvg'),
+        import('jspdf'),
+        import('svg2pdf.js'),
+      ]);
+      libsRef.current = { Canvg, jsPDF };
+    };
+    loadLibs();
+  }, []);
 
   const dateStrIsoG = useMemo(
     () =>
@@ -52,6 +67,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
   /** @type {(format: string) => Promise<void>} */
   const handleDownload = useCallback(
     async (format) => {
+      const { Canvg, jsPDF } = libsRef.current ?? {};
       const svgElement = document
         ?.getElementById('svg-container')
         ?.querySelector('svg');
@@ -181,6 +197,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
           .then(() => {
             pdfDoc.save(filename);
           })
+          /* @ts-ignore: TS7006 */
           .catch((err) => {
             console.error('Unable to export PDF:', err?.message ?? err);
             setErrorMessage((prev) => ({

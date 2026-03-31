@@ -5,36 +5,27 @@ on:
     branches: [ dev-cf-vite, main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Set up Node.js
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v6
       with:
-        node-version: '24.14.0'
+        node-version: '24'
 
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      run: echo "dir=$(node .yarn/releases/yarn-1.22.22.cjs cache dir)" >> $GITHUB_OUTPUT
-      
-    - name: Cache yarn dependencies
-      uses: actions/cache@v3
-      id: yarn-cache
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+    - name: Enable Corepack
+      run: corepack enable
 
     - name: Install dependencies
-      run: node .yarn/releases/yarn-1.22.22.cjs install --frozen-lockfile
+      run: yarn install --immutable
 
     - name: Run Vitest
-      run: node .yarn/releases/yarn-1.22.22.cjs test
+      run: yarn test
       env:
         VITE_APP_NAME: "Star Path Viewer"

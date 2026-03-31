@@ -1,13 +1,13 @@
 // src/components/Input/Location/LocationInput.jsx
 import { memo, useCallback } from 'react';
 import { Stack, Snackbar } from '@mui/material';
-import config from '@utils/config';
 import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
 import useDebouncedFetchTimezone from '@hooks/useDebouncedFetchTimezone';
 import useDetermineService from '@hooks/useDetermineService';
+import config from '@utils/config';
 import {
   LOC_INPUT_TYPES,
   LOC_UNKNOWN_ID,

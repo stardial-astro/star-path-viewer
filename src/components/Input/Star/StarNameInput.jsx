@@ -1,12 +1,11 @@
 // src/components/Input/Star/StarNameInput.jsx
 import { memo, useEffect, useCallback } from 'react';
-import { MenuItem } from '@mui/material';
+import { TextField, MenuItem } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { PLANETS } from '@utils/constants';
 import { clearStarError } from '@utils/starInputUtils';
-import TextField from '@mui/material/TextField';
 
 const NAME_LABEL = 'Planet name';
 const NAME_NAME = 'planet';

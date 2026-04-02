@@ -7,9 +7,9 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { useDateInput } from '@context/DateInputContext';
 import { MONTHS } from '@utils/constants';
 
+const MONTH_ID = 'month-select';
 const MONTH_LABEL = 'Month';
 const MONTH_NAME = MONTH_LABEL.toLowerCase();
-const MONTH_ID = 'month-select';
 const MONTH_NULL_TEXT = '— Select a month —';
 
 const nullItem = (

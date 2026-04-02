@@ -97,8 +97,15 @@ const fetchDiagram = async (params, signal) => {
   //   dateDispatch({ type: dateActionTypes.SET_DAY, payload: res_day });
   // }
 
-  isDevMode && console.debug('[Results]', newInfo); // TODO: check types
-  isDevMode && console.debug('[Annotations]', data.annotations); // TODO: check types
+  isDevMode &&
+    console.debug(
+      '[Diagram ID]',
+      data.diagramId,
+      '\n[Results]',
+      newInfo,
+      '\n[Annotations]',
+      data.annotations,
+    );
 
   return {
     diagramId: data.diagramId,

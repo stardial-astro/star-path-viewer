@@ -11,6 +11,11 @@ import queryClient from './queryClient';
 import { AppThemeProvider } from './theme';
 import App from './App';
 
+window.addEventListener('vite:preloadError', (event) => {
+  event.preventDefault();
+  window.location.reload();
+});
+
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Root element not found');
 const root = createRoot(rootElement);

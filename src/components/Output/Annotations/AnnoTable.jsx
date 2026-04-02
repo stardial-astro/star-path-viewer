@@ -1,5 +1,5 @@
 // src/components/Output/Annotations/AnnoTable.jsx
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 import { useTheme } from '@mui/material/styles';
 import {
   Table,
@@ -15,12 +15,13 @@ import { styled, lighten } from '@mui/material/styles';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
-/** @param {*} theme */
-const redAsterisk = (theme) => (
-  <span style={{ color: theme.palette.error.main }}>*</span>
-);
+const footnoteStyle = {
+  color: 'text.secondary',
+  mt: 1,
+  ml: 1,
+};
 
-const timeMinWidth = '6.2rem';
+const dateColumnStyle = { minWidth: '6.2rem' };
 
 const StyledHeadCell = styled(TableCell)(() => ({
   textAlign: 'center',
@@ -69,7 +70,10 @@ const StyledRow = styled(TableRow)(() => ({
  */
 const AnnoTable = ({ anno }) => {
   const theme = useTheme();
-  const tzStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
+  const redAsterisk = (
+    <span style={{ color: theme.palette.error.main }}>*</span>
+  );
+  const tzStr = formatTimezone(anno[0].time_zone);
 
   return (
     <>
@@ -91,30 +95,18 @@ const AnnoTable = ({ anno }) => {
               <StyledHeadCell rowSpan={2}>Altitude</StyledHeadCell>
               <StyledHeadCell rowSpan={2}>Azimuth</StyledHeadCell>
               <StyledHeadCell colSpan={2}>
-                {`Standard Time (${tzStr})`} {redAsterisk(theme)}
+                {`Standard Time (${tzStr})`} {redAsterisk}
               </StyledHeadCell>
               <StyledHeadCell colSpan={2}>Local Mean Time (LMT)</StyledHeadCell>
               <StyledHeadCell colSpan={2}>Universal Time (UT1)</StyledHeadCell>
             </TableRow>
             <TableRow>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Gregorian
-              </StyledHeadCell>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Julian
-              </StyledHeadCell>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Gregorian
-              </StyledHeadCell>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Julian
-              </StyledHeadCell>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Gregorian
-              </StyledHeadCell>
-              <StyledHeadCell sx={{ minWidth: timeMinWidth }}>
-                Julian
-              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -157,11 +149,8 @@ const AnnoTable = ({ anno }) => {
         </Table>
       </TableContainer>
 
-      <Typography
-        variant="body2"
-        sx={{ textAlign: 'left', color: 'text.secondary', mt: 1, ml: 1 }}
-      >
-        {redAsterisk(theme)} No Daylight Saving Time (DST) adjustments.
+      <Typography variant="body2" align="left" sx={footnoteStyle}>
+        {redAsterisk} No Daylight Saving Time (DST) adjustments.
       </Typography>
     </>
   );

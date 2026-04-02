@@ -2,8 +2,8 @@
 import { memo } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Box, Typography, Link } from '@mui/material';
-import AboutImage from '@assets/about-image.svg';
-import Logo from '@assets/logo.svg';
+import aboutImage from '@assets/about-image.svg';
+import logo from '@assets/logo.svg';
 // import { Helmet } from 'react-helmet';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 
@@ -35,7 +35,7 @@ const About = () => {
 
       <Box data-testid="about-page" sx={{ mt: 4 }}>
         <img
-          src={Logo}
+          src={logo}
           alt="Logo"
           data-testid="about-logo"
           style={{
@@ -71,10 +71,13 @@ const About = () => {
           }}
         >
           <img
-            src={AboutImage}
+            src={aboutImage}
             alt="About Us"
             style={{
-              filter: theme.palette.mode === 'dark' ? 'invert(1) contrast(200%)' : 'none',
+              filter:
+                theme.palette.mode === 'dark'
+                  ? 'invert(1) contrast(200%)'
+                  : 'none',
               maxHeight: '2.1rem',
               objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
               cursor: 'default',
@@ -87,13 +90,13 @@ const About = () => {
         data-testid="about-body"
         sx={{
           display: 'flex',
-          flexWrap: 'wrap',
-          gap: '1rem',
+          flexDirection: 'column',
+          rowGap: '1rem',
           mx: { xs: 1.5, sm: 2.5, md: 3 },
           pl: 1.8,
         }}
       >
-        <Typography variant="body1" textAlign="left">
+        <Typography variant="body1" component="p" align="left">
           We are{' '}
           <Link
             href="https://github.com/stardial-astro"
@@ -106,14 +109,14 @@ const About = () => {
           goal is to create precise, user-friendly, and intuitive astronomical
           tools to support research in history and social sciences.
         </Typography>
-        <Typography variant="body1" textAlign="left">
+        <Typography variant="body1" component="p" align="left">
           <em>{import.meta.env.VITE_APP_NAME}</em> is our first application
           designed to help historians intuitively understand the apparent motion
           of a celestial object on any given date. This open-source scientific
           tool provides an accurate approach to replicating the view of stars
           crossing the sky that ancient stargazers would have seen.
         </Typography>
-        <Typography variant="body1" textAlign="left">
+        <Typography variant="body1" component="p" align="left">
           Accurately evaluating the position of a star or planet in ancient
           times is crucial for historians when dating historical events by
           correlating astrometric data with records. The visibility of stars
@@ -127,7 +130,7 @@ const About = () => {
           texts of the Chinese astronomical tradition and many other historical
           documents.
         </Typography>
-        <Typography variant="body1" textAlign="left">
+        <Typography variant="body1" component="p" align="left">
           To meet these needs, <em>{import.meta.env.VITE_APP_NAME}</em>{' '}
           integrates with{' '}
           <Link
@@ -165,7 +168,7 @@ const About = () => {
           transitions between different twilight stages and provides the target
           object&apos;s positional information at these times.
         </Typography>
-        <Typography variant="body1" textAlign="left">
+        <Typography variant="body1" component="p" align="left">
           For more detailed information about this website, please visit our{' '}
           <Link
             href="https://github.com/stardial-astro/star-path-viewer"

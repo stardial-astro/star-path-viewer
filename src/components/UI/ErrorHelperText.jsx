@@ -1,4 +1,4 @@
-// src/components/UI/HelperText.jsx
+// src/components/UI/ErrorHelperText.jsx
 import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -11,4 +11,4 @@ const ErrorHelperText = styled(Typography)(({ theme }) => ({
   textAlign: 'left',
 }));
 
-export { ErrorHelperText };
+export default ErrorHelperText;

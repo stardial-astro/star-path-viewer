@@ -62,4 +62,4 @@ type DiagramSchema = Omit<LocationObj<number>, 'id'> &
     /** The diagram annotation list returned from server. */
     annotations: AnnoItem[];
     [key: string]: unknown;
-  }; // TODO: check types
+  };

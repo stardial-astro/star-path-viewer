@@ -49,7 +49,8 @@ const useDebouncedFetchNameSuggestions = (
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (axios.isCancel(error)) return false;
+      if (axios.isCancel(error) || error.message === HIP_OUT_OF_RANGE_MSG)
+        return false;
       return failureCount < config.MAX_RETRIES;
     },
     retryDelay: config.RETRY_DELAY,

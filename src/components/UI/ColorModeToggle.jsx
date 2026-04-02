@@ -2,10 +2,10 @@
 import { useCallback } from 'react';
 import Tooltip from '@mui/material/Tooltip';
 import { useColorScheme } from '@mui/material/styles';
-import BarIconButton from '@components/UI/BarIconButton';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import BrightnessMediumOutlinedIcon from '@mui/icons-material/BrightnessMediumOutlined';
+import BarIconButton from './BarIconButton';
 
 /** @type {ColorMode[]} */
 const MODE_CYCLES = ['light', 'dark', 'system'];
@@ -41,7 +41,7 @@ const ColorModeToggle = () => {
         <BarIconButton
           aria-label={MODE_LABELS[currentMode]}
           onClick={handleToggle}
-          sx={{ mr: 0.4 }}
+          sx={{ mr: 0.3 }}
         >
           {MODE_ICONS[currentMode]}
         </BarIconButton>

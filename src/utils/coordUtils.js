@@ -122,7 +122,7 @@ const formatCoordinate = (coordinate, type) => {
       : coordinate < 0
         ? 'W'
         : 'E';
-  // return `${dms.degrees}°${pad(dms.minutes)}'${dms.seconds.toFixed(2).padStart(5, '0')}"${direction}`;
+  // return `${dms.degrees}°${pad(dms.minutes)}'${pad(dms.seconds, 3)}"${direction}`;
   return `${dms.degrees}°${pad(dms.minutes)}'${pad(dms.seconds)}"${direction}`;
 };
 

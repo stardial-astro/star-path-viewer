@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useTheme } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
-import TitleImage from '@assets/title-image.svg';
+import titleImage from '@assets/title-image.svg';
 import { useHome } from '@context/HomeContext';
 import { LocationInputProvider } from '@context/LocationInputContext';
 import { DateInputProvider } from '@context/DateInputContext';
@@ -116,7 +116,7 @@ const Home = () => {
                 }}
               >
                 <img
-                  src={TitleImage}
+                  src={titleImage}
                   alt="Star Path Viewer"
                   style={{
                     filter: isDarkMode ? 'invert(1) contrast(200%)' : 'none',

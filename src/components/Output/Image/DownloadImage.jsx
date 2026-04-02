@@ -10,9 +10,40 @@ import { useHome } from '@context/HomeContext';
 import { formatDatetimeIso } from '@utils/dateUtils';
 import { capitalize } from '@utils/outputUtils';
 
+const FRAC_DIGITS = 3;
+
 const SVG_FMT = 'svg';
 const PNG_FMT = 'png';
 const PDF_FMT = 'pdf';
+
+/**
+ * Constructs metadata for SVG and PDF.
+ * - `location`: lat/lng (3 fraction digits)
+ * - `date`: ISO format in Gregorian calendar
+ * - `star`: name, HIP, or RA/Dec (3 fraction digits)
+ * @param {InfoObj} info
+ */
+const constructMetadata = (info) => {
+  const locationStr =
+    'Location (lat/lng): ' +
+    info.lat.toFixed(FRAC_DIGITS) +
+    '/' +
+    info.lng.toFixed(FRAC_DIGITS);
+  const dateStrIsoG =
+    'Date (Gregorian): ' +
+    formatDatetimeIso({
+      year: info.dateG.year,
+      month: info.dateG.month,
+      day: info.dateG.day,
+    }).date;
+  const starStr =
+    'Celestial Object' +
+    ((info.name && !info.hip && ': ' + capitalize(info.name)) ||
+      (info.hip && ' (HIP): ' + info.hip) ||
+      ' (RA/Dec): ' +
+        (info.ra?.toFixed(FRAC_DIGITS) + '/' + info.dec?.toFixed(FRAC_DIGITS)));
+  return { location: locationStr, date: dateStrIsoG, star: starStr };
+};
 
 /**
  * @param {object} params
@@ -38,31 +69,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
     loadLibs();
   }, []);
 
-  const dateStrIsoG = useMemo(
-    () =>
-      'Date (Gregorian): ' +
-      formatDatetimeIso({
-        year: info.dateG.year,
-        month: info.dateG.month,
-        day: info.dateG.day,
-      }).date,
-    [info.dateG],
-  );
-
-  const locationStr = useMemo(
-    () =>
-      'Location (lat/lng): ' + info.lat.toFixed(3) + '/' + info.lng.toFixed(3),
-    [info.lat, info.lng],
-  );
-
-  const starStr = useMemo(
-    () =>
-      'Celestial Object' +
-      ((info.name && !info.hip && ': ' + capitalize(info.name)) ||
-        (info.hip && ' (HIP): ' + info.hip) ||
-        ' (RA/Dec): ' + (info.ra?.toFixed(3) + '/' + info.dec?.toFixed(3))),
-    [info.name, info.hip, info.ra, info.dec],
-  );
+  const metadata = useMemo(() => constructMetadata(info), [info]);
 
   /** @type {(format: string) => Promise<void>} */
   const handleDownload = useCallback(
@@ -96,13 +103,13 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
           filenameBase +
           '</title>\n' +
           '  <desc>' +
-          dateStrIsoG +
+          metadata.date +
           '</desc>\n' +
           '  <desc>' +
-          locationStr +
+          metadata.location +
           '</desc>\n' +
           '  <desc>' +
-          starStr +
+          metadata.star +
           '</desc>\n';
 
         let svgWithMetadata;
@@ -184,7 +191,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
         /* Set metadata for the PDF */
         pdfDoc.setProperties({
           title: filenameBase,
-          subject: dateStrIsoG + ', ' + locationStr + ', ' + starStr,
+          subject: Object.values(metadata).join(', '),
         });
 
         pdfDoc
@@ -207,15 +214,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
           });
       }
     },
-    [
-      svgData,
-      filenameBase,
-      dpi,
-      dateStrIsoG,
-      locationStr,
-      starStr,
-      setErrorMessage,
-    ],
+    [svgData, filenameBase, dpi, metadata, setErrorMessage],
   );
 
   return (

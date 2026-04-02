@@ -7,9 +7,9 @@ import {
   useState,
   useCallback,
 } from 'react';
-import * as actionTypes from './starInputActionTypes';
 import { STORAGE_KEYS, STAR_INPUT_TYPES, RADEC_TYPES } from '@utils/constants';
 import { getIsDevMode } from '@utils/devMode';
+import * as actionTypes from './starInputActionTypes';
 
 /** 6 hours */
 const HIP_STALE_MS = 6 * 60 * 60_000;

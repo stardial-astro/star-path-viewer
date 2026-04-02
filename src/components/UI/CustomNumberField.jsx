@@ -10,6 +10,38 @@ import InputLabel from '@mui/material/InputLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import isMobile from '@utils/isMobile';
+
+const focusStyle = {
+  '&.Mui-focused .MuiInputAdornment-root': {
+    visibility: 'visible',
+  },
+};
+
+const adornmentStyle = isMobile
+  ? focusStyle
+  : {
+      ...focusStyle,
+      '&:hover .MuiInputAdornment-root': {
+        visibility: 'visible',
+      },
+    };
+
+const endAdornmentStyle = {
+  visibility: 'hidden', // Hide by default
+  maxHeight: 'unset',
+  alignSelf: 'stretch',
+  borderLeft: '1px solid',
+  borderColor: 'divider',
+  ml: 0,
+  '& button': {
+    py: 0,
+    flex: 1,
+    borderRadius: 0.5,
+  },
+};
 
 const loadingAdornment = (
   <InputAdornment position="end" sx={{ mr: 2 }}>
@@ -17,23 +49,10 @@ const loadingAdornment = (
   </InputAdornment>
 );
 
-const arrowsAdornment = (
+const ArrowsAdornment = () => (
   <InputAdornment
     position="end"
-    sx={{
-      visibility: 'hidden', // Hide by default
-      flexDirection: 'column',
-      maxHeight: 'unset',
-      alignSelf: 'stretch',
-      borderLeft: '1px solid',
-      borderColor: 'divider',
-      ml: 0,
-      '& button': {
-        py: 0,
-        flex: 1,
-        borderRadius: 0.5,
-      },
-    }}
+    sx={{ flexDirection: 'column', ...endAdornmentStyle }}
   >
     <NumberField.Increment
       render={<IconButton size="small" aria-label="Increase" />}
@@ -55,12 +74,26 @@ const arrowsAdornment = (
   </InputAdornment>
 );
 
-/**
- * This component is a placeholder for FormControl to correctly set the shrink label state on SSR.
- * @param {*} _
- */
-const SSRInitialFilled = (_) => null;
-SSRInitialFilled.muiName = 'Input';
+const PlusMinusAdornment = () => (
+  <InputAdornment
+    position="end"
+    sx={{ flexDirection: 'row', ...endAdornmentStyle }}
+  >
+    <NumberField.Decrement
+      render={<IconButton size="small" aria-label="Increase" />}
+    >
+      <RemoveIcon fontSize="small" sx={{ transform: 'translateX(2px)' }} />
+    </NumberField.Decrement>
+
+    <NumberField.Increment
+      render={<IconButton size="small" aria-label="Decrease" />}
+    >
+      <AddIcon fontSize="small" sx={{ transform: 'translateX(-2px)' }} />
+    </NumberField.Increment>
+  </InputAdornment>
+);
+
+const EndAdornment = isMobile ? PlusMinusAdornment : ArrowsAdornment;
 
 /** @param {*} props */
 const CustomNumberField = ({
@@ -91,7 +124,7 @@ const CustomNumberField = ({
 
   /** @type {(value: number | null, eventDetails: NumberEventDetails) => void} */
   const handleValueChange = useCallback(
-    (value, _) => {
+    (value) => {
       const newValue = value === null ? '' : value.toString();
       if (onChange && name) {
         onChange({ target: { name, value: newValue } });
@@ -130,7 +163,6 @@ const CustomNumberField = ({
         </FormControl>
       )}
     >
-      <SSRInitialFilled {...other} />
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <NumberField.Input
         id={id}
@@ -140,6 +172,7 @@ const CustomNumberField = ({
               label={label}
               inputRef={props.ref}
               placeholder={placeholder}
+              autoComplete="off"
               value={state.inputValue} // state.inputValue: string
               onBlur={props.onBlur}
               onChange={props.onChange}
@@ -150,16 +183,8 @@ const CustomNumberField = ({
               slotProps={{
                 input: props,
               }}
-              endAdornment={loading ? loadingAdornment : arrowsAdornment}
-              sx={{
-                pr: 0,
-                '&:hover .MuiInputAdornment-root': {
-                  visibility: 'visible',
-                },
-                '&.Mui-focused .MuiInputAdornment-root': {
-                  visibility: 'visible',
-                },
-              }}
+              endAdornment={loading ? loadingAdornment : <EndAdornment />}
+              sx={loading ? { pr: 0.5 } : { pr: 0, ...adornmentStyle }}
             />
           );
         }}

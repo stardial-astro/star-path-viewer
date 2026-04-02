@@ -1,7 +1,8 @@
 // vite.config.mjs
 import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
+import babel from '@rolldown/plugin-babel';
 import { resolve } from 'path';
 import fs from 'fs';
 import pkg from './package.json';
@@ -16,6 +17,7 @@ export default defineConfig({
   plugins: [
     react(),
     svgr(), // Transform SVGs into React components
+    babel({ presets: [reactCompilerPreset()] }),
   ],
   resolve: {
     alias: {
@@ -41,46 +43,24 @@ export default defineConfig({
   build: {
     chunkSizeWarningLimit: 1000,
     /* Configuration for chunk splitting */
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: (id) => {
-          if (id.includes('node_modules/')) {
-            if (id.includes('@mui')) {
-              return 'vendor-mui';
-            } else if (id.includes('xlsx')) {
-              return 'vendor-xlsx';
-            } else if (id.includes('svg2pdf.js')) {
-              return 'vendor-svg2pdf.js';
-            } else if (id.includes('canvg')) {
-              return 'vendor-canvg';
-            } else if (id.includes('html2canvas')) {
-              return 'vendor-html2canvas';
-            } else if (id.includes('jspdf')) {
-              return 'vendor-jspdf';
-            } else if (id.includes('file-saver')) {
-              return 'vendor-file-saver';
-            }
-            return 'vendor';
-          }
-
-          // const heavyDirs = ['Input', 'Output'];
-          // for (const dir of heavyDirs) {
-          //   /* Subdirectories in each dir */
-          //   const subMatch = id.match(new RegExp(`/components/${dir}/([^/]+)/`));
-          //   if (subMatch) {
-          //     return `component_${dir.toLowerCase()}_${subMatch[1].toLowerCase()}`;
-          //   }
-          //   /* Root files in each dir */
-          //   if (id.match(new RegExp(`/components/${dir}/[^/]+\\.(jsx?|tsx?)$`))) {
-          //     return `component_${dir.toLowerCase()}_root`;
-          //   }
-          // }
-
-          const matchComponent = id.match(/\/components\/([^/]+)\//);
-          if (matchComponent) {
-            const [, folder, subFolder] = matchComponent;
-            return `component_${folder.toLowerCase()}_${subFolder ? subFolder.toLowerCase() : 'core'}`;
-          }
+        codeSplitting: {
+          groups: [
+            {
+              name: 'react-core',
+              test: /node_modules\/(react|react-dom|scheduler)/,
+            },
+            { name: 'vendor-mui', test: /node_modules\/@mui/ },
+            { name: 'vendor-xlsx', test: /node_modules\/xlsx/ },
+            { name: 'vendor-svg2pdf', test: /node_modules\/svg2pdf\.js/ },
+            { name: 'vendor-canvg', test: /node_modules\/canvg/ },
+            { name: 'vendor-html2canvas', test: /node_modules\/html2canvas/ },
+            { name: 'vendor-jspdf', test: /node_modules\/jspdf/ },
+            { name: 'vendor-file-saver', test: /node_modules\/file-saver/ },
+            { name: 'vendor', test: /node_modules/ },
+            // { name: 'components-io',   test: /\/src\/components\/(Input|Output)\// },
+          ],
         },
       },
     },

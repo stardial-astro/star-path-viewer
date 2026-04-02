@@ -150,7 +150,7 @@ const AddressInput = () => {
     /* If empty, skip */
     if (suggestions.length === 0) return;
     /* If have multiple options, focus and open options */
-    if (suggestions.length > 1) inputRef.current?.focus(); // TODO
+    if (suggestions.length > 1) inputRef.current?.focus();
   }, [suggestions, locationDispatch]);
 
   /**

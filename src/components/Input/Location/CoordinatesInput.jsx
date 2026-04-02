@@ -13,8 +13,10 @@ import {
 } from '@utils/locationInputUtils';
 import CustomNumberField from '@/components/UI/CustomNumberField';
 
-const LAT_INPUT_LABEL = 'Latitude';
-const LNG_INPUT_LABEL = 'Longitude';
+const LAT_ID = 'latitude-input';
+const LNG_ID = 'longitude-input';
+const LAT_LABEL = 'Latitude';
+const LNG_LABEL = 'Longitude';
 const LAT_PLACEHOLDER = 'Enter the latitude in decimal degrees';
 const LNG_PLACEHOLDER = 'Enter the longitude in decimal degrees';
 
@@ -86,7 +88,8 @@ const CoordinatesInput = () => {
       <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
         <Grid size={{ xs: 12, sm: 6, md: 6 }}>
           <CustomNumberField
-            label={LAT_INPUT_LABEL}
+            id={LAT_ID}
+            label={LAT_LABEL}
             placeholder={LAT_PLACEHOLDER}
             name={LATITUDE}
             value={location.lat}
@@ -101,7 +104,8 @@ const CoordinatesInput = () => {
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 6 }}>
           <CustomNumberField
-            label={LNG_INPUT_LABEL}
+            id={LNG_ID}
+            label={LNG_LABEL}
             placeholder={LNG_PLACEHOLDER}
             name={LONGITUDE}
             value={location.lng}

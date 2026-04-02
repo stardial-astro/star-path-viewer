@@ -7,7 +7,7 @@ import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import * as locationActionTypes from '@context/locationInputActionTypes';
 import { clearDateError } from '@utils/dateInputUtils';
-import { ErrorHelperText } from '@components/UI/HelperText';
+import ErrorHelperText from '@/components/UI/ErrorHelperText';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
 import QuickEntryAccordion from './QuickEntryAccordion';

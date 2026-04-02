@@ -20,14 +20,21 @@ import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
 import CustomNumberField from '@components/UI/CustomNumberField';
 import MonthInput from './MonthInput';
 
+const YEAR_ID = 'year-input';
+const DAY_ID = 'day-input';
 const YEAR_LABEL = 'Year';
 const DAY_LABEL = 'Day';
-
 const YEAR_NAME = YEAR_LABEL.toLowerCase();
 const DAY_NAME = DAY_LABEL.toLowerCase();
 
 const YEAR_MIN = EPH_RANGE.min[0];
 const YEAR_MAX = EPH_RANGE.max[0];
+
+const disabledStyle = {
+  '& .MuiInputBase-root.Mui-disabled': {
+    backgroundColor: 'action.hover',
+  },
+};
 
 const DateFields = () => {
   // console.log('Rendering DateFields');
@@ -138,6 +145,7 @@ const DateFields = () => {
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
       <Grid size={{ xs: 12, sm: 4, md: 4 }}>
         <CustomNumberField
+          id={YEAR_ID}
           label={YEAR_LABEL}
           name={YEAR_NAME}
           value={date.year}
@@ -161,6 +169,7 @@ const DateFields = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 4, md: 4 }}>
         <CustomNumberField
+          id={DAY_ID}
           label={DAY_LABEL}
           name={DAY_NAME}
           value={date.day}
@@ -173,11 +182,7 @@ const DateFields = () => {
           loading={date.year && dateFetching}
           error={!!dateError.day || !!dateError.general || !!dateNullError.day}
           helperText={dateError.day || dateNullError.day}
-          sx={{
-            '& .MuiInputBase-root.Mui-disabled': {
-              backgroundColor: 'action.hover',
-            },
-          }}
+          sx={disabledStyle}
         />
       </Grid>
     </Grid>

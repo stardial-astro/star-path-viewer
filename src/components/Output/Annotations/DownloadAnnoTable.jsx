@@ -20,23 +20,20 @@ const XLSX_FMT = 'xlsx';
 const DownloadAnnoTable = ({ anno, filenameBase }) => {
   const { setErrorMessage } = useHome();
 
-  const offsetStr = useMemo(() => formatTimezone(anno[0].time_zone), [anno]);
-
-  const annoExport = useMemo(
-    () =>
-      anno.map((item) => ({
-        name: item.name,
-        alt: formatDecimalDegrees(item.alt).replace(/°/g, '\u00B0'),
-        az: formatDecimalDegrees(item.az).replace(/°/g, '\u00B0'),
-        time_standard: `${datetimeToStr({ datetimeArr: item.time_standard })} UT1${offsetStr}`,
-        time_standard_julian: `${datetimeToStr({ datetimeArr: item.time_standard_julian })} UT1${offsetStr}`,
-        time_local_mean: `${datetimeToStr({ datetimeArr: item.time_local_mean })}`,
-        time_local_mean_julian: `${datetimeToStr({ datetimeArr: item.time_local_mean_julian })}`,
-        time_ut1: datetimeToStr({ datetimeArr: item.time_ut1 }),
-        time_ut1_julian: datetimeToStr({ datetimeArr: item.time_ut1_julian }),
-      })),
-    [anno, offsetStr],
-  );
+  const annoExport = useMemo(() => {
+    const offsetStr = formatTimezone(anno[0].time_zone);
+    return anno.map((item) => ({
+      name: item.name,
+      alt: formatDecimalDegrees(item.alt).replace(/°/g, '\u00B0'),
+      az: formatDecimalDegrees(item.az).replace(/°/g, '\u00B0'),
+      time_standard: `${datetimeToStr({ datetimeArr: item.time_standard })} UT1${offsetStr}`,
+      time_standard_julian: `${datetimeToStr({ datetimeArr: item.time_standard_julian })} UT1${offsetStr}`,
+      time_local_mean: `${datetimeToStr({ datetimeArr: item.time_local_mean })}`,
+      time_local_mean_julian: `${datetimeToStr({ datetimeArr: item.time_local_mean_julian })}`,
+      time_ut1: datetimeToStr({ datetimeArr: item.time_ut1 }),
+      time_ut1_julian: datetimeToStr({ datetimeArr: item.time_ut1_julian }),
+    }));
+  }, [anno]);
 
   /** @type {(format: string) => void} */
   const handleDownload = useCallback(

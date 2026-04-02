@@ -13,8 +13,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
+import isMobile from '@utils/isMobile';
 import { EQX_SOL_NAMES, CALS } from '@utils/constants';
 import CustomToggleButton from '@components/UI/CustomToggleButton';
+
+const summaryStyle = {
+  minHeight: 0,
+  '& .MuiAccordionSummary-content': {
+    my: 1,
+  },
+};
 
 const expandIcon = <ExpandMoreIcon sx={{ color: 'primary.main' }} />;
 
@@ -45,16 +53,8 @@ const QuickEntryAccordion = () => {
   );
 
   return (
-    <Accordion defaultExpanded disableGutters>
-      <AccordionSummary
-        expandIcon={expandIcon}
-        sx={{
-          minHeight: 0,
-          '& .MuiAccordionSummary-content': {
-            my: 1,
-          },
-        }}
-      >
+    <Accordion defaultExpanded={!isMobile} disableGutters>
+      <AccordionSummary expandIcon={expandIcon} sx={summaryStyle}>
         <Box
           display="flex"
           flexDirection={{ xs: 'column', sm: 'row' }}

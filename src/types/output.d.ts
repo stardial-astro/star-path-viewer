@@ -35,14 +35,14 @@ interface PtDetail {
 }
 
 /** The information for display. */
-type InfoObj = Omit<LocationObj<number>, 'id'> & // TODO: check types
+type InfoObj = Omit<LocationObj<number>, 'id'> &
   InfoProps & {
     /** The Gregorian date for Display. */
     dateG: DateObj<number>;
     /** The Julian date for Display. */
     dateJ: DateObj<number>;
     /** The Chinese star name for Display. */
-    nameZh?: string; // TODO: check if it's optional
+    nameZh?: string;
     [key: string]: unknown;
   };
 

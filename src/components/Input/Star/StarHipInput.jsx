@@ -31,8 +31,8 @@ const PLACEHOLDER = 'Enter a number or a name';
 const LOADING_PLACEHOLDER = 'Loading data...';
 const NO_DATA_PLACEHOLDER = 'Data not loaded - Please reload the page';
 
-const hipStyle = { textAlign: 'left', mr: 1 };
-const nameStyle = { textAlign: 'left', color: 'primary.main' };
+const hipStyle = { mr: 1 };
+const nameStyle = { color: 'primary.main' };
 
 const searchIcon = (
   <SearchIcon
@@ -139,7 +139,7 @@ const StarHipInput = () => {
     /* If empty, skip */
     if (suggestions.length === 0) return;
     /* If have multiple options, focus and open options */
-    if (suggestions.length > 1) inputRef.current?.focus(); // TODO
+    if (suggestions.length > 1) inputRef.current?.focus();
   }, [suggestions, starDispatch]);
 
   /**
@@ -315,9 +315,11 @@ const StarHipInput = () => {
       renderOption={({ key, ...props }, option) => (
         <li key={key} {...props}>
           <Box display="flex" alignItems="start" flexWrap="wrap">
-            <Typography sx={hipStyle}>{option.hip}</Typography>
+            <Typography align="left" sx={hipStyle}>
+              {option.hip}
+            </Typography>
             {option.name && (
-              <Typography sx={nameStyle}>
+              <Typography align="left" sx={nameStyle}>
                 {option.name_zh
                   ? `(${option.name}/${option.name_zh})`
                   : `(${option.name})`}

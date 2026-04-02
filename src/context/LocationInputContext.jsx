@@ -8,8 +8,8 @@ import {
   useRef,
   useCallback,
 } from 'react';
-import * as actionTypes from './locationInputActionTypes';
 import { STORAGE_KEYS, LOC_INPUT_TYPES } from '@utils/constants';
+import * as actionTypes from './locationInputActionTypes';
 
 /** 1 hour */
 const SERVICE_STALE_MS = 60 * 60_000;

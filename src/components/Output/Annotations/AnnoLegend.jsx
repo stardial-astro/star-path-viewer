@@ -9,8 +9,8 @@ import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/UI/CustomDivider';
 
-const labelStyle = { textAlign: 'left', fontWeight: 500, minWidth: '1.5rem' };
-const detailStyle = { textAlign: 'left', color: 'text.primary', ml: 1.5 };
+const labelStyle = { fontWeight: 500, minWidth: '1.5rem' };
+const detailStyle = { color: 'text.primary', ml: 1.5 };
 
 /**
  * @param {object} param
@@ -123,7 +123,7 @@ const AnnoLegend = ({ anno }) => {
                 flexWrap="wrap"
               >
                 <Line type={key} />
-                <Typography variant="body2" sx={detailStyle}>
+                <Typography variant="body2" align="left" sx={detailStyle}>
                   {value}
                 </Typography>
               </Box>
@@ -147,12 +147,13 @@ const AnnoLegend = ({ anno }) => {
                 <Dot isDarkMode={isDarkMode} />
                 <Typography
                   variant="body2"
+                  align="left"
                   color="red"
                   sx={{ filter: colorFilter(isDarkMode), ...labelStyle }}
                 >
                   {item.name}
                 </Typography>
-                <Typography variant="body2" sx={detailStyle}>
+                <Typography variant="body2" align="left" sx={detailStyle}>
                   {PT_DETAIL[item.name].name}
                   <DetailTooltip title={PT_DETAIL[item.name].detail}>
                     <IconButton size="small" sx={{ p: 0, ml: 0.5 }}>

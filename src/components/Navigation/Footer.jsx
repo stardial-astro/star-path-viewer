@@ -5,6 +5,14 @@ import CustomDivider from '@components/UI/CustomDivider';
 import ccSvg from '@assets/cc.svg';
 import bySvg from '@assets/by.svg';
 
+const ccCssStyle = {
+  maxHeight: '1em',
+  marginLeft: '4px',
+  marginBottom: '1px',
+  verticalAlign: 'text-bottom',
+  opacity: 0.4,
+};
+
 const Footer = () => {
   return (
     <Container
@@ -13,13 +21,14 @@ const Footer = () => {
         px: 0,
       }}
     >
-      <CustomDivider sx={{ mt: 4, mb: 1 }} />
+      <CustomDivider sx={{ mt: 6, mb: 1 }} />
 
       <Box
         component="footer"
         sx={{
           display: 'flex',
           flexWrap: 'wrap',
+          columnGap: '0.25em',
           justifyContent: 'center',
           color: 'text.disabled',
           pt: 0,
@@ -28,7 +37,7 @@ const Footer = () => {
           width: '100%',
         }}
       >
-        <Typography variant="body2" component="p" sx={{ textAlign: 'left' }}>
+        <Typography variant="body2" component="p" align="left">
           &copy; {new Date().getFullYear()} Stardial. Created by{' '}
           <Link
             href="https://github.com/lydiazly"
@@ -48,7 +57,7 @@ const Footer = () => {
           , and Jinsong Guo.
         </Typography>
 
-        <Typography variant="body2" component="p" sx={{ textAlign: 'left' }}>
+        <Typography variant="body2" component="p" align="left">
           Source code and data are licensed under{' '}
           <Link
             href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1"
@@ -57,30 +66,8 @@ const Footer = () => {
             sx={{ display: 'inline-block' }}
           >
             CC BY 4.0
-            <Box
-              component="img"
-              src={ccSvg}
-              alt="CC logo"
-              sx={{
-                height: '0.8rem!important',
-                ml: 0.5,
-                mb: 0.2,
-                verticalAlign: 'text-bottom',
-                opacity: 0.4,
-              }}
-            />
-            <Box
-              component="img"
-              src={bySvg}
-              alt="BY logo"
-              sx={{
-                height: '0.8rem!important',
-                ml: 0.5,
-                mb: 0.2,
-                verticalAlign: 'text-bottom',
-                opacity: 0.4,
-              }}
-            />
+            <img src={ccSvg} alt="CC logo" style={ccCssStyle} />
+            <img src={bySvg} alt="BY logo" style={ccCssStyle} />
           </Link>
         </Typography>
       </Box>

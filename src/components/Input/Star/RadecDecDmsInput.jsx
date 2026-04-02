@@ -5,12 +5,14 @@ import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { dmsToDecimal } from '@utils/coordUtils';
 import CustomNumberField from '@/components/UI/CustomNumberField';
-import { ErrorHelperText } from '@components/UI/HelperText';
+import ErrorHelperText from '@/components/UI/ErrorHelperText';
 
+const DEG_ID = 'degrees-dms-input';
+const MIN_ID = 'minutes-dms-input';
+const SEC_ID = 'seconds-dms-input';
 const DEG_LABEL = 'Degrees';
 const MIN_LABEL = 'Minutes';
 const SEC_LABEL = 'Seconds';
-
 const DEG_NAME = DEG_LABEL.toLowerCase();
 const MIN_NAME = MIN_LABEL.toLowerCase();
 const SEC_NAME = SEC_LABEL.toLowerCase();
@@ -92,6 +94,7 @@ const RadecDecDmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={DEG_ID}
           label={DEG_LABEL}
           name={DEG_NAME}
           value={starDecDms.degrees}
@@ -105,6 +108,7 @@ const RadecDecDmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={MIN_ID}
           label={MIN_LABEL}
           name={MIN_NAME}
           value={starDecDms.minutes}
@@ -118,6 +122,7 @@ const RadecDecDmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={SEC_ID}
           label={SEC_LABEL}
           name={SEC_NAME}
           value={starDecDms.seconds}

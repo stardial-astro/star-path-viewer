@@ -5,12 +5,14 @@ import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { hmsToDecimal } from '@utils/dateUtils';
 import CustomNumberField from '@/components/UI/CustomNumberField';
-import { ErrorHelperText } from '@components/UI/HelperText';
+import ErrorHelperText from '@/components/UI/ErrorHelperText';
 
+const HR_ID = 'hours-hms-input';
+const MIN_ID = 'minutes-hms-input';
+const SEC_ID = 'seconds-hms-input';
 const HR_LABEL = 'Hours';
 const MIN_LABEL = 'Minutes';
 const SEC_LABEL = 'Seconds';
-
 const HR_NAME = HR_LABEL.toLowerCase();
 const MIN_NAME = MIN_LABEL.toLowerCase();
 const SEC_NAME = SEC_LABEL.toLowerCase();
@@ -89,6 +91,7 @@ const RadecRaHmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={HR_ID}
           label={HR_LABEL}
           name={HR_NAME}
           value={starRaHms.hours}
@@ -102,6 +105,7 @@ const RadecRaHmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={MIN_ID}
           label={MIN_LABEL}
           name={MIN_NAME}
           value={starRaHms.minutes}
@@ -115,6 +119,7 @@ const RadecRaHmsInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
         <CustomNumberField
+          id={SEC_ID}
           label={SEC_LABEL}
           name={SEC_NAME}
           value={starRaHms.seconds}

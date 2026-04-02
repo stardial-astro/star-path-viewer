@@ -112,7 +112,7 @@ const formatDatetimeIso = ({
       ? '+' + year.toString().padStart(4, '0')
       : '-' + (-year).toString().padStart(4, '0');
   const dateStr = [yearStr, pad(month), pad(day)].join('-');
-  // const secondStr = Number.isInteger(second) ? pad(second) : second.toFixed(3).padStart(6, '0');
+  // const secondStr = Number.isInteger(second) ? pad(second) : pad(second, 3);
   /* No carryover, keep second = 60 */
   const timeStr = `${pad(hour)}:${pad(minute)}:${pad(second)}`;
   return { date: dateStr, time: timeStr };

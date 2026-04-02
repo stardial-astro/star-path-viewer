@@ -370,7 +370,8 @@ const DiagramFetcher = () => {
         {loading && (
           <Typography
             variant="body1"
-            sx={{ color: 'action.active', pt: 1, textAlign: 'center' }}
+            align="center"
+            sx={{ color: 'action.active', pt: 1 }}
           >
             <em>{DRAW_WAIT_MSG}</em>
           </Typography>

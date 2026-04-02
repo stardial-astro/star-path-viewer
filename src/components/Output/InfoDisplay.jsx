@@ -9,8 +9,9 @@ import { LATITUDE, LONGITUDE } from '@utils/constants';
 import { capitalize } from '@utils/outputUtils';
 import CustomDivider from '@components/UI/CustomDivider';
 
+const FRAC_DIGITS = 3;
+
 const labelStyle = {
-  textAlign: 'left',
   fontSize: {
     xs: 'body2.fontSize',
     sm: 'body1.fontSize',
@@ -20,7 +21,6 @@ const labelStyle = {
   fontWeight: 500,
 };
 const detailStyle = {
-  textAlign: 'left',
   fontSize: {
     xs: 'body2.fontSize',
     sm: 'body1.fontSize',
@@ -36,7 +36,11 @@ const detailStyle = {
  */
 const radecToStr = (ra, dec) => {
   if (ra !== null && ra !== undefined && dec !== null && dec !== undefined) {
-    return `${formatDecimalHours(ra / 15, 3)}/${formatDecimalDegrees(dec, 3)}`;
+    return (
+      formatDecimalHours(ra / 15, FRAC_DIGITS) +
+      '/' +
+      formatDecimalDegrees(dec, FRAC_DIGITS)
+    );
   } else {
     return '';
   }
@@ -45,24 +49,6 @@ const radecToStr = (ra, dec) => {
 const InfoDisplay = () => {
   // console.log('Rendering InfoDisplay');
   const { info } = useHome();
-
-  const dateStrG = useMemo(
-    () =>
-      formatDatetime({ datetime: info.dateG, monthFirst: true, abbr: false })
-        .date,
-    [info],
-  );
-
-  const dateStrIsoG = useMemo(() => formatDatetimeIso(info.dateG).date, [info]);
-
-  const dateStrJ = useMemo(
-    () =>
-      formatDatetime({ datetime: info.dateJ, monthFirst: true, abbr: false })
-        .date,
-    [info],
-  );
-
-  const dateStrIsoJ = useMemo(() => formatDatetimeIso(info.dateJ).date, [info]);
 
   const radecStr = useMemo(
     () => radecToStr(info.ra, info.dec),
@@ -77,46 +63,49 @@ const InfoDisplay = () => {
   //   }
   // }, [info.flag, info.eqxSolTime]);
 
-  const dateInfoItemG = useMemo(
-    () => (
+  const dateInfoItems = useMemo(() => {
+    const dateStrG = formatDatetime({
+      datetime: info.dateG,
+      monthFirst: true,
+      abbr: false,
+    }).date;
+    const dateStrJ = formatDatetime({
+      datetime: info.dateJ,
+      monthFirst: true,
+      abbr: false,
+    }).date;
+    const dateStrIsoG = formatDatetimeIso(info.dateG).date;
+    const dateStrIsoJ = formatDatetimeIso(info.dateJ).date;
+    return (
       <>
         <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" sx={labelStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle}>
             [Gregorian]
           </Typography>
-          <Typography variant="body1" sx={detailStyle}>
+          <Typography variant="body1" align="left" sx={detailStyle}>
             {dateStrIsoG} ({dateStrG})
           </Typography>
         </Box>
-      </>
-    ),
-    [dateStrG, dateStrIsoG],
-  );
-
-  const dateInfoItemJ = useMemo(
-    () => (
-      <>
         <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" sx={labelStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle}>
             [Julian]
           </Typography>
-          <Typography variant="body1" sx={detailStyle}>
+          <Typography variant="body1" align="left" sx={detailStyle}>
             {dateStrIsoJ} ({dateStrJ})
           </Typography>
         </Box>
       </>
-    ),
-    [dateStrJ, dateStrIsoJ],
-  );
+    );
+  }, [info]);
 
   const locationInfoItem = useMemo(
     () => (
       <>
         <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" sx={labelStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle}>
             [Location]
           </Typography>
-          <Typography variant="body1" sx={detailStyle}>
+          <Typography variant="body1" align="left" sx={detailStyle}>
             {formatCoordinate(info.lat, LATITUDE)}/
             {formatCoordinate(info.lng, LONGITUDE)}
           </Typography>
@@ -131,10 +120,10 @@ const InfoDisplay = () => {
       <>
         {info.name && !info.hip ? (
           <Box display="flex" alignItems="start" flexWrap="wrap">
-            <Typography variant="body1" sx={labelStyle}>
+            <Typography variant="body1" align="left" sx={labelStyle}>
               [Planet]
             </Typography>
-            <Typography variant="body1" sx={detailStyle}>
+            <Typography variant="body1" align="left" sx={detailStyle}>
               {capitalize(info.name)}
             </Typography>
           </Box>
@@ -142,17 +131,17 @@ const InfoDisplay = () => {
           <>
             {(info.name || info.nameZh) && (
               <Box display="flex" alignItems="start" flexWrap="wrap">
-                <Typography variant="body1" sx={labelStyle}>
+                <Typography variant="body1" align="left" sx={labelStyle}>
                   [Star Name]
                 </Typography>
                 <Stack direction="column" spacing={0.5}>
                   {info.name && (
-                    <Typography variant="body1" sx={detailStyle}>
+                    <Typography variant="body1" align="left" sx={detailStyle}>
                       {info.name}
                     </Typography>
                   )}
                   {info.nameZh && (
-                    <Typography variant="body1" sx={detailStyle}>
+                    <Typography variant="body1" align="left" sx={detailStyle}>
                       {info.nameZh}
                     </Typography>
                   )}
@@ -162,12 +151,13 @@ const InfoDisplay = () => {
             <Box display="flex" alignItems="start" flexWrap="wrap">
               <Typography
                 variant="body1"
+                align="left"
                 mr={{ xs: 0.6, sm: 1, md: 1 }}
                 sx={labelStyle}
               >
                 [Hipparcos Catalogue Number]
               </Typography>
-              <Typography variant="body1" sx={detailStyle}>
+              <Typography variant="body1" align="left" sx={detailStyle}>
                 {info.hip}
               </Typography>
             </Box>
@@ -175,10 +165,10 @@ const InfoDisplay = () => {
         ) : (
           radecStr && (
             <Box display="flex" alignItems="start" flexWrap="wrap">
-              <Typography variant="body1" sx={labelStyle}>
+              <Typography variant="body1" align="left" sx={labelStyle}>
                 [RA/Dec]
               </Typography>
-              <Typography variant="body1" sx={detailStyle}>
+              <Typography variant="body1" align="left" sx={detailStyle}>
                 {radecStr}
               </Typography>
             </Box>
@@ -204,8 +194,7 @@ const InfoDisplay = () => {
             spacing={0.5}
             ml={{ xs: '1.5%', sm: 4, md: info.name && info.hip ? 4.5 : 6 }}
           >
-            {dateInfoItemG}
-            {dateInfoItemJ}
+            {dateInfoItems}
             {info.name && info.hip && locationInfoItem}
           </Stack>
         </Grid>
@@ -223,7 +212,7 @@ const InfoDisplay = () => {
 
         {/* {eqxSolTimeStr && (
           <Grid size={{ xs: 12, sm: 12, md: 12 }}>
-            <Typography variant="subtitle1" sx={detailStyle}>
+            <Typography variant="subtitle1" align="left" sx={detailStyle}>
               {eqxSolTimeStr}
             </Typography>
           </Grid>

@@ -7,14 +7,14 @@ import * as actionTypes from '@context/starInputActionTypes';
 // import { decimalToHms } from '@utils/dateUtils';
 import CustomNumberField from '@/components/UI/CustomNumberField';
 
+const RA_ID = 'ra-input';
+const DEC_ID = 'dec-input';
 const RA_LABEL = 'Right Ascension (RA)';
 const DEC_LABEL = 'Declination (Dec)';
-
-const RA_PLACEHOLDER = 'Enter in decimal degrees';
-const DEC_PLACEHOLDER = 'Enter in decimal degrees';
-
 const RA_NAME = 'ra';
 const DEC_NAME = 'dec';
+const RA_PLACEHOLDER = 'Enter in decimal degrees';
+const DEC_PLACEHOLDER = RA_PLACEHOLDER;
 
 const RadecDecimalInput = () => {
   const {
@@ -58,6 +58,7 @@ const RadecDecimalInput = () => {
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
+          id={RA_ID}
           label={RA_LABEL}
           placeholder={RA_PLACEHOLDER}
           name={RA_NAME}
@@ -72,6 +73,7 @@ const RadecDecimalInput = () => {
       </Grid>
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
+          id={DEC_ID}
           label={DEC_LABEL}
           placeholder={DEC_PLACEHOLDER}
           name={DEC_NAME}

@@ -1,4 +1,4 @@
-// src/components/navigation/OfflineNotifier.jsx
+// src/components/overlays/OfflineNotifier.jsx
 import { memo, useEffect, useCallback, useRef } from 'react';
 import {
   Dialog,

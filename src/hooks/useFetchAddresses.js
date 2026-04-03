@@ -1,11 +1,11 @@
-// src/hooks/useDebouncedFetchSuggestions.js
+// src/hooks/useFetchAddresses.js
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from '@utils/config';
 import { SERVICES, LOCATION_NOT_FOUND_MSG } from '@utils/constants';
-import fetchSuggestions from '@utils/fetchSuggestions';
+import fetchAddresses from '@/utils/fetchAddresses';
 
 const QUERY_KEY = 'address';
 
@@ -15,7 +15,7 @@ const STALE_MS = 10 * 60_000;
 const GC_MS = 10 * 60_000;
 
 /**
- * Calls `fetchSuggestions` to fetch address suggestions.
+ * Calls `fetchAddresses` to fetch address suggestions.
  * - Skips searching if force skipping, GPS is loading, or the input is cleared
  * - Updates `suggestions` on status change
  * Uses TanStack Query:
@@ -32,7 +32,7 @@ const GC_MS = 10 * 60_000;
  * @param {ReactDispatch} dispatch
  * @param {ReactSetState<ErrorObj>} setErrorMessage
  */
-const useDebouncedFetchSuggestions = (
+const useFetchAddresses = (
   searchTerm,
   geoService,
   refreshCount,
@@ -44,7 +44,7 @@ const useDebouncedFetchSuggestions = (
   const { data, error, isFetching } = useQuery({
     queryKey: [QUERY_KEY, searchTerm.toLowerCase(), geoService, refreshCount],
     queryFn: () =>
-      fetchSuggestions(
+      fetchAddresses(
         searchTerm.toLowerCase(),
         geoService || SERVICES.nominatim,
       ),
@@ -92,4 +92,4 @@ const useDebouncedFetchSuggestions = (
   }, [data, error, dispatch, setErrorMessage]);
 };
 
-export default useDebouncedFetchSuggestions;
+export default useFetchAddresses;

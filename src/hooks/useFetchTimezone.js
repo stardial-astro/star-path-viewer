@@ -1,4 +1,4 @@
-// src/hooks/useDebouncedFetchTimezone.js
+// src/hooks/useFetchTimezone.js
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
@@ -29,7 +29,7 @@ const GC_MS = 10 * 60_000;
  * @param {ReactDispatch} dispatch
  * @throws {Error} If result is invalid.
  */
-const useDebouncedFetchTimezone = (lat, lng, skipTz, dispatch) => {
+const useFetchTimezone = (lat, lng, skipTz, dispatch) => {
   const isEnabled = !skipTz && !!lat && !!lng;
   const { data, error } = useQuery({
     queryKey: [QUERY_KEY, lat, lng],
@@ -58,4 +58,4 @@ const useDebouncedFetchTimezone = (lat, lng, skipTz, dispatch) => {
   }, [isEnabled, data, error, dispatch]);
 };
 
-export default useDebouncedFetchTimezone;
+export default useFetchTimezone;

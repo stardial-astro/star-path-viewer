@@ -5,7 +5,7 @@ import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
-import useDebouncedFetchTimezone from '@hooks/useDebouncedFetchTimezone';
+import useFetchTimezone from '@/hooks/useFetchTimezone';
 import useDetermineService from '@hooks/useDetermineService';
 import config from '@utils/config';
 import {
@@ -85,7 +85,7 @@ const LocationInput = () => {
   /* [AddressInput] Fetch suggestions on debounced searchTerm change */
 
   /* Fetch and update tz on debounced location change */
-  useDebouncedFetchTimezone(
+  useFetchTimezone(
     debouncedLocation.lat,
     debouncedLocation.lng,
     skipTz,

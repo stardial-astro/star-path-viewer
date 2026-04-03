@@ -1,11 +1,11 @@
-// src/hooks/useDebouncedFetchNameSuggestions.js
+// src/hooks/useFetchStarNames.js
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/starInputActionTypes';
 import config from '@utils/config';
 import { HIP_OUT_OF_RANGE_MSG, HIP_NOT_FOUND_MSG } from '@utils/constants';
-import { fetchNameSuggestions } from '@utils/fetchNameSuggestions';
+import { fetchStarNames } from '@/utils/fetchStarNames';
 
 const QUERY_KEY = 'starName';
 
@@ -15,7 +15,7 @@ const STALE_MS = 5 * 60_000;
 const GC_MS = 5 * 60_000;
 
 /**
- * Calls `fetchNameSuggestions` to fetch star name suggestions.
+ * Calls `fetchStarNames` to fetch star name suggestions.
  * - Skips searching if force skipping or the input is cleared
  * - Updates `hipList` when fetching
  * - Updates star `suggestions` on status change
@@ -32,7 +32,7 @@ const GC_MS = 5 * 60_000;
  * @param {ReactDispatch} dispatch
  * @param {ReactSetState<ErrorObj>} setErrorMessage
  */
-const useDebouncedFetchNameSuggestions = (
+const useFetchStarNames = (
   searchTerm,
   refreshCount,
   skipFetch,
@@ -43,7 +43,7 @@ const useDebouncedFetchNameSuggestions = (
 ) => {
   const { data, error } = useQuery({
     queryKey: [QUERY_KEY, searchTerm, hipList, refreshCount],
-    queryFn: () => fetchNameSuggestions(searchTerm, hipList, setHipList),
+    queryFn: () => fetchStarNames(searchTerm, hipList, setHipList),
     enabled: !skipFetch && !!searchTerm,
     networkMode: 'online',
     staleTime: STALE_MS,
@@ -82,4 +82,4 @@ const useDebouncedFetchNameSuggestions = (
   }, [data, error, dispatch, setErrorMessage]);
 };
 
-export default useDebouncedFetchNameSuggestions;
+export default useFetchStarNames;

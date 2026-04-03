@@ -1,4 +1,4 @@
-// src/utils/fetchNameSuggestions.js
+// src/utils/fetchStarNames.js
 import axios from 'axios';
 import {
   HIP_MIN,
@@ -141,7 +141,7 @@ const fetchAndCacheHipList = async (setHipList) => {
  * @returns {Promise<StarItem[] | null>} An array of data, or `null` if aborted.
  * @throws {Error} If HIP is out of range, not found, or failed to fetch valid data.
  */
-const fetchNameSuggestions = async (query, hipList, setHipList) => {
+const fetchStarNames = async (query, hipList, setHipList) => {
   const isDevMode = getIsDevMode();
   let data = hipList;
   /* Fetch and cache the HIP list */
@@ -206,4 +206,4 @@ const fetchNameSuggestions = async (query, hipList, setHipList) => {
   }
 };
 
-export { fetchAndCacheHipList, fetchNameSuggestions };
+export { fetchAndCacheHipList, fetchStarNames };

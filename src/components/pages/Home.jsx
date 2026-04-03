@@ -16,8 +16,8 @@ import DiagramFetcher from '@components/input/DiagramFetcher';
 import InfoDisplay from '@components/output/InfoDisplay';
 import ImageDisplay from '@components/output/image/ImageDisplay';
 import AnnoDisplay from '@components/output/annotations/AnnoDisplay';
-import Notice from '@components/navigation/Notice';
-import OfflineNotifier from '@components/navigation/OfflineNotifier';
+import Notice from '@/components/overlays/Notice';
+import OfflineNotifier from '@/components/overlays/OfflineNotifier';
 
 /** Counter to trigger dev (verbose) mode */
 let clickCount = 0;

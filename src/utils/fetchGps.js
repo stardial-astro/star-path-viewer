@@ -1,4 +1,4 @@
-// src/utils/fetchCurrentLocation.js
+// src/utils/fetchGps.js
 import queryClient from '@/queryClient';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from './config';
@@ -29,7 +29,7 @@ const GC_MS = 30 * 60_000;
  * @param {ReactDispatch} dispatch
  * @returns {Promise<Error | null>} The error, or `null` if successful/aborted.
  */
-const fetchCurrentLocation = async (service, lastSelectedTermRef, dispatch) => {
+const fetchGps = async (service, lastSelectedTermRef, dispatch) => {
   const controller = new AbortController();
   dispatch({ type: actionTypes.SET_GPS_LOADING_ON });
 
@@ -92,4 +92,4 @@ const fetchCurrentLocation = async (service, lastSelectedTermRef, dispatch) => {
   }
 };
 
-export default fetchCurrentLocation;
+export default fetchGps;

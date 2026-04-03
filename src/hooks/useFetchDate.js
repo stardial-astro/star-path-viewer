@@ -1,4 +1,4 @@
-// src/hooks/useDebouncedFetchDate.js
+// src/hooks/useFetchDate.js
 import { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
@@ -46,7 +46,7 @@ const EPH_RANGE_ERR_G =
  * @param {ReactDispatch} dispatch
  * @param {ReactSetState<ErrorObj>} setErrorMessage
  */
-const useDebouncedFetchDate = (
+const useFetchDate = (
   year,
   flag,
   lat,
@@ -115,4 +115,4 @@ const useDebouncedFetchDate = (
   }, [data, error, dispatch, setErrorMessage]);
 };
 
-export default useDebouncedFetchDate;
+export default useFetchDate;

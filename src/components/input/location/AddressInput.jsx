@@ -22,11 +22,11 @@ import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
-import useDebouncedFetchSuggestions from '@hooks/useDebouncedFetchSuggestions';
+import useFetchAddresses from '@/hooks/useFetchAddresses';
 import useDebounce from '@hooks/useDebounce';
 import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from '@utils/constants';
-import fetchCurrentLocation from '@utils/fetchCurrentLocation';
+import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { getIsDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
@@ -135,7 +135,7 @@ const AddressInput = () => {
   }, [debouncedSearchTerm, locationInputTypeRef, locationDispatch]);
 
   /* Fetch suggestions on debounced searchTerm change */
-  useDebouncedFetchSuggestions(
+  useFetchAddresses(
     debouncedSearchTerm,
     geoService,
     refreshCount,
@@ -216,7 +216,7 @@ const AddressInput = () => {
     /* Reset validity */
     locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
     /* Fetch geolocation and update location & searchTerm */
-    const err = await fetchCurrentLocation(
+    const err = await fetchGps(
       geoService,
       lastSelectedTermRef,
       locationDispatch,

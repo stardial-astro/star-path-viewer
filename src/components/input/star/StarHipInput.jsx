@@ -19,7 +19,7 @@ import { useHome } from '@context/HomeContext';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import useFetchHipList from '@hooks/useFetchHipList';
-import useDebouncedFetchNameSuggestions from '@hooks/useDebouncedFetchNameSuggestions';
+import useFetchStarNames from '@/hooks/useFetchStarNames';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
 import { getIsDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
@@ -124,7 +124,7 @@ const StarHipInput = () => {
   }, [deferredSearchTerm, resetStarValues, starDispatch]);
 
   /* Fetch suggestions on deferred searchTerm change */
-  useDebouncedFetchNameSuggestions(
+  useFetchStarNames(
     deferredSearchTerm,
     refreshCount,
     skipFetch,

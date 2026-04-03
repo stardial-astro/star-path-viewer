@@ -1,4 +1,4 @@
-// src/components/navigation/Notice.jsx
+// src/components/overlays/Notice.jsx
 /* Check:
  *  isServerUpdate -> isMaintain -> has noticeMsg -> within time range
  * Display:

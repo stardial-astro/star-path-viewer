@@ -8,9 +8,9 @@ import config from '@utils/config';
 import Home from '@components/pages/Home';
 import About from '@components/pages/About';
 import NotFound from '@components/pages/NotFound';
-import BackToTopButton from '@components/navigation/BackToTopButton';
+import BackToTopButton from '@/components/ui/BackToTopButton';
 import CustomAppBar from '@components/navigation/CustomAppBar';
-import Footer from '@components/navigation/Footer';
+import Footer from '@/components/layout/Footer';
 
 const App = () => {
   /* Delay resumed query on reconnect */

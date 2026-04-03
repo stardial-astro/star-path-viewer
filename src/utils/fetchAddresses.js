@@ -1,4 +1,4 @@
-// src/utils/fetchSuggestions.js
+// src/utils/fetchAddresses.js
 import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
@@ -24,7 +24,7 @@ const getTailSegments = (str, limit = 3) => {
  * @returns {Promise<AddressItem[]>} An array of address objects.
  * @throws {Error} If location is not found.
  */
-const fetchSuggestionsWithNominatim = async (query) => {
+const fetchAddressesWithNominatim = async (query) => {
   const response = await axios.get(nominatimSearchUrl, {
     params: {
       q: query,
@@ -56,7 +56,7 @@ const fetchSuggestionsWithNominatim = async (query) => {
  * @returns {Promise<AddressItem[]>} An array of address objects.
  * @throws {Error} If location is not found.
  */
-const fetchSuggestionsWithBaidu = async (query) => {
+const fetchAddressesWithBaidu = async (query) => {
   const url =
     `${baiduSearchUrl}?` +
     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
@@ -92,16 +92,16 @@ const fetchSuggestionsWithBaidu = async (query) => {
  * @returns {Promise<AddressItem[] | null>} An array of address objects, or `null` if aborted.
  * @throws {Error} If request failed or location is not found.
  */
-const fetchSuggestions = async (query, service) => {
+const fetchAddresses = async (query, service) => {
   const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching address suggestions...');
   /** @type {AddressItem[]} */
   let res;
   try {
     if (service === SERVICES.baidu) {
-      res = await fetchSuggestionsWithBaidu(query);
+      res = await fetchAddressesWithBaidu(query);
     } else {
-      res = await fetchSuggestionsWithNominatim(query);
+      res = await fetchAddressesWithNominatim(query);
     }
     return res;
   } catch (err) {
@@ -118,4 +118,4 @@ const fetchSuggestions = async (query, service) => {
   }
 };
 
-export default fetchSuggestions;
+export default fetchAddresses;

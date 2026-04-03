@@ -1,4 +1,4 @@
-// src/components/navigation/Footer.jsx
+// src/components/layout/Footer.jsx
 import { memo } from 'react';
 import { Container, Box, Typography, Link } from '@mui/material';
 import CustomDivider from '@components/ui/CustomDivider';

@@ -13,7 +13,7 @@ import { useDateInput } from '@context/DateInputContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
-import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
+import useFetchDate from '@/hooks/useFetchDate';
 import config from '@utils/config';
 import { EPH_RANGE, CALS } from '@utils/constants';
 import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
@@ -107,7 +107,7 @@ const DateFields = () => {
   }, [flag, hasCorrection, correctedDate, dateDispatch]);
 
   /* Fetch date on debounced input change */
-  useDebouncedFetchDate(
+  useFetchDate(
     debouncedYear,
     debouncedFlag,
     debouncedLat,

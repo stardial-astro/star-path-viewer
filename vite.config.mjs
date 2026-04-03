@@ -101,7 +101,7 @@ export default defineConfig({
             { name: 'vendor-jspdf', test: /node_modules\/jspdf/ },
             { name: 'vendor-file-saver', test: /node_modules\/file-saver/ },
             { name: 'vendor', test: /node_modules/ },
-            // { name: 'components-io',   test: /\/src\/components\/(Input|Output)\// },
+            // { name: 'components-io',   test: /\/src\/components\/(input|output)\// },
           ],
         },
       },

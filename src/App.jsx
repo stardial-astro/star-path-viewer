@@ -5,12 +5,12 @@ import { Routes, Route } from 'react-router';
 import { HomeProvider } from '@context/HomeContext';
 import useQueryOnlineManager from '@hooks/useQueryOnlineManager';
 import config from '@utils/config';
-import Home from '@components/Pages/Home';
-import About from '@components/Pages/About';
-import NotFound from '@components/Pages/NotFound';
-import BackToTopButton from '@components/Navigation/BackToTopButton';
-import CustomAppBar from '@components/Navigation/CustomAppBar';
-import Footer from '@components/Navigation/Footer';
+import Home from '@components/pages/Home';
+import About from '@components/pages/About';
+import NotFound from '@components/pages/NotFound';
+import BackToTopButton from '@components/navigation/BackToTopButton';
+import CustomAppBar from '@components/navigation/CustomAppBar';
+import Footer from '@components/navigation/Footer';
 
 const App = () => {
   /* Delay resumed query on reconnect */

@@ -1,4 +1,4 @@
-// src/components/UI/ErrorHelperText.jsx
+// src/components/ui/ErrorHelperText.jsx
 import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 

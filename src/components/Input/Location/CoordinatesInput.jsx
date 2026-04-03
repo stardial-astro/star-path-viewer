@@ -11,7 +11,7 @@ import {
   clearLngError,
   clearLocationError,
 } from '@utils/locationInputUtils';
-import CustomNumberField from '@/components/UI/CustomNumberField';
+import CustomNumberField from '@components/ui/CustomNumberField';
 
 const LAT_ID = 'latitude-input';
 const LNG_ID = 'longitude-input';

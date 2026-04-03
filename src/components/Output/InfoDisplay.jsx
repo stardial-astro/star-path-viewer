@@ -10,7 +10,7 @@ import {
 import { formatCoordinate, formatDecimalDegrees } from '@utils/coordUtils';
 import { LATITUDE, LONGITUDE } from '@utils/constants';
 import { capitalize } from '@utils/outputUtils';
-import CustomDivider from '@components/UI/CustomDivider';
+import CustomDivider from '@components/ui/CustomDivider';
 
 const FRAC_DIGITS = 3;
 

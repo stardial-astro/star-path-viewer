@@ -1,4 +1,4 @@
-// src/components/UI/ShareButton.jsx
+// src/components/ui/ShareButton.jsx
 import { Tooltip } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import { getIsDevMode } from '@utils/devMode';

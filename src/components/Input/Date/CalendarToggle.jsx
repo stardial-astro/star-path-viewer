@@ -5,7 +5,7 @@ import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import { EPH_RANGE, EPH_RANGE_JULIAN, CALS } from '@utils/constants';
 import { dateToStr } from '@utils/dateUtils';
-import CustomFormControlLabel from '@components/UI/CustomFormControlLabel';
+import CustomFormControlLabel from '@components/ui/CustomFormControlLabel';
 
 const CAL_GROUP_NAME = 'calender-radio-group';
 

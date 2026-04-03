@@ -4,7 +4,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { colorFilter } from '@utils/outputUtils';
-import CustomAlert from '@components/UI/CustomAlert';
+import CustomAlert from '@components/ui/CustomAlert';
 import DownloadImage from './DownloadImage';
 
 const ImageDisplay = () => {

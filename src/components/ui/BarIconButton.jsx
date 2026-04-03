@@ -1,4 +1,4 @@
-// src/components/UI/BarIconButton.jsx
+// src/components/ui/BarIconButton.jsx
 import IconButton from '@mui/material/IconButton';
 
 /** @param {*} props */

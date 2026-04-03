@@ -6,7 +6,7 @@ import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
-import CustomDivider from '@components/UI/CustomDivider';
+import CustomDivider from '@components/ui/CustomDivider';
 
 const labelStyle = { fontWeight: 500, minWidth: '1.5rem' };
 const detailStyle = { color: 'text.primary', ml: 1.5 };

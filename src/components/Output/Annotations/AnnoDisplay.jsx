@@ -2,7 +2,7 @@
 import { memo, useMemo } from 'react';
 import { Box, Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
-import CustomAlert from '@components/UI/CustomAlert';
+import CustomAlert from '@components/ui/CustomAlert';
 import AnnoLegend from './AnnoLegend';
 import AnnoTable from './AnnoTable';
 import DownloadAnnoTable from './DownloadAnnoTable';

@@ -17,7 +17,7 @@ import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
 import config from '@utils/config';
 import { EPH_RANGE, CALS } from '@utils/constants';
 import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
-import CustomNumberField from '@components/UI/CustomNumberField';
+import CustomNumberField from '@components/ui/CustomNumberField';
 import MonthInput from './MonthInput';
 
 const YEAR_ID = 'year-input';

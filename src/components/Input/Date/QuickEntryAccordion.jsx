@@ -15,7 +15,7 @@ import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import isMobile from '@utils/isMobile';
 import { EQX_SOL_NAMES, CALS } from '@utils/constants';
-import CustomToggleButton from '@components/UI/CustomToggleButton';
+import CustomToggleButton from '@components/ui/CustomToggleButton';
 
 const summaryStyle = {
   minHeight: 0,

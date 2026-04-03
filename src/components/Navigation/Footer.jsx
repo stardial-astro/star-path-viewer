@@ -1,7 +1,7 @@
 // src/components/Navigation/Footer.jsx
 import { memo } from 'react';
 import { Container, Box, Typography, Link } from '@mui/material';
-import CustomDivider from '@components/UI/CustomDivider';
+import CustomDivider from '@components/ui/CustomDivider';
 import ccSvg from '@assets/cc.svg';
 import bySvg from '@assets/by.svg';
 

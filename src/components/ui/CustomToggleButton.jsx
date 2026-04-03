@@ -1,4 +1,4 @@
-// src/components/UI/CustomToggleButton.jsx
+// src/components/ui/CustomToggleButton.jsx
 import ToggleButton from '@mui/material/ToggleButton';
 import { styled } from '@mui/material/styles';
 

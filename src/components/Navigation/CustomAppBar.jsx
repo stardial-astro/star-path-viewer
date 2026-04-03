@@ -7,10 +7,10 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link as RouterLink, useLocation } from 'react-router';
 import config from '@utils/config';
 import logo from '@assets/logo-text.svg';
-import BarIconButton from '@components/UI/BarIconButton';
-import CustomAlert from '@components/UI/CustomAlert';
-import ColorModeToggle from '@components/UI/ColorModeToggle';
-import ShareButton from '@components/UI/ShareButton';
+import BarIconButton from '@components/ui/BarIconButton';
+import CustomAlert from '@components/ui/CustomAlert';
+import ColorModeToggle from '@components/ui/ColorModeToggle';
+import ShareButton from '@components/ui/ShareButton';
 
 const ABOUT_TITLE = 'About Us';
 const GITHUB_TITLE = 'GitHub Repository';

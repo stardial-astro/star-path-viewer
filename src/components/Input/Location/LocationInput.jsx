@@ -13,7 +13,7 @@ import {
   LOC_UNKNOWN_ID,
   REVERSE_GEO_ERR_MSG,
 } from '@utils/constants';
-import CustomAlert from '@components/UI/CustomAlert';
+import CustomAlert from '@components/ui/CustomAlert';
 import LocationInputTypeToggle from './LocationInputTypeToggle';
 import AddressInput from './AddressInput';
 import CoordinatesInput from './CoordinatesInput';

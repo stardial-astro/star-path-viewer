@@ -4,8 +4,8 @@ import { Grid, Typography } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { dmsToDecimal } from '@utils/coordUtils';
-import CustomNumberField from '@/components/UI/CustomNumberField';
-import ErrorHelperText from '@/components/UI/ErrorHelperText';
+import CustomNumberField from '@components/ui/CustomNumberField';
+import ErrorHelperText from '@components/ui/ErrorHelperText';
 
 const DEG_ID = 'degrees-dms-input';
 const MIN_ID = 'minutes-dms-input';

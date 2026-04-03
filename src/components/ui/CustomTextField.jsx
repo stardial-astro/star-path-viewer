@@ -1,4 +1,4 @@
-// src/components/UI/CustomTextField.jsx
+// src/components/ui/CustomTextField.jsx
 import TextField from '@mui/material/TextField';
 
 /** @param {*} props */

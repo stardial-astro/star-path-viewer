@@ -4,8 +4,8 @@ import { Grid, Typography } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { hmsToDecimal } from '@utils/dateUtils';
-import CustomNumberField from '@/components/UI/CustomNumberField';
-import ErrorHelperText from '@/components/UI/ErrorHelperText';
+import CustomNumberField from '@components/ui/CustomNumberField';
+import ErrorHelperText from '@components/ui/ErrorHelperText';
 
 const HR_ID = 'hours-hms-input';
 const MIN_ID = 'minutes-hms-input';

@@ -1,4 +1,4 @@
-// src/components/UI/CustomAlert.jsx
+// src/components/ui/CustomAlert.jsx
 import Alert from '@mui/material/Alert';
 
 /** @param {*} props */

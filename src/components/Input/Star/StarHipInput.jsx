@@ -22,7 +22,7 @@ import useFetchHipList from '@hooks/useFetchHipList';
 import useDebouncedFetchNameSuggestions from '@hooks/useDebouncedFetchNameSuggestions';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
 import { getIsDevMode } from '@utils/devMode';
-import CustomTextField from '@components/UI/CustomTextField';
+import CustomTextField from '@components/ui/CustomTextField';
 
 const INPUT_LABEL = 'Search Hipparcos Catalogue number';
 const SELECT_WARN = "You haven't select a star from the results.";

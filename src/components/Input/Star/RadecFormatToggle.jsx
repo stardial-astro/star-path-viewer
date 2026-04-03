@@ -4,7 +4,7 @@ import { FormControl, RadioGroup, Radio } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { RADEC_TYPES } from '@utils/constants';
-import CustomFormControlLabel from '@components/UI/CustomFormControlLabel';
+import CustomFormControlLabel from '@components/ui/CustomFormControlLabel';
 
 const RadecFormatToggle = () => {
   const { radecFormat, starDispatch } = useStarInput();

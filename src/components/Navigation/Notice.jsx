@@ -10,7 +10,7 @@ import { memo, useEffect } from 'react';
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { useHome } from '@context/HomeContext';
-import CustomAlert from '@components/UI/CustomAlert';
+import CustomAlert from '@components/ui/CustomAlert';
 
 const SERVER_UPDATE_MSG = 'The server is updating';
 const MAINTAIN_NOTICE_MSG = 'We are currently updating our site';

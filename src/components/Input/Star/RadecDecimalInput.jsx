@@ -5,7 +5,7 @@ import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 // import { decimalToDms } from '@utils/coordUtils';
 // import { decimalToHms } from '@utils/dateUtils';
-import CustomNumberField from '@/components/UI/CustomNumberField';
+import CustomNumberField from '@components/ui/CustomNumberField';
 
 const RA_ID = 'ra-input';
 const DEC_ID = 'dec-input';

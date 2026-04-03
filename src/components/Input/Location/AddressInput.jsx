@@ -29,8 +29,8 @@ import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchCurrentLocation from '@utils/fetchCurrentLocation';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { getIsDevMode } from '@utils/devMode';
-import CustomTextField from '@components/UI/CustomTextField';
-import BarIconButton from '@components/UI/BarIconButton';
+import CustomTextField from '@components/ui/CustomTextField';
+import BarIconButton from '@components/ui/BarIconButton';
 
 const INPUT_LABEL = 'Search address';
 const SELECT_WARN = "You haven't select a location from the results.";

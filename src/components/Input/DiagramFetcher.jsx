@@ -29,8 +29,8 @@ import {
 } from '@utils/inputUtils';
 import fetchDiagram from '@utils/fetchDiagram';
 import { getIsDevMode } from '@utils/devMode';
-import CustomDivider from '@components/UI/CustomDivider';
-import CustomAlert from '@components/UI/CustomAlert';
+import CustomDivider from '@components/ui/CustomDivider';
+import CustomAlert from '@components/ui/CustomAlert';
 import LocationInput from './Location/LocationInput';
 import DateInput from './Date/DateInput';
 import StarInput from './Star/StarInput';

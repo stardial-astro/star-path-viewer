@@ -1,4 +1,4 @@
-// src/components/UI/CustomNumberField.jsx
+// src/components/ui/CustomNumberField.jsx
 import { useId, useCallback } from 'react';
 import { NumberField } from '@base-ui/react/number-field';
 import IconButton from '@mui/material/IconButton';

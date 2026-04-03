@@ -16,6 +16,7 @@ const SEC_LABEL = 'Seconds';
 const DEG_NAME = DEG_LABEL.toLowerCase();
 const MIN_NAME = MIN_LABEL.toLowerCase();
 const SEC_NAME = SEC_LABEL.toLowerCase();
+const PLACEHOLDER = '0';
 
 const DEC_TEXT = 'Dec';
 
@@ -96,6 +97,7 @@ const RadecDecDmsInput = () => {
         <CustomNumberField
           id={DEG_ID}
           label={DEG_LABEL}
+          placeholder={PLACEHOLDER}
           name={DEG_NAME}
           value={starDecDms.degrees}
           onChange={handleInputChange}
@@ -110,6 +112,7 @@ const RadecDecDmsInput = () => {
         <CustomNumberField
           id={MIN_ID}
           label={MIN_LABEL}
+          placeholder={PLACEHOLDER}
           name={MIN_NAME}
           value={starDecDms.minutes}
           onChange={handleInputChange}
@@ -124,6 +127,7 @@ const RadecDecDmsInput = () => {
         <CustomNumberField
           id={SEC_ID}
           label={SEC_LABEL}
+          placeholder={PLACEHOLDER}
           name={SEC_NAME}
           value={starDecDms.seconds}
           onChange={handleInputChange}

@@ -2,9 +2,12 @@
 import { memo, useMemo } from 'react';
 import { Grid, Box, Stack, Typography } from '@mui/material';
 import { useHome } from '@context/HomeContext';
-import { formatDatetime, formatDatetimeIso } from '@utils/dateUtils';
+import {
+  formatDecimalHours,
+  formatDatetime,
+  formatDatetimeIso,
+} from '@utils/dateUtils';
 import { formatCoordinate, formatDecimalDegrees } from '@utils/coordUtils';
-import { formatDecimalHours } from '@utils/dateUtils';
 import { LATITUDE, LONGITUDE } from '@utils/constants';
 import { capitalize } from '@utils/outputUtils';
 import CustomDivider from '@components/UI/CustomDivider';

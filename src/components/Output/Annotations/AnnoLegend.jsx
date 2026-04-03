@@ -1,10 +1,9 @@
 // src/components/Output/Annotations/AnnoLegend.jsx
 import { memo } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled, lighten } from '@mui/material/styles';
 import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { styled, lighten } from '@mui/material/styles';
 import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/UI/CustomDivider';
@@ -115,13 +114,8 @@ const AnnoLegend = ({ anno }) => {
             spacing={0.5}
             ml={{ xs: '4%', sm: '26%', md: 20 }}
           >
-            {Object.entries(LINE_DETAIL).map(([key, value], index) => (
-              <Box
-                key={index}
-                display="flex"
-                alignItems="center"
-                flexWrap="wrap"
-              >
+            {Object.entries(LINE_DETAIL).map(([key, value]) => (
+              <Box key={key} display="flex" alignItems="center" flexWrap="wrap">
                 <Line type={key} />
                 <Typography variant="body2" align="left" sx={detailStyle}>
                   {value}
@@ -137,13 +131,8 @@ const AnnoLegend = ({ anno }) => {
             spacing={0.5}
             ml={{ xs: '4%', sm: 2, md: 2 }}
           >
-            {anno.map((item, index) => (
-              <Box
-                key={index}
-                display="flex"
-                alignItems="start"
-                flexWrap="wrap"
-              >
+            {Object.entries(anno).map(([key, item]) => (
+              <Box key={key} display="flex" alignItems="start" flexWrap="wrap">
                 <Dot isDarkMode={isDarkMode} />
                 <Typography
                   variant="body2"

@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import babel from '@rolldown/plugin-babel';
+import { VitePWA } from 'vite-plugin-pwa';
 import { resolve } from 'path';
 import fs from 'fs';
 import pkg from './package.json';
@@ -18,6 +19,52 @@ export default defineConfig({
     react(),
     svgr(), // Transform SVGs into React components
     babel({ presets: [reactCompilerPreset()] }),
+    VitePWA({
+      registerType: 'autoUpdate',
+      /* Assets to precache beyond what's in the build output */
+      includeAssets: ['favicon.ico', '*.png', 'robots.txt'],
+      /* Move manifest.json content here */
+      manifest: {
+        short_name: 'Star Path Viewer',
+        name: 'Star Path Viewer',
+        description: pkg.description,
+        scope: '/',
+        start_url: '/',
+        display: 'standalone',
+        theme_color: '#E5EEFA',
+        background_color: '#E5EEFA',
+        icons: [
+          {
+            src: '/icon-192x192.png',
+            type: 'image/png',
+            sizes: '192x192',
+          },
+          {
+            src: '/icon-512x512.png',
+            type: 'image/png',
+            sizes: '512x512',
+          },
+          {
+            src: '/icon-512x512.png',
+            type: 'image/png',
+            sizes: '512x512',
+            purpose: 'maskable',
+          },
+        ],
+      },
+
+      workbox: {
+        cleanupOutdatedCaches: true, // removes stale chunk caches automatically
+        skipWaiting: true, // new SW activates immediately
+        clientsClaim: true, // claims all open tabs/windows
+        navigateFallback: '/index.html',
+      },
+
+      // devOptions: {
+      //   enabled: false, // flip to true when debugging SW behavior (leave this off during normal dev)
+      //   type: 'module', // matches Vite's dev server module type
+      // },
+    }),
   ],
   resolve: {
     alias: {

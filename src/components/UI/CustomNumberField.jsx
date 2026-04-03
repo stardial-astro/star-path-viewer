@@ -10,11 +10,10 @@ import InputLabel from '@mui/material/InputLabel';
 import CircularProgress from '@mui/material/CircularProgress';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
 import isMobile from '@utils/isMobile';
 
 const focusStyle = {
+  pr: 0,
   '&.Mui-focused .MuiInputAdornment-root': {
     visibility: 'visible',
   },
@@ -73,27 +72,6 @@ const ArrowsAdornment = () => (
     </NumberField.Decrement>
   </InputAdornment>
 );
-
-const PlusMinusAdornment = () => (
-  <InputAdornment
-    position="end"
-    sx={{ flexDirection: 'row', ...endAdornmentStyle }}
-  >
-    <NumberField.Decrement
-      render={<IconButton size="small" aria-label="Increase" />}
-    >
-      <RemoveIcon fontSize="small" sx={{ transform: 'translateX(2px)' }} />
-    </NumberField.Decrement>
-
-    <NumberField.Increment
-      render={<IconButton size="small" aria-label="Decrease" />}
-    >
-      <AddIcon fontSize="small" sx={{ transform: 'translateX(-2px)' }} />
-    </NumberField.Increment>
-  </InputAdornment>
-);
-
-const EndAdornment = isMobile ? PlusMinusAdornment : ArrowsAdornment;
 
 /** @param {*} props */
 const CustomNumberField = ({
@@ -183,8 +161,14 @@ const CustomNumberField = ({
               slotProps={{
                 input: props,
               }}
-              endAdornment={loading ? loadingAdornment : <EndAdornment />}
-              sx={loading ? { pr: 0.5 } : { pr: 0, ...adornmentStyle }}
+              endAdornment={
+                loading ? (
+                  loadingAdornment
+                ) : isMobile ? undefined : (
+                  <ArrowsAdornment />
+                )
+              }
+              sx={loading ? { pr: 0.5 } : adornmentStyle}
             />
           );
         }}

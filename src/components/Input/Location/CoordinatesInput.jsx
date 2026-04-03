@@ -17,8 +17,8 @@ const LAT_ID = 'latitude-input';
 const LNG_ID = 'longitude-input';
 const LAT_LABEL = 'Latitude';
 const LNG_LABEL = 'Longitude';
-const LAT_PLACEHOLDER = 'Enter the latitude in decimal degrees';
-const LNG_PLACEHOLDER = 'Enter the longitude in decimal degrees';
+const LAT_PLACEHOLDER = 'Enter in decimal degrees';
+const LNG_PLACEHOLDER = LAT_PLACEHOLDER;
 
 const CoordinatesInput = () => {
   // console.log('Rendering CoordinatesInput');
@@ -84,42 +84,40 @@ const CoordinatesInput = () => {
   );
 
   return (
-    <div>
-      <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-          <CustomNumberField
-            id={LAT_ID}
-            label={LAT_LABEL}
-            placeholder={LAT_PLACEHOLDER}
-            name={LATITUDE}
-            value={location.lat}
-            onChange={handleInputChange}
-            min={-90}
-            max={90}
-            allowOutOfRange={false}
-            loading={gpsLoading}
-            error={!!locationError.lat || !!locationNullError.lat}
-            helperText={locationError.lat || locationNullError.lat}
-          />
-        </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-          <CustomNumberField
-            id={LNG_ID}
-            label={LNG_LABEL}
-            placeholder={LNG_PLACEHOLDER}
-            name={LONGITUDE}
-            value={location.lng}
-            onChange={handleInputChange}
-            min={-180}
-            max={180}
-            allowOutOfRange={false}
-            loading={gpsLoading}
-            error={!!locationError.lng || !!locationNullError.lng}
-            helperText={locationError.lng || locationNullError.lng}
-          />
-        </Grid>
+    <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+        <CustomNumberField
+          id={LAT_ID}
+          label={LAT_LABEL}
+          placeholder={LAT_PLACEHOLDER}
+          name={LATITUDE}
+          value={location.lat}
+          onChange={handleInputChange}
+          min={-90}
+          max={90}
+          allowOutOfRange={false}
+          loading={gpsLoading}
+          error={!!locationError.lat || !!locationNullError.lat}
+          helperText={locationError.lat || locationNullError.lat}
+        />
       </Grid>
-    </div>
+      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+        <CustomNumberField
+          id={LNG_ID}
+          label={LNG_LABEL}
+          placeholder={LNG_PLACEHOLDER}
+          name={LONGITUDE}
+          value={location.lng}
+          onChange={handleInputChange}
+          min={-180}
+          max={180}
+          allowOutOfRange={false}
+          loading={gpsLoading}
+          error={!!locationError.lng || !!locationNullError.lng}
+          helperText={locationError.lng || locationNullError.lng}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

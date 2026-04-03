@@ -22,6 +22,7 @@ const ImageDisplay = () => {
             height: 'auto',
           },
         }}
+        /* eslint-disable @eslint-react/dom-no-dangerously-set-innerhtml */
         dangerouslySetInnerHTML={{ __html: svgData }}
       />
 

@@ -1,6 +1,6 @@
 // src/components/Output/Annotations/AnnoTable.jsx
 import { memo } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, styled, lighten } from '@mui/material/styles';
 import {
   Table,
   TableBody,
@@ -11,7 +11,6 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { styled, lighten } from '@mui/material/styles';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
@@ -110,8 +109,8 @@ const AnnoTable = ({ anno }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {anno.map((item, index) => (
-              <StyledRow key={index}>
+            {Object.entries(anno).map(([key, item]) => (
+              <StyledRow key={key}>
                 <StyledStickyColumn
                   component="th"
                   scope="row"

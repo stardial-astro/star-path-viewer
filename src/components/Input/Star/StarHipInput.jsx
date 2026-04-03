@@ -74,7 +74,7 @@ const StarHipInput = () => {
   /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
 
-  const deferredSearchTerm = useDeferredValue(searchTerm);
+  const deferredSearchTerm = useDeferredValue(searchTerm, '');
 
   const isLoading = !hipList && !errorMessage.star;
 

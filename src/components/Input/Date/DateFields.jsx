@@ -15,7 +15,7 @@ import * as actionTypes from '@context/dateInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
 import useDebouncedFetchDate from '@hooks/useDebouncedFetchDate';
 import config from '@utils/config';
-import { EPH_RANGE } from '@utils/constants';
+import { EPH_RANGE, CALS } from '@utils/constants';
 import { clampDateSync, clearDateError } from '@utils/dateInputUtils';
 import CustomNumberField from '@components/UI/CustomNumberField';
 import MonthInput from './MonthInput';
@@ -26,6 +26,8 @@ const YEAR_LABEL = 'Year';
 const DAY_LABEL = 'Day';
 const YEAR_NAME = YEAR_LABEL.toLowerCase();
 const DAY_NAME = DAY_LABEL.toLowerCase();
+const YEAR_PLACEHOLDER = '±YYYY (0 means 1 BCE)';
+const DAY_PLACEHOLDER = 'DD';
 
 const YEAR_MIN = EPH_RANGE.min[0];
 const YEAR_MAX = EPH_RANGE.max[0];
@@ -50,7 +52,7 @@ const DateFields = () => {
   } = useDateInput();
   const { location } = useLocationInput();
 
-  const isUserEdit = useRef(false);
+  const isUserEditRef = useRef(false);
 
   /* Increase delay when flag is set */
   const dynamicDelay = flag
@@ -62,7 +64,7 @@ const DateFields = () => {
   const debouncedLat = useDebounce(location.lat, config.TYPING_DELAY + 300);
   const debouncedLng = useDebounce(location.lng, config.TYPING_DELAY + 300);
 
-  const deferredCal = useDeferredValue(cal);
+  const deferredCal = useDeferredValue(cal, CALS.gregorian);
 
   const { correctedDate, dateParams, hasCorrection } = useMemo(
     () =>
@@ -97,8 +99,8 @@ const DateFields = () => {
 
   /* Clamp date on change */
   useEffect(() => {
-    if (!isUserEdit.current || flag) return;
-    isUserEdit.current = false;
+    if (!isUserEditRef.current || flag) return;
+    isUserEditRef.current = false;
     if (hasCorrection) {
       dateDispatch({ type: actionTypes.SET_DATE, payload: correctedDate });
     }
@@ -119,7 +121,7 @@ const DateFields = () => {
   const handleInputChange = useCallback(
     (event) => {
       const { name, value } = event.target;
-      isUserEdit.current = true;
+      isUserEditRef.current = true;
       // dateDispatch({
       //   type: actionTypes.SET_DATE,
       //   payload: { ...date, [name]: value },
@@ -147,6 +149,7 @@ const DateFields = () => {
         <CustomNumberField
           id={YEAR_ID}
           label={YEAR_LABEL}
+          placeholder={YEAR_PLACEHOLDER}
           name={YEAR_NAME}
           value={date.year}
           onChange={handleInputChange}
@@ -171,6 +174,7 @@ const DateFields = () => {
         <CustomNumberField
           id={DAY_ID}
           label={DAY_LABEL}
+          placeholder={DAY_PLACEHOLDER}
           name={DAY_NAME}
           value={date.day}
           onChange={handleInputChange}

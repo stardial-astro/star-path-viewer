@@ -7,9 +7,17 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { registerSW } from 'virtual:pwa-register';
 import queryClient from './queryClient';
 import { AppThemeProvider } from './theme';
 import App from './App';
+
+registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    window.location.reload();
+  },
+});
 
 window.addEventListener('vite:preloadError', (event) => {
   event.preventDefault();

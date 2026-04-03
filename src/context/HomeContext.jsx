@@ -1,6 +1,6 @@
 // src/context/HomeContext.jsx
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useState, useCallback, useContext } from 'react';
+import { createContext, useState, useCallback, use } from 'react';
 
 /** @type {React.Context<*>} */
 const HomeContext = createContext(null);
@@ -35,7 +35,7 @@ export const HomeProvider = ({ children }) => {
   }, []);
 
   return (
-    <HomeContext.Provider
+    <HomeContext
       value={{
         isDelayedOnline,
         setIsDelayedOnline,
@@ -57,7 +57,7 @@ export const HomeProvider = ({ children }) => {
       }}
     >
       {children}
-    </HomeContext.Provider>
+    </HomeContext>
   );
 };
 
@@ -68,7 +68,7 @@ export const HomeProvider = ({ children }) => {
  * @throws {Error} If used outside of an HomeProvider.
  */
 export const useHome = () => {
-  const context = useContext(HomeContext);
+  const context = use(HomeContext);
   if (!context) {
     throw new Error('useHome must be used within an HomeProvider');
   }

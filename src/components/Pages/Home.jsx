@@ -40,9 +40,9 @@ hashes.includes('dev') && enableDevMode();
 const Home = () => {
   // console.log('Rendering Home');
   const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   const { isDelayedOnline, success, svgData, anno, setErrorMessage } =
     useHome();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   /* ------------------------------------------------------------------|
    * Initialize

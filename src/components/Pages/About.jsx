@@ -92,7 +92,7 @@ const About = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: '1rem',
-          mx: { xs: 1.5, sm: 2.5, md: 3 },
+          mx: { xs: 0.5, sm: 2.5, md: 3 },
           pl: 1.8,
         }}
       >

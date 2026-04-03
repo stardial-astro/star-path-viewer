@@ -1,5 +1,6 @@
 // src/components/Input/DiagramFetcher.jsx
 import { memo, useState, useEffect, useCallback } from 'react';
+import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Stack,
@@ -54,7 +55,7 @@ const DATE_TITLE = 'LOCAL DATE';
 const STAR_TITLE = 'CELESTIAL OBJECT';
 
 const DRAW_BTN_TEXT = 'Draw Star Path';
-const DRAW_WAIT_MSG = 'Please wait. This may take a few seconds.';
+const DRAW_WAIT_MSG = 'Preparing results. Just a few more seconds.';
 
 const circularProgress = (
   <CircularProgress color="inherit" size="1rem" sx={{ mr: 1 }} />
@@ -62,6 +63,8 @@ const circularProgress = (
 
 const DiagramFetcher = () => {
   // console.log('Rendering DiagramFetcher');
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
   const {
     offlineState,
     setSuccess,
@@ -371,7 +374,10 @@ const DiagramFetcher = () => {
           <Typography
             variant="body1"
             align="center"
-            sx={{ color: 'action.active', pt: 1 }}
+            sx={{
+              color: isDarkMode ? 'text.secondary' : 'action.active',
+              pt: 1,
+            }}
           >
             <em>{DRAW_WAIT_MSG}</em>
           </Typography>

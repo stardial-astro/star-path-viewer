@@ -1,55 +1,59 @@
 // eslint.config.js
 import { defineConfig, globalIgnores } from 'eslint/config';
+/* @ts-ignore: TS2307 */
 import js from '@eslint/js';
 import globals from 'globals';
-import react from 'eslint-plugin-react';
+import eslintReact from '@eslint-react/eslint-plugin';
+import ts from 'typescript-eslint';
 import reactHooks from 'eslint-plugin-react-hooks';
-import reactRefresh from 'eslint-plugin-react-refresh';
+import pluginReactRefresh from 'eslint-plugin-react-refresh';
+import { importX } from 'eslint-plugin-import-x';
 
 export default defineConfig([
   /* Global configuration */
-  globalIgnores(['dist', 'build', 'public']),
+  globalIgnores(['dist', 'dev-dist', 'build', 'public', '__mocks__']),
+
+  eslintReact.configs.recommended,
 
   /* Base configuration */
   {
-    files: ['**/*.{js,jsx,mjs,cjs}'],
+    files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
       globals: {
         __APP_NAME__: true,
         __APP_DESCRIPTION__: true,
         ...globals.browser,
         ...globals.node,
       },
+      parser: ts.parser, // Use the TS parser for everything
       parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        project: './tsconfig.json',
         ecmaFeatures: { jsx: true },
       },
     },
     plugins: {
-      react: react,
+      'react-x': eslintReact,
       /* @ts-ignore: TS2322 */
       'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      'react-refresh': pluginReactRefresh,
+      'import-x': importX,
     },
-    extends: [
-      js.configs.recommended,
-      react.configs.flat.recommended,
-      react.configs.flat['jsx-runtime'],
-      reactHooks.configs.flat.recommended,
-    ],
     settings: {
-      /* Automatically pick up version from package.json */
-      // react: { version: 'detect' },
-      react: { version: '19' }, // provide the version explicitly solves the 'contextOrFilename.getFilename' error
+      // react: { version: '19' }, // provide the version explicitly solves the 'contextOrFilename.getFilename' error
+      'import-x/resolver': {
+        typescript: {
+          project: './tsconfig.json',
+        },
+      },
+      'import-x/ignore': ['\\.d\\.ts$'],
     },
     rules: {
-      // ...js.configs.recommended.rules,
-      // ...react.configs.recommended.rules,
-      // ...react.configs['jsx-runtime'].rules,
-      // ...reactHooks.configs.recommended.rules,
+      ...js.configs.recommended.rules,
+      ...reactHooks.configs.recommended.rules,
+      ...importX.configs.recommended.rules,
       'react/prop-types': 'off',
-      // 'react/display-name': 'off', // temporary workaround for "TypeError: Error while loading rule 'react/display-name': contextOrFilename.getFilename is not a function"
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
@@ -59,6 +63,16 @@ export default defineConfig([
         'error',
         { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
       ],
+      'import-x/no-unresolved': ['error', { ignore: ['^virtual:'] }],
+    },
+  },
+  /* Special Override for Global Type Definition files */
+  {
+    files: ['**/*.d.ts'],
+    rules: {
+      'import-x/no-unresolved': 'off',
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
     },
   },
 ]);

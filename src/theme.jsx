@@ -1,7 +1,11 @@
 // src/theme.jsx
 /* eslint-disable react-refresh/only-export-components */
-import { GlobalStyles, createTheme, ThemeProvider } from '@mui/material';
-import { CssBaseline } from '@mui/material';
+import {
+  GlobalStyles,
+  createTheme,
+  ThemeProvider,
+  CssBaseline,
+} from '@mui/material';
 
 /* Create the default theme */
 export const theme = createTheme({

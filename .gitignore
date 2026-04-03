@@ -2,6 +2,9 @@ tmp
 *.bk
 *.pem
 
+# Devtools of vite-plugin-pwa in dev mode
+dev-dist/
+
 # Ignore system-specific files
 .DS_Store
 .vscode/

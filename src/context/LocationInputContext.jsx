@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
-  useContext,
+  use,
   useReducer,
   useState,
   useRef,
@@ -232,7 +232,7 @@ export const LocationInputProvider = ({ children }) => {
   }, []);
 
   return (
-    <LocationInputContext.Provider
+    <LocationInputContext
       value={{
         ...locationState,
         geoService,
@@ -245,7 +245,7 @@ export const LocationInputProvider = ({ children }) => {
       }}
     >
       {children}
-    </LocationInputContext.Provider>
+    </LocationInputContext>
   );
 };
 
@@ -256,7 +256,7 @@ export const LocationInputProvider = ({ children }) => {
  * @throws {Error} If used outside of an LocationInputProvider.
  */
 export const useLocationInput = () => {
-  const context = useContext(LocationInputContext);
+  const context = use(LocationInputContext);
   if (!context) {
     throw new Error(
       'useLocationInput must be used within an LocationInputProvider',

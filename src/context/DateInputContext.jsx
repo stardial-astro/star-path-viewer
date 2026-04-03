@@ -1,6 +1,6 @@
 // src/context/DateInputContext.jsx
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useReducer, useRef } from 'react';
+import { createContext, use, useReducer, useRef } from 'react';
 import { CALS } from '@utils/constants';
 import * as actionTypes from './dateInputActionTypes';
 
@@ -159,7 +159,7 @@ export const DateInputProvider = ({ children }) => {
   const flagRef = useRef('');
 
   return (
-    <DateInputContext.Provider
+    <DateInputContext
       value={{
         ...dateState,
         flagRef,
@@ -167,7 +167,7 @@ export const DateInputProvider = ({ children }) => {
       }}
     >
       {children}
-    </DateInputContext.Provider>
+    </DateInputContext>
   );
 };
 
@@ -178,7 +178,7 @@ export const DateInputProvider = ({ children }) => {
  * @throws {Error} If used outside of an DateInputProvider.
  */
 export const useDateInput = () => {
-  const context = useContext(DateInputContext);
+  const context = use(DateInputContext);
   if (!context) {
     throw new Error('useDateInput must be used within an DateInputProvider');
   }

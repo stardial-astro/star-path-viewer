@@ -1,12 +1,6 @@
 // src/context/StarInputContext.jsx
 /* eslint-disable react-refresh/only-export-components */
-import {
-  createContext,
-  useContext,
-  useReducer,
-  useState,
-  useCallback,
-} from 'react';
+import { createContext, use, useReducer, useState, useCallback } from 'react';
 import { STORAGE_KEYS, STAR_INPUT_TYPES, RADEC_TYPES } from '@utils/constants';
 import { getIsDevMode } from '@utils/devMode';
 import * as actionTypes from './starInputActionTypes';
@@ -304,7 +298,7 @@ export const StarInputProvider = ({ children }) => {
   }, []);
 
   return (
-    <StarInputContext.Provider
+    <StarInputContext
       value={{
         ...starState,
         hipList,
@@ -314,7 +308,7 @@ export const StarInputProvider = ({ children }) => {
       }}
     >
       {children}
-    </StarInputContext.Provider>
+    </StarInputContext>
   );
 };
 
@@ -325,7 +319,7 @@ export const StarInputProvider = ({ children }) => {
  * @throws {Error} If used outside of an StarInputProvider.
  */
 export const useStarInput = () => {
-  const context = useContext(StarInputContext);
+  const context = use(StarInputContext);
   if (!context) {
     throw new Error('useStarInput must be used within an StarInputProvider');
   }

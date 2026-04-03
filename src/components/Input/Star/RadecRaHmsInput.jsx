@@ -16,6 +16,7 @@ const SEC_LABEL = 'Seconds';
 const HR_NAME = HR_LABEL.toLowerCase();
 const MIN_NAME = MIN_LABEL.toLowerCase();
 const SEC_NAME = SEC_LABEL.toLowerCase();
+const PLACEHOLDER = '0';
 
 const RA_TEXT = 'RA';
 
@@ -93,6 +94,7 @@ const RadecRaHmsInput = () => {
         <CustomNumberField
           id={HR_ID}
           label={HR_LABEL}
+          placeholder={PLACEHOLDER}
           name={HR_NAME}
           value={starRaHms.hours}
           onChange={handleInputChange}
@@ -107,6 +109,7 @@ const RadecRaHmsInput = () => {
         <CustomNumberField
           id={MIN_ID}
           label={MIN_LABEL}
+          placeholder={PLACEHOLDER}
           name={MIN_NAME}
           value={starRaHms.minutes}
           onChange={handleInputChange}
@@ -122,6 +125,7 @@ const RadecRaHmsInput = () => {
           id={SEC_ID}
           label={SEC_LABEL}
           name={SEC_NAME}
+          placeholder={PLACEHOLDER}
           value={starRaHms.seconds}
           onChange={handleInputChange}
           min={0}

@@ -7,11 +7,13 @@ import bySvg from '@assets/by.svg';
 
 const ccCssStyle = {
   maxHeight: '1em',
-  marginLeft: '4px',
+  marginRight: '3px',
   marginBottom: '1px',
   verticalAlign: 'text-bottom',
   opacity: 0.4,
 };
+
+const currentYear = new Date().getFullYear();
 
 const Footer = () => {
   return (
@@ -38,7 +40,7 @@ const Footer = () => {
         }}
       >
         <Typography variant="body2" component="p" align="left">
-          &copy; {new Date().getFullYear()} Stardial. Created by{' '}
+          &copy; {currentYear} Stardial. Created by{' '}
           <Link
             href="https://github.com/lydiazly"
             target="_blank"
@@ -63,12 +65,12 @@ const Footer = () => {
             href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1"
             target="_blank"
             rel="license noopener noreferrer"
-            sx={{ display: 'inline-block' }}
+            sx={{ display: 'inline-block', mr: '0.25em' }}
           >
             CC BY 4.0
-            <img src={ccSvg} alt="CC logo" style={ccCssStyle} />
-            <img src={bySvg} alt="BY logo" style={ccCssStyle} />
           </Link>
+          <img src={ccSvg} alt="CC logo" style={ccCssStyle} />
+          <img src={bySvg} alt="BY logo" style={ccCssStyle} />
         </Typography>
       </Box>
     </Container>

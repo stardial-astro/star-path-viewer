@@ -44,25 +44,13 @@ export default defineConfig({
             src: '/icons/icon-192x192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: '/icons/icon-192x192-maskable.png',
-            sizes: '192x192',
-            type: 'image/png',
-            purpose: 'maskable',
+            purpose: 'any maskable',
           },
           {
             src: '/icons/icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any',
-          },
-          {
-            src: '/icons/icon-512x512-maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
+            purpose: 'any maskable',
           },
         ],
       },
@@ -72,6 +60,7 @@ export default defineConfig({
         skipWaiting: true, // new SW activates immediately
         clientsClaim: true, // claims all open tabs/windows
         navigateFallback: '/index.html',
+        globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
       },
 
       // devOptions: {

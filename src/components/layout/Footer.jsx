@@ -60,7 +60,7 @@ const Footer = () => {
         </Typography>
 
         <Typography variant="body2" component="p" align="left">
-          Source code and data are licensed under{' '}
+          Source code is licensed under{' '}
           <Link
             href="https://creativecommons.org/licenses/by/4.0/?ref=chooser-v1"
             target="_blank"

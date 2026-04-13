@@ -39,10 +39,10 @@
   "no_season_data_returned": "無法獲取二分二至日期: 無返回數據",
   "season_error": "獲取二分二至日期時發生錯誤，請打開控制枱查看詳情",
 
-  "no_hip_data_returned": "無法獲取依巴谷星表: 無返回數據",
+  "no_hip_data_returned": "無法獲取數據: 無返回數據",
   "hip_data_not_loaded": "數據未加載 → 請刷新頁面重試",
-  "hip_error": "無法加載依巴谷星表，請刷新頁面重試",
-  "hip_list_invalid": "依巴谷星表不可用，請刷新頁面重試",
+  "hip_data_error": "無法加載數據，請刷新頁面重試",
+  "hip_data_invalid": "數據不可用，請刷新頁面重試",
   "hip_out_of_range": "超出可用的編號範圍: [1, 118322]",
   "hip_not_found": "未找到相應的編號",
 

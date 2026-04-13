@@ -13,7 +13,7 @@ const STALE_MS = 5 * 60_000;
 const GC_MS = 5 * 60_000;
 
 /**
- * Calls `fetchAndCacheHipList` to fetch and cache the HIP list.
+ * Calls `fetchAndCacheHipList` to fetch and cache the HIP ident list.
  * - Skips fetching if already loaded (from localStorage or previous run)
  * - Updates `hipList`
  * Uses TanStack Query:
@@ -46,10 +46,9 @@ const useFetchHipList = (hipList, setHipList, setErrorMessage) => {
   });
 
   useEffect(() => {
-    if (error) {
-      /* Show errors */
-      setErrorMessage((prev) => ({ ...prev, star: error.message }));
-    }
+    /* Show/Clear errors */
+    const msg = error?.message ?? '';
+    setErrorMessage((prev) => ({ ...prev, star: msg }));
   }, [error, setErrorMessage]);
 };
 

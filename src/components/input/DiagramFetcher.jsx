@@ -256,8 +256,9 @@ const DiagramFetcher = () => {
           }
           /* Parse internal server errors */
           msg =
-            INTERNAL_ERR_LIST.find((item) => msg.includes(item.hint))?.msg ??
-            msg;
+            INTERNAL_ERR_LIST.find((item) =>
+              msg.toLowerCase().includes(item.hint),
+            )?.msg ?? msg;
           setErrorMessage((prev) => ({ ...prev, draw: msg }));
         }
       }

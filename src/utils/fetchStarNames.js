@@ -6,17 +6,18 @@ import {
   HIP_OUT_OF_RANGE_MSG,
   HIP_NOT_FOUND_MSG,
 } from './constants';
+import config from './config';
 import { getIsDevMode } from './devMode';
 
 const HIP_TIMEOUT = 5_000;
 
 const NO_DATA_ERR_MSG = 'errors:no_hip_data_returned'; // i18n key
-const HIP_LIST_ERR_MSG = 'errors:hip_error'; // i18n key
-const HIP_LIST_INVALID_MSG = 'errors:hip_list_invalid'; // i18n key
+const DATA_ERR_MSG = 'errors:hip_data_error'; // i18n key
+const DATA_INVALID_MSG = 'errors:hip_data_invalid'; // i18n key
 
 /** At most this number of items to show. */
 const limit = 30;
-const starNamesUrl = import.meta.env.VITE_STAR_NAMES_URL;
+const starNamesUrl = config.STAR_NAMES_URL;
 
 /**
  * Normalizes Pinyin.
@@ -90,14 +91,14 @@ const itemContainsQuery = (item, query) => {
 // };
 
 /**
- * Fetches and caches the HIP list.
+ * Fetches and caches the HIP ident list.
  * @param {(data: HipItem[]) => void} setHipList -Sets `hipList` and stores in `localStorage`.
- * @returns {Promise<HipItem[] | null>} The HIP list, or `null` if aborted.
+ * @returns {Promise<HipItem[] | null>} The HIP ident list, or `null` if aborted.
  * @throws {Error} If request failed or result is invalid.
  */
 const fetchAndCacheHipList = async (setHipList) => {
   const isDevMode = getIsDevMode();
-  isDevMode && console.debug('> Fetching HIP list...');
+  isDevMode && console.debug('> Fetching HIP ident list...');
 
   try {
     const response = await axios.get(starNamesUrl, {
@@ -108,31 +109,32 @@ const fetchAndCacheHipList = async (setHipList) => {
     if (!data) throw new Error(NO_DATA_ERR_MSG);
 
     if (!Array.isArray(data) || data.length === 0) {
-      console.error('HIP list fetching returned invalid data:', data);
-      throw new Error(HIP_LIST_INVALID_MSG);
+      console.error('HIP ident list fetching returned invalid data.');
+      // isDevMode && console.debug(data);
+      throw new Error(DATA_INVALID_MSG);
     }
     /* Update state and cache data */
     setHipList(data);
-    isDevMode && console.debug('✅ HIP list loaded and cached.');
-    isDevMode && console.debug('🗂️ [HIP list]', data.length, 'entries');
+    isDevMode && console.debug('✅ HIP ident list loaded and cached.');
+    isDevMode && console.debug('🗂️ [HIP ident]', data.length, 'entries');
     return data;
   } catch (err) {
     /* If the request was cancelled/aborted, stop retrying */
     if (axios.isCancel(err)) {
-      isDevMode && console.debug('HIP list fetching cancelled.');
+      isDevMode && console.debug('HIP ident list fetching cancelled.');
       return null;
     }
     console.error(
-      'Error fetching HIP list:',
+      'Error fetching HIP ident list:',
       Error.isError(err) ? err.message : err,
     );
-    throw new Error(HIP_LIST_ERR_MSG, { cause: err });
+    throw new Error(DATA_ERR_MSG, { cause: err });
   }
 };
 
 /**
  * Fetches star name suggestions (`query` should be trimmed before calling).
- * Fetches the HIP list if not cached.
+ * Fetches the HIP ident list if not cached.
  * @param {string} query
  * @param {HipItem[] | null} hipList
  * @param {(data: HipItem[]) => void} setHipList - Sets `hipList` and stores in `localStorage`.
@@ -142,15 +144,15 @@ const fetchAndCacheHipList = async (setHipList) => {
 const fetchStarNames = async (query, hipList, setHipList) => {
   const isDevMode = getIsDevMode();
   let data = hipList;
-  /* Fetch and cache the HIP list */
+  /* Fetch and cache the HIP ident list */
   if (!data || (Array.isArray(data) && data.length === 0)) {
-    isDevMode && console.debug('⚠️ HIP list not cached yet.');
+    isDevMode && console.debug('⚠️ HIP ident list not cached yet.');
     /* Update if not aborted and no errors */
     data = await fetchAndCacheHipList(setHipList);
   }
-  if (!data) throw new Error(HIP_LIST_ERR_MSG);
+  if (!data) throw new Error(DATA_ERR_MSG);
 
-  /* Parse the fetched/cached HIP list ------------------------------ */
+  /* Parse the fetched/cached HIP ident list ------------------------ */
   /* Find items with fields containing the query (case-insensitive)
      If the query is a number, it could be either a HIP or part of a name */
   /** @type {StarItem[]} */

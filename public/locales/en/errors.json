@@ -39,10 +39,10 @@
   "no_season_data_returned": "Unable to fetch equinox/solstice date: no data returned.",
   "season_error": "Something went wrong while fetching equinox/solstice date. Check the console for details.",
 
-  "no_hip_data_returned": "Unable to fetch HIP data: no data returned.",
+  "no_hip_data_returned": "Unable to fetch data: no data returned.",
   "hip_data_not_loaded": "Data not loaded → Please reload the page",
-  "hip_error": "Unable to load HIP data. Please reload the page and try again.",
-  "hip_list_invalid": "HIP data unavailable. Please reload the page and try again.",
+  "hip_data_error": "Unable to load data. Please reload the page and try again.",
+  "hip_data_invalid": "Data unavailable. Please reload the page and try again.",
   "hip_out_of_range": "Out of the available HIP range: [1, 118322]",
   "hip_not_found": "No match found.",
 

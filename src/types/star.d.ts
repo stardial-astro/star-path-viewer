@@ -120,7 +120,7 @@ type StarInitialState = {
 };
 
 type StarContextType = StarInitialState & {
-  /** The HIP list. Initialized by `getInitialHipList`. */
+  /** The HIP ident list. Initialized by `getInitialHipList`. */
   hipList: HipItem[] | null;
   /** Sets `hipList` and stores in `localStorage`. */
   setHipList: (data: HipItem[]) => void;

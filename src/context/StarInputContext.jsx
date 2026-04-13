@@ -9,8 +9,8 @@ import * as actionTypes from './starInputActionTypes';
 const HIP_STALE_MS = 6 * 60 * 60_000;
 
 /**
- * Loads the HIP list from `localStorage`.
- * @returns {HipItem[] | null} The HIP list, or `null` if stale or missing.
+ * Loads the HIP ident list from `localStorage`.
+ * @returns {HipItem[] | null} The HIP ident list, or `null` if stale or missing.
  */
 const getInitialHipList = () => {
   const raw = localStorage.getItem(STORAGE_KEYS.hip);
@@ -19,7 +19,7 @@ const getInitialHipList = () => {
   const { data, timestamp } = JSON.parse(raw);
   if (Date.now() - timestamp > HIP_STALE_MS) return null;
   getIsDevMode() &&
-    console.debug('📦 [HIP list]', data.length, 'entries (from storage)');
+    console.debug('📦 [HIP ident]', data.length, 'entries (from storage)');
   return data;
 };
 

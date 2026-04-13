@@ -18,7 +18,7 @@
 /*.svg
   Cache-Control: public, max-age=604800
 
-# Cache the HIP list (standard fetch) - cache in browser for 1 year, never change when fresh
+# Cache the HIP ident list (standard fetch) - cache in browser for 1 year, never change when fresh
 /data/hip*.json
   Cache-Control: public, max-age=31536000, immutable
   Access-Control-Allow-Origin: *

@@ -9,12 +9,8 @@ const GEO_IP_TIMEOUT = 5_000;
 const ipGeoServiceUrl = 'https://ipinfo.io/json';
 
 const NO_DATA_ERR_MSG = 'No data returned from ipinfo.io';
-const GEO_ABORT_MSG =
-  'Geolocation request timed out. Please try again or enter the coordinates manually. ⤴';
-const GEO_ERR_MSG =
-  'Unable to determine the current location. Please enter the coordinates manually. ⤴';
-const NO_GEO_MSG =
-  'Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴';
+const GEO_ERR_MSG = 'errors:gps_error'; // i18n key
+const NO_GEO_MSG = 'errors:gps_not_supported'; // i18n key
 
 /**
  * Fetches IP geolocation.
@@ -31,7 +27,10 @@ const fetchIpLocation = async (signal) => {
       signal,
     });
     const data = response.data;
-    if (!data) throw new Error(NO_DATA_ERR_MSG);
+    if (!data) {
+      console.error(NO_DATA_ERR_MSG);
+      throw new Error(GEO_ERR_MSG);
+    }
 
     /* https://ipinfo.io/json
      * {
@@ -59,10 +58,6 @@ const fetchIpLocation = async (signal) => {
       'Error fetching IP geolocation:',
       Error.isError(err) ? err.message : err,
     );
-    /* Timed out or unreachable */
-    if (axios.isAxiosError(err) && err.code === 'ECONNABORTED') {
-      throw new Error(GEO_ABORT_MSG, { cause: err });
-    }
     throw new Error(GEO_ERR_MSG, { cause: err });
   }
 };

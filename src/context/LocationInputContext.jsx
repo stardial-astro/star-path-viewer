@@ -100,11 +100,11 @@ const locationErrorReducer = (state, action) => {
 const locationNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_ADDRESS_NULL_ERROR:
-      return { ...state, address: 'Please search and select a location.' };
+      return { ...state, address: 'errors:please_search_location' }; // i18n key
     case actionTypes.SET_LAT_NULL_ERROR:
-      return { ...state, lat: 'Please enter a latitude.' };
+      return { ...state, lat: 'errors:please_enter_latitude' }; // i18n key
     case actionTypes.SET_LNG_NULL_ERROR:
-      return { ...state, lng: 'Please enter a longitude.' };
+      return { ...state, lng: 'errors:please_enter_longitude' }; // i18n key
     case actionTypes.CLEAR_ADDRESS_NULL_ERROR:
       return { ...state, address: '' };
     case actionTypes.CLEAR_LAT_NULL_ERROR:

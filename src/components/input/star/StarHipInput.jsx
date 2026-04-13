@@ -7,6 +7,7 @@ import {
   useRef,
   useDeferredValue,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Autocomplete,
@@ -20,16 +21,10 @@ import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import useFetchHipList from '@hooks/useFetchHipList';
 import useFetchStarNames from '@/hooks/useFetchStarNames';
+import { CC_HANT_CODES } from '@utils/constants';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
 import { getIsDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
-
-const INPUT_LABEL = 'Search Hipparcos Catalogue number';
-const SELECT_WARN = "You haven't select a star from the results.";
-
-const PLACEHOLDER = 'Enter a number or a name';
-const LOADING_PLACEHOLDER = 'Loading data...';
-const NO_DATA_PLACEHOLDER = 'Data not loaded - Please reload the page';
 
 const hipStyle = { mr: 1 };
 const nameStyle = { color: 'primary.main' };
@@ -52,6 +47,8 @@ const circularProgress = (
 
 const StarHipInput = () => {
   // console.log('Rendering StarHipInput');
+  const { i18n, t } = useTranslation('star');
+  const isZhHant = CC_HANT_CODES.includes(i18n.language);
   const { errorMessage, setErrorMessage } = useHome();
   const {
     starHip,
@@ -65,11 +62,16 @@ const StarHipInput = () => {
     starDispatch,
   } = useStarInput();
 
+  /** @param {string} key */
+  const te = (key) => (key ? t(key) : '');
+  const tHipError = te(starError.hip || starNullError.hip);
+
   const [open, setOpen] = useState(false);
   /* For refetching */
   const [refreshCount, setRefreshCount] = useState(0);
   /* Whether to skip fetching suggestions */
   const [skipFetch, setSkipFetch] = useState(true);
+  /** Last selected trimmed display name, which is also set as the search term. */
   const lastSelectedTermRef = useRef('');
   /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
@@ -105,12 +107,14 @@ const StarHipInput = () => {
 
   useFetchHipList(hipList, setHipList, setErrorMessage);
 
-  /* Clear errors & null errors when user starts typing in HIP search bar */
+  /* Clear errors & null errors when user starts typing in HIP search bar; reset validity */
   useEffect(() => {
     clearStarError(starDispatch, setErrorMessage);
     if (starHip) {
       starDispatch({ type: actionTypes.CLEAR_STAR_HIP_NULL_ERROR });
     }
+    /* Reset validity */
+    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
   }, [starHip, searchTerm, starDispatch, setErrorMessage]);
 
   /* Clear name, HIP, suggestions, RA/Dec, lastSelectedTermRef and resets validity
@@ -144,7 +148,7 @@ const StarHipInput = () => {
 
   /**
    * Helper function to select the option.
-   * - Sets `starHip`, `starName`, `starHipZh`, and and `searchTerm`
+   * - Sets `starHip`, `starName`, `starNameZh`, and and `searchTerm`
    * - Updates `lastSelectedTermRef`
    * @type {(option: StarItem) => void}
    */
@@ -165,7 +169,7 @@ const StarHipInput = () => {
         type: actionTypes.SET_STAR_NAME_ZH,
         payload: constructNameZh(option),
       });
-      lastSelectedTermRef.current = option.display_name;
+      lastSelectedTermRef.current = option.display_name.trim();
       starDispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
@@ -187,9 +191,8 @@ const StarHipInput = () => {
     (event, value, reason) => {
       /* Skip if triggered by programmatic change (select or hit Enter before fetching) */
       if (reason !== 'input' && reason !== 'clear') return;
-      /* Clear suggestions and lastSelectedTermRef before fetching */
+      /* Reset lastSelectedTermRef when typing */
       lastSelectedTermRef.current = '';
-      starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
       /* Update searchTerm only when value is non-blank */
       if (value.trim()) {
         /* Ready to fetch suggestions */
@@ -199,8 +202,9 @@ const StarHipInput = () => {
           payload: value,
         });
       } else {
-        /* Clear searchTerm if value is blank */
+        /* Clear searchTerm and suggestions if value is blank */
         starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+        starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
       }
     },
     [starDispatch],
@@ -244,8 +248,13 @@ const StarHipInput = () => {
 
   /** @type {() => void} */
   const handleBlur = useCallback(() => {
-    /* If no cached data, searchTerm is empty, or selected, skip and close */
-    if (!hipList || !searchTerm || searchTerm === lastSelectedTermRef.current) {
+    const trimmedSearchTerm = searchTerm.trim();
+    /* If no cached data, searchTerm is blank, or selected, skip and close */
+    if (
+      !hipList ||
+      !trimmedSearchTerm ||
+      trimmedSearchTerm === lastSelectedTermRef.current
+    ) {
       setOpen(false);
       return;
     }
@@ -258,7 +267,7 @@ const StarHipInput = () => {
       /* If none has been selected, warn and set invalid */
       starDispatch({
         type: actionTypes.SET_STAR_HIP_ERROR,
-        payload: SELECT_WARN,
+        payload: 'errors:have_not_select_star',
       });
       starDispatch({ type: actionTypes.SET_STAR_VALID, payload: false });
     } else if (!starError.hip && !errorMessage.star) {
@@ -314,14 +323,14 @@ const StarHipInput = () => {
       sx={{ mt: 2 }}
       renderOption={({ key, ...props }, option) => (
         <li key={key} {...props}>
-          <Box display="flex" alignItems="start" flexWrap="wrap">
+          <Box display="flex" flexWrap="wrap" alignItems="flex-start">
             <Typography align="left" sx={hipStyle}>
               {option.hip}
             </Typography>
             {option.name && (
               <Typography align="left" sx={nameStyle}>
                 {option.name_zh
-                  ? `(${option.name}/${option.name_zh})`
+                  ? `(${option.name}/${isZhHant ? option.name_zh_hk : option.name_zh})`
                   : `(${option.name})`}
               </Typography>
             )}
@@ -331,17 +340,17 @@ const StarHipInput = () => {
       renderInput={(params) => (
         <CustomTextField
           {...params}
-          label={INPUT_LABEL}
+          label={t('search_hip')}
           placeholder={
             isLoading
-              ? LOADING_PLACEHOLDER
+              ? t('loading_data')
               : !hipList
-                ? NO_DATA_PLACEHOLDER
-                : PLACEHOLDER
+                ? t('errors:hip_data_not_loaded')
+                : t('enter_number_or_name')
           }
           inputRef={inputRef}
-          error={!!starError.hip || !!starNullError.hip}
-          helperText={starError.hip || starNullError.hip}
+          error={!!tHipError}
+          helperText={tHipError}
           startAdornment={
             <InputAdornment position="start" sx={{ ml: 0.9, mr: 0 }}>
               {isLoading ? circularProgress : searchIcon}

@@ -1,5 +1,6 @@
 // src/components/input/date/DateInput.jsx
 import { memo, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
@@ -14,6 +15,7 @@ import QuickEntryAccordion from './QuickEntryAccordion';
 
 const DateInput = () => {
   // console.log('Rendering DateInput');
+  const { t } = useTranslation('date');
   const { setErrorMessage } = useHome();
   const { flag, cal, dateError, dateDispatch } = useDateInput();
   const { locationDispatch } = useLocationInput();
@@ -48,29 +50,31 @@ const DateInput = () => {
    * Clear errors when user starts typing
    * ------------------------------------------------------------------|
    */
-  /* [DateFields] Clear errors & null errors when user starts typing date */
+  /* [DateFields] Clear errors & null errors when user starts typing date; reset validity */
 
   /* Clear errors when toggles flag */
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
-    /* Only if no flag, reset validity and clear date and location null errors */
+    /* Only if no flag, clear date and location null errors; reset validity */
     if (!flag) {
+      dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
+      locationDispatch({ type: locationActionTypes.CLEAR_ADDRESS_NULL_ERROR });
+      locationDispatch({ type: locationActionTypes.CLEAR_LOCATION_NULL_ERROR });
+      /* Reset validity */
       dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
       locationDispatch({
         type: locationActionTypes.SET_LOCATION_VALID,
         payload: true,
       });
-      dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
-      locationDispatch({ type: locationActionTypes.CLEAR_ADDRESS_NULL_ERROR });
-      locationDispatch({ type: locationActionTypes.CLEAR_LOCATION_NULL_ERROR });
     }
   }, [flag, dateDispatch, locationDispatch, setErrorMessage]);
 
-  /* Clear errors & null errors and reset validity when toggles calendar */
+  /* Clear errors & null errors when toggles calendar; reset validity */
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
-    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
     dateDispatch({ type: actionTypes.CLEAR_DATE_NULL_ERROR });
+    /* Reset validity */
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
   }, [cal, dateDispatch, locationDispatch, setErrorMessage]);
 
   /* ------------------------------------------------------------------|
@@ -101,7 +105,9 @@ const DateInput = () => {
         <DateFields />
 
         {dateError.general && (
-          <ErrorHelperText variant="body2">{dateError.general}</ErrorHelperText>
+          <ErrorHelperText variant="body2">
+            {t(dateError.general)}
+          </ErrorHelperText>
         )}
       </div>
 

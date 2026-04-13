@@ -22,28 +22,47 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       /* Assets to precache beyond what's in the build output */
-      includeAssets: ['favicon.ico', '*.png', 'robots.txt'],
+      includeAssets: [
+        'favicon.*',
+        'icons/*.png',
+        'locales/**/*.json',
+        'robots.txt',
+      ],
       /* Move manifest.json content here */
       manifest: {
         short_name: 'Star Path Viewer',
         name: 'Star Path Viewer',
         description: pkg.description,
         scope: '/',
+        id: '/',
         start_url: '/',
         display: 'standalone',
         theme_color: '#E5EEFA',
         background_color: '#E5EEFA',
         icons: [
           {
-            src: '/icon-192x192.png',
-            type: 'image/png',
+            src: '/icons/icon-192x192.png',
             sizes: '192x192',
-            purpose: 'any maskable',
+            type: 'image/png',
+            purpose: 'any',
           },
           {
-            src: '/icon-512x512.png',
+            src: '/icons/icon-192x192-maskable.png',
+            sizes: '192x192',
             type: 'image/png',
+            purpose: 'maskable',
+          },
+          {
+            src: '/icons/icon-512x512.png',
             sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: '/icons/icon-512x512-maskable.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
       },

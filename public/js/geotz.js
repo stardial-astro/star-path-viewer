@@ -1627,7 +1627,7 @@
   }
 
   // src/find.ts
-  function init(geoDataSource = "https://cdn.jsdelivr.net/npm/geo-tz@latest/data/timezones-1970.geojson.geo.dat", tzDataSource = "https://cdn.jsdelivr.net/npm/geo-tz@latest/data/timezones-1970.geojson.index.json") {
+  function init(geoDataSource = "/data/timezones-1970.geojson.geo.dat", tzDataSource = "/data/timezones-1970.geojson.index.json") {
     const geoData = typeof geoDataSource === "string" ? async (start, end) => {
       const response = await fetch(geoDataSource, {
         headers: {

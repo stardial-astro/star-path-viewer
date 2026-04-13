@@ -1,0 +1,23 @@
+{
+  "planet": "選擇行星",
+  "planet_name": "行星",
+  "select_planet": "選擇行星",
+
+  "star": "搜索天體",
+  "search_hip": "搜索依巴谷星表",
+  "loading_data": "正在加載數據……",
+  "enter_number_or_name": "請輸入編號或名稱",
+
+  "radec": "天球座標",
+  "hms_and_dms": "HMS與DMS格式",
+  "decimal_degrees": "十進制格式",
+  "ra": "赤經",
+  "dec": "赤緯",
+  "right_ascension": "赤經 (RA)",
+  "declination": "赤緯 (Dec)",
+  "hours": "時",
+  "degrees": "度",
+  "minutes": "分",
+  "seconds": "秒",
+  "enter_decimal": "請輸入十進制小數"
+}

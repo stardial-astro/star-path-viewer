@@ -10,11 +10,9 @@ import { getIsDevMode } from './devMode';
 
 const HIP_TIMEOUT = 5_000;
 
-const NO_DATA_ERR_MSG = 'Unable to fetch HIP list: no data returned.';
-const HIP_LIST_ERR_MSG =
-  'HIP list not loaded. Please reload the page and try again.';
-const HIP_LIST_INVALID_MSG =
-  'HIP list unavailable. Please reload the page and try again.';
+const NO_DATA_ERR_MSG = 'errors:no_hip_data_returned'; // i18n key
+const HIP_LIST_ERR_MSG = 'errors:hip_error'; // i18n key
+const HIP_LIST_INVALID_MSG = 'errors:hip_list_invalid'; // i18n key
 
 /** At most this number of items to show. */
 const limit = 30;

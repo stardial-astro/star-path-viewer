@@ -8,12 +8,31 @@ import {
   HIP_OUT_OF_RANGE_MSG,
 } from './constants';
 
-/** @param {StarItem} item */
+/**
+ * Constructs Chinese names into an object.
+ * @param {StarItem} item
+ * @returns {StarNameZhObj}
+ */
 const constructNameZh = (item) => {
-  if (item.name_zh) {
-    return item.name_zh === item.name_zh_hk
-      ? `${item.name_zh}, ${item.pinyin}`
-      : `${item.name_zh}, ${item.name_zh_hk}, ${item.pinyin}`;
+  return {
+    zh: item.name_zh || '',
+    zhHK: item.name_zh_hk || '',
+    pinyin: item.pinyin || '',
+  };
+};
+
+/**
+ * Formats Chinese names into `'{name_zh|name_zh_hk} {pinyin}'`.
+ * @param {StarNameZhObj} nameZh
+ * @param {boolean} isZhHant
+ * @returns
+ */
+const joinNameZh = (nameZh, isZhHant) => {
+  if (nameZh.zh) {
+    return (
+      (isZhHant && nameZh.zhHK ? nameZh.zhHK : nameZh.zh) +
+      (nameZh.pinyin ? `, ${nameZh.pinyin}` : '')
+    );
   } else {
     return '';
   }
@@ -111,6 +130,7 @@ const clearStarError = (dispatch, setErrorMessage) => {
 
 export {
   constructNameZh,
+  joinNameZh,
   validateStarHipSync,
   validateStarRadecSync,
   clearRaError,

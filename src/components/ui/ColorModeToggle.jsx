@@ -1,29 +1,31 @@
 // src/components/ui/ColorModeToggle.jsx
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
 import { useColorScheme } from '@mui/material/styles';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import BrightnessMediumOutlinedIcon from '@mui/icons-material/BrightnessMediumOutlined';
-import BarIconButton from './BarIconButton';
+import CustomIconButton from './CustomIconButton';
 
 /** @type {ColorMode[]} */
 const MODE_CYCLES = ['light', 'dark', 'system'];
 const MODE_CYCLE_LEN = MODE_CYCLES.length;
 
 const MODE_LABELS = {
-  light: 'Light mode',
-  dark: 'Dark mode',
-  system: 'System mode',
-};
+  light: 'color_mode.light',
+  dark: 'color_mode.dark',
+  system: 'color_mode.system',
+}; // i18n keys
 
 const MODE_ICONS = {
-  light: <LightModeOutlinedIcon fontSize="small" />,
-  dark: <DarkModeOutlinedIcon fontSize="small" />,
-  system: <BrightnessMediumOutlinedIcon fontSize="small" />,
+  light: <LightModeOutlinedIcon fontSize="inherit" />,
+  dark: <DarkModeOutlinedIcon fontSize="inherit" />,
+  system: <BrightnessMediumOutlinedIcon fontSize="inherit" />,
 };
 
 const ColorModeToggle = () => {
+  const { t } = useTranslation();
   const { mode, setMode } = useColorScheme();
 
   const currentMode = mode && MODE_CYCLES.includes(mode) ? mode : 'system';
@@ -36,15 +38,17 @@ const ColorModeToggle = () => {
   }, [nextMode, setMode]);
 
   return (
-    <Tooltip title={MODE_LABELS[currentMode]} placement="bottom">
+    <Tooltip
+      title={t(MODE_LABELS[currentMode], 'Toggle color mode')}
+      placement="bottom"
+    >
       <div>
-        <BarIconButton
-          aria-label={MODE_LABELS[currentMode]}
+        <CustomIconButton
+          aria-label={MODE_LABELS[currentMode].split('.')[1]}
           onClick={handleToggle}
-          sx={{ mr: 0.3 }}
         >
           {MODE_ICONS[currentMode]}
-        </BarIconButton>
+        </CustomIconButton>
       </div>
     </Tooltip>
   );

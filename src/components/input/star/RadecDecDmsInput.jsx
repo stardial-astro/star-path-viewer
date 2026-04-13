@@ -1,5 +1,6 @@
 // src/components/input/star/RadecDecDmsInput.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
@@ -10,18 +11,16 @@ import ErrorHelperText from '@components/ui/ErrorHelperText';
 const DEG_ID = 'degrees-dms-input';
 const MIN_ID = 'minutes-dms-input';
 const SEC_ID = 'seconds-dms-input';
-const DEG_LABEL = 'Degrees';
-const MIN_LABEL = 'Minutes';
-const SEC_LABEL = 'Seconds';
-const DEG_NAME = DEG_LABEL.toLowerCase();
-const MIN_NAME = MIN_LABEL.toLowerCase();
-const SEC_NAME = SEC_LABEL.toLowerCase();
+const DEG_NAME = 'degrees';
+const MIN_NAME = 'minutes';
+const SEC_NAME = 'seconds';
 const PLACEHOLDER = '0';
 
-const DEC_TEXT = 'Dec';
-
 const RadecDecDmsInput = () => {
+  const { t } = useTranslation('star');
   const { starDecDms, starError, starNullError, starDispatch } = useStarInput();
+
+  const decError = starError.dec || starNullError.dec;
 
   /** @type {(event: ChangeEvent) => void} */
   const handleInputChange = useCallback(
@@ -79,8 +78,9 @@ const RadecDecDmsInput = () => {
       justifyContent="space-between"
     >
       <Grid
-        size={{ xs: 12, sm: 0.9, md: 1.2 }}
+        size={{ xs: 12, sm: 'auto' }}
         sx={{
+          width: { sm: '45px', md: '30px' },
           ml: { xs: 0.5, sm: 0, md: 0 },
           mr: { xs: 0, sm: -0.5, md: -0.5 },
           my: { xs: -1, sm: 0, md: 0 },
@@ -89,14 +89,15 @@ const RadecDecDmsInput = () => {
         <Typography
           variant="body1"
           textAlign={{ xs: 'left', sm: 'center', md: 'center' }}
+          sx={{ lineHeight: { xs: 1.5, sm: 1.5, md: 1.05 } }}
         >
-          {DEC_TEXT}
+          {t('dec')}
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={DEG_ID}
-          label={DEG_LABEL}
+          label={t('degrees')}
           placeholder={PLACEHOLDER}
           name={DEG_NAME}
           value={starDecDms.degrees}
@@ -105,13 +106,13 @@ const RadecDecDmsInput = () => {
           min={-90}
           max={90}
           allowOutOfRange={false}
-          error={!!starError.dec || !!starNullError.dec}
+          error={!!decError}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={MIN_ID}
-          label={MIN_LABEL}
+          label={t('minutes')}
           placeholder={PLACEHOLDER}
           name={MIN_NAME}
           value={starDecDms.minutes}
@@ -120,13 +121,13 @@ const RadecDecDmsInput = () => {
           min={0}
           max={59}
           allowOutOfRange={false}
-          error={!!starError.dec || !!starNullError.dec}
+          error={!!decError}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={SEC_ID}
-          label={SEC_LABEL}
+          label={t('seconds')}
           placeholder={PLACEHOLDER}
           name={SEC_NAME}
           value={starDecDms.seconds}
@@ -134,14 +135,15 @@ const RadecDecDmsInput = () => {
           min={0}
           max={59.999}
           allowOutOfRange={false}
-          error={!!starError.dec || !!starNullError.dec}
+          error={!!decError}
         />
       </Grid>
-      {(starError.dec || starNullError.dec) && (
-        <Grid size={{ xs: 12, sm: 12, md: 12 }} sx={{ mt: -2 }}>
-          <ErrorHelperText variant="body2">
-            {starError.dec || starNullError.dec}
-          </ErrorHelperText>
+      {decError && (
+        <Grid
+          size={{ xs: 12, sm: 12, md: 12 }}
+          sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}
+        >
+          <ErrorHelperText variant="body2">{t(decError)}</ErrorHelperText>
         </Grid>
       )}
     </Grid>

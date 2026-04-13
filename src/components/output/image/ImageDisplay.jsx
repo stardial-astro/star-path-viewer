@@ -1,5 +1,6 @@
 // src/components/output/image/ImageDisplay.jsx
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { Box, Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
@@ -8,6 +9,7 @@ import CustomAlert from '@components/ui/CustomAlert';
 import DownloadImage from './DownloadImage';
 
 const ImageDisplay = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const { errorMessage, setErrorMessage, diagramId, svgData } = useHome();
   return (
@@ -28,16 +30,17 @@ const ImageDisplay = () => {
 
       <Stack id="download-img" direction="column" spacing={1} sx={{ mt: -1 }}>
         <DownloadImage filenameBase={`sp_${diagramId}`} dpi={300} />
-        {errorMessage.download && !errorMessage.download.includes('table') && (
-          <CustomAlert
-            sx={{ mt: 1 }}
-            onClose={() =>
-              setErrorMessage((prev) => ({ ...prev, download: '' }))
-            }
-          >
-            {errorMessage.download}
-          </CustomAlert>
-        )}
+        {errorMessage.download &&
+          !errorMessage.download.startsWith('table_') && (
+            <CustomAlert
+              sx={{ mt: 1 }}
+              onClose={() =>
+                setErrorMessage((prev) => ({ ...prev, download: '' }))
+              }
+            >
+              {t(errorMessage.download)}
+            </CustomAlert>
+          )}
       </Stack>
     </>
   );

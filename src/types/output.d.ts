@@ -2,7 +2,7 @@
 
 type PtLabel = import('./constants').PtLabel;
 
-type LineType = import('./constants').LineType;
+type LineStyle = import('./constants').LineStyle;
 
 /** The annotation item returned from server and for display. */
 interface AnnoItem {
@@ -26,7 +26,7 @@ interface AnnoItem {
   time_ut1: number[];
   /** The Universal Time (UT1) in Julian calendar. */
   time_ut1_julian: number[];
-  /** The standard offset from UT1 in hours. */
+  /** The Standard Time offset in decimal hours. */
   time_zone: number;
 }
 
@@ -41,8 +41,8 @@ type InfoObj = Omit<LocationObj<number>, 'id'> &
     dateG: DateObj<number>;
     /** The Julian date for Display. */
     dateJ: DateObj<number>;
-    /** The Chinese star name for Display. */
-    nameZh?: string;
+    /** The Chinese star names for Display. */
+    nameZh?: StarNameZhObj;
     [key: string]: unknown;
   };
 

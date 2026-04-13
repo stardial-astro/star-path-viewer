@@ -1,7 +1,6 @@
 // src/components/pages/Home.jsx
 import { memo } from 'react';
-// import { Helmet } from 'react-helmet';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 import titleImage from '@assets/title-image.svg';
@@ -27,18 +26,19 @@ hashes.includes('dev') && enableDevMode();
 
 /* Check env and config */
 // if (getIsDevMode() && !import.meta.env.VITEST) {
-//   // console.debug('[BASE_URL]', import.meta.env.BASE_URL);
+//   console.debug('[BASE_URL]', import.meta.env.BASE_URL);
 //   console.debug('[MODE]', import.meta.env.MODE);
 //   // console.debug('[DEV]', import.meta.env.DEV);
-//   // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
+//   console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
 //   console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
-//   console.debug('[__APP_NAME__]', __APP_NAME__);
-//   // console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
+//   // console.debug('[__APP_NAME__]', __APP_NAME__);
+//   console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
 //   // console.debug('[config]', config);
 // }
 
 const Home = () => {
   // console.log('Rendering Home');
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
   const { isDelayedOnline, success, svgData, anno, setErrorMessage } =
@@ -64,22 +64,8 @@ const Home = () => {
   };
 
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>Star Path Viewer: Trace Planets & Stars</title>
-        <meta
-          name="description"
-          content="Astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky."
-        />
-        <meta property="og:title" content="Star Path Viewer" />
-        <meta property="og:description" content="Trace Planets & Stars" />
-        <meta
-          property="og:image"
-          content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg"
-        />
-        <meta property="og:url" content="https://star-path-viewer.pages.dev/" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
+    <>
+      <link rel="canonical" href={config.BASE_URL} />
 
       <LocationInputProvider>
         <DateInputProvider>
@@ -146,9 +132,7 @@ const Home = () => {
                 mb: { xs: 1, sm: 1, md: 1 },
               }}
             >
-              {/* &mdash;&nbsp;Trace a&nbsp;star&nbsp;on any&nbsp;date from &#8209;3000&#8209;01&#8209;29 to 3000&#8209;05&#8209;06&nbsp;&mdash; */}
-              &mdash;&nbsp;Trace a&nbsp;star&nbsp;on any&nbsp;date between
-              3001&nbsp;BCE and 3000&nbsp;CE&nbsp;&mdash;
+              {`— ${t('subtitle')} —`}
             </Typography>
 
             <Box
@@ -184,7 +168,7 @@ const Home = () => {
           </StarInputProvider>
         </DateInputProvider>
       </LocationInputProvider>
-    </HelmetProvider>
+    </>
   );
 };
 

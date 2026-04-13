@@ -1,0 +1,39 @@
+{
+  "language": "简体中文",
+
+  "title": "Star Path Viewer",
+  "head_title": "Star Path Viewer: 追踪古今天体轨迹",
+  "subtitle": "追踪古今天体轨迹",
+  "description": "古今天体轨迹追踪工具",
+
+  "about": "关于",
+  "about_us": "关于我们",
+
+  "color_mode": {
+    "light": "浅色主题",
+    "dark": "深色主题",
+    "system": "系统主题"
+  },
+
+  "change_language": "切换语言",
+  "github_repo": "GitHub 仓库",
+  "share": "分享",
+  "share_success": "分享成功！",
+  "share_error": "该浏览器不支持网页分享，请手动复制网址。",
+
+  "location": "地理位置",
+  "date": "当地日期",
+  "star": "选择天体",
+
+  "mercury": "水星",
+  "venus": "金星",
+  "mars": "火星",
+  "jupiter": "木星",
+  "saturn": "土星",
+  "uranus": "天王星",
+  "neptune": "海王星",
+
+  "draw": "绘制星轨",
+  "drawing": "计算中，请稍候片刻",
+  "back_to_top": "回到顶部"
+}

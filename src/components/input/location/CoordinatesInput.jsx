@@ -1,5 +1,6 @@
 // src/components/input/location/CoordinatesInput.jsx
 import { memo, useEffect, useCallback, useEffectEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
@@ -15,13 +16,10 @@ import CustomNumberField from '@components/ui/CustomNumberField';
 
 const LAT_ID = 'latitude-input';
 const LNG_ID = 'longitude-input';
-const LAT_LABEL = 'Latitude';
-const LNG_LABEL = 'Longitude';
-const LAT_PLACEHOLDER = 'Enter in decimal degrees';
-const LNG_PLACEHOLDER = LAT_PLACEHOLDER;
 
 const CoordinatesInput = () => {
   // console.log('Rendering CoordinatesInput');
+  const { t } = useTranslation('location');
   const { setErrorMessage } = useHome();
   const {
     setSkipTz,
@@ -32,6 +30,9 @@ const CoordinatesInput = () => {
     locationDispatch,
   } = useLocationInput();
   const { flag } = useDateInput();
+
+  const latError = locationError.lat || locationNullError.lat;
+  const lngError = locationError.lng || locationNullError.lng;
 
   const onInit = useEffectEvent(() => {
     /* Clear errors */
@@ -53,12 +54,14 @@ const CoordinatesInput = () => {
     onInit();
   }, []);
 
-  /* Clear errors & null errors in each field when user starts typing coordinates */
+  /* Clear errors & null errors in each field when user starts typing coordinates; reset validity */
   useEffect(() => {
     clearLatError(locationDispatch, setErrorMessage);
     if (location.lat) {
       locationDispatch({ type: actionTypes.CLEAR_LAT_NULL_ERROR });
     }
+    /* Reset validity */
+    locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
   }, [location.lat, locationDispatch, setErrorMessage]);
 
   useEffect(() => {
@@ -66,6 +69,8 @@ const CoordinatesInput = () => {
     if (location.lng) {
       locationDispatch({ type: actionTypes.CLEAR_LNG_NULL_ERROR });
     }
+    /* Reset validity */
+    locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
   }, [location.lng, locationDispatch, setErrorMessage]);
 
   /** @type {(event: ChangeEvent) => void} */
@@ -88,8 +93,8 @@ const CoordinatesInput = () => {
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
           id={LAT_ID}
-          label={LAT_LABEL}
-          placeholder={LAT_PLACEHOLDER}
+          label={t('latitude')}
+          placeholder={t('enter_decimal')}
           name={LATITUDE}
           value={location.lat}
           onChange={handleInputChange}
@@ -97,15 +102,15 @@ const CoordinatesInput = () => {
           max={90}
           allowOutOfRange={false}
           loading={gpsLoading}
-          error={!!locationError.lat || !!locationNullError.lat}
-          helperText={locationError.lat || locationNullError.lat}
+          error={!!latError}
+          helperText={latError ? t(latError) : ''}
         />
       </Grid>
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
           id={LNG_ID}
-          label={LNG_LABEL}
-          placeholder={LNG_PLACEHOLDER}
+          label={t('longitude')}
+          placeholder={t('enter_decimal')}
           name={LONGITUDE}
           value={location.lng}
           onChange={handleInputChange}
@@ -113,8 +118,8 @@ const CoordinatesInput = () => {
           max={180}
           allowOutOfRange={false}
           loading={gpsLoading}
-          error={!!locationError.lng || !!locationNullError.lng}
-          helperText={locationError.lng || locationNullError.lng}
+          error={!!lngError}
+          helperText={lngError ? t(lngError) : ''}
         />
       </Grid>
     </Grid>

@@ -31,7 +31,7 @@ const StarInputContext = createContext(null);
 /** @type {StarInitialState} */
 const initialState = {
   starName: '',
-  starNameZh: '',
+  starNameZh: { zh: '', zhHK: '', pinyin: '' },
   starHip: '',
   starRadec: { ra: '', dec: '' },
   starRaHms: { hours: '', minutes: '', seconds: '' },
@@ -141,16 +141,16 @@ const starErrorReducer = (state, action) => {
 const starNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_STAR_NAME_NULL_ERROR:
-      return { ...state, name: 'Please select a planet.' };
+      return { ...state, name: 'errors:please_select_planet' }; // i18n key
     case actionTypes.SET_STAR_HIP_NULL_ERROR:
       return {
         ...state,
-        hip: 'Please search and select a Hipparcos Catalogue number.',
+        hip: 'errors:please_search_hip', // i18n key
       };
     case actionTypes.SET_STAR_RA_NULL_ERROR:
-      return { ...state, ra: 'Please enter a right ascension.' };
+      return { ...state, ra: 'errors:please_enter_ra' }; // i18n key
     case actionTypes.SET_STAR_DEC_NULL_ERROR:
-      return { ...state, dec: 'Please enter a declination.' };
+      return { ...state, dec: 'errors:please_enter_dec' }; // i18n key
     case actionTypes.CLEAR_STAR_NAME_NULL_ERROR:
       return { ...state, name: '' };
     case actionTypes.CLEAR_STAR_HIP_NULL_ERROR:
@@ -180,7 +180,12 @@ const starInputReducer = (state, action) => {
     case actionTypes.SET_STAR_HIP:
       return { ...state, starHip: action.payload };
     case actionTypes.CLEAR_STAR_HIP_AND_NAME:
-      return { ...state, starHip: '', starName: '', starNameZh: '' };
+      return {
+        ...state,
+        starHip: '',
+        starName: '',
+        starNameZh: { zh: '', zhHK: '', pinyin: '' },
+      };
 
     case actionTypes.SET_STAR_RA:
     case actionTypes.SET_STAR_DEC:

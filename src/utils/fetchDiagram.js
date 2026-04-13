@@ -6,9 +6,8 @@ import { parseApiError } from './apiUtils';
 import { sanitizeSvg } from './outputUtils';
 import { getIsDevMode } from './devMode';
 
-const NO_DATA_ERR_MSG = 'Unable to fetch diagram: no data returned.';
-const DIAGRAM_ERR_MSG =
-  'Something went wrong while fetching diagram. Check the console.';
+const NO_DATA_ERR_MSG = 'errors:no_diagram_data_returned'; // i18n key
+const DIAGRAM_ERR_MSG = 'errors:diagram_error'; // i18n key
 
 const diagramUrl = `${import.meta.env.VITE_SERVER_URL}/diagram`;
 
@@ -41,7 +40,7 @@ const fetchDiagram = async (params, signal) => {
     const offset = data.annotations[0].time_zone;
     if (data.offset !== offset) {
       console.warn(
-        `Returned UT1 offset '${data.offset}' does't match '${offset}' in annotations`,
+        `Returned Standard Time offset ${data.offset} does't match ${offset} in annotations`,
       );
     }
     if (params.tz && data.tz !== params.tz) {

@@ -1,5 +1,6 @@
 // src/components/input/star/RadecDecimalInput.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
@@ -9,14 +10,11 @@ import CustomNumberField from '@components/ui/CustomNumberField';
 
 const RA_ID = 'ra-input';
 const DEC_ID = 'dec-input';
-const RA_LABEL = 'Right Ascension (RA)';
-const DEC_LABEL = 'Declination (Dec)';
 const RA_NAME = 'ra';
 const DEC_NAME = 'dec';
-const RA_PLACEHOLDER = 'Enter in decimal degrees';
-const DEC_PLACEHOLDER = RA_PLACEHOLDER;
 
 const RadecDecimalInput = () => {
+  const { t } = useTranslation('star');
   const {
     starRadec,
     // starRaHms,
@@ -25,6 +23,9 @@ const RadecDecimalInput = () => {
     starNullError,
     starDispatch,
   } = useStarInput();
+
+  const raError = starError.ra || starNullError.ra;
+  const decError = starError.dec || starNullError.dec;
 
   /** @type {(event: ChangeEvent) => void} */
   const handleInputChange = useCallback(
@@ -59,31 +60,31 @@ const RadecDecimalInput = () => {
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
           id={RA_ID}
-          label={RA_LABEL}
-          placeholder={RA_PLACEHOLDER}
+          label={t('right_ascension')}
+          placeholder={t('enter_decimal')}
           name={RA_NAME}
           value={starRadec.ra}
           onChange={handleInputChange}
           min={0}
           max={360}
           allowOutOfRange={false}
-          error={!!starError.ra || !!starNullError.ra}
-          helperText={starError.ra || starNullError.ra}
+          error={!!raError}
+          helperText={raError ? t(raError) : ''}
         />
       </Grid>
       <Grid size={{ xs: 12, sm: 6, md: 6 }}>
         <CustomNumberField
           id={DEC_ID}
-          label={DEC_LABEL}
-          placeholder={DEC_PLACEHOLDER}
+          label={t('declination')}
+          placeholder={t('enter_decimal')}
           name={DEC_NAME}
           value={starRadec.dec}
           onChange={handleInputChange}
           min={-90}
           max={90}
           allowOutOfRange={false}
-          error={!!starError.dec || !!starNullError.dec}
-          helperText={starError.dec || starNullError.dec}
+          error={!!decError}
+          helperText={decError ? t(decError) : ''}
         />
       </Grid>
     </Grid>

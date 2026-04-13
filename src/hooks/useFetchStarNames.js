@@ -42,15 +42,26 @@ const useFetchStarNames = (
   setErrorMessage,
 ) => {
   const { data, error } = useQuery({
-    queryKey: [QUERY_KEY, searchTerm, hipList, refreshCount],
-    queryFn: () => fetchStarNames(searchTerm, hipList, setHipList),
-    enabled: !skipFetch && !!searchTerm,
+    queryKey: [
+      QUERY_KEY,
+      searchTerm.trim().toLowerCase(),
+      hipList,
+      refreshCount,
+    ],
+    queryFn: () =>
+      fetchStarNames(searchTerm.trim().toLowerCase(), hipList, setHipList),
+    enabled: !skipFetch && !!searchTerm.trim(),
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (axios.isCancel(error) || error.message === HIP_OUT_OF_RANGE_MSG)
+      if (
+        axios.isCancel(error) ||
+        error.message === HIP_OUT_OF_RANGE_MSG ||
+        error.message === HIP_NOT_FOUND_MSG
+      ) {
         return false;
+      }
       return failureCount < config.MAX_RETRIES;
     },
     retryDelay: config.RETRY_DELAY,

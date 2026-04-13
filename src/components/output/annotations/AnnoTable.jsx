@@ -1,5 +1,6 @@
 // src/components/output/annotations/AnnoTable.jsx
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTheme, styled, lighten } from '@mui/material/styles';
 import {
   Table,
@@ -10,6 +11,7 @@ import {
   TableRow,
   Paper,
   Typography,
+  Tooltip,
 } from '@mui/material';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
@@ -48,6 +50,8 @@ const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   position: 'sticky',
   left: 0,
   textAlign: 'center',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
   backgroundColor: lighten(theme.palette.background.paper, 0.1),
   borderRight: `1px solid ${theme.palette.action.disabledBackground}`,
   zIndex: 1,
@@ -66,8 +70,10 @@ const StyledRow = styled(TableRow)(() => ({
 /**
  * @param {object} params
  * @param {AnnoItem[]} params.anno - Filtered annotations.
+ * @param {string} [params.tzname]
  */
-const AnnoTable = ({ anno }) => {
+const AnnoTable = ({ anno, tzname }) => {
+  const { t } = useTranslation('output');
   const theme = useTheme();
   const redAsterisk = (
     <span style={{ color: theme.palette.error.main }}>*</span>
@@ -89,23 +95,39 @@ const AnnoTable = ({ anno }) => {
                   px: 1.2,
                 }}
               >
-                Point
+                {t('point')}
               </StyledStickyColumn>
-              <StyledHeadCell rowSpan={2}>Altitude</StyledHeadCell>
-              <StyledHeadCell rowSpan={2}>Azimuth</StyledHeadCell>
+              <StyledHeadCell rowSpan={2}>{t('altitude')}</StyledHeadCell>
+              <StyledHeadCell rowSpan={2}>{t('azimuth')}</StyledHeadCell>
               <StyledHeadCell colSpan={2}>
-                {`Standard Time (${tzStr})`} {redAsterisk}
+                <Tooltip title={tzname || ''} placement="top" followCursor>
+                  <div>
+                    {`${t('standard_time')} (${tzStr})`} {redAsterisk}
+                  </div>
+                </Tooltip>
               </StyledHeadCell>
-              <StyledHeadCell colSpan={2}>Local Mean Time (LMT)</StyledHeadCell>
-              <StyledHeadCell colSpan={2}>Universal Time (UT1)</StyledHeadCell>
+              <StyledHeadCell colSpan={2}>{t('lmt')}</StyledHeadCell>
+              <StyledHeadCell colSpan={2}>{t('ut1')}</StyledHeadCell>
             </TableRow>
             <TableRow>
-              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>Gregorian</StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>Julian</StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('gregorian')}
+              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('julian')}
+              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('gregorian')}
+              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('julian')}
+              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('gregorian')}
+              </StyledHeadCell>
+              <StyledHeadCell sx={dateColumnStyle}>
+                {t('julian')}
+              </StyledHeadCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -149,7 +171,8 @@ const AnnoTable = ({ anno }) => {
       </TableContainer>
 
       <Typography variant="body2" align="left" sx={footnoteStyle}>
-        {redAsterisk} No Daylight Saving Time (DST) adjustments.
+        {redAsterisk}
+        {' ' + t('no_dst')}
       </Typography>
     </>
   );

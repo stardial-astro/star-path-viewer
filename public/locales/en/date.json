@@ -1,0 +1,21 @@
+{
+  "year": "Year",
+  "month": "Month",
+  "day": "Day",
+  "year_zero_is": "0 means 1 BCE",
+  "select_month": "Select a month",
+
+  "gregorian": "Gregorian Calendar",
+  "julian": "Julian Calendar",
+  "ephemeris_range": "Ephemeris range",
+
+  "vernal_equinox": "Vernal Equinox",
+  "summer_solstice": "Summer Solstice",
+  "autumnal_equinox": "Autumnal Equinox",
+  "winter_solstice": "Winter Solstice",
+
+  "quick_entry": "Quick Entry",
+  "click_to_fill": "Click to fill in the {{season}} date",
+  "click_to_deselect": "Click again to deselect",
+  "checked": "Checked"
+}

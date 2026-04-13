@@ -63,7 +63,7 @@ const fetchGps = async (service, lastSelectedTermRef, dispatch) => {
     });
     if (res.display_name !== LOC_UNKNOWN && res.id !== LOC_UNKNOWN_ID) {
       /* If the address is valid, update state and ref */
-      lastSelectedTermRef.current = res.display_name;
+      lastSelectedTermRef.current = res.display_name.trim();
       dispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: res.display_name,

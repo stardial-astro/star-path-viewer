@@ -1,6 +1,11 @@
 // src/utils/config.ts
 const config = {
+  BASE_URL: 'https://star-path-viewer.pages.dev/',
+  HEAD_TITLE: 'Star Path Viewer: Trace Planets & Stars',
+  TEAM_NAME: 'Stardial',
+  TEAM_URL: 'https://github.com/stardial-astro',
   REPO_URL: 'https://github.com/stardial-astro/star-path-viewer',
+  APP_CARD_URL: 'https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg',
   /** Defaults to 2. */
   MAX_RETRIES: parseInt(import.meta.env.VITE_MAX_RETRIES) || 2,
   /** Defaults to 500ms. */

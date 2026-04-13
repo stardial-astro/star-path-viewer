@@ -82,8 +82,16 @@ describe('formatDatetime', () => {
     input                                                                                               | expected
     ${{ datetime: { year: 2000 } }}                                                                     | ${{ date: 'January 1, 2000 CE', time: '12:00:00', year: '2000 CE' }}
     ${{ datetime: { year: 0 } }}                                                                        | ${{ date: 'January 1, 1 BCE', time: '12:00:00', year: '1 BCE' }}
-    ${{ datetime: { year: -3000 }, monthFirst: false }}                                                 | ${{ date: '1 January 3001 BCE', time: '12:00:00', year: '3001 BCE' }}
+    ${{ datetime: { year: -3000 } }}                                                                    | ${{ date: 'January 1, 3001 BCE', time: '12:00:00', year: '3001 BCE' }}
     ${{ datetime: { year: 0, month: 12, day: 31, hour: 23, minute: 59, second: 59.9999 }, abbr: true }} | ${{ date: 'Dec 31, 1 BCE', time: '23:59:60', year: '1 BCE' }}
+    ${{ datetime: { year: 1582, month: 10, day: 15 } }}                                                 | ${{ date: 'October 15, 1582 CE', time: '12:00:00', year: '1582 CE' }}
+    ${{ datetime: { year: 1582, month: 10, day: 14 }, langCode: 'zh' }}                                 | ${{ date: '公元1582年10月14日', time: '12:00:00', year: '1582 CE' }}
+    ${{ datetime: { year: 0, month: 2, day: 24 }, langCode: 'zh' }}                                     | ${{ date: '公元前1年2月24日', time: '12:00:00', year: '1 BCE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh' }}                                  | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh-CN' }}                               | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh-Hans' }}                             | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-HK' }}                               | ${{ date: '西元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-Hant' }}                             | ${{ date: '西元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
   `('formats $input → $expected', ({ input, expected }) => {
     expect(formatDatetime(input)).toEqual(expected);
   });
@@ -103,12 +111,12 @@ describe('formatDatetimeIso', () => {
 
 describe('datetimeToStr', () => {
   it.each`
-    input                                                                                | expected
-    ${{ datetimeArr: [2000, 1, 1, 12, 0, 0] }}                                           | ${'+2000-01-01 12:00:00'}
-    ${{ datetimeArr: [2000, 1, 1, 12, 0, 0] }}                                           | ${'+2000-01-01 12:00:00'}
-    ${{ datetimeArr: [2000.5, 1, 1, 12, 0, 0], delim: 'T' }}                             | ${'+2000-01-01T12:00:00'}
-    ${{ datetimeArr: [-3000, 1, 1, 23, 59, 59.9999], iso: false }}                       | ${'January 1, 3001 BCE, 23:59:60'}
-    ${{ datetimeArr: [0, 12, 31, 12, 0, 0], iso: false, monthFirst: false, abbr: true }} | ${'31 Dec 1 BCE, 12:00:00'}
+    input                                                             | expected
+    ${{ datetimeArr: [2000, 1, 1, 12, 0, 0] }}                        | ${'+2000-01-01 12:00:00'}
+    ${{ datetimeArr: [2000, 1, 1, 12, 0, 0] }}                        | ${'+2000-01-01 12:00:00'}
+    ${{ datetimeArr: [2000.5, 1, 1, 12, 0, 0], delim: 'T' }}          | ${'+2000-01-01T12:00:00'}
+    ${{ datetimeArr: [-3000, 1, 1, 23, 59, 59.9999], iso: false }}    | ${'January 1, 3001 BCE, 23:59:60'}
+    ${{ datetimeArr: [0, 12, 31, 12, 0, 0], iso: false, abbr: true }} | ${'Dec 31, 1 BCE, 12:00:00'}
   `('formats $input → $expected', ({ input, expected }) => {
     expect(datetimeToStr(input)).toEqual(expected);
   });
@@ -116,11 +124,11 @@ describe('datetimeToStr', () => {
 
 describe('dateToStr', () => {
   it.each`
-    input                                                                  | expected
-    ${{ dateArr: [2000, 1, 1] }}                                           | ${'+2000-01-01'}
-    ${{ dateArr: [2000.5, 1, 1] }}                                         | ${'+2000-01-01'}
-    ${{ dateArr: [-3000, 1, 1], iso: false }}                              | ${'January 1, 3001 BCE'}
-    ${{ dateArr: [0, 12, 31], iso: false, monthFirst: false, abbr: true }} | ${'31 Dec 1 BCE'}
+    input                                               | expected
+    ${{ dateArr: [2000, 1, 1] }}                        | ${'+2000-01-01'}
+    ${{ dateArr: [2000.5, 1, 1] }}                      | ${'+2000-01-01'}
+    ${{ dateArr: [-3000, 1, 1], iso: false }}           | ${'January 1, 3001 BCE'}
+    ${{ dateArr: [0, 12, 31], iso: false, abbr: true }} | ${'Dec 31, 1 BCE'}
   `('formats $input → $expected', ({ input, expected }) => {
     expect(dateToStr(input)).toEqual(expected);
   });
@@ -128,13 +136,15 @@ describe('dateToStr', () => {
 
 describe('formatTimezone', () => {
   it.each`
-    input   | expected
-    ${8}    | ${'+08:00'}
-    ${-8}   | ${'-08:00'}
-    ${0}    | ${'+00:00'}
-    ${-0}   | ${'+00:00'}
-    ${-3.5} | ${'-03:30'}
-  `('formats $input → $expected', ({ input, expected }) => {
-    expect(formatTimezone(input)).toEqual(expected);
+    input1  | input2   | expected
+    ${8}    | ${false} | ${'+08:00'}
+    ${-8}   | ${false} | ${'-08:00'}
+    ${0}    | ${false} | ${'+00:00'}
+    ${0}    | ${true}  | ${'Z'}
+    ${-0}   | ${false} | ${'+00:00'}
+    ${0}    | ${true}  | ${'Z'}
+    ${-3.5} | ${false} | ${'-03:30'}
+  `('formats $input → $expected', ({ input1, input2, expected }) => {
+    expect(formatTimezone(input1, input2)).toEqual(expected);
   });
 });

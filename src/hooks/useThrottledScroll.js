@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react';
 
 /**
  * Throttles a scroll using `requestAnimationFrame`.
- * @param {number} [threshold=100] The threshold of pixels to trigger the scroll.
+ * @param {number} [threshold=100] - The threshold of pixels to trigger the scroll.
  *                                 Defaults to 100.
  */
 const useThrottledScroll = (threshold = 100) => {

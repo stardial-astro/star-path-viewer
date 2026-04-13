@@ -8,9 +8,61 @@ import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 import * as XLSX from 'xlsx';
 
+const TABLE_HEAD = {
+  point: 'Point',
+  alt: 'Altitude',
+  az: 'Azimuth',
+  stG: 'Standard Time (Gregorian)',
+  stJ: 'Standard Time (Julian)',
+  lmtG: 'Local Mean Time (Gregorian)',
+  lmtJ: 'Local Mean Time (Julian)',
+  ut1G: 'UT1 (Gregorian)',
+  ut1J: 'UT1 (Julian)',
+};
+
 const CSV_FMT = 'csv';
 const JSON_FMT = 'json';
 const XLSX_FMT = 'xlsx';
+
+/** @param {AnnoItem[]} anno */
+const annoToJson = (anno) => {
+  const suffixZ = true; // replace '+00:00' with 'Z'
+  const offsetStr = formatTimezone(anno[0].time_zone, suffixZ);
+  const delim = 'T';
+  return anno.map((item) => ({
+    [TABLE_HEAD.point]: item.name,
+    [TABLE_HEAD.alt]: formatDecimalDegrees(item.alt).replace(/°/g, '\u00B0'),
+    [TABLE_HEAD.az]: formatDecimalDegrees(item.az).replace(/°/g, '\u00B0'),
+    [TABLE_HEAD.stG]: `${datetimeToStr({ datetimeArr: item.time_standard, delim })}${offsetStr}`,
+    [TABLE_HEAD.stJ]: `${datetimeToStr({ datetimeArr: item.time_standard_julian, delim })}${offsetStr}`,
+    [TABLE_HEAD.lmtG]: `${datetimeToStr({ datetimeArr: item.time_local_mean, delim })}`,
+    [TABLE_HEAD.lmtJ]: `${datetimeToStr({ datetimeArr: item.time_local_mean_julian, delim })}`,
+    [TABLE_HEAD.ut1G]: datetimeToStr({ datetimeArr: item.time_ut1, delim }),
+    [TABLE_HEAD.ut1J]: datetimeToStr({
+      datetimeArr: item.time_ut1_julian,
+      delim,
+    }),
+  }));
+};
+
+/** @param {Record<string, string>[]} annoJson */
+const annoJsonToCsv = (annoJson) => {
+  const csvContent = [
+    /* Table head (same as values in TABLE_HEAD) */
+    Object.keys(annoJson[0]),
+    /* Rows (quote if needed) */
+    ...annoJson.map((r) =>
+      Object.entries(r).map(([c, v]) => {
+        if (c === TABLE_HEAD.alt || c === TABLE_HEAD.az) {
+          return `"${v.replace(/"/g, '""')}"`; // quote and escape quotes
+        }
+        return v;
+      }),
+    ),
+  ];
+  /* Join columns */
+  return csvContent.map((c) => c.join(',')).join('\n') + '\n';
+};
 
 /**
  * @param {object} params
@@ -20,20 +72,8 @@ const XLSX_FMT = 'xlsx';
 const DownloadAnnoTable = ({ anno, filenameBase }) => {
   const { setErrorMessage } = useHome();
 
-  const annoExport = useMemo(() => {
-    const offsetStr = formatTimezone(anno[0].time_zone);
-    return anno.map((item) => ({
-      name: item.name,
-      alt: formatDecimalDegrees(item.alt).replace(/°/g, '\u00B0'),
-      az: formatDecimalDegrees(item.az).replace(/°/g, '\u00B0'),
-      time_standard: `${datetimeToStr({ datetimeArr: item.time_standard })} UT1${offsetStr}`,
-      time_standard_julian: `${datetimeToStr({ datetimeArr: item.time_standard_julian })} UT1${offsetStr}`,
-      time_local_mean: `${datetimeToStr({ datetimeArr: item.time_local_mean })}`,
-      time_local_mean_julian: `${datetimeToStr({ datetimeArr: item.time_local_mean_julian })}`,
-      time_ut1: datetimeToStr({ datetimeArr: item.time_ut1 }),
-      time_ut1_julian: datetimeToStr({ datetimeArr: item.time_ut1_julian }),
-    }));
-  }, [anno]);
+  /** @type {Record<string, string>[]} */
+  const annoJson = useMemo(() => annoToJson(anno), [anno]);
 
   /** @type {(format: string) => void} */
   const handleDownload = useCallback(
@@ -43,32 +83,7 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
       if (format === CSV_FMT) {
         /* Export CSV ----------------------------------------------- */
         try {
-          const csvContent = [
-            [
-              'Point',
-              'Altitude',
-              'Azimuth',
-              'Standard Time (Gregorian)',
-              'Standard Time (Julian)',
-              'Local Mean Time (Gregorian)',
-              'Local Mean Time (Julian)',
-              'UT1 (Gregorian)',
-              'UT1 (Julian)',
-            ],
-            ...annoExport.map((item) => [
-              item.name,
-              `"${item.alt.replace(/"/g, '""')}"`,
-              `"${item.az.replace(/"/g, '""')}"`,
-              item.time_standard,
-              item.time_standard_julian,
-              item.time_local_mean,
-              item.time_local_mean_julian,
-              item.time_ut1,
-              item.time_ut1_julian,
-            ]),
-          ];
-          const csvString =
-            csvContent.map((e) => e.join(',')).join('\n') + '\n';
+          const csvString = annoJsonToCsv(annoJson);
           /* Add BOM (UTF-8 BOM) */
           const csvWithBom = '\uFEFF' + csvString;
           const blob = new Blob([csvWithBom], {
@@ -82,28 +97,13 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           );
           setErrorMessage((prev) => ({
             ...prev,
-            download: 'Unable to generate CSV table.',
+            download: 'errors:table_csv_error', // i18n key
           }));
         }
       } else if (format === JSON_FMT) {
         /* Export JSON ---------------------------------------------- */
         try {
-          const jsonContent =
-            JSON.stringify(
-              annoExport.map((item) => ({
-                Point: item.name,
-                Altitude: item.alt,
-                Azimuth: item.az,
-                'Standard Time (Gregorian)': item.time_standard,
-                'Standard Time (Julian)': item.time_standard_julian,
-                'Local Mean Time (Gregorian)': item.time_local_mean,
-                'Local Mean Time (Julian)': item.time_local_mean_julian,
-                'UT1 (Gregorian)': item.time_ut1,
-                'UT1 (Julian)': item.time_ut1_julian,
-              })),
-              null,
-              2,
-            ) + '\n';
+          const jsonContent = JSON.stringify(annoJson, null, 2) + '\n';
           const blob = new Blob([jsonContent], {
             type: 'application/json;charset=utf-8;',
           });
@@ -115,25 +115,13 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           );
           setErrorMessage((prev) => ({
             ...prev,
-            download: 'Unable to generate JSON file.',
+            download: 'errors:table_json_error', // i18n key
           }));
         }
       } else if (format === XLSX_FMT) {
         /* Export XLSX ---------------------------------------------- */
         try {
-          const worksheet = XLSX.utils.json_to_sheet(
-            annoExport.map((item) => ({
-              Point: item.name,
-              Altitude: item.alt,
-              Azimuth: item.az,
-              'Standard Time (Gregorian)': item.time_standard,
-              'Standard Time (Julian)': item.time_standard_julian,
-              'Local Mean Time (Gregorian)': item.time_local_mean,
-              'Local Mean Time (Julian)': item.time_local_mean_julian,
-              'UT1 (Gregorian)': item.time_ut1,
-              'UT1 (Julian)': item.time_ut1_julian,
-            })),
-          );
+          const worksheet = XLSX.utils.json_to_sheet(annoJson);
           const workbook = XLSX.utils.book_new();
           XLSX.utils.book_append_sheet(workbook, worksheet, 'Annotations');
           XLSX.writeFile(workbook, filename);
@@ -144,12 +132,12 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           );
           setErrorMessage((prev) => ({
             ...prev,
-            download: 'Unable to generate XLSX table.',
+            download: 'errors:table_xlsx_error', // i18n key
           }));
         }
       }
     },
-    [annoExport, filenameBase, setErrorMessage],
+    [annoJson, filenameBase, setErrorMessage],
   );
 
   return (

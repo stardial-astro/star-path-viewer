@@ -4,10 +4,8 @@ import config from './config';
 import { parseApiError } from './apiUtils';
 import { getIsDevMode } from './devMode';
 
-const NO_DATA_ERR_MSG =
-  'Unable to fetch equinox/solstice date: no data returned.';
-const DATE_ERR_MSG =
-  'Something went wrong while fetching equinox/solstice date. Check the console.';
+const NO_DATA_ERR_MSG = 'errors:no_season_data_returned'; // i18n key
+const DATE_ERR_MSG = 'errors:season_error'; // i18n key
 
 const eqxSolUrl = `${import.meta.env.VITE_SERVER_URL}/equinox`;
 

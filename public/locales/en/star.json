@@ -1,0 +1,23 @@
+{
+  "planet": "Planet",
+  "planet_name": "Planet name",
+  "select_planet": "Select a planet",
+
+  "star": "Star",
+  "search_hip": "Search Hipparcos Catalogue number",
+  "loading_data": "Loading data...",
+  "enter_number_or_name": "Enter a number or a name",
+
+  "radec": "RA/Dec (J2000)",
+  "hms_and_dms": "HMS and DMS",
+  "decimal_degrees": "Decimal Degrees",
+  "ra": "RA",
+  "dec": "Dec",
+  "right_ascension": "Right Ascension (RA)",
+  "declination": "Declination (Dec)",
+  "hours": "Hours",
+  "degrees": "Degrees",
+  "minutes": "Minutes",
+  "seconds": "Seconds",
+  "enter_decimal": "Enter in decimal degrees"
+}

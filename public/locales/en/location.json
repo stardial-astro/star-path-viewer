@@ -1,0 +1,12 @@
+{
+  "checking_geocoding_service": "Detecting available geocoding service...",
+  "address": "Search address",
+  "search_address": "Search address",
+  "find_my_location": "Find My Location",
+  "enter_a_place": "Enter a place, city, county, state, or country",
+
+  "coordinates": "Enter Coordinates",
+  "latitude": "Latitude",
+  "longitude": "Longitude",
+  "enter_decimal": "Enter in decimal degrees"
+}

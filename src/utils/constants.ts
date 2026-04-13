@@ -1,4 +1,10 @@
 // src/utils/constants.js
+/**
+ * Traditional Chinese language codes that will be mapped to `'zh-Hant'`
+ * for traditional Chinese formatting.
+ */
+export const CC_HANT_CODES = ['zh-HK', 'zh-Hant'];
+
 export const SERVICES = {
   nominatim: 'Nominatim',
   baidu: 'Baidu',
@@ -58,104 +64,62 @@ export const RADEC_TYPES = {
   dms: 'dms',
 } as const;
 
-/** @type {{id, number, abbr: string, name: string}[]} */
-export const MONTHS = [
-  { id: 0, abbr: '', name: '' },
-  { id: 1, abbr: 'Jan', name: 'January' },
-  { id: 2, abbr: 'Feb', name: 'February' },
-  { id: 3, abbr: 'Mar', name: 'March' },
-  { id: 4, abbr: 'Apr', name: 'April' },
-  { id: 5, abbr: 'May', name: 'May' },
-  { id: 6, abbr: 'Jun', name: 'June' },
-  { id: 7, abbr: 'Jul', name: 'July' },
-  { id: 8, abbr: 'Aug', name: 'August' },
-  { id: 9, abbr: 'Sep', name: 'September' },
-  { id: 10, abbr: 'Oct', name: 'October' },
-  { id: 11, abbr: 'Nov', name: 'November' },
-  { id: 12, abbr: 'Dec', name: 'December' },
-] as const;
+// /** @type {{id, number, abbr: string, name: string}[]} */
+// export const MONTHS = [
+//   { id: 0, abbr: '', name: '' },
+//   { id: 1, abbr: 'Jan', name: 'January' },
+//   { id: 2, abbr: 'Feb', name: 'February' },
+//   { id: 3, abbr: 'Mar', name: 'March' },
+//   { id: 4, abbr: 'Apr', name: 'April' },
+//   { id: 5, abbr: 'May', name: 'May' },
+//   { id: 6, abbr: 'Jun', name: 'June' },
+//   { id: 7, abbr: 'Jul', name: 'July' },
+//   { id: 8, abbr: 'Aug', name: 'August' },
+//   { id: 9, abbr: 'Sep', name: 'September' },
+//   { id: 10, abbr: 'Oct', name: 'October' },
+//   { id: 11, abbr: 'Nov', name: 'November' },
+//   { id: 12, abbr: 'Dec', name: 'December' },
+// ] as const;
 
 /** @type {Record<string, string>} */
 export const EQX_SOL_NAMES = {
-  ve: 'Vernal Equinox',
-  ss: 'Summer Solstice',
-  ae: 'Autumnal Equinox',
-  ws: 'Winter Solstice',
-} as const;
+  ve: 'vernal_equinox',
+  ss: 'summer_solstice',
+  ae: 'autumnal_equinox',
+  ws: 'winter_solstice',
+} as const; // i18n keys
 
 export const PLANETS = [
-  'Mercury',
-  'Venus',
-  'Mars',
-  'Jupiter',
-  'Saturn',
-  'Uranus',
-  'Neptune',
-  // 'Pluto',
-];
+  'mercury',
+  'venus',
+  'mars',
+  'jupiter',
+  'saturn',
+  'uranus',
+  'neptune',
+]; // i18n keys
 
-/** @type {Record<string, { name: string, detail: string }>} */
-export const PT_DETAIL = {
-  D1: {
-    name: 'Nautical Dawn',
-    detail:
-      "The star's position when the sun is 12 degrees below the horizon before sunrise. " +
-      'At this time, stars brighter than magnitude 4 are visible to the naked eye in most parts of the sky.',
-  },
-  D2: {
-    name: 'Civil Dawn',
-    detail:
-      "The star's position when the sun is 6 degrees below the horizon before sunrise. " +
-      'At this time, stars brighter than magnitude 1 are visible to the naked eye in most parts of the sky.',
-  },
-  D3: {
-    name: 'Sunrise',
-    detail:
-      "The star's position at sunrise. At this time, only the brightest stars or planets, " +
-      'such as Venus and Jupiter, may be visible to the naked eye.',
-  },
-  N1: {
-    name: 'Sunset',
-    detail:
-      "The star's position at sunset. At this time, only the brightest stars or planets, " +
-      'such as Venus and Jupiter, may be visible to the naked eye.',
-  },
-  N2: {
-    name: 'Civil Dusk',
-    detail:
-      "The star's position when the sun is 6 degrees below the horizon after sunset. " +
-      'At this time, stars brighter than magnitude 1 are visible to the naked eye in most parts of the sky.',
-  },
-  N3: {
-    name: 'Nautical Dusk',
-    detail:
-      "The star's position when the sun is 12 degrees below the horizon after sunset. " +
-      'At this time, stars brighter than magnitude 4 are visible to the naked eye in most parts of the sky.',
-  },
-  R: {
-    name: 'Rising Point',
-    detail: 'The point where the star appears to rise above the horizon.',
-  },
-  T: {
-    name: 'Meridian Transit',
-    detail: 'The point where the star transits the meridian.',
-  },
-  S: {
-    name: 'Setting Point',
-    detail: 'The point where the star appears to dip below the horizon.',
-  },
-  NCP: { name: 'North Celestial Pole', detail: '' },
-  SCP: { name: 'South Celestial Pole', detail: '' },
-  Z: { name: 'Zenith', detail: '' },
-} as const;
+export const POINT_LABELS = [
+  'D1',
+  'D2',
+  'D3',
+  'N1',
+  'N2',
+  'N3',
+  'R',
+  'T',
+  'S',
+  'NCP',
+  'SCP',
+  'Z',
+] as const;
 
-/** @type {Record<string, string>} */
-export const LINE_DETAIL = {
-  solid: "The star's path in the nighttime sky.",
-  darkDashed: "The star's path during nautical twilight.",
-  lightDashed: "The star's path during civil twilight.",
-  dotted: "The star's path in the daytime sky.",
-} as const;
+export const LINE_STYLES = [
+  'solid',
+  'darkDashed',
+  'lightDashed',
+  'dotted',
+] as const;
 
 export const LATITUDE = 'lat';
 export const LONGITUDE = 'lng';
@@ -164,7 +128,8 @@ export const INFO_KEYS = new Set([
   'lat',
   'lng',
   'tz', // `tz_id` in the server
-  'offset', // UT1 offset in hours
+  'tzname', // `tz_name` in the server
+  'offset', // Standard Time offset in decimal hours
   'flag',
   'cal',
   'name',
@@ -178,43 +143,30 @@ export const LOC_UNKNOWN_ID = 'unknown-id';
 /** Reverse geocoding fails or returns nothing (will toggle to coordinate mode) */
 export const LOC_UNKNOWN = 'unknown';
 
-export const WARNING_PREFIX = 'WARNING:';
+export const WARNING_PREFIX_SERVER = 'WARNING:';
+export const WARNING_PREFIX = 'errors:warn_'; // i18n key starts with
 
-export const UNKNOWN_ERR_MSG = 'An unknown error occurred. Check the console.';
+export const UNKNOWN_ERR_MSG = 'errors:unknown_error'; // i18n key
 
-const SERVER_ERR_TAIL =
-  'We apologize for the inconvenience and our team is working to resolve this ' +
-  'as quickly as possible. Please check back later.';
-export const SERVER_ERR_PREFIX = 'SERVER ERROR:';
-export const SERVER_ERR_MSG =
-  SERVER_ERR_PREFIX +
-  'Server error. Please try again or check back in a few minutes.';
-export const SERVER_TIMEOUT_MSG =
-  SERVER_ERR_PREFIX +
-  'We are currently experiencing issues connecting to the server. ' +
-  SERVER_ERR_TAIL;
-export const SERVER_DOWN_MSG =
-  SERVER_ERR_PREFIX +
-  'It looks like the server is temporarily down or overloaded. ' +
-  SERVER_ERR_TAIL;
-export const SERVER_NO_RES_MSG =
-  SERVER_ERR_PREFIX +
-  'It looks like the server is not accessible due to a network error. ' +
-  SERVER_ERR_TAIL;
+export const SERVER_ERR_PREFIX = 'errors:server_'; // i18n key starts with
+export const SERVER_ERR_MSG = 'errors:server_error'; // i18n key
+export const SERVER_TIMEOUT_MSG = 'errors:server_timeout'; // i18n key
+export const SERVER_DOWN_MSG = 'errors:server_503'; // i18n key
+export const SERVER_NO_RES_MSG = 'errors:server_no_response'; // i18n key
 
-export const SERVICE_ERR_MSG =
-  'Service not available. Please enter the coordinates manually. ⤴';
+export const SERVICE_ERR_MSG = 'errors:service_unavailable'; // i18n key
 
-export const REVERSE_GEO_ERR_MSG =
-  'We are having trouble fetching your current address. ' +
-  'You can still use the coordinates of your current position. ↓';
+export const LOCATION_NOT_FOUND_MSG = 'errors:location_not_found'; // i18n key
 
-export const LOCATION_NOT_FOUND_MSG = 'Location not found.';
+export const EPH_RANGE_ERR_PREFIX = 'Out of the ephemeris date range: '; // only used in validateDateSync
+export const EPH_RANGE_ERR_MSG_G = 'errors:out_of_ephemeris_range'; // i18n key
 
-export const EPH_RANGE_ERR_PREFIX = 'Out of the ephemeris date range: ';
+export const HIP_INVALID_PREFIX = 'Invalid Hipparcos Catalogue number: '; // only used in validateStarHipSync
+export const HIP_OUT_OF_RANGE_MSG = 'errors:hip_out_of_range'; // i18n key
+export const HIP_NOT_FOUND_MSG = 'errors:hip_not_found'; // i18n key
 
-export const HIP_INVALID_PREFIX = 'Invalid Hipparcos Catalogue number: ';
-export const HIP_OUT_OF_RANGE_MSG =
-  'The Hipparcos Catalogue number must be in the range ' +
-  `[${HIP_MIN}, ${HIP_MAX}].`;
-export const HIP_NOT_FOUND_MSG = 'No match found.';
+export const INTERNAL_ERR_LIST = [
+  { hint: 'never rises', msg: 'errors:warn_star_never_rises' },
+  { hint: 'no ra/dec', msg: 'errors:warn_no_radec' },
+  { hint: 'entry not found', msg: 'errors:warn_entry_hot_in_hip' },
+]; // msg: i18n key

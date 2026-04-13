@@ -1,5 +1,6 @@
 // src/components/input/location/LocationInputTypeToggle.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
@@ -8,10 +9,9 @@ import { LOC_INPUT_TYPES } from '@utils/constants';
 const GROUP_LABEL = 'Input type';
 const ADDR_LABEL = 'Search address';
 const COORD_LABEL = 'Enter coordinates';
-const ADDR_BTN_TEXT = 'Search Address';
-const COORD_BTN_TEXT = 'Enter Coordinates';
 
 const LocationInputTypeToggle = () => {
+  const { t } = useTranslation('location');
   const {
     locationInputType,
     locationInputTypeRef,
@@ -57,10 +57,10 @@ const LocationInputTypeToggle = () => {
       fullWidth
     >
       <ToggleButton value={LOC_INPUT_TYPES.addr} aria-label={ADDR_LABEL}>
-        {ADDR_BTN_TEXT}
+        {t('address')}
       </ToggleButton>
       <ToggleButton value={LOC_INPUT_TYPES.coord} aria-label={COORD_LABEL}>
-        {COORD_BTN_TEXT}
+        {t('coordinates')}
       </ToggleButton>
     </ToggleButtonGroup>
   );

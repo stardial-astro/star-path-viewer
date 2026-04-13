@@ -1,5 +1,6 @@
 // src/components/output/InfoDisplay.jsx
 import { memo, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Box, Stack, Typography } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import {
@@ -8,21 +9,41 @@ import {
   formatDatetimeIso,
 } from '@utils/dateUtils';
 import { formatCoordinate, formatDecimalDegrees } from '@utils/coordUtils';
-import { LATITUDE, LONGITUDE } from '@utils/constants';
-import { capitalize } from '@utils/outputUtils';
+import { joinNameZh } from '@utils/starInputUtils';
+import { LATITUDE, LONGITUDE, CC_HANT_CODES } from '@utils/constants';
 import CustomDivider from '@components/ui/CustomDivider';
 
 const FRAC_DIGITS = 3;
 
-const labelStyle = {
+const itemStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  alignItems: 'start',
+};
+
+const nameItemStyle = {
+  display: 'flex',
+  flexWrap: 'wrap',
+  columnGap: '0.5em',
+  justifyContent: 'start',
+  maxWidth: { md: 320 },
+};
+
+/** @param {boolean} isZh */
+const labelStyle = (isZh, mdMinWidth = '') => ({
   fontSize: {
     xs: 'body2.fontSize',
     sm: 'body1.fontSize',
     md: 'body1.fontSize',
   },
-  minWidth: { xs: '4.8rem', sm: '6rem', md: '6rem' },
+  minWidth: {
+    xs: isZh ? '5.4rem' : '5.1rem',
+    sm: '6rem',
+    md: mdMinWidth ? mdMinWidth : isZh ? '6.4rem' : '6rem',
+  },
   fontWeight: 500,
-};
+});
+
 const detailStyle = {
   fontSize: {
     xs: 'body2.fontSize',
@@ -30,6 +51,9 @@ const detailStyle = {
     md: 'body1.fontSize',
   },
 };
+
+// /** @param {string} s */
+// const quoteToPrime = (s) => s.replaceAll("'", '′').replaceAll('"', '″');
 
 /**
  * Formats RA/Dec in decimal degrees into `'{raHms}/{decDms}'`.
@@ -49,8 +73,24 @@ const radecToStr = (ra, dec) => {
   }
 };
 
+/**
+ * Formats lat/lng in decimal degrees into `'{lat}/{lng}'`.
+ * @param {number} lat
+ * @param {number} lng
+ * @returns
+ */
+const coordsToStr = (lat, lng) => {
+  return (
+    formatCoordinate(lat, LATITUDE) + '/' + formatCoordinate(lng, LONGITUDE)
+  );
+};
+
 const InfoDisplay = () => {
   // console.log('Rendering InfoDisplay');
+  const { i18n, t } = useTranslation('output');
+  const langCode = i18n.resolvedLanguage || i18n.language;
+  const isZh = i18n.language.startsWith('zh');
+  const isZhHant = CC_HANT_CODES.includes(i18n.language);
   const { info } = useHome();
 
   const radecStr = useMemo(
@@ -58,40 +98,32 @@ const InfoDisplay = () => {
     [info.ra, info.dec],
   );
 
-  // const eqxSolTimeStr = useMemo(() => {
-  //   if (EQX_SOL_NAMES.hasOwnProperty(info.flag) && info.eqxSolTime.length === 6) {
-  //     return `${EQX_SOL_NAMES[info.flag]}: ${datetimeToStr({ datetimeArr: info.eqxSolTime })}`;
-  //   } else {
-  //     return '';
-  //   }
-  // }, [info.flag, info.eqxSolTime]);
-
   const dateInfoItems = useMemo(() => {
     const dateStrG = formatDatetime({
       datetime: info.dateG,
-      monthFirst: true,
       abbr: false,
+      langCode,
     }).date;
     const dateStrJ = formatDatetime({
       datetime: info.dateJ,
-      monthFirst: true,
       abbr: false,
+      langCode,
     }).date;
     const dateStrIsoG = formatDatetimeIso(info.dateG).date;
     const dateStrIsoJ = formatDatetimeIso(info.dateJ).date;
     return (
       <>
-        <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" align="left" sx={labelStyle}>
-            [Gregorian]
+        <Box sx={itemStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+            [{t('gregorian')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
             {dateStrIsoG} ({dateStrG})
           </Typography>
         </Box>
-        <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" align="left" sx={labelStyle}>
-            [Julian]
+        <Box sx={itemStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+            [{t('julian')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
             {dateStrIsoJ} ({dateStrJ})
@@ -99,66 +131,66 @@ const InfoDisplay = () => {
         </Box>
       </>
     );
-  }, [info]);
+  }, [info, langCode, isZh, t]);
 
   const locationInfoItem = useMemo(
     () => (
       <>
-        <Box display="flex" alignItems="start" flexWrap="wrap">
-          <Typography variant="body1" align="left" sx={labelStyle}>
-            [Location]
+        <Box sx={itemStyle}>
+          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+            [{t('location')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
-            {formatCoordinate(info.lat, LATITUDE)}/
-            {formatCoordinate(info.lng, LONGITUDE)}
+            {coordsToStr(info.lat, info.lng)}
           </Typography>
         </Box>
       </>
     ),
-    [info],
+    [info, isZh, t],
   );
 
   const starInfoItem = useMemo(
     () => (
       <>
         {info.name && !info.hip ? (
-          <Box display="flex" alignItems="start" flexWrap="wrap">
-            <Typography variant="body1" align="left" sx={labelStyle}>
-              [Planet]
+          <Box sx={itemStyle}>
+            <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+              [{t('planet')}]
             </Typography>
             <Typography variant="body1" align="left" sx={detailStyle}>
-              {capitalize(info.name)}
+              {t('common:' + info.name)}
             </Typography>
           </Box>
         ) : info.hip ? (
           <>
-            {(info.name || info.nameZh) && (
-              <Box display="flex" alignItems="start" flexWrap="wrap">
-                <Typography variant="body1" align="left" sx={labelStyle}>
-                  [Star Name]
+            {(info.name || info.nameZh?.zh) && (
+              <Box sx={itemStyle}>
+                <Typography
+                  variant="body1"
+                  align="left"
+                  sx={labelStyle(isZh, isZh ? '5.4rem' : '6.2rem')}
+                >
+                  [{t('star_name')}]
                 </Typography>
-                <Stack direction="column" spacing={0.5}>
-                  {info.name && (
-                    <Typography variant="body1" align="left" sx={detailStyle}>
-                      {info.name}
-                    </Typography>
-                  )}
-                  {info.nameZh && (
-                    <Typography variant="body1" align="left" sx={detailStyle}>
-                      {info.nameZh}
-                    </Typography>
-                  )}
-                </Stack>
+                <Box sx={nameItemStyle}>
+                  <Typography variant="body1" align="left" sx={detailStyle}>
+                    {info.name}
+                    {info.nameZh?.zh
+                      ? (info.name ? ', ' : '') +
+                        joinNameZh(info.nameZh, isZhHant)
+                      : ''}
+                  </Typography>
+                </Box>
               </Box>
             )}
-            <Box display="flex" alignItems="start" flexWrap="wrap">
+            <Box sx={itemStyle}>
               <Typography
                 variant="body1"
                 align="left"
-                mr={{ xs: 0.6, sm: 1, md: 1 }}
-                sx={labelStyle}
+                mr={{ xs: 0.8, sm: 1.5, md: 1.5 }}
+                sx={labelStyle(isZh)}
               >
-                [Hipparcos Catalogue Number]
+                [{t('hip')}]
               </Typography>
               <Typography variant="body1" align="left" sx={detailStyle}>
                 {info.hip}
@@ -167,9 +199,9 @@ const InfoDisplay = () => {
           </>
         ) : (
           radecStr && (
-            <Box display="flex" alignItems="start" flexWrap="wrap">
-              <Typography variant="body1" align="left" sx={labelStyle}>
-                [RA/Dec]
+            <Box sx={itemStyle}>
+              <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+                [{t('radec')}]
               </Typography>
               <Typography variant="body1" align="left" sx={detailStyle}>
                 {radecStr}
@@ -179,7 +211,7 @@ const InfoDisplay = () => {
         )}
       </>
     ),
-    [info.name, info.nameZh, info.hip, radecStr],
+    [info.name, info.nameZh, info.hip, radecStr, isZh, isZhHant, t],
   );
 
   return (
@@ -212,14 +244,6 @@ const InfoDisplay = () => {
             {starInfoItem}
           </Stack>
         </Grid>
-
-        {/* {eqxSolTimeStr && (
-          <Grid size={{ xs: 12, sm: 12, md: 12 }}>
-            <Typography variant="subtitle1" align="left" sx={detailStyle}>
-              {eqxSolTimeStr}
-            </Typography>
-          </Grid>
-        )} */}
       </Grid>
       <CustomDivider />
     </Box>

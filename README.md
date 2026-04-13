@@ -41,7 +41,9 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 - :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate the positions of planets and stars for any given time.
 - :telescope: Includes [proper motion](https://en.wikipedia.org/wiki/Proper_motion) of a star if the Hipparcos Catalogue number is provided.
 - :night_with_stars: Displays star paths with distinct line styles for daytime, twilight stages, and nighttime.
-- :clock1: Provides **[standard time](https://en.wikipedia.org/wiki/Standard_time)**, **[local mean time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1 time](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference. (*The offsets are from UT1 and no Daylight Saving Time (DST) adjustments in this project.*)
+- :clock1: Provides **[Standard Time](https://en.wikipedia.org/wiki/Standard_time)**, **[Local Mean Time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference.
+
+  ***Note:** The offset represents the Standard Time in the current time zone of a specific location, indicating that Daylight Saving Time (DST) is not in effect.*
 
 ### User Interface
 
@@ -78,7 +80,7 @@ This app relies on the following services:
 
 3. **[Baidu Web Service API](https://lbsyun.baidu.com/faq/api?title=webapi)** - If a connection to Nominatim cannot be established, the system will switch to this alternative geocoding service.
 
-> :bulb: The geocoding service is automatically determined when the website loads. If you are outside mainland China but notice that Baidu is being used, refreshing the page should resolve it and select Nominatim as intended.
+> :bulb: The geocoding service is automatically determined when the website loads. If you are outside mainland China but notice that Baidu is being used, clearing cache and refreshing the page should resolve it and select Nominatim as intended.
 
 ## Resources
 
@@ -108,6 +110,7 @@ This app relies on the following services:
 
 - [v1.3.1] 2026-03-29
   - Upgraded to MUI 7 and React 19.
+  - Added dark mode and Chinese translations.
 
 - [v1.3.0] 2025-03-07
   - Migrated to Vite.

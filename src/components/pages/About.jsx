@@ -1,38 +1,23 @@
 // src/components/pages/About.jsx
 import { memo } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { Trans, useTranslation } from 'react-i18next';
+// import { useTheme } from '@mui/material/styles';
 import { Box, Typography, Link } from '@mui/material';
-import aboutImage from '@assets/about-image.svg';
+// import aboutImage from '@assets/about-image.svg';
 import logo from '@assets/logo.svg';
-// import { Helmet } from 'react-helmet';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import config from '@utils/config';
+
+const GUIDE_URL = config.REPO_URL + '/wiki/1.-Guides';
+const SKYFIELD_URL = 'https://rhodesmill.org/skyfield';
+const JPL_URL = 'https://ssd.jpl.nasa.gov/planets/eph_export.html';
+const HIP_URL = 'https://www.cosmos.esa.int/web/hipparcos/catalogues';
 
 const About = () => {
-  const theme = useTheme();
+  const { t } = useTranslation('about');
+  // const theme = useTheme();
+  const bodyArray = t('body', { returnObjects: true });
   return (
-    <HelmetProvider>
-      <Helmet>
-        <title>Star Path Viewer: Trace Planets & Stars</title>
-        <meta
-          name="description"
-          content="Learn more about Stardial and Star Path Viewer."
-        />
-        <meta property="og:title" content="About Us - Stardial" />
-        <meta
-          property="og:description"
-          content="Learn more about Stardial and Star Path Viewer."
-        />
-        <meta
-          property="og:image"
-          content="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg"
-        />
-        <meta
-          property="og:url"
-          content="https://star-path-viewer.pages.dev/about"
-        />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Helmet>
-
+    <>
       <Box data-testid="about-page" sx={{ mt: 4 }}>
         <img
           src={logo}
@@ -54,8 +39,12 @@ const About = () => {
           alignItems: 'center',
           px: 1,
           mx: 'auto',
-          mt: { xs: 2, sm: 3, md: 3 },
-          mb: { xs: 3, sm: 4, md: 4 },
+          /* <img> */
+          // mt: { xs: 2, sm: 3, md: 3 },
+          // mb: { xs: 3, sm: 4, md: 4 },
+          /* text */
+          mt: { xs: 0, sm: 1.5, md: 1.5 },
+          mb: { xs: 1, sm: 2.2, md: 2.2 },
           width: '100%',
         }}
       >
@@ -64,13 +53,18 @@ const About = () => {
           component="h1"
           data-testid="about-title"
           sx={{
-            width: '100%',
-            height: 'auto',
-            lineHeight: 0,
-            overflow: 'hidden',
+            /* <img> */
+            // width: '100%',
+            // height: 'auto',
+            // lineHeight: 0,
+            // overflow: 'hidden',
+            /* text */
+            fontWeight: 100,
+            fontSize: '2.5rem',
+            letterSpacing: '1px',
           }}
         >
-          <img
+          {/* <img
             src={aboutImage}
             alt="About Us"
             style={{
@@ -82,7 +76,8 @@ const About = () => {
               objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
               cursor: 'default',
             }}
-          />
+          /> */}
+          {t('title')}
         </Typography>
       </Box>
 
@@ -96,91 +91,71 @@ const About = () => {
           pl: 1.8,
         }}
       >
-        <Typography variant="body1" component="p" align="left">
-          We are{' '}
-          <Link
-            href="https://github.com/stardial-astro"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Stardial
-          </Link>
-          , a development team passionate about science and the humanities. Our
-          goal is to create precise, user-friendly, and intuitive astronomical
-          tools to support research in history and social sciences.
-        </Typography>
-        <Typography variant="body1" component="p" align="left">
-          <em>{import.meta.env.VITE_APP_NAME}</em> is our first application
-          designed to help historians intuitively understand the apparent motion
-          of a celestial object on any given date. This open-source scientific
-          tool provides an accurate approach to replicating the view of stars
-          crossing the sky that ancient stargazers would have seen.
-        </Typography>
-        <Typography variant="body1" component="p" align="left">
-          Accurately evaluating the position of a star or planet in ancient
-          times is crucial for historians when dating historical events by
-          correlating astrometric data with records. The visibility of stars
-          during twilight stages is especially significant in the study of
-          pre-modern astronomy. For example, the Chinese had a long tradition of
-          observing and calculating the culmination of key stars before dawn or
-          after dusk. These observations were used as seasonal markers to
-          maintain calendrical accuracy and stability. In these cases,
-          determining the times when certain stars become visible after dark and
-          disappear before sunrise is essential for analyzing the foundational
-          texts of the Chinese astronomical tradition and many other historical
-          documents.
-        </Typography>
-        <Typography variant="body1" component="p" align="left">
-          To meet these needs, <em>{import.meta.env.VITE_APP_NAME}</em>{' '}
-          integrates with{' '}
-          <Link
-            href="https://rhodesmill.org/skyfield"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Skyfield
-          </Link>
-          ,{' '}
-          <Link
-            href="https://ssd.jpl.nasa.gov/planets/eph_export.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            JPL ephemeris
-          </Link>{' '}
-          (DE406), and{' '}
-          <Link
-            href="https://www.cosmos.esa.int/web/hipparcos/catalogues"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Hipparcos Catalogue
-          </Link>{' '}
-          to precisely calculate and depict the path of a star or planet over
-          the course of the day and night on any specific date in either the
-          Gregorian or Julian calendar, from ancient times to far into the
-          future, in the local horizontal coordinate system. For a comprehensive
-          visual experience, different line styles on the diagram distinguish
-          the path during the day, night, and twilight stages. Key moments in
-          the celestial body&apos;s trajectory, such as rising, meridian
-          transit, and setting times, are also marked.{' '}
-          <em>{import.meta.env.VITE_APP_NAME}</em> particularly highlights the
-          transitions between different twilight stages and provides the target
-          object&apos;s positional information at these times.
-        </Typography>
-        <Typography variant="body1" component="p" align="left">
-          For more detailed information about this website, please visit our{' '}
-          <Link
-            href="https://github.com/stardial-astro/star-path-viewer"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            repository
-          </Link>
-          .
-        </Typography>
+        {Array.isArray(bodyArray) &&
+          bodyArray.map((p, index) => (
+            <Typography
+              key={p.id || index}
+              variant="body1"
+              component="p"
+              align="left"
+            >
+              <Trans
+                t={t}
+                i18nKey={`body.${index}.content`}
+                values={{
+                  teamName: config.TEAM_NAME,
+                  appName: import.meta.env.VITE_APP_NAME,
+                }}
+                components={{
+                  em: <em />,
+                  TeamLink: (
+                    <Link
+                      href={config.TEAM_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  RepoLink: (
+                    <Link
+                      href={config.REPO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  GuideLink: (
+                    <Link
+                      href={GUIDE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  SkyfieldLink: (
+                    <Link
+                      href={SKYFIELD_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  JplLink: (
+                    <Link
+                      href={JPL_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                  HipLink: (
+                    <Link
+                      href={HIP_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    />
+                  ),
+                }}
+              />
+            </Typography>
+          ))}
       </Box>
-    </HelmetProvider>
+    </>
   );
 };
 

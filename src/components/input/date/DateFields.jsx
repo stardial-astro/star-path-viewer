@@ -7,6 +7,7 @@ import {
   useRef,
   useDeferredValue,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { useDateInput } from '@context/DateInputContext';
@@ -22,11 +23,9 @@ import MonthInput from './MonthInput';
 
 const YEAR_ID = 'year-input';
 const DAY_ID = 'day-input';
-const YEAR_LABEL = 'Year';
-const DAY_LABEL = 'Day';
-const YEAR_NAME = YEAR_LABEL.toLowerCase();
-const DAY_NAME = DAY_LABEL.toLowerCase();
-const YEAR_PLACEHOLDER = '±YYYY (0 means 1 BCE)';
+const YEAR_NAME = 'year';
+const DAY_NAME = 'day';
+const YEAR_PLACEHOLDER = '±YYYY';
 const DAY_PLACEHOLDER = 'DD';
 
 const YEAR_MIN = EPH_RANGE.min[0];
@@ -40,6 +39,7 @@ const disabledStyle = {
 
 const DateFields = () => {
   // console.log('Rendering DateFields');
+  const { t } = useTranslation('date');
   const { setErrorMessage } = useHome();
   const {
     date,
@@ -51,6 +51,9 @@ const DateFields = () => {
     dateDispatch,
   } = useDateInput();
   const { location } = useLocationInput();
+
+  const yearError = dateError.year || dateNullError.year;
+  const dayError = dateError.day || dateNullError.day;
 
   const isUserEditRef = useRef(false);
 
@@ -75,12 +78,14 @@ const DateFields = () => {
     [debouncedYear, date.month, debouncedDay, deferredCal],
   );
 
-  /* Clear errors & null errors in each field when user starts typing date */
+  /* Clear errors & null errors in each field when user starts typing date; reset validity */
   useEffect(() => {
     clearDateError(dateDispatch, setErrorMessage);
     if (date.year) {
       dateDispatch({ type: actionTypes.CLEAR_YEAR_NULL_ERROR });
     }
+    /* Reset validity */
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
   }, [date.year, dateDispatch, setErrorMessage]);
 
   useEffect(() => {
@@ -88,6 +93,8 @@ const DateFields = () => {
     if (date.month) {
       dateDispatch({ type: actionTypes.CLEAR_MONTH_NULL_ERROR });
     }
+    /* Reset validity */
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
   }, [date.month, dateDispatch, setErrorMessage]);
 
   useEffect(() => {
@@ -95,6 +102,8 @@ const DateFields = () => {
     if (date.day) {
       dateDispatch({ type: actionTypes.CLEAR_DAY_NULL_ERROR });
     }
+    /* Reset validity */
+    dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
   }, [date.day, dateDispatch, setErrorMessage]);
 
   /* Clamp date on change */
@@ -148,8 +157,8 @@ const DateFields = () => {
       <Grid size={{ xs: 12, sm: 4, md: 4 }}>
         <CustomNumberField
           id={YEAR_ID}
-          label={YEAR_LABEL}
-          placeholder={YEAR_PLACEHOLDER}
+          label={t('year')}
+          placeholder={`${YEAR_PLACEHOLDER} (${t('year_zero_is')})`}
           name={YEAR_NAME}
           value={date.year}
           onChange={handleInputChange}
@@ -157,10 +166,8 @@ const DateFields = () => {
           min={YEAR_MIN}
           max={YEAR_MAX}
           allowOutOfRange={false}
-          error={
-            !!dateError.year || !!dateError.general || !!dateNullError.year
-          }
-          helperText={dateError.year || dateNullError.year}
+          error={!!yearError || !!dateError.general}
+          helperText={yearError ? t(yearError) : ''}
         />
       </Grid>
       <Grid size={{ xs: 12, sm: 4, md: 4 }}>
@@ -173,7 +180,7 @@ const DateFields = () => {
       <Grid size={{ xs: 12, sm: 4, md: 4 }}>
         <CustomNumberField
           id={DAY_ID}
-          label={DAY_LABEL}
+          label={t('day')}
           placeholder={DAY_PLACEHOLDER}
           name={DAY_NAME}
           value={date.day}
@@ -184,8 +191,8 @@ const DateFields = () => {
           allowOutOfRange={false}
           disabled={!!flag}
           loading={date.year && dateFetching}
-          error={!!dateError.day || !!dateError.general || !!dateNullError.day}
-          helperText={dateError.day || dateNullError.day}
+          error={!!dayError}
+          helperText={dayError ? t(dayError) : ''}
           sx={disabledStyle}
         />
       </Grid>

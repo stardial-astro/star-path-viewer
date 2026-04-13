@@ -1,14 +1,21 @@
 // src/components/output/annotations/AnnoLegend.jsx
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTheme, styled, lighten } from '@mui/material/styles';
 import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { PT_DETAIL, LINE_DETAIL } from '@utils/constants';
+import { LINE_STYLES } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/ui/CustomDivider';
 
-const labelStyle = { fontWeight: 500, minWidth: '1.5rem' };
+/** @param {boolean} isDarkMode */
+const labelStyle = (isDarkMode) => ({
+  filter: colorFilter(isDarkMode),
+  fontWeight: 500,
+  minWidth: '1.5rem',
+});
+
 const detailStyle = { color: 'text.primary', ml: 1.5 };
 
 /**
@@ -97,8 +104,14 @@ const DetailTooltip = styled(({ className, ...props }) => (
  *                                 Only `annoItem.name` is used here.
  */
 const AnnoLegend = ({ anno }) => {
+  const { t } = useTranslation('output');
+  /** @type {Record<PtLabel | string, any>} */
+  const pointAnno = t('point_anno', { returnObjects: true });
+  /** @type {Record<LineStyle | string, any>} */
+  const lineLegend = t('line_legend', { returnObjects: true });
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
+
   return (
     <>
       <CustomDivider sx={{ mt: 1.5, mb: 1 }} />
@@ -114,11 +127,16 @@ const AnnoLegend = ({ anno }) => {
             spacing={0.5}
             ml={{ xs: '4%', sm: '26%', md: 20 }}
           >
-            {Object.entries(LINE_DETAIL).map(([key, value]) => (
-              <Box key={key} display="flex" alignItems="center" flexWrap="wrap">
-                <Line type={key} />
+            {LINE_STYLES.map((style) => (
+              <Box
+                key={style}
+                display="flex"
+                flexWrap="wrap"
+                alignItems="center"
+              >
+                <Line type={style} />
                 <Typography variant="body2" align="left" sx={detailStyle}>
-                  {value}
+                  {lineLegend[style]}
                 </Typography>
               </Box>
             ))}
@@ -132,19 +150,24 @@ const AnnoLegend = ({ anno }) => {
             ml={{ xs: '4%', sm: 2, md: 2 }}
           >
             {Object.entries(anno).map(([key, item]) => (
-              <Box key={key} display="flex" alignItems="start" flexWrap="wrap">
+              <Box
+                key={key}
+                display="flex"
+                flexWrap="wrap"
+                alignItems="flex-start"
+              >
                 <Dot isDarkMode={isDarkMode} />
                 <Typography
                   variant="body2"
                   align="left"
                   color="red"
-                  sx={{ filter: colorFilter(isDarkMode), ...labelStyle }}
+                  sx={labelStyle(isDarkMode)}
                 >
                   {item.name}
                 </Typography>
                 <Typography variant="body2" align="left" sx={detailStyle}>
-                  {PT_DETAIL[item.name].name}
-                  <DetailTooltip title={PT_DETAIL[item.name].detail}>
+                  {pointAnno[item.name].name}
+                  <DetailTooltip title={pointAnno[item.name].detail}>
                     <IconButton size="small" sx={{ p: 0, ml: 0.5 }}>
                       <InfoOutlinedIcon
                         sx={{

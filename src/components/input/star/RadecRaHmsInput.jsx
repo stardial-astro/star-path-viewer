@@ -1,5 +1,6 @@
 // src/components/input/star/RadecRaHmsInput.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
@@ -10,18 +11,16 @@ import ErrorHelperText from '@components/ui/ErrorHelperText';
 const HR_ID = 'hours-hms-input';
 const MIN_ID = 'minutes-hms-input';
 const SEC_ID = 'seconds-hms-input';
-const HR_LABEL = 'Hours';
-const MIN_LABEL = 'Minutes';
-const SEC_LABEL = 'Seconds';
-const HR_NAME = HR_LABEL.toLowerCase();
-const MIN_NAME = MIN_LABEL.toLowerCase();
-const SEC_NAME = SEC_LABEL.toLowerCase();
+const HR_NAME = 'hours';
+const MIN_NAME = 'minutes';
+const SEC_NAME = 'seconds';
 const PLACEHOLDER = '0';
 
-const RA_TEXT = 'RA';
-
 const RadecRaHmsInput = () => {
+  const { t } = useTranslation('star');
   const { starRaHms, starError, starNullError, starDispatch } = useStarInput();
+
+  const raError = starError.ra || starNullError.ra;
 
   /** @type {(event: ChangeEvent) => void} */
   const handleInputChange = useCallback(
@@ -78,22 +77,28 @@ const RadecRaHmsInput = () => {
       justifyContent="space-between"
     >
       <Grid
-        size={{ xs: 12, sm: 0.9, md: 1.2 }}
-        ml={{ xs: 0.5, sm: 0, md: 0 }}
-        mr={{ xs: 0, sm: -0.5, md: -0.5 }}
-        my={{ xs: -1, sm: 0, md: 0 }}
+        size={{ xs: 12, sm: 'auto' }}
+        sx={{
+          width: { sm: '45px', md: '30px' },
+          ml: { xs: 0.5, sm: 0, md: 0 },
+          mr: { xs: 0, sm: -0.5, md: -0.5 },
+          my: { xs: -1, sm: 0, md: 0 },
+        }}
       >
         <Typography
           variant="body1"
           textAlign={{ xs: 'left', sm: 'center', md: 'center' }}
+          sx={{
+            lineHeight: { xs: 1.5, sm: 1.5, md: 1.05 },
+          }}
         >
-          {RA_TEXT}
+          {t('ra')}
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={HR_ID}
-          label={HR_LABEL}
+          label={t('hours')}
           placeholder={PLACEHOLDER}
           name={HR_NAME}
           value={starRaHms.hours}
@@ -102,13 +107,13 @@ const RadecRaHmsInput = () => {
           min={0}
           max={23}
           allowOutOfRange={false}
-          error={!!starError.ra || !!starNullError.ra}
+          error={!!raError}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={MIN_ID}
-          label={MIN_LABEL}
+          label={t('minutes')}
           placeholder={PLACEHOLDER}
           name={MIN_NAME}
           value={starRaHms.minutes}
@@ -117,28 +122,29 @@ const RadecRaHmsInput = () => {
           min={0}
           max={59}
           allowOutOfRange={false}
-          error={!!starError.ra || !!starNullError.ra}
+          error={!!raError}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 3.7, md: 3.6 }}>
+      <Grid size={{ xs: 12, sm: 'grow' }}>
         <CustomNumberField
           id={SEC_ID}
-          label={SEC_LABEL}
-          name={SEC_NAME}
+          label={t('seconds')}
           placeholder={PLACEHOLDER}
+          name={SEC_NAME}
           value={starRaHms.seconds}
           onChange={handleInputChange}
           min={0}
           max={59.999}
           allowOutOfRange={false}
-          error={!!starError.ra || !!starNullError.ra}
+          error={!!raError}
         />
       </Grid>
-      {(starError.ra || starNullError.ra) && (
-        <Grid size={{ xs: 12, sm: 12, md: 12 }} sx={{ mt: -2 }}>
-          <ErrorHelperText variant="body2">
-            {starError.ra || starNullError.ra}
-          </ErrorHelperText>
+      {raError && (
+        <Grid
+          size={{ xs: 12, sm: 12, md: 12 }}
+          sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}
+        >
+          <ErrorHelperText variant="body2">{t(raError)}</ErrorHelperText>
         </Grid>
       )}
     </Grid>

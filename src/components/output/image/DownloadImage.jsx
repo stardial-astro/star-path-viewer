@@ -81,7 +81,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
       if (!svgElement) {
         setErrorMessage((prev) => ({
           ...prev,
-          download: 'SVG element not found',
+          download: 'errors:svg_not_found', // i18n key
         }));
         return;
       }
@@ -143,7 +143,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
         if (!canvas || !canvas.getContext) {
           setErrorMessage((prev) => ({
             ...prev,
-            download: 'Your browser does not support the HTML5 Canvas feature.',
+            download: 'errors:html5_not_supported', // i18n key
           }));
           return;
         }
@@ -154,7 +154,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
         if (!ctx) {
           setErrorMessage((prev) => ({
             ...prev,
-            download: 'Your browser does not support the 2D rendering context.',
+            download: 'errors:2d_not_supported', // i18n key
           }));
           return;
         }
@@ -176,7 +176,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
           } else {
             setErrorMessage((prev) => ({
               ...prev,
-              download: 'Unable to generate PNG.',
+              download: 'errors:image_png_error', // i18n key
             }));
           }
         });
@@ -209,7 +209,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
             console.error('Unable to export PDF:', err?.message ?? err);
             setErrorMessage((prev) => ({
               ...prev,
-              download: 'Unable to generate PDF.',
+              download: 'errors:image_pdf_error', // i18n key
             }));
           });
       }

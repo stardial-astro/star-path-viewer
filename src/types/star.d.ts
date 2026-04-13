@@ -22,6 +22,15 @@ type StarItem = HipItem<string> & {
   display_name: string;
 };
 
+interface StarNameZhObj {
+  /** The star name in Simplified Chinese. */
+  zh: string;
+  /** The star name in Traditional Chinese. */
+  zhHK: string;
+  /** The star name Pinyin. */
+  pinyin: string;
+}
+
 /** The RA/Dec in decimal degrees. */
 interface RadecObj<T = string> {
   /** The right ascension in decimal degrees (0 <= `ra` < 360). */
@@ -82,11 +91,11 @@ interface StarErrorObj {
 type StarNullErrorObj = StarErrorObj;
 
 type StarInitialState = {
-  /** The star/planet name. Defaults to ''. */
+  /** The star/planet name. Defaults to `''`. */
   starName: string;
-  /** The Chinese star name. Defaults to ''. */
-  starNameZh: string;
-  /** The star's HIP number. Defaults to ''. */
+  /** The Chinese star name. Each value defaults to `''`. */
+  starNameZh: StarNameZhObj;
+  /** The star's HIP number. Defaults to `''`. */
   starHip: string;
   /** The RA/Dec in decimal degrees. */
   starRadec: RadecObj;

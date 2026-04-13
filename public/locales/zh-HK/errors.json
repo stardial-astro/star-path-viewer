@@ -1,0 +1,64 @@
+{
+  "offline_title": "掉線了！:(",
+  "offline_description": "您的網絡連接似乎已斷開，請檢查網絡設置並重試。",
+  "dismiss": "關閉",
+  "offline_alert_title": "無網絡連接",
+  "offline_alert_description": "本網站的主要功能將無法使用",
+
+  "unknown_error": "未知錯誤，請打開控制枱查看詳情",
+
+  "delim": "",
+  "server_error": "服務器出錯，請重試或等待幾分鐘後再試。",
+  "server_timeout": "無法連接服務器，請檢查網絡是否斷開。",
+  "server_503": "服務器可能暫時宕機或過載。",
+  "server_no_response": "服務器似乎無法訪問，可能存在網絡錯誤。",
+  "check_back": "很抱歉給您帶來不便，我們正在加緊解決這個問題。請稍後再來。",
+
+  "please_enter_year": "請輸入年份",
+  "please_enter_month": "請選擇月份",
+  "please_enter_day": "請輸入日",
+  "please_search_location": "請搜索並選擇一個地址",
+  "please_enter_latitude": "請輸入緯度",
+  "please_enter_longitude": "請輸入經度",
+  "please_select_planet": "請選擇一顆行星",
+  "please_search_hip": "請搜索並選擇一個依巴谷星表編號",
+  "please_enter_ra": "請輸入赤經",
+  "please_enter_dec": "請輸入赤緯",
+
+  "have_not_select_location": "請從列表中選擇一個地址",
+  "have_not_select_star": "請從列表中選擇一個天體",
+
+  "service_unavailable": "地理編碼服務無法使用，請使用經緯度輸入 ⤴",
+  "unknown_service": "未檢測到可用的地理編碼服務 → 請刷新頁面重試",
+  "reverse_geo_error": "無法獲取當前位置的地址，請直接使用當前經緯度作為輸入 ↓",
+  "gps_error": "無法獲取當前位置，請手動輸入經緯度座標 ⤴",
+  "gps_not_supported": "當前瀏覽器不支持獲取位置，請手動輸入經緯度座標 ⤴",
+  "location_not_found": "地址未找到",
+
+  "out_of_ephemeris_range": "超出歷表範圍: -3000-01-29/+3000-05-06 (格里高利曆)",
+  "no_season_data_returned": "無法獲取二分二至日期: 無返回數據",
+  "season_error": "獲取二分二至日期時發生錯誤，請打開控制枱查看詳情",
+
+  "no_hip_data_returned": "無法獲取依巴谷星表: 無返回數據",
+  "hip_data_not_loaded": "數據未加載 → 請刷新頁面重試",
+  "hip_error": "無法加載依巴谷星表，請刷新頁面重試",
+  "hip_list_invalid": "依巴谷星表不可用，請刷新頁面重試",
+  "hip_out_of_range": "超出可用的編號範圍: [1, 118322]",
+  "hip_not_found": "未找到相應的編號",
+
+  "no_diagram_data_returned": "無法獲取結果: 無返回數據",
+  "diagram_error": "獲取結果時發生錯誤，請打開控制枱查看詳情",
+
+  "warn_star_never_rises": "對所選地點和日期，該天體未升起",
+  "warn_no_radec": "依巴谷星表中未記錄此天體的天球座標",
+  "warn_entry_hot_in_hip": "依巴谷星表中未記錄此天體",
+
+  "svg_not_found": "未找到 SVG 元素",
+  "html5_not_supported": "當前瀏覽器不支持 HTML5 Canvas 功能",
+  "2d_not_supported": "當前瀏覽器不支持二維圖形渲染",
+  "image_png_error": "無法導出為 PNG",
+  "image_pdf_error": "無法導出為 PDF",
+  "table_csv_error": "無法導出為 CSV 表格",
+  "table_json_error": "無法導出為 JSON 文件",
+  "table_xlsx_error": "無法導出為 XLSX 表格"
+}

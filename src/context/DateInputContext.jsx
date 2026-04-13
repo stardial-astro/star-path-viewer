@@ -72,11 +72,11 @@ const dateErrorReducer = (state, action) => {
 const dateNullErrorReducer = (state, action) => {
   switch (action.type) {
     case actionTypes.SET_YEAR_NULL_ERROR:
-      return { ...state, year: 'Please enter a year.' };
+      return { ...state, year: 'errors:please_enter_year' }; // i18n key
     case actionTypes.SET_MONTH_NULL_ERROR:
-      return { ...state, month: 'Please enter a month.' };
+      return { ...state, month: 'errors:please_enter_month' }; // i18n key
     case actionTypes.SET_DAY_NULL_ERROR:
-      return { ...state, day: 'Please enter a day.' };
+      return { ...state, day: 'errors:please_enter_day' }; // i18n key
     case actionTypes.CLEAR_YEAR_NULL_ERROR:
       return { ...state, year: '' };
     case actionTypes.CLEAR_MONTH_NULL_ERROR:

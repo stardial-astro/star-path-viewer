@@ -27,10 +27,10 @@ const StarInput = () => {
    * Clear errors when user starts typing
    * ------------------------------------------------------------------|
    */
-  /* [StarNameInput] Clear errors & null errors when user selects a name option */
-  /* [StarHipInput] Clear errors & null errors when user starts typing in HIP search bar */
-  /* [RadecInput] Clear errors & null errors when user starts typing RA/Dec */
-  /* [RadecInput] Clear errors & null and reset validity when toggles RA/Dec format */
+  /* [StarNameInput] Clear errors & null errors when user selects a name option; reset validity */
+  /* [StarHipInput] Clear errors & null errors when user starts typing in HIP search bar; reset validity */
+  /* [RadecInput] Clear errors & null errors when user starts typing RA/Dec; reset validity */
+  /* [RadecInput] Clear errors & null and reset validity when toggles RA/Dec format; reset validity */
 
   /* ------------------------------------------------------------------|
    * Update refs

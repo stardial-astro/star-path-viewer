@@ -6,8 +6,8 @@ import {
   STAR_INPUT_TYPES,
   RADEC_TYPES,
   EQX_SOL_NAMES,
-  PT_DETAIL,
-  LINE_DETAIL,
+  POINT_LABELS,
+  LINE_STYLES,
 } from '@utils/constants';
 
 export type GeoService = (typeof SERVICES)[keyof typeof SERVICES];
@@ -24,6 +24,6 @@ export type Flag = '' | keyof typeof EQX_SOL_NAMES;
 
 export type Cal = (typeof CALS)[keyof typeof CALS];
 
-export type PtLabel = keyof typeof PT_DETAIL;
+export type PtLabel = (typeof POINT_LABELS)[number];
 
-export type LineType = keyof typeof LINE_DETAIL;
+export type LineStyle = (typeof LINE_STYLES)[number];

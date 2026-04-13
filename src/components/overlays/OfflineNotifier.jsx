@@ -1,5 +1,6 @@
 // src/components/overlays/OfflineNotifier.jsx
 import { memo, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dialog,
   DialogTitle,
@@ -17,6 +18,7 @@ import useOnlineStatus from '@hooks/useOnlineStatus';
 import config from '@utils/config';
 
 const OfflineNotifier = () => {
+  const { i18n, t } = useTranslation('errors');
   const { setIsDelayedOnline, offlineState, setOfflineState } = useHome();
 
   /* Determine online/offline status */
@@ -52,7 +54,9 @@ const OfflineNotifier = () => {
         open={offlineState.dialogOpen}
         keepMounted={false}
         onClose={handleDialogClose}
-        closeAfterTransition={false} // Blocked aria-hidden on an element because its descendant retained focus.
+        // disableRestoreFocus={true}
+        // closeAfterTransition={true}
+        aria-hidden={!offlineState.dialogOpen} // fix "Blocked aria-hidden on an element" error
         aria-labelledby="offline-dialog-title"
         aria-describedby="offline-dialog-description"
         maxWidth="xs"
@@ -69,17 +73,19 @@ const OfflineNotifier = () => {
           }}
         >
           <WifiOffIcon color="error" sx={{ ml: -1 }} />
-          Oops, you are offline!
+          {t('offline_title')}
         </DialogTitle>
         <DialogContent sx={{ textAlign: 'center', pb: 0, px: 2 }}>
           <DialogContentText id="offline-dialog-description">
-            It looks like your internet connection has been lost. Please check
-            your network settings and try again.
+            {t('offline_description')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDialogClose} sx={{ mr: 3, mb: 0.5 }}>
-            Dismiss
+          <Button
+            onClick={handleDialogClose}
+            sx={{ mr: i18n.language.startsWith('zh') ? 1 : 3, mb: 0.5 }}
+          >
+            {t('dismiss')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -95,13 +101,13 @@ const OfflineNotifier = () => {
             left: '50%',
             transform: 'translateX(-50%)',
             minWidth: 240,
-            boxShadow: theme.shadows[4],
+            boxShadow: theme.shadows[3],
             pr: 3,
-            zIndex: theme.zIndex.snackbar,
+            zIndex: theme.zIndex.modal + 1,
           })}
         >
-          <AlertTitle>No internet connection</AlertTitle>
-          The key features of this site are unavailable.
+          <AlertTitle>{t('offline_alert_title')}</AlertTitle>
+          {t('offline_alert_description')}
         </Alert>
       </Collapse>
     </>

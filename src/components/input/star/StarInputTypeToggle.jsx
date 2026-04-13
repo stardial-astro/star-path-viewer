@@ -1,5 +1,6 @@
 // src/components/input/star/StarInputTypeToggle.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
@@ -10,11 +11,9 @@ const STAR_INPUT_TYPE_LABEL = 'Star input type';
 const NAME_LABEL = 'Input name';
 const HIP_LABEL = 'Input HIP';
 const RADEC_LABEL = 'Input radec';
-const NAME_BTN_TEXT = 'Planet';
-const HIP_BTN_TEXT = 'Star';
-const RADEC_BTN_TEXT = 'RA/Dec (J2000)';
 
 const StarInputTypeToggle = () => {
+  const { t } = useTranslation('star');
   const { starInputType, resetStarValues, starDispatch } = useStarInput();
 
   /** @type {(event: ReactMouseEvent, value: StarInputType) => void} */
@@ -40,13 +39,13 @@ const StarInputTypeToggle = () => {
       fullWidth
     >
       <ToggleButton value={STAR_INPUT_TYPES.name} aria-label={NAME_LABEL}>
-        {NAME_BTN_TEXT}
+        {t('planet')}
       </ToggleButton>
       <ToggleButton value={STAR_INPUT_TYPES.hip} aria-label={HIP_LABEL}>
-        {HIP_BTN_TEXT}
+        {t('star')}
       </ToggleButton>
       <ToggleButton value={STAR_INPUT_TYPES.radec} aria-label={RADEC_LABEL}>
-        {RADEC_BTN_TEXT}
+        {t('radec')}
       </ToggleButton>
     </ToggleButtonGroup>
   );

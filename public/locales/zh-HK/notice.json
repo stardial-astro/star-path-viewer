@@ -1,0 +1,11 @@
+{
+  "delim": "",
+  "server_update": "系統升級中",
+  "maintain": "網站正在維護",
+  "please_check_back": "請稍後再來。",
+  "we_will_be_back": "很快回來！",
+  "from": "，時間：從 {{start}} 起",
+  "until": "，時間：至 {{end}} 止",
+  "from_until": "，時間：{{start}} 至 {{end}}",
+  "full_stop": "。"
+}

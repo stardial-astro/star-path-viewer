@@ -1,0 +1,11 @@
+{
+  "delim": " ",
+  "server_update": "The server is updating",
+  "maintain": "We are currently updating our site",
+  "please_check_back": "Please check back later.",
+  "we_will_be_back": "We'll be back soon!",
+  "from": " from {{start}}",
+  "until": " until {{end}}",
+  "from_until": " from {{start}} until {{end}}",
+  "full_stop": "."
+}

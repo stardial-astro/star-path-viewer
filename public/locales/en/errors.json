@@ -1,0 +1,64 @@
+{
+  "offline_title": "Oops, you are offline! :(",
+  "offline_description": "It looks like your internet connection has been lost. Please check your network settings and try again.",
+  "dismiss": "Dismiss",
+  "offline_alert_title": "No internet connection",
+  "offline_alert_description": "The key features of this site are unavailable.",
+
+  "unknown_error": "An unknown error occurred. Check the console for details.",
+
+  "delim": " ",
+  "server_error": "Server error. Please try again or check back in a few minutes.",
+  "server_timeout": "Unable to connect to the server. Please check your network connection.",
+  "server_503": "It looks like the server is temporarily down or overloaded.",
+  "server_no_response": "It looks like the server is not accessible due to a network error.",
+  "check_back": "We apologize for the inconvenience and our team is working to resolve this as quickly as possible. Please check back later.",
+
+  "please_enter_year": "Please enter a year.",
+  "please_enter_month": "Please enter a month.",
+  "please_enter_day": "Please enter a day.",
+  "please_search_location": "Please search and select a location.",
+  "please_enter_latitude": "Please enter a latitude.",
+  "please_enter_longitude": "Please enter a longitude.",
+  "please_select_planet": "Please select a planet.",
+  "please_search_hip": "Please search and select a Hipparcos Catalogue number.",
+  "please_enter_ra": "Please enter a right ascension.",
+  "please_enter_dec": "Please enter a declination.",
+
+  "have_not_select_location": "You haven't select a location from the result list.",
+  "have_not_select_star": "You haven't select a star from the results.",
+
+  "service_unavailable": "Service not available. Please enter the coordinates manually. ⤴",
+  "unknown_service": "Unknown geocoding service → Please reload the page",
+  "reverse_geo_error": "We are having trouble fetching your current address. Please use the determined coordinates as inputs instead. ↓",
+  "gps_error": "Unable to determine the current location. Please enter the coordinates manually. ⤴",
+  "gps_not_supported": "Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴",
+  "location_not_found": "Location not found.",
+
+  "out_of_ephemeris_range": "Out of the ephemeris date range: -3000-01-29/+3000-05-06 (Gregorian)",
+  "no_season_data_returned": "Unable to fetch equinox/solstice date: no data returned.",
+  "season_error": "Something went wrong while fetching equinox/solstice date. Check the console for details.",
+
+  "no_hip_data_returned": "Unable to fetch HIP data: no data returned.",
+  "hip_data_not_loaded": "Data not loaded → Please reload the page",
+  "hip_error": "Unable to load HIP data. Please reload the page and try again.",
+  "hip_list_invalid": "HIP data unavailable. Please reload the page and try again.",
+  "hip_out_of_range": "Out of the available HIP range: [1, 118322]",
+  "hip_not_found": "No match found.",
+
+  "no_diagram_data_returned": "Unable to fetch diagram: no data returned.",
+  "diagram_error": "Something went wrong while fetching diagram. Check the console for details.",
+
+  "warn_star_never_rises": "This star never rises at this location on this date.",
+  "warn_no_radec": "No RA/Dec data available for this star in the Hipparcos Catalogue.",
+  "warn_entry_hot_in_hip": "Entry not found in the Hipparcos Catalogue.",
+
+  "svg_not_found": "SVG element not found",
+  "html5_not_supported": "Your browser does not support the HTML5 Canvas feature.",
+  "2d_not_supported": "Your browser does not support the 2D rendering context.",
+  "image_png_error": "Unable to generate PNG.",
+  "image_pdf_error": "Unable to generate PDF.",
+  "table_csv_error": "Unable to generate CSV table.",
+  "table_json_error": "Unable to generate JSON file.",
+  "table_xlsx_error": "Unable to generate XLSX table."
+}

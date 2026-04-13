@@ -1,9 +1,16 @@
 // src/test-utils.jsx
 /* eslint-disable react-refresh/only-export-components */
+import { beforeAll } from 'vitest';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AppThemeProvider } from './theme';
+import { i18nPromise } from './i18n';
+import AppThemeProvider from './AppThemeProvider';
+
+/* Wait for i18n to be ready before any test runs */
+beforeAll(async () => {
+  await i18nPromise;
+});
 
 /** A factory function that creates a fresh `QueryClient` instance per test. */
 const createQueryClient = () =>

@@ -1,5 +1,7 @@
 // src/App.jsx
 import './App.css';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Container, Box } from '@mui/material';
 import { Routes, Route } from 'react-router';
 import { HomeProvider } from '@context/HomeContext';
@@ -13,13 +15,18 @@ import CustomAppBar from '@components/navigation/CustomAppBar';
 import Footer from '@/components/layout/Footer';
 
 const App = () => {
+  const { i18n } = useTranslation();
   /* Delay resumed query on reconnect */
   useQueryOnlineManager(config.RESUME_DELAY);
+
+  /* Update the <html> or <body> tag whenever language changes */
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
   return (
     <Box className="app-container">
       {/* <Box id="back-to-top-anchor" /> */}
-
       <CustomAppBar />
 
       <Container maxWidth="md" sx={{ flex: '1 0 auto', pt: 0, pb: 0 }}>

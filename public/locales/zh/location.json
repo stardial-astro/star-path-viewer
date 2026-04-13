@@ -1,0 +1,12 @@
+{
+  "checking_geocoding_service": "正在检查可用的地理编码服务……",
+  "address": "搜索地址",
+  "search_address": "搜索地址",
+  "find_my_location": "当前位置",
+  "enter_a_place": "请输入地址",
+
+  "coordinates": "输入坐标",
+  "latitude": "纬度",
+  "longitude": "经度",
+  "enter_decimal": "请输入十进制小数"
+}

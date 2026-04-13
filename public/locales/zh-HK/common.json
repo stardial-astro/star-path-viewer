@@ -1,0 +1,39 @@
+{
+  "language": "繁體中文",
+
+  "title": "Star Path Viewer",
+  "head_title": "Star Path Viewer: 追蹤古今天體軌跡",
+  "subtitle": "追蹤古今天體軌跡",
+  "description": "古今天體軌跡追蹤應用程式",
+
+  "about": "關於",
+  "about_us": "關於我們",
+
+  "color_mode": {
+    "light": "淺色主題",
+    "dark": "深色主題",
+    "system": "系統主題"
+  },
+
+  "change_language": "切換語言",
+  "github_repo": "GitHub 倉庫",
+  "share": "分享",
+  "share_success": "分享成功！",
+  "share_error": "該瀏覽器不支持網頁分享，請手動複製網址。",
+
+  "location": "地理位置",
+  "date": "當地日期",
+  "star": "選擇天體",
+
+  "mercury": "水星",
+  "venus": "金星",
+  "mars": "火星",
+  "jupiter": "木星",
+  "saturn": "土星",
+  "uranus": "天王星",
+  "neptune": "海王星",
+
+  "draw": "繪製星軌",
+  "drawing": "計算中，請稍候片刻",
+  "back_to_top": "回到頂部"
+}

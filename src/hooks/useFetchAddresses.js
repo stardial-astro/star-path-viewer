@@ -42,18 +42,25 @@ const useFetchAddresses = (
   setErrorMessage,
 ) => {
   const { data, error, isFetching } = useQuery({
-    queryKey: [QUERY_KEY, searchTerm.toLowerCase(), geoService, refreshCount],
+    queryKey: [
+      QUERY_KEY,
+      searchTerm.trim().toLowerCase(),
+      geoService,
+      refreshCount,
+    ],
     queryFn: () =>
       fetchAddresses(
-        searchTerm.toLowerCase(),
+        searchTerm.trim().toLowerCase(),
         geoService || SERVICES.nominatim,
       ),
-    enabled: !!geoService && !skipFetch && !gpsLoading && !!searchTerm,
+    enabled: !!geoService && !skipFetch && !gpsLoading && !!searchTerm.trim(),
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (axios.isCancel(error)) return false;
+      if (axios.isCancel(error) || error.message === LOCATION_NOT_FOUND_MSG) {
+        return false;
+      }
       return failureCount < config.MAX_RETRIES;
     },
     retryDelay: (attemptIndex) =>

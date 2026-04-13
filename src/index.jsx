@@ -1,16 +1,22 @@
 // src/index.jsx
+import '@fontsource/roboto/100.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/400-italic.css';
-import { StrictMode } from 'react';
+import './index.css';
+import { StrictMode, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router } from 'react-router';
+import { BrowserRouter } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { registerSW } from 'virtual:pwa-register';
+import { i18nPromise } from './i18n';
 import queryClient from './queryClient';
-import { AppThemeProvider } from './theme';
+import AppThemeProvider from './AppThemeProvider';
 import App from './App';
+
+/* Ensure i18n is ready before mounting */
+await i18nPromise;
 
 registerSW({
   immediate: true,
@@ -29,16 +35,18 @@ if (!rootElement) throw new Error('Root element not found');
 const root = createRoot(rootElement);
 root.render(
   <StrictMode>
-    <Router basename="/">
+    <BrowserRouter basename="/">
       <QueryClientProvider client={queryClient}>
-        <AppThemeProvider>
-          <App />
-        </AppThemeProvider>
+        <Suspense fallback={null}>
+          <AppThemeProvider>
+            <App />
+          </AppThemeProvider>
+        </Suspense>
         <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-left"
         />
       </QueryClientProvider>
-    </Router>
+    </BrowserRouter>
   </StrictMode>,
 );

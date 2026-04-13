@@ -1,0 +1,21 @@
+{
+  "year": "年",
+  "month": "月",
+  "day": "日",
+  "year_zero_is": "0表示公元前1年",
+  "select_month": "選擇月份",
+
+  "gregorian": "格里高利曆",
+  "julian": "儒略曆",
+  "ephemeris_range": "歷表範圍",
+
+  "vernal_equinox": "春分",
+  "summer_solstice": "夏至",
+  "autumnal_equinox": "秋分",
+  "winter_solstice": "冬至",
+
+  "quick_entry": "快捷方式",
+  "click_to_fill": "點擊輸入{{season}}日期",
+  "click_to_deselect": "再次點擊取消選擇",
+  "checked": "已選"
+}

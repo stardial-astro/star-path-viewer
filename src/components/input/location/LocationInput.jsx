@@ -1,5 +1,6 @@
 // src/components/input/location/LocationInput.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Stack, Snackbar } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
@@ -8,11 +9,7 @@ import useDebounce from '@hooks/useDebounce';
 import useFetchTimezone from '@/hooks/useFetchTimezone';
 import useDetermineService from '@hooks/useDetermineService';
 import config from '@utils/config';
-import {
-  LOC_INPUT_TYPES,
-  LOC_UNKNOWN_ID,
-  REVERSE_GEO_ERR_MSG,
-} from '@utils/constants';
+import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
 import CustomAlert from '@components/ui/CustomAlert';
 import LocationInputTypeToggle from './LocationInputTypeToggle';
 import AddressInput from './AddressInput';
@@ -20,6 +17,7 @@ import CoordinatesInput from './CoordinatesInput';
 
 const LocationInput = () => {
   // console.log('Rendering LocationInput');
+  const { t } = useTranslation();
   const { isDelayedOnline, offlineState } = useHome();
   const {
     skipTz,
@@ -54,7 +52,7 @@ const LocationInput = () => {
    * ------------------------------------------------------------------|
    */
   /* [AddressInput] Clear errors & null errors when user starts typing in search bar; reset validity */
-  /* [CoordinatesInput] Clear errors & null errors when user starts typing coordinates */
+  /* [CoordinatesInput] Clear errors & null errors when user starts typing coordinates; reset validity */
 
   /* ------------------------------------------------------------------|
    * Update refs
@@ -118,7 +116,7 @@ const LocationInput = () => {
         })}
       >
         <CustomAlert severity="warning" onClose={handleSnackbarClose}>
-          {REVERSE_GEO_ERR_MSG}
+          {t('errors:reverse_geo_error')}
         </CustomAlert>
       </Snackbar>
     </Stack>

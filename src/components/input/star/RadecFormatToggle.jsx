@@ -1,5 +1,6 @@
 // src/components/input/star/RadecFormatToggle.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FormControl, RadioGroup, Radio } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
@@ -7,6 +8,7 @@ import { RADEC_TYPES } from '@utils/constants';
 import CustomFormControlLabel from '@components/ui/CustomFormControlLabel';
 
 const RadecFormatToggle = () => {
+  const { t } = useTranslation('star');
   const { radecFormat, starDispatch } = useStarInput();
 
   /** @type {(event: ReactChangeEvent, value: any) => void} */
@@ -34,14 +36,14 @@ const RadecFormatToggle = () => {
           name={RADEC_TYPES.dms}
           value={RADEC_TYPES.dms}
           control={<Radio />}
-          label="HMS and DMS"
+          label={t('hms_and_dms')}
           checked={radecFormat === RADEC_TYPES.dms}
         />
         <CustomFormControlLabel
           name={RADEC_TYPES.dd}
           value={RADEC_TYPES.dd}
           control={<Radio />}
-          label="Decimal Degrees"
+          label={t('decimal_degrees')}
           checked={radecFormat === RADEC_TYPES.dd}
         />
       </RadioGroup>

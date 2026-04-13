@@ -1,7 +1,6 @@
 // src/hooks/useServerStatusCheck.js
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { SERVER_ERR_PREFIX } from '@utils/constants';
 import { checkServerAccessibility } from '@utils/apiUtils';
 
 const QUERY_KEY = 'serverStatus';
@@ -47,10 +46,7 @@ const useServerStatusCheck = (isDelayedOnline, setErrorMessage) => {
   useEffect(() => {
     if (isPaused) return;
     /* Show/Clear errors */
-    let msg = error?.message ?? '';
-    if (msg.startsWith(SERVER_ERR_PREFIX)) {
-      msg = msg.substring(SERVER_ERR_PREFIX.length).trim();
-    }
+    const msg = error?.message ?? '';
     setErrorMessage((prev) => ({ ...prev, server: msg }));
   }, [isPaused, error, setErrorMessage]);
 };

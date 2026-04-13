@@ -7,14 +7,15 @@ import {
   useRef,
   useEffectEvent,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Stack,
   Autocomplete,
-  Tooltip,
   InputAdornment,
   CircularProgress,
   Typography,
+  Tooltip,
   Chip,
 } from '@mui/material';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
@@ -30,18 +31,9 @@ import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { getIsDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
-import BarIconButton from '@components/ui/BarIconButton';
-
-const INPUT_LABEL = 'Search address';
-const SELECT_WARN = "You haven't select a location from the results.";
+import CustomIconButton from '@/components/ui/CustomIconButton';
 
 const GPS_LABEL = 'GPS';
-const GPS_TOOLTIP_TITLE = 'Find My Location';
-
-const PLACEHOLDER = 'Enter a place, city, county, state, or country';
-const CHECKING_PLACEHOLDER = 'Checking geocoding service...';
-const NO_SERVICE_PLACEHOLDER =
-  'Unknown geocoding service - Please reload the page';
 
 const gpsIcon = (
   <GpsFixedIcon
@@ -58,6 +50,7 @@ const circularProgress = (
 
 const AddressInput = () => {
   // console.log('Rendering AddressInput');
+  const { t } = useTranslation('location');
   const { offlineState, errorMessage, setErrorMessage } = useHome();
   const {
     setSkipTz,
@@ -74,11 +67,16 @@ const AddressInput = () => {
   } = useLocationInput();
   const { flag } = useDateInput();
 
+  /** @param {string} key */
+  const te = (key) => (key ? t(key) : '');
+  const tAddressError = te(locationError.address || locationNullError.address);
+
   const [open, setOpen] = useState(false);
   /* For refetching */
   const [refreshCount, setRefreshCount] = useState(0);
   /* Whether to skip fetching suggestions */
   const [skipFetch, setSkipFetch] = useState(true);
+  /** Last selected trimmed display name, which is also set as the search term. */
   const lastSelectedTermRef = useRef('');
   /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
@@ -183,7 +181,7 @@ const AddressInput = () => {
           id: option.id,
         },
       });
-      lastSelectedTermRef.current = option.display_name;
+      lastSelectedTermRef.current = option.display_name.trim();
       locationDispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
@@ -240,9 +238,8 @@ const AddressInput = () => {
        * or GPS is loading (setting GPS result doesn't trigger this)
        */
       if ((reason !== 'input' && reason !== 'clear') || gpsLoading) return;
-      /* Clear suggestions and lastSelectedTermRef before fetching */
+      /* Reset lastSelectedTermRef when typing */
       lastSelectedTermRef.current = '';
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
       /* Update searchTerm only when value is non-blank */
       if (value.trim()) {
         /* Ready to fetch suggestions */
@@ -252,8 +249,9 @@ const AddressInput = () => {
           payload: value,
         });
       } else {
-        /* Clear searchTerm if value is blank */
+        /* Clear searchTerm and suggestions if value is blank */
         locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
+        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
       }
     },
     [gpsLoading, locationDispatch],
@@ -299,12 +297,13 @@ const AddressInput = () => {
 
   /** @type {() => void} */
   const handleBlur = useCallback(() => {
-    /* If fetching, searchTerm is empty, or selected, skip and close */
+    const trimmedSearchTerm = searchTerm.trim();
+    /* If fetching, searchTerm is blank, or selected, skip and close */
     if (
       gpsLoading ||
       suggestionsLoading ||
-      !searchTerm ||
-      searchTerm === lastSelectedTermRef.current ||
+      !trimmedSearchTerm ||
+      trimmedSearchTerm === lastSelectedTermRef.current ||
       /* Reverse geocoding failed (should already toggled to coordinate mode) */
       (suggestions.length > 0 && suggestions[0].display_name === LOC_UNKNOWN)
     ) {
@@ -320,7 +319,7 @@ const AddressInput = () => {
       /* If none has been selected, warn and set invalid */
       locationDispatch({
         type: actionTypes.SET_ADDRESS_ERROR,
-        payload: SELECT_WARN,
+        payload: 'errors:have_not_select_location',
       });
       locationDispatch({
         type: actionTypes.SET_LOCATION_VALID,
@@ -407,30 +406,30 @@ const AddressInput = () => {
       renderInput={(params) => (
         <CustomTextField
           {...params}
-          label={INPUT_LABEL}
+          label={t('search_address')}
           placeholder={
             !geoService && !errorMessage.location
-              ? CHECKING_PLACEHOLDER
+              ? t('checking_geocoding_service')
               : !geoService
-                ? NO_SERVICE_PLACEHOLDER
-                : PLACEHOLDER
+                ? t('errors:unknown_service')
+                : t('enter_a_place')
           }
           inputRef={inputRef}
-          error={!!locationError.address || !!locationNullError.address}
-          helperText={locationError.address || locationNullError.address}
+          error={!!tAddressError}
+          helperText={tAddressError}
           startAdornment={
             <InputAdornment position="start" sx={{ ml: 0.5, mr: -0.4 }}>
               {!suggestionsLoading && !gpsLoading ? (
-                <Tooltip title={GPS_TOOLTIP_TITLE}>
+                <Tooltip title={t('find_my_location')}>
                   <div>
-                    <BarIconButton
+                    <CustomIconButton
                       aria-label={GPS_LABEL}
                       edge="start"
                       onClick={handleGpsClick}
                       sx={{ py: 0.5 }}
                     >
                       {gpsIcon}
-                    </BarIconButton>
+                    </CustomIconButton>
                   </div>
                 </Tooltip>
               ) : (

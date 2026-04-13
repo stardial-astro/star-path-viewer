@@ -26,19 +26,22 @@ const RadecInput = () => {
     starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
   }, [starDispatch, setErrorMessage]);
 
-  /* Clear errors & null and reset validity when toggles RA/Dec format */
+  /* Clear errors & null and reset validity when toggles RA/Dec format; reset validity */
   useEffect(() => {
     clearStarError(starDispatch, setErrorMessage);
-    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
     starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
+    /* Reset validity */
+    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
   }, [radecFormat, starDispatch, setErrorMessage]);
 
-  /* Clear errors & null errors in each field when user starts typing RA/Dec */
+  /* Clear errors & null errors in each field when user starts typing RA/Dec; reset validity */
   useEffect(() => {
     clearRaError(starDispatch, setErrorMessage);
     if (starRadec.ra) {
       starDispatch({ type: actionTypes.CLEAR_STAR_RA_NULL_ERROR });
     }
+    /* Reset validity */
+    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
   }, [starRadec.ra, starDispatch, setErrorMessage]);
 
   useEffect(() => {
@@ -46,6 +49,8 @@ const RadecInput = () => {
     if (starRadec.dec) {
       starDispatch({ type: actionTypes.CLEAR_STAR_DEC_NULL_ERROR });
     }
+    /* Reset validity */
+    starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
   }, [starRadec.dec, starDispatch, setErrorMessage]);
 
   return (

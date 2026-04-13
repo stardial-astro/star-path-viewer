@@ -31,19 +31,23 @@ interface EqxSolSchema {
   year: number;
   /** The time zone ID returned from server. */
   tz: string;
+  /** The time zone name returned from server. */
+  tzname?: string;
   /** `[year, month, day, hours, minutes, seconds]` */
   results: number[];
 }
 
 /** The information returned from server when querying diagram. */
 type InfoProps = RadecObj<number | null> & {
-  /** (Unused) The standard offset from UT1 in decimal hours. */
+  /** The time zone name. */
+  tzname?: string;
+  /** The Standard Time offset in decimal hours. */
   offset: number;
   /** (Unused) The equinox/solstice flag. */
   flag: Flag;
   /** The other calendar that differs from the query (`''`: Gregorian, `'j'`: Julian). */
   cal: '' | 'j';
-  /** The star name. */
+  /** The star name in lowercase. */
   name: string | null;
   /** The star's HIP number. */
   hip: string | null;

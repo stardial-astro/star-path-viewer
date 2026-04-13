@@ -15,24 +15,29 @@ const renderWithProviders = (ui, options = {}) => {
 
 describe('Home Page', () => {
   /* Basic render test */
-  test('renders without crashing', () => {
+  test('renders without crashing', async () => {
     renderWithProviders(<Home />);
-    expect(screen.getByTestId('home-subtitle')).toHaveTextContent(
-      'Trace a star on any date between 3001 BCE and 3000 CE',
-    );
+    // expect(screen.getByTestId('home-subtitle')).toHaveTextContent('subtitle');
+    const subtitle = await screen.getByRole('heading', {
+      level: 2,
+      name: '— subtitle —',
+    });
+    expect(subtitle).toBeInTheDocument();
   });
 
   /* Test for alt text on title image */
-  test('title image has correct alt text', () => {
+  test('title image has correct alt text', async () => {
     renderWithProviders(<Home />);
-    expect(screen.getByAltText('Star Path Viewer')).toBeInTheDocument();
+    const title = await screen.getByAltText('Star Path Viewer');
+    expect(title).toBeInTheDocument();
   });
 
   /* Test key layout elements */
-  test('has main layout sections', () => {
+  test('has main layout sections', async () => {
     renderWithProviders(<Home />);
-    expect(screen.getByTestId('home-title')).toBeInTheDocument();
-    expect(screen.getByTestId('input')).toBeInTheDocument();
-    expect(screen.getByTestId('draw-btn')).toBeInTheDocument();
+    const input = await screen.getByTestId('input');
+    const drawBtn = await screen.getByTestId('draw-btn');
+    expect(input).toBeInTheDocument();
+    expect(drawBtn).toBeInTheDocument();
   });
 });

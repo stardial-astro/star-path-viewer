@@ -28,7 +28,7 @@ interface DatetimeStrObj {
   date: string;
   /** The formatted time containing hour, minute, and second components. */
   time: string;
-  /** The formatted year. */
+  /** The year in the format `'YYYY CE/BCE'`. */
   year?: string;
 }
 

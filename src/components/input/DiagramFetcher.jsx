@@ -1,5 +1,6 @@
 // src/components/input/DiagramFetcher.jsx
 import { memo, useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import {
   Box,
@@ -18,8 +19,10 @@ import * as actionTypes from '@context/locationInputActionTypes';
 import config from '@utils/config';
 import {
   STAR_INPUT_TYPES,
+  WARNING_PREFIX_SERVER,
   WARNING_PREFIX,
   SERVER_ERR_PREFIX,
+  INTERNAL_ERR_LIST,
 } from '@utils/constants';
 import {
   isLocationInputCompleteSync,
@@ -50,19 +53,13 @@ const DRAW_BTN_ID = 'draw-btn';
 
 const DRAW_BTN_LABEL = 'Draw';
 
-const LOC_TITLE = 'LOCATION';
-const DATE_TITLE = 'LOCAL DATE';
-const STAR_TITLE = 'CELESTIAL OBJECT';
-
-const DRAW_BTN_TEXT = 'Draw Star Path';
-const DRAW_WAIT_MSG = 'Preparing results. Just a few more seconds.';
-
 const circularProgress = (
   <CircularProgress color="inherit" size="1rem" sx={{ mr: 1 }} />
 );
 
 const DiagramFetcher = () => {
   // console.log('Rendering DiagramFetcher');
+  const { t } = useTranslation();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
   const {
@@ -88,7 +85,6 @@ const DiagramFetcher = () => {
     starValid,
     starDispatch,
   } = useStarInput();
-  // const [errorMessage, setErrorMessage] = useState({});
   const [loading, setLoading] = useState(false);
 
   const isDrawDisabled =
@@ -249,13 +245,20 @@ const DiagramFetcher = () => {
       setSuccess(true);
     } catch (err) {
       if (Error.isError(err)) {
-        if (err.message.startsWith(SERVER_ERR_PREFIX)) {
+        let msg = err.message;
+        if (msg.startsWith(SERVER_ERR_PREFIX)) {
           /* Show server errors */
-          const msg = err.message.substring(SERVER_ERR_PREFIX.length).trim();
           setErrorMessage((prev) => ({ ...prev, server: msg }));
         } else {
-          /* Show other errors */
-          setErrorMessage((prev) => ({ ...prev, draw: err.message }));
+          /* Trim server returned 'WARNING:' */
+          if (msg.startsWith(WARNING_PREFIX_SERVER)) {
+            msg = msg.substring(WARNING_PREFIX_SERVER.length).trim();
+          }
+          /* Parse internal server errors */
+          msg =
+            INTERNAL_ERR_LIST.find((item) => msg.includes(item.hint))?.msg ??
+            msg;
+          setErrorMessage((prev) => ({ ...prev, draw: msg }));
         }
       }
       setSuccess(false);
@@ -291,7 +294,7 @@ const DiagramFetcher = () => {
     <Stack direction="column" spacing={3}>
       <Stack id={INPUT_ID} direction="column" spacing={1.5}>
         <Stack id={LOC_ID} direction="column" spacing={1}>
-          <CustomDivider>{LOC_TITLE}</CustomDivider>
+          <CustomDivider>{t('location')}</CustomDivider>
           <LocationInput />
           {errorMessage.location && (
             <CustomAlert
@@ -299,31 +302,31 @@ const DiagramFetcher = () => {
                 setErrorMessage((prev) => ({ ...prev, location: '' }))
               }
             >
-              {errorMessage.location}
+              {t(errorMessage.location)}
             </CustomAlert>
           )}
         </Stack>
 
         <Stack id={DATE_ID} direction="column" spacing={1}>
-          <CustomDivider>{DATE_TITLE}</CustomDivider>
+          <CustomDivider>{t('date')}</CustomDivider>
           <DateInput />
           {errorMessage.date && (
             <CustomAlert
               onClose={() => setErrorMessage((prev) => ({ ...prev, date: '' }))}
             >
-              {errorMessage.date}
+              {t(errorMessage.date)}
             </CustomAlert>
           )}
         </Stack>
 
         <Stack id={STAR_ID} direction="column" spacing={1}>
-          <CustomDivider>{STAR_TITLE}</CustomDivider>
+          <CustomDivider>{t('star')}</CustomDivider>
           <StarInput />
           {errorMessage.star && (
             <CustomAlert
               onClose={() => setErrorMessage((prev) => ({ ...prev, star: '' }))}
             >
-              {errorMessage.star}
+              {t(errorMessage.star)}
             </CustomAlert>
           )}
         </Stack>
@@ -354,7 +357,7 @@ const DiagramFetcher = () => {
             </Box>
           }
         >
-          {DRAW_BTN_TEXT}
+          {t('draw')}
         </Button>
 
         {errorMessage.draw && (
@@ -364,9 +367,7 @@ const DiagramFetcher = () => {
             }
             onClose={() => setErrorMessage((prev) => ({ ...prev, draw: '' }))}
           >
-            {errorMessage.draw.startsWith(WARNING_PREFIX)
-              ? errorMessage.draw.substring(WARNING_PREFIX.length).trim()
-              : errorMessage.draw}
+            {t(errorMessage.draw)}
           </CustomAlert>
         )}
 
@@ -379,7 +380,7 @@ const DiagramFetcher = () => {
               pt: 1,
             }}
           >
-            <em>{DRAW_WAIT_MSG}</em>
+            <em>{t('drawing')}</em>
           </Typography>
         )}
       </Stack>

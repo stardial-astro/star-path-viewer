@@ -1,5 +1,6 @@
 // src/components/input/date/QuickEntryAccordion.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Box,
   Grid,
@@ -28,6 +29,7 @@ const expandIcon = <ExpandMoreIcon sx={{ color: 'primary.main' }} />;
 
 const QuickEntryAccordion = () => {
   // console.log('Rendering QuickEntryAccordion');
+  const { t } = useTranslation('date');
   const { errorMessage } = useHome();
   const { flag, flagRef, dateDispatch } = useDateInput();
 
@@ -57,14 +59,16 @@ const QuickEntryAccordion = () => {
       <AccordionSummary expandIcon={expandIcon} sx={summaryStyle}>
         <Box
           display="flex"
+          flexWrap="wrap"
           flexDirection={{ xs: 'column', sm: 'row' }}
           alignItems="flex-start"
-          flexWrap="wrap"
           sx={{ pr: 1 }}
         >
           <Box flex="1 0 auto" textAlign="left" sx={{ mr: 1 }}>
             <Typography variant="body1" sx={{ color: 'primary.main' }}>
-              {flag ? `Checked: ${EQX_SOL_NAMES[flag]}` : 'Quick Entry'}
+              {flag
+                ? `${t('checked')}: ${t(EQX_SOL_NAMES[flag])}`
+                : t('quick_entry')}
             </Typography>
           </Box>
         </Box>
@@ -76,15 +80,15 @@ const QuickEntryAccordion = () => {
               <Tooltip
                 title={
                   flag !== key
-                    ? `Click to fill in the ${value} date`
-                    : 'Click again to deselect'
+                    ? t('click_to_fill', { season: t(value) })
+                    : t('click_to_deselect')
                 }
                 enterDelay={1000}
                 enterNextDelay={500}
               >
                 <div>
                   <CustomToggleButton
-                    aria-label={value}
+                    aria-label={key}
                     color="primary"
                     size="small"
                     disabled={!!errorMessage.server}
@@ -93,7 +97,7 @@ const QuickEntryAccordion = () => {
                     onChange={handleFlagChange}
                     fullWidth
                   >
-                    {value}
+                    {t(value)}
                   </CustomToggleButton>
                 </div>
               </Tooltip>

@@ -1,5 +1,6 @@
 // src/components/ui/BackToTopButton.jsx
 import { memo, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Fab, Tooltip, Fade, Box } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { styled } from '@mui/material/styles';
@@ -86,9 +87,10 @@ const ScrollTop = ({ children }) => {
 };
 
 const BackToTopButton = () => {
+  const { t } = useTranslation();
   return (
     <ScrollTop>
-      <Tooltip title="Back to Top" placement="left">
+      <Tooltip title={t('back_to_top')} placement="left">
         {/* Wrapping in a span prevents Tooltip/Fade prop-drilling conflicts */}
         <div>
           <StyledFab

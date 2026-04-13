@@ -2,7 +2,7 @@
 export const SET_STAR_NAME = 'SET_STAR_NAME';
 export const SET_STAR_NAME_ZH = 'SET_STAR_NAME_ZH';
 export const SET_STAR_HIP = 'SET_STAR_HIP';
-/** Clears `starHip`, `starName`, and `starHipZh` */
+/** Clears `starHip`, `starName`, and `starNameZh` */
 export const CLEAR_STAR_HIP_AND_NAME = 'CLEAR_STAR_HIP_AND_NAME';
 
 export const SET_STAR_RA = 'SET_STAR_RA';

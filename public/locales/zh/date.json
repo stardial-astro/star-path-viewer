@@ -9,10 +9,10 @@
   "julian": "儒略历",
   "ephemeris_range": "历表范围",
 
-  "vernal_equinox": "春分",
-  "summer_solstice": "夏至",
-  "autumnal_equinox": "秋分",
-  "winter_solstice": "冬至",
+  "vernal_equinox": "春分日期",
+  "summer_solstice": "夏至日期",
+  "autumnal_equinox": "秋分日期",
+  "winter_solstice": "冬至日期",
 
   "quick_entry": "快捷方式",
   "click_to_fill": "点击输入{{season}}日期",

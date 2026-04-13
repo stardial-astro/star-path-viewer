@@ -90,7 +90,7 @@ const CoordinatesInput = () => {
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CustomNumberField
           id={LAT_ID}
           label={t('latitude')}
@@ -106,7 +106,7 @@ const CoordinatesInput = () => {
           helperText={latError ? t(latError) : ''}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+      <Grid size="grow">
         <CustomNumberField
           id={LNG_ID}
           label={t('longitude')}

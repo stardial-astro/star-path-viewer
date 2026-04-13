@@ -39,17 +39,20 @@ const ColorModeToggle = () => {
 
   return (
     <Tooltip
+      describeChild
       title={t(MODE_LABELS[currentMode], 'Toggle color mode')}
       placement="bottom"
+      enterTouchDelay={0}
+      leaveTouchDelay={3000}
     >
-      <div>
+      <span>
         <CustomIconButton
           aria-label={MODE_LABELS[currentMode].split('.')[1]}
           onClick={handleToggle}
         >
           {MODE_ICONS[currentMode]}
         </CustomIconButton>
-      </div>
+      </span>
     </Tooltip>
   );
 };

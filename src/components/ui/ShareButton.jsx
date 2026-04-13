@@ -42,14 +42,15 @@ const ShareButton = ({ setShareStatus }) => {
 
   return (
     <Tooltip
+      describeChild
       title={`${t('share')} ${import.meta.env.VITE_APP_NAME}`}
       placement="bottom-end"
     >
-      <div>
+      <span>
         <CustomIconButton aria-label={SHARE_LABEL} onClick={handleShare}>
           <ShareIcon fontSize="inherit" />
         </CustomIconButton>
-      </div>
+      </span>
     </Tooltip>
   );
 };

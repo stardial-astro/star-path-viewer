@@ -141,7 +141,7 @@ const RadecRaHmsInput = () => {
       </Grid>
       {raError && (
         <Grid
-          size={{ xs: 12, sm: 12, md: 12 }}
+          size={12}
           sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}
         >
           <ErrorHelperText variant="body2">{t(raError)}</ErrorHelperText>

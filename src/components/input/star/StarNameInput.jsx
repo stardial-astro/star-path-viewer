@@ -12,6 +12,8 @@ const NAME_NAME = 'planet';
 
 const NAME_ID = 'star-select';
 
+const menuStyle = { pl: 2.5, py: 0.8, minHeight: 'auto', fontSize: '1rem' };
+
 const StarNameInput = () => {
   const { t } = useTranslation('star');
   const { setErrorMessage } = useHome();
@@ -22,7 +24,12 @@ const StarNameInput = () => {
 
   const nullItem = useMemo(
     () => (
-      <MenuItem dense key="none" value="" sx={{ color: 'action.active' }}>
+      <MenuItem
+        dense
+        key="none"
+        value=""
+        sx={{ color: 'text.secondary', ...menuStyle }}
+      >
         {`— ${t('select_planet')} —`}
       </MenuItem>
     ),
@@ -32,7 +39,7 @@ const StarNameInput = () => {
   const planetItems = useMemo(
     () =>
       PLANETS.map((name) => (
-        <MenuItem dense key={name} value={name}>
+        <MenuItem dense key={name} value={name} sx={menuStyle}>
           {t('common:' + name)}
         </MenuItem>
       )),
@@ -83,7 +90,7 @@ const StarNameInput = () => {
       onChange={handleInputChange}
       error={!!nameError}
       helperText={nameError ? t(nameError) : ''}
-      sx={{ mt: 2 }}
+      sx={{ textAlign: 'left', mt: 2 }}
       slotProps={{
         htmlInput: { id: NAME_ID },
         inputLabel: { htmlFor: NAME_ID },

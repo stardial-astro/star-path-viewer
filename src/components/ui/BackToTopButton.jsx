@@ -6,6 +6,19 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { styled } from '@mui/material/styles';
 import useThrottledScroll from '@hooks/useThrottledScroll';
 
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [1, -5],
+        },
+      },
+    ],
+  },
+};
+
 const StyledFab = styled(Fab)(({ theme }) => ({
   // position: 'fixed',
   // bottom: theme.spacing(2),
@@ -90,9 +103,16 @@ const BackToTopButton = () => {
   const { t } = useTranslation();
   return (
     <ScrollTop>
-      <Tooltip title={t('back_to_top')} placement="left">
+      <Tooltip
+        describeChild
+        title={t('back_to_top')}
+        placement="left"
+        enterTouchDelay={0}
+        leaveTouchDelay={3000}
+        slotProps={tooltipSlotProps}
+      >
         {/* Wrapping in a span prevents Tooltip/Fade prop-drilling conflicts */}
-        <div>
+        <span>
           <StyledFab
             aria-label="Scroll back to top"
             // color="inherit"
@@ -100,7 +120,7 @@ const BackToTopButton = () => {
           >
             <KeyboardArrowUpIcon />
           </StyledFab>
-        </div>
+        </span>
       </Tooltip>
     </ScrollTop>
   );

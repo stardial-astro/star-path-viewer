@@ -14,7 +14,7 @@ const Globali18nStyles = () => (
         fontFamily: 'ScaledChinese',
         src: "local('PingFang SC'), local('Microsoft YaHei')",
         unicodeRange: 'U+4E00-9FFF', // targets only CJK Unified Ideographs
-        sizeAdjust: '108%',
+        sizeAdjust: '110%',
         ascentOverride: '95%',
       },
 
@@ -24,8 +24,8 @@ const Globali18nStyles = () => (
 
       '[lang^="zh"] .MuiButton-root, [lang^="zh"] .MuiToggleButton-root': {
         fontFamily: `${GLOBAL_FONTS}, 'ScaledChinese', sans-serif`,
-        letterSpacing: '0.2em',
-        textIndent: '0.25em',
+        letterSpacing: '0.15em',
+        textIndent: '0.2em',
       },
     })}
   />

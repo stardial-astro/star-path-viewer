@@ -65,6 +65,7 @@ const Dot = ({ isDarkMode }) => (
 const DetailTooltip = styled(({ className, ...props }) => (
   <Tooltip
     {...props}
+    describeChild
     placement="top-start"
     enterTouchDelay={0}
     leaveTouchDelay={20_000}

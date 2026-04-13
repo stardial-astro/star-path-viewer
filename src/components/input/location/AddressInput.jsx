@@ -419,9 +419,14 @@ const AddressInput = () => {
           helperText={tAddressError}
           startAdornment={
             <InputAdornment position="start" sx={{ ml: 0.5, mr: -0.4 }}>
-              {!suggestionsLoading && !gpsLoading ? (
-                <Tooltip title={t('find_my_location')}>
-                  <div>
+              {geoService && !suggestionsLoading && !gpsLoading ? (
+                <Tooltip
+                  describeChild
+                  title={t('find_my_location')}
+                  enterTouchDelay={0}
+                  leaveTouchDelay={3000}
+                >
+                  <span>
                     <CustomIconButton
                       aria-label={GPS_LABEL}
                       edge="start"
@@ -430,7 +435,7 @@ const AddressInput = () => {
                     >
                       {gpsIcon}
                     </CustomIconButton>
-                  </div>
+                  </span>
                 </Tooltip>
               ) : (
                 circularProgress

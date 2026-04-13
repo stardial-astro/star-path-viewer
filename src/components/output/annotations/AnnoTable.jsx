@@ -100,10 +100,17 @@ const AnnoTable = ({ anno, tzname }) => {
               <StyledHeadCell rowSpan={2}>{t('altitude')}</StyledHeadCell>
               <StyledHeadCell rowSpan={2}>{t('azimuth')}</StyledHeadCell>
               <StyledHeadCell colSpan={2}>
-                <Tooltip title={tzname || ''} placement="top" followCursor>
-                  <div>
+                <Tooltip
+                  describeChild
+                  followCursor
+                  title={tzname || ''}
+                  placement="top"
+                  enterTouchDelay={0}
+                  leaveTouchDelay={3000}
+                >
+                  <span>
                     {`${t('standard_time')} (${tzStr})`} {redAsterisk}
-                  </div>
+                  </span>
                 </Tooltip>
               </StyledHeadCell>
               <StyledHeadCell colSpan={2}>{t('lmt')}</StyledHeadCell>

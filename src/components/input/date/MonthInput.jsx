@@ -10,6 +10,8 @@ import { useDateInput } from '@context/DateInputContext';
 const MONTH_ID = 'month-select';
 const MONTH_NAME = 'month';
 
+const menuStyle = { pl: 2.5, py: 0.8, minHeight: 'auto', fontSize: '1rem' };
+
 const loadingAdornment = (
   <InputAdornment position="end" sx={{ mr: 2 }}>
     <CircularProgress size={20} sx={{ color: 'action.disabled' }} />
@@ -37,7 +39,12 @@ const MonthInput = ({ min, max, onChange }) => {
 
   const nullItem = useMemo(
     () => (
-      <MenuItem dense key="none" value="" sx={{ color: 'action.active' }}>
+      <MenuItem
+        dense
+        key="none"
+        value=""
+        sx={{ color: 'text.secondary', ...menuStyle }}
+      >
         {`— ${t('select_month')} —`}
       </MenuItem>
     ),
@@ -58,6 +65,7 @@ const MonthInput = ({ min, max, onChange }) => {
             key={name}
             value={id.toString()}
             disabled={id < min || id > max}
+            sx={menuStyle}
           >
             {name}
           </MenuItem>
@@ -81,12 +89,18 @@ const MonthInput = ({ min, max, onChange }) => {
       disabled={!!flag}
       error={!!monthError}
       helperText={monthError ? t(monthError) : ''}
+      sx={{ textAlign: 'left' }}
       slotProps={{
         htmlInput: { id: MONTH_ID },
         inputLabel: { htmlFor: MONTH_ID },
         select: {
           MenuProps: {
             disableScrollLock: true,
+            PaperProps: {
+              sx: {
+                maxHeight: { xs: 300, sm: 500 },
+              },
+            },
           },
         },
         input: {

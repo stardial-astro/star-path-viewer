@@ -39,8 +39,8 @@ const LanguageSelector = () => {
 
   return (
     <>
-      <Tooltip title={t('change_language')} placement="bottom">
-        <div>
+      <Tooltip describeChild title={t('change_language')} placement="bottom">
+        <span>
           <CustomIconButton
             onClick={handleClick}
             aria-controls={open ? 'language-menu' : undefined}
@@ -50,7 +50,7 @@ const LanguageSelector = () => {
           >
             <TranslateIcon fontSize="inherit" />
           </CustomIconButton>
-        </div>
+        </span>
       </Tooltip>
 
       <Menu

@@ -154,7 +154,7 @@ const DateFields = () => {
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <CustomNumberField
           id={YEAR_ID}
           label={t('year')}
@@ -170,14 +170,14 @@ const DateFields = () => {
           helperText={yearError ? t(yearError) : ''}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+      <Grid size={{ xs: 12, sm: 4 }}>
         <MonthInput
           min={dateParams.monthMin}
           max={dateParams.monthMax}
           onChange={handleInputChange}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 4, md: 4 }}>
+      <Grid size="grow">
         <CustomNumberField
           id={DAY_ID}
           label={t('day')}

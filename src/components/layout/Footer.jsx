@@ -35,7 +35,7 @@ const Footer = () => {
           color: 'text.disabled',
           pt: 0,
           pb: 0.8,
-          px: { xs: 2, sm: 0, md: 0 },
+          px: { xs: 2, sm: 0 },
           width: '100%',
         }}
       >

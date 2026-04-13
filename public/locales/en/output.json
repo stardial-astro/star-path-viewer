@@ -62,5 +62,5 @@
   "azimuth": "Azimuth",
   "lmt": "Local Mean Time (LMT)",
   "ut1": "Universal Time (UT1)",
-  "no_dst": "The Standard Time and offset in the current time zone for this location, without Daylight Saving Time (DST)."
+  "no_dst": "This is the Standard Time and offset in the current time zone for this location, without Daylight Saving Time (DST)."
 }

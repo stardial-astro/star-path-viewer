@@ -85,8 +85,8 @@ const Home = () => {
                 alignItems: 'center',
                 px: 1,
                 mx: 'auto',
-                mt: { xs: 3, sm: 5, md: 5 },
-                mb: { xs: 1, sm: 2, md: 2 },
+                mt: { xs: 3, sm: 5 },
+                mb: { xs: 1, sm: 2 },
                 width: '100%',
               }}
             >
@@ -129,7 +129,7 @@ const Home = () => {
                   md: 'subtitle1.fontSize',
                 },
                 mt: 0.5,
-                mb: { xs: 1, sm: 1, md: 1 },
+                mb: 1,
               }}
             >
               {`— ${t('subtitle')} —`}

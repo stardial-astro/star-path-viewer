@@ -13,6 +13,25 @@ const CAL_GROUP_NAME = 'calender-radio-group';
 const G_NAME = 'gregorian';
 const J_NAME = 'julian';
 
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, -8],
+        },
+      },
+    ],
+  },
+  tooltip: {
+    sx: {
+      whiteSpace: 'nowrap',
+      padding: '8px 12px',
+    },
+  },
+};
+
 const CalendarToggle = () => {
   // console.log('Rendering CalendarToggle');
   const { t } = useTranslation('date');
@@ -38,14 +57,17 @@ const CalendarToggle = () => {
         onChange={handleCalChange}
       >
         <Tooltip
+          describeChild
           title={
             `${t('ephemeris_range')}: ` +
             `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })}`
           }
-          enterDelay={1000}
-          enterNextDelay={500}
+          placement="top"
+          enterTouchDelay={0}
+          leaveTouchDelay={3000}
+          slotProps={tooltipSlotProps}
         >
-          <div>
+          <span>
             <CustomFormControlLabel
               name={G_NAME}
               label={t('gregorian')}
@@ -53,17 +75,20 @@ const CalendarToggle = () => {
               control={<Radio />}
               checked={cal === CALS.gregorian}
             />
-          </div>
+          </span>
         </Tooltip>
         <Tooltip
+          describeChild
           title={
             `${t('ephemeris_range')}: ` +
             `${dateToStr({ dateArr: EPH_RANGE_JULIAN.min })}/${dateToStr({ dateArr: EPH_RANGE_JULIAN.max })}`
           }
-          enterDelay={1000}
-          enterNextDelay={500}
+          placement="top"
+          enterTouchDelay={0}
+          leaveTouchDelay={3000}
+          slotProps={tooltipSlotProps}
         >
-          <div>
+          <span>
             <CustomFormControlLabel
               name={J_NAME}
               label={t('julian')}
@@ -71,7 +96,7 @@ const CalendarToggle = () => {
               control={<Radio disabled={!!flag} />}
               checked={cal === CALS.julian}
             />
-          </div>
+          </span>
         </Tooltip>
       </RadioGroup>
     </FormControl>

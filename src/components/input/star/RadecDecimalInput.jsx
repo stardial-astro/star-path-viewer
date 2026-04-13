@@ -57,7 +57,7 @@ const RadecDecimalInput = () => {
 
   return (
     <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
-      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+      <Grid size={{ xs: 12, sm: 6 }}>
         <CustomNumberField
           id={RA_ID}
           label={t('right_ascension')}
@@ -72,7 +72,7 @@ const RadecDecimalInput = () => {
           helperText={raError ? t(raError) : ''}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 6 }}>
+      <Grid size="grow">
         <CustomNumberField
           id={DEC_ID}
           label={t('declination')}

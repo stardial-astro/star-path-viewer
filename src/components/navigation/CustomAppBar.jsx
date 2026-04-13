@@ -35,7 +35,13 @@ const logoCssStyle = {
 
 /** @param {*} param */
 const AboutButton = ({ title }) => (
-  <Tooltip title={title} placement="bottom">
+  <Tooltip
+    describeChild
+    title={title}
+    placement="bottom"
+    enterTouchDelay={0}
+    leaveTouchDelay={3000}
+  >
     <RouterLink to={ABOUT_ROUT} aria-label={ABOUT_LABEL}>
       <img src={logo} alt={LOGO_ALT} style={logoCssStyle} />
     </RouterLink>
@@ -56,8 +62,8 @@ const HomeButton = () => (
 
 /** @param {*} param */
 const GithubButton = ({ title }) => (
-  <Tooltip title={title} placement="bottom">
-    <div>
+  <Tooltip describeChild title={title} placement="bottom">
+    <span>
       <CustomIconButton
         href={config.REPO_URL}
         target="_blank"
@@ -66,7 +72,7 @@ const GithubButton = ({ title }) => (
       >
         <GitHubIcon fontSize="inherit" />
       </CustomIconButton>
-    </div>
+    </span>
   </Tooltip>
 );
 
@@ -93,7 +99,7 @@ const CustomAppBar = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           mt: 0.5,
-          px: { xs: 2, sm: 0, md: 0 },
+          px: { xs: 2, sm: 0 },
         })}
       >
         {/* Left Side */}
@@ -118,7 +124,7 @@ const CustomAppBar = () => {
         <Box
           display="flex"
           alignItems="center"
-          gap={{ xs: 0, sm: 0.5, md: 0.5 }}
+          gap={{ xs: 0, sm: 0.5 }}
           sx={{ mr: -0.5 }}
         >
           <ColorModeToggle />

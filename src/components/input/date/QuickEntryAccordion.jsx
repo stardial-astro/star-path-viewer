@@ -78,15 +78,18 @@ const QuickEntryAccordion = () => {
           {Object.entries(EQX_SOL_NAMES).map(([key, value]) => (
             <Grid size={{ xs: 12, sm: 6, md: 3 }} key={key}>
               <Tooltip
+                describeChild
                 title={
                   flag !== key
                     ? t('click_to_fill', { season: t(value) })
                     : t('click_to_deselect')
                 }
-                enterDelay={1000}
-                enterNextDelay={500}
+                enterDelay={500}
+                enterNextDelay={100}
+                enterTouchDelay={0}
+                leaveTouchDelay={3000}
               >
-                <div>
+                <span>
                   <CustomToggleButton
                     aria-label={key}
                     color="primary"
@@ -99,7 +102,7 @@ const QuickEntryAccordion = () => {
                   >
                     {t(value)}
                   </CustomToggleButton>
-                </div>
+                </span>
               </Tooltip>
             </Grid>
           ))}

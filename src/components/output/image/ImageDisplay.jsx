@@ -1,6 +1,7 @@
 // src/components/output/image/ImageDisplay.jsx
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
+import parse from 'html-react-parser';
 import { useTheme } from '@mui/material/styles';
 import { Box, Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
@@ -24,9 +25,9 @@ const ImageDisplay = () => {
             height: 'auto',
           },
         }}
-        /* eslint-disable @eslint-react/dom-no-dangerously-set-innerhtml */
-        dangerouslySetInnerHTML={{ __html: svgData }}
-      />
+      >
+        {parse(svgData)}
+      </Box>
 
       <Stack id="download-img" direction="column" spacing={1} sx={{ mt: -1 }}>
         <DownloadImage filenameBase={`sp_${diagramId}`} dpi={300} />

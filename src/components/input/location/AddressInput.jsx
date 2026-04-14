@@ -61,6 +61,7 @@ const AddressInput = () => {
     locationError,
     locationNullError,
     geoService,
+    setGeoService,
     locationInputTypeRef,
     resetLocationValues,
     locationDispatch,
@@ -140,6 +141,7 @@ const AddressInput = () => {
     skipFetch,
     gpsLoading,
     locationDispatch,
+    setGeoService,
     setErrorMessage,
   );
 

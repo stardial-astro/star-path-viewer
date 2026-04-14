@@ -8,7 +8,6 @@ import { useHome } from '@context/HomeContext';
 import { LocationInputProvider } from '@context/LocationInputContext';
 import { DateInputProvider } from '@context/DateInputContext';
 import { StarInputProvider } from '@context/StarInputContext';
-import useServerStatusCheck from '@hooks/useServerStatusCheck';
 import config from '@utils/config';
 import { enableDevMode, getIsDevMode } from '@utils/devMode';
 import DiagramFetcher from '@components/input/DiagramFetcher';
@@ -41,14 +40,13 @@ const Home = () => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
-  const { isDelayedOnline, success, svgData, anno, setErrorMessage } =
-    useHome();
+  const { success, svgData, anno } = useHome();
 
   /* ------------------------------------------------------------------|
    * Initialize
    * ------------------------------------------------------------------|
    */
-  useServerStatusCheck(isDelayedOnline, setErrorMessage);
+  /* [DiagramFetcher] Call useServerStatusCheck */
 
   /* ------------------------------------------------------------------|
    * Handlers

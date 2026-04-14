@@ -16,6 +16,7 @@ import { useLocationInput } from '@context/LocationInputContext';
 import { useDateInput } from '@context/DateInputContext';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
+import useServerStatusCheck from '@hooks/useServerStatusCheck';
 import config from '@utils/config';
 import {
   STAR_INPUT_TYPES,
@@ -44,6 +45,7 @@ const QUERY_KEY = 'diagram';
 const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
 /** 1 hour */
 const GC_MS = 60 * 60_000;
+const MAX_RETRIES = 1;
 
 const INPUT_ID = 'input-fields';
 const LOC_ID = 'location';
@@ -63,6 +65,7 @@ const DiagramFetcher = () => {
   const theme = useTheme();
   const isDarkMode = theme.palette.mode === 'dark';
   const {
+    isDelayedOnline,
     offlineState,
     setSuccess,
     errorMessage,
@@ -97,6 +100,12 @@ const DiagramFetcher = () => {
     !!errorMessage.date ||
     !!errorMessage.star ||
     !!errorMessage.draw;
+
+  /* ------------------------------------------------------------------|
+   * Initialize
+   * ------------------------------------------------------------------|
+   */
+  useServerStatusCheck(isDelayedOnline, setErrorMessage);
 
   /* ------------------------------------------------------------------|
    * Clear errors when user starts typing
@@ -134,7 +143,7 @@ const DiagramFetcher = () => {
    * Uses TanStack Query:
    * - Automatic caching
    * - Prevents multiple identical requests
-   * - Retries on error (delay with exponential backoff)
+   * - Retries on error
    */
   const handleDraw = useCallback(async () => {
     /* Skip fetching if offline or loading */
@@ -215,7 +224,7 @@ const DiagramFetcher = () => {
         gcTime: GC_MS,
         retry: (failureCount, _error) => {
           if (controller.signal.aborted) return false;
-          return failureCount < config.MAX_RETRIES - 1;
+          return failureCount < MAX_RETRIES;
         },
         retryDelay: config.RETRY_DELAY,
       });

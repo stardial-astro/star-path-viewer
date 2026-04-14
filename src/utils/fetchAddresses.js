@@ -4,7 +4,7 @@ import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
 import { getIsDevMode } from './devMode';
 
-const NOMINATIM_TIMEOUT = 5_000;
+const NOMINATIM_TIMEOUT = 3_000;
 const BAIDU_TIMEOUT = 5_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;

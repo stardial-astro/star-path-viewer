@@ -71,7 +71,11 @@ interface LocationInitialState {
 type LocationContextType = LocationInitialState & {
   /** The geocoding service name. Initialized by `getInitialService`. */
   geoService: GeoService | null;
-  /** Sets `geoService` and stores in `localStorage`. */
+  /**
+   * Sets `geoService` and stores in `localStorage`.
+   * - If `noLocal` is `true`, do not save to `localStorage` and clear existing value
+   *   (defaults to `false`)
+   */
   setGeoService: (service: GeoService | null, noLocal?: boolean) => void;
   /** If `true`, skips fetching tz using API. Defaults to `false`. */
   skipTz: boolean;

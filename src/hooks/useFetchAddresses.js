@@ -4,8 +4,13 @@ import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from '@utils/config';
-import { SERVICES, LOCATION_NOT_FOUND_MSG } from '@utils/constants';
+import {
+  SERVICES,
+  STORAGE_KEYS,
+  LOCATION_NOT_FOUND_MSG,
+} from '@utils/constants';
 import fetchAddresses from '@/utils/fetchAddresses';
+import { getIsDevMode } from '@utils/devMode';
 
 const QUERY_KEY = 'address';
 
@@ -13,6 +18,7 @@ const QUERY_KEY = 'address';
 const STALE_MS = 10 * 60_000;
 /** 10 minutes */
 const GC_MS = 10 * 60_000;
+const MAX_RETRIES = 1;
 
 /**
  * Calls `fetchAddresses` to fetch address suggestions.
@@ -22,7 +28,7 @@ const GC_MS = 10 * 60_000;
  * - Pauses while offline and resume/refetch when connectivity returns
  * - Automatic caching
  * - Prevents multiple identical requests
- * - Retries on error (delay with exponential backoff)
+ * - Retries on error
  * - Syncs `suggestionsLoading`
  * @param {string} searchTerm
  * @param {GeoService | null} geoService
@@ -30,6 +36,7 @@ const GC_MS = 10 * 60_000;
  * @param {boolean} skipFetch
  * @param {boolean} gpsLoading
  * @param {ReactDispatch} dispatch
+ * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
  * @param {ReactSetState<ErrorObj>} setErrorMessage
  */
 const useFetchAddresses = (
@@ -39,13 +46,11 @@ const useFetchAddresses = (
   skipFetch,
   gpsLoading,
   dispatch,
+  setGeoService,
   setErrorMessage,
 ) => {
   const isEnabled =
-    !!geoService &&
-    !skipFetch &&
-    !gpsLoading &&
-    searchTerm.trim().length >= 2;
+    !!geoService && !skipFetch && !gpsLoading && searchTerm.trim().length > 1;
   const { data, error, isFetching } = useQuery({
     queryKey: [
       QUERY_KEY,
@@ -66,10 +71,9 @@ const useFetchAddresses = (
       if (axios.isCancel(error) || error.message === LOCATION_NOT_FOUND_MSG) {
         return false;
       }
-      return failureCount < config.MAX_RETRIES;
+      return failureCount < MAX_RETRIES;
     },
-    retryDelay: (attemptIndex) =>
-      Math.min(config.RETRY_DELAY * 2 ** attemptIndex, config.RETRY_DELAY_MAX),
+    retryDelay: config.RETRY_DELAY,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -93,6 +97,11 @@ const useFetchAddresses = (
           payload: error.message,
         });
       } else {
+        /* If other errors occur, clear the service state and existing value
+         * in local storage to trigger the service accessibility testing
+         */
+        setGeoService(null, true);
+        getIsDevMode() && console.debug('Cleared:', STORAGE_KEYS.service);
         setErrorMessage((prev) => ({ ...prev, location: error.message }));
       }
       dispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
@@ -101,7 +110,7 @@ const useFetchAddresses = (
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }
-  }, [data, error, dispatch, setErrorMessage]);
+  }, [data, error, dispatch, setGeoService, setErrorMessage]);
 };
 
 export default useFetchAddresses;

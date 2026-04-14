@@ -40,7 +40,7 @@ const useDetermineService = (
   setGeoService,
 ) => {
   const isEnabled = (!geoService || forceInCn) && isDelayedOnline && !isTest;
-  const { data: isAccessible, isPaused } = useQuery({
+  const { data, isPaused } = useQuery({
     queryKey: [QUERY_KEY, forceInCn, isDelayedOnline],
     queryFn: () => checkNominatimAccessibility(forceInCn),
     enabled: isEnabled,
@@ -57,7 +57,7 @@ const useDetermineService = (
   /* If online -> offline, clear the saved service */
   useEffect(() => {
     if (offlineState.dialogOpen) {
-      /* Clear from local storage */
+      /* Clear the stored service from local storage */
       localStorage.removeItem(STORAGE_KEYS.service);
       getIsDevMode() && console.debug('Cleared:', STORAGE_KEYS.service);
       /* Clear all */
@@ -68,13 +68,20 @@ const useDetermineService = (
 
   useEffect(() => {
     if (isPaused) return;
-    /* Set the geocoding service */
+    /* Determine the geocoding service (fallback to Nominatim) */
     const service =
-      isAccessible !== false ? SERVICES.nominatim : SERVICES.baidu;
+      data?.isAccessible !== false ? SERVICES.nominatim : SERVICES.baidu;
+    /* If not in CN but Nominatim is not accessible (e.g., via proxy)
+     * do not save to local storage and clear existing value
+     */
+    const noLocal = data !== null && !data.isAccessible && !data.isInCn;
     /* Update state and ref */
-    setGeoService(service, forceInCn);
-    isAccessible !== null && console.debug('🌎 [Geocoding service]', service);
-  }, [isPaused, isAccessible, setGeoService]);
+    setGeoService(service, noLocal);
+    getIsDevMode() &&
+      noLocal &&
+      console.debug('Cleared:', STORAGE_KEYS.service);
+    data !== null && console.debug('🌎 [Geocoding service]', service);
+  }, [isPaused, data, setGeoService]);
 };
 
 export default useDetermineService;

@@ -11,7 +11,7 @@ import {
 import { getIsDevMode } from './devMode';
 
 const SERVER_PROBE_TIMEOUT = config.SERVER_TIMEOUT;
-const SERVICE_PROBE_TIMEOUT = 5_000;
+const SERVICE_PROBE_TIMEOUT = 3_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -98,17 +98,21 @@ const checkServerAccessibility = async () => {
 
 /**
  * Checks Nominatim accessibility by sending HTTP HEAD request.
- * - If already in CN or `forceInCn` is `true`, skips prob and returns `false`
+ * - If already in CN or `forceInCn` is `true`, skips prob and set `isAccessible` to `false`
  * @param {boolean} forceInCn
- * @returns {Promise<boolean>} `true` if the service is accessible.
+ * @returns {Promise<{isAccessible: boolean, isInCn: boolean}>}
  */
 const checkNominatimAccessibility = async (forceInCn) => {
   const isDevMode = getIsDevMode();
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const isInCn = CN_TIMEZONES.has(tz) || forceInCn;
+  const isInCn = CN_TIMEZONES.has(tz);
   if (isInCn) {
-    isDevMode && console.debug(`🇨🇳 You are currently in China (${tz}).`);
-    return false;
+    isDevMode && console.debug(`🇨🇳 You are currently in China (${tz})`);
+    return { isAccessible: false, isInCn };
+  }
+  if (forceInCn) {
+    isDevMode && console.debug(`🇨🇳 Suppose you are in China (actual: ${tz})`);
+    return { isAccessible: false, isInCn };
   }
   try {
     isDevMode && console.debug('> Checking if Nominatim is accessible...');
@@ -121,30 +125,30 @@ const checkNominatimAccessibility = async (forceInCn) => {
     isDevMode &&
       console.debug(`⏳ (Nominatim) Request took ${Date.now() - start}ms`);
     isDevMode && console.debug('✅ Nominatim is accessible.');
-    return true;
+    return { isAccessible: true, isInCn };
   } catch (err) {
     if (axios.isCancel(err)) {
       isDevMode && console.debug('Nominatim probe cancelled.');
-      return true;
+      return { isAccessible: true, isInCn };
     }
     if (axios.isAxiosError(err) && err.response) {
       const { status } = err.response;
       if (status === 405) {
         isDevMode &&
           console.debug('⚠️ HEAD not allowed, but Nominatim is reachable.');
-        return true;
+        return { isAccessible: true, isInCn };
       }
       console.warn(`HTTP ${status}: ${err.message ?? err}`);
       isDevMode &&
         console.debug('⚠️ Using Nominatim but the connection is bad.');
-      return true;
+      return { isAccessible: true, isInCn };
     }
     isDevMode &&
       console.debug(
         '🔴 Nominatim unaccessible:',
         Error.isError(err) ? err.message : err,
       );
-    return false;
+    return { isAccessible: false, isInCn };
   }
 };
 

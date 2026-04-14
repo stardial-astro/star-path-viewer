@@ -40,7 +40,7 @@ const AboutButton = ({ title }) => (
     title={title}
     placement="bottom"
     enterTouchDelay={0}
-    leaveTouchDelay={3000}
+    leaveTouchDelay={2000}
   >
     <RouterLink to={ABOUT_ROUT} aria-label={ABOUT_LABEL}>
       <img src={logo} alt={LOGO_ALT} style={logoCssStyle} />

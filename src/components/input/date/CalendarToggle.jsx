@@ -64,7 +64,7 @@ const CalendarToggle = () => {
           }
           placement="top"
           enterTouchDelay={0}
-          leaveTouchDelay={3000}
+          leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
         >
           <span>
@@ -85,7 +85,7 @@ const CalendarToggle = () => {
           }
           placement="top"
           enterTouchDelay={0}
-          leaveTouchDelay={3000}
+          leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
         >
           <span>

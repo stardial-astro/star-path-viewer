@@ -14,8 +14,8 @@
   "autumnal_equinox": "秋分日期",
   "winter_solstice": "冬至日期",
 
-  "quick_entry": "快捷方式",
-  "click_to_fill": "点击输入{{season}}日期",
+  "quick_entry": "快捷输入",
+  "click_to_fill": "点击输入{{season}}",
   "click_to_deselect": "再次点击取消选择",
   "checked": "已选"
 }

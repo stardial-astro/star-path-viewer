@@ -424,7 +424,7 @@ const AddressInput = () => {
                   describeChild
                   title={t('find_my_location')}
                   enterTouchDelay={0}
-                  leaveTouchDelay={3000}
+                  leaveTouchDelay={2000}
                 >
                   <span>
                     <CustomIconButton

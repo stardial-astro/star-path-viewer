@@ -87,7 +87,7 @@ const QuickEntryAccordion = () => {
                 enterDelay={500}
                 enterNextDelay={100}
                 enterTouchDelay={0}
-                leaveTouchDelay={3000}
+                leaveTouchDelay={2000}
               >
                 <span>
                   <CustomToggleButton

@@ -28,7 +28,7 @@ const LocationInput = () => {
     locationDispatch,
   } = useLocationInput();
 
-  const debouncedLocation = useDebounce(location, config.TYPING_DELAY / 2);
+  const debouncedLocation = useDebounce(location, config.TYPING_DELAY);
 
   /* ------------------------------------------------------------------|
    * Initialize

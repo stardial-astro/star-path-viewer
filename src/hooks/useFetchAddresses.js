@@ -16,7 +16,7 @@ const GC_MS = 10 * 60_000;
 
 /**
  * Calls `fetchAddresses` to fetch address suggestions.
- * - Skips searching if force skipping, GPS is loading, or the input is cleared
+ * - Skips searching if force skipping, GPS is loading, or the input is too short
  * - Updates `suggestions` on status change
  * Uses TanStack Query:
  * - Pauses while offline and resume/refetch when connectivity returns
@@ -41,6 +41,11 @@ const useFetchAddresses = (
   dispatch,
   setErrorMessage,
 ) => {
+  const isEnabled =
+    !!geoService &&
+    !skipFetch &&
+    !gpsLoading &&
+    searchTerm.trim().length >= 2;
   const { data, error, isFetching } = useQuery({
     queryKey: [
       QUERY_KEY,
@@ -53,7 +58,7 @@ const useFetchAddresses = (
         searchTerm.trim().toLowerCase(),
         geoService || SERVICES.nominatim,
       ),
-    enabled: !!geoService && !skipFetch && !gpsLoading && !!searchTerm.trim(),
+    enabled: isEnabled,
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,

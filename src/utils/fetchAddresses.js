@@ -10,6 +10,8 @@ const BAIDU_TIMEOUT = 5_000;
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
 
+// let activeRequests = 0;
+
 /**
  * @param {string} str
  * @param {number} limit
@@ -95,6 +97,13 @@ const fetchAddressesWithBaidu = async (query) => {
 const fetchAddresses = async (query, service) => {
   const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching address suggestions...');
+
+  // activeRequests++;
+  // isDevMode &&
+  //   console.debug(
+  //     `[Search(${service})] concurrency: ${activeRequests}, query: ${query}`,
+  //   );
+
   /** @type {AddressItem[]} */
   let res;
   try {
@@ -116,6 +125,11 @@ const fetchAddresses = async (query, service) => {
     );
     throw new Error(SERVICE_ERR_MSG, { cause: err });
   }
+  // finally {
+  //   activeRequests--;
+  //   isDevMode &&
+  //     console.debug(`[Search(${service})] concurrency: ${activeRequests}, finished`);
+  // }
 };
 
 export default fetchAddresses;

@@ -84,7 +84,7 @@ const AddressInput = () => {
   /* Increase delay when chars < 3 */
   const dynamicDelay =
     config.TYPING_DELAY +
-    (searchTerm.length > 0 && searchTerm.length < 3 ? 300 : 0);
+    (searchTerm.length > 0 && searchTerm.length < 3 ? 600 : 300);
   const debouncedSearchTerm = useDebounce(searchTerm, dynamicDelay);
 
   const onInit = useEffectEvent(() => {

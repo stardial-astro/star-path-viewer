@@ -8,7 +8,7 @@ import * as actionTypes from './dateInputActionTypes';
 const DateInputContext = createContext(null);
 
 /** @type {DateInitialState} */
-const initialState = {
+export const dateInitialState = {
   date: { year: '', month: '', day: '' },
   flag: '',
   cal: CALS.gregorian,
@@ -154,7 +154,10 @@ const dateInputReducer = (state, action) => {
  * @param {React.ReactNode} props.children
  */
 export const DateInputProvider = ({ children }) => {
-  const [dateState, dateDispatch] = useReducer(dateInputReducer, initialState);
+  const [dateState, dateDispatch] = useReducer(
+    dateInputReducer,
+    dateInitialState,
+  );
   /** @type {ReactRef<Flag>} */
   const flagRef = useRef('');
 

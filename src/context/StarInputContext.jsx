@@ -29,7 +29,7 @@ const initialHipList = getInitialHipList();
 const StarInputContext = createContext(null);
 
 /** @type {StarInitialState} */
-const initialState = {
+export const starInitialState = {
   starName: '',
   starNameZh: { zh: '', zhHK: '', pinyin: '' },
   starHip: '',
@@ -269,7 +269,10 @@ const starInputReducer = (state, action) => {
  * @param {React.ReactNode} props.children
  */
 export const StarInputProvider = ({ children }) => {
-  const [starState, starDispatch] = useReducer(starInputReducer, initialState);
+  const [starState, starDispatch] = useReducer(
+    starInputReducer,
+    starInitialState,
+  );
   const [hipList, setHipList] = useState(initialHipList);
 
   /**

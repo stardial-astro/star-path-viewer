@@ -62,11 +62,11 @@ const LanguageSelector = () => {
         onClose={() => handleClose()}
         anchorOrigin={{
           vertical: 'bottom',
-          horizontal: 'right',
+          horizontal: 'center',
         }}
         transformOrigin={{
           vertical: 'top',
-          horizontal: 'right',
+          horizontal: 'center',
         }}
       >
         {LANGS.map((lang) => (
@@ -77,7 +77,7 @@ const LanguageSelector = () => {
               lang.code === i18n.resolvedLanguage || lang.code === i18n.language
             }
             onClick={() => handleClose(lang.code)}
-            sx={{ minHeight: 'auto', py: 0.5 }}
+            sx={{ minHeight: 'auto', py: 0.8 }}
           >
             <Typography variant="body2">{lang.label}</Typography>
           </MenuItem>

@@ -39,6 +39,17 @@ interface RadecObj<T = string> {
   dec: T;
 }
 
+type StarParamObj = {
+  /** The planet name in lowercase. */
+  name?: string;
+  /** The star's HIP number. */
+  hip?: string;
+  /** The right ascension in decimal degrees (0 <= `ra` < 360). */
+  ra?: string;
+  /** The declination in decimal degrees (-90 <= `dec` <= 90). */
+  dec?: string;
+};
+
 /** The right ascension in HMS (0 <= `ra` < 360). */
 interface RaHmsObj {
   /** The hours component (>= 0). */

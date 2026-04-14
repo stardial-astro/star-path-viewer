@@ -22,6 +22,13 @@ interface LocationObj<T = string> {
   tz: string;
 }
 
+type LocationCoordObj = Omit<LocationObj, 'id' | 'tz'>;
+
+type LocationParamObj = LocationCoordObj & {
+  /** The time zone ID. */
+  tz?: string;
+};
+
 interface AddressItem {
   /** Latitude (-90 <= `lat` <= 90). */
   lat: string;

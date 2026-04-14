@@ -34,7 +34,7 @@ const initialService = getInitialService();
 const LocationInputContext = createContext(null);
 
 /** @type {LocationInitialState} */
-const initialState = {
+export const locationInitialState = {
   location: { lat: '', lng: '', id: '', tz: '' },
   locationInputType: LOC_INPUT_TYPES.addr,
   searchTerm: '',
@@ -198,7 +198,7 @@ const locationInputReducer = (state, action) => {
 export const LocationInputProvider = ({ children }) => {
   const [locationState, locationDispatch] = useReducer(
     locationInputReducer,
-    initialState,
+    locationInitialState,
   );
   const [geoService, setGeoService] = useState(initialService);
   const [skipTz, setSkipTz] = useState(false);

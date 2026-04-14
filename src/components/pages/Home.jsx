@@ -143,7 +143,7 @@ const Home = () => {
               <DiagramFetcher />
             </Box>
 
-            {success && (
+            {success && svgData && (
               <Box
                 data-testid="output"
                 sx={{ width: '100%', justifyContent: 'center' }}
@@ -152,11 +152,9 @@ const Home = () => {
                   <InfoDisplay />
                 </Box>
 
-                {svgData && (
-                  <Box id="diagram">
-                    <ImageDisplay />
-                  </Box>
-                )}
+                <Box id="diagram">
+                  <ImageDisplay />
+                </Box>
 
                 {anno.length > 0 && (
                   <Box id="annotations" sx={{ mt: 2 }}>

@@ -14,6 +14,13 @@ interface DateObj<T = string> {
   day: T;
 }
 
+type DateParamObj = DateObj & {
+  /** The calendar (`''`: Gregorian, `'j'`: Julian). */
+  cal: Cal;
+  /** (Unused) The equinox/solstice flag. */
+  flag: Flag;
+};
+
 type DatetimeObj = DateObj<number> & {
   /** Hours in 24-hour format. */
   hour?: number;

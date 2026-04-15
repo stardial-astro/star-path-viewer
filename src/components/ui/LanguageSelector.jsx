@@ -3,6 +3,7 @@ import { useTransition, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import { Translate as TranslateIcon } from '@mui/icons-material';
+import isMobile from '@utils/isMobile';
 import CustomIconButton from './CustomIconButton';
 
 /** @type {LangObj[]} */
@@ -39,7 +40,12 @@ const LanguageSelector = () => {
 
   return (
     <>
-      <Tooltip describeChild title={t('change_language')} placement="bottom">
+      <Tooltip
+        describeChild
+        title={t('change_language')}
+        placement="bottom"
+        disableHoverListener={isMobile}
+      >
         <span>
           <CustomIconButton
             onClick={handleClick}

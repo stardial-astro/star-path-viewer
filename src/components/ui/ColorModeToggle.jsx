@@ -6,6 +6,7 @@ import { useColorScheme } from '@mui/material/styles';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import BrightnessMediumOutlinedIcon from '@mui/icons-material/BrightnessMediumOutlined';
+import isMobile from '@utils/isMobile';
 import CustomIconButton from './CustomIconButton';
 
 /** @type {ColorMode[]} */
@@ -42,6 +43,7 @@ const ColorModeToggle = () => {
       describeChild
       title={t(MODE_LABELS[currentMode], 'Toggle color mode')}
       placement="bottom"
+      disableHoverListener={isMobile}
       enterTouchDelay={0}
       leaveTouchDelay={2000}
     >

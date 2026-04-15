@@ -6,6 +6,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { Link as RouterLink, useLocation } from 'react-router';
+import isMobile from '@utils/isMobile';
 import config from '@utils/config';
 import logo from '@assets/logo-text.svg';
 import CustomIconButton from '@/components/ui/CustomIconButton';
@@ -39,6 +40,7 @@ const AboutButton = ({ title }) => (
     describeChild
     title={title}
     placement="bottom"
+    disableHoverListener={isMobile}
     enterTouchDelay={0}
     leaveTouchDelay={2000}
   >
@@ -62,7 +64,12 @@ const HomeButton = () => (
 
 /** @param {*} param */
 const GithubButton = ({ title }) => (
-  <Tooltip describeChild title={title} placement="bottom">
+  <Tooltip
+    describeChild
+    title={title}
+    placement="bottom"
+    disableHoverListener={isMobile}
+  >
     <span>
       <CustomIconButton
         href={config.REPO_URL}

@@ -5,6 +5,7 @@ import { useTheme, styled, lighten } from '@mui/material/styles';
 import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import isMobile from '@utils/isMobile';
 import { LINE_STYLES } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/ui/CustomDivider';
@@ -67,6 +68,7 @@ const DetailTooltip = styled(({ className, ...props }) => (
     {...props}
     describeChild
     placement="top-start"
+    disableHoverListener={isMobile}
     enterTouchDelay={0}
     leaveTouchDelay={20_000}
     slotProps={{

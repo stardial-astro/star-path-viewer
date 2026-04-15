@@ -13,6 +13,7 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material';
+import isMobile from '@utils/isMobile';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
@@ -105,6 +106,7 @@ const AnnoTable = ({ anno, tzname }) => {
                   followCursor
                   title={tzname || ''}
                   placement="top"
+                  disableHoverListener={isMobile}
                   enterTouchDelay={0}
                   leaveTouchDelay={3000}
                 >

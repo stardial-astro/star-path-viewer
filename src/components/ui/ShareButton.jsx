@@ -2,6 +2,7 @@
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
+import isMobile from '@utils/isMobile';
 import { getIsDevMode } from '@utils/devMode';
 import CustomIconButton from './CustomIconButton';
 
@@ -45,6 +46,7 @@ const ShareButton = ({ setShareStatus }) => {
       describeChild
       title={`${t('share')} ${t('title')}`}
       placement="bottom-end"
+      disableHoverListener={isMobile}
     >
       <span>
         <CustomIconButton aria-label={SHARE_LABEL} onClick={handleShare}>

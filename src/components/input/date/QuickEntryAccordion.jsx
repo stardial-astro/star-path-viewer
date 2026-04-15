@@ -84,6 +84,7 @@ const QuickEntryAccordion = () => {
                     ? t('click_to_fill', { season: t(value) })
                     : t('click_to_deselect')
                 }
+                disableHoverListener={isMobile}
                 enterDelay={500}
                 enterNextDelay={100}
                 enterTouchDelay={0}

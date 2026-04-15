@@ -39,11 +39,11 @@ const themeOptions = {
         disableInjectingGlobalStyles: true,
       },
     },
-    MuiButtonBase: {
-      defaultProps: {
-        disableRipple: true,
-      },
-    },
+    // MuiButtonBase: {
+    //   defaultProps: {
+    //     disableRipple: true,
+    //   },
+    // },
     MuiInputLabel: {
       styleOverrides: {
         root: {

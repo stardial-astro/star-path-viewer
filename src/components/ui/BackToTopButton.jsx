@@ -5,6 +5,7 @@ import { Fab, Tooltip, Fade, Box } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { styled } from '@mui/material/styles';
 import useThrottledScroll from '@hooks/useThrottledScroll';
+import isMobile from '@utils/isMobile';
 
 const tooltipSlotProps = {
   popper: {
@@ -107,6 +108,7 @@ const BackToTopButton = () => {
         describeChild
         title={t('back_to_top')}
         placement="left"
+        disableHoverListener={isMobile}
         enterTouchDelay={0}
         leaveTouchDelay={2000}
         slotProps={tooltipSlotProps}

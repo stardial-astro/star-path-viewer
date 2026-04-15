@@ -25,6 +25,7 @@ import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import useFetchAddresses from '@/hooks/useFetchAddresses';
 import useDebounce from '@hooks/useDebounce';
+import isMobile from '@utils/isMobile';
 import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchGps from '@/utils/fetchGps';
@@ -425,6 +426,7 @@ const AddressInput = () => {
                 <Tooltip
                   describeChild
                   title={t('find_my_location')}
+                  disableHoverListener={isMobile}
                   enterTouchDelay={0}
                   leaveTouchDelay={2000}
                 >

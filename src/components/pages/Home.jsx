@@ -96,6 +96,7 @@ const Home = () => {
               <Typography
                 component="h1"
                 data-testid="home-title"
+                fontWeight={100}
                 sx={{
                   /* <img> */
                   // width: '100%',
@@ -103,7 +104,7 @@ const Home = () => {
                   // lineHeight: 0,
                   // overflow: 'hidden',
                   /* text */
-                  fontWeight: 100,
+                  // fontWeight: 100,
                   fontSize: '2.7rem',
                   lineHeight: 1,
                   letterSpacing: '0.1px',

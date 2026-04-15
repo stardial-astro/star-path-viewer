@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { FormControl, RadioGroup, Radio, Tooltip } from '@mui/material';
 import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
+import isMobile from '@utils/isMobile';
 import { EPH_RANGE, EPH_RANGE_JULIAN, CALS } from '@utils/constants';
 import { dateToStr } from '@utils/dateUtils';
 import CustomFormControlLabel from '@components/ui/CustomFormControlLabel';
@@ -63,6 +64,9 @@ const CalendarToggle = () => {
             `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })}`
           }
           placement="top"
+          disableHoverListener={isMobile}
+          enterDelay={500}
+          enterNextDelay={100}
           enterTouchDelay={0}
           leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
@@ -84,6 +88,9 @@ const CalendarToggle = () => {
             `${dateToStr({ dateArr: EPH_RANGE_JULIAN.min })}/${dateToStr({ dateArr: EPH_RANGE_JULIAN.max })}`
           }
           placement="top"
+          disableHoverListener={isMobile}
+          enterDelay={500}
+          enterNextDelay={100}
           enterTouchDelay={0}
           leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}

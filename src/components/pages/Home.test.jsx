@@ -18,19 +18,24 @@ describe('Home Page', () => {
   test('renders without crashing', async () => {
     renderWithProviders(<Home />);
     // expect(screen.getByTestId('home-subtitle')).toHaveTextContent('subtitle');
+    const title = await screen.getByRole('heading', {
+      level: 1,
+      name: 'title',
+    });
     const subtitle = await screen.getByRole('heading', {
       level: 2,
       name: '— subtitle —',
     });
+    expect(title).toBeInTheDocument();
     expect(subtitle).toBeInTheDocument();
   });
 
   /* Test for alt text on title image */
-  test('title image has correct alt text', async () => {
-    renderWithProviders(<Home />);
-    const title = await screen.getByAltText('Star Path Viewer');
-    expect(title).toBeInTheDocument();
-  });
+  // test('title image has correct alt text', async () => {
+  //   renderWithProviders(<Home />);
+  //   const titleImg = await screen.getByAltText('Star Path Viewer');
+  //   expect(titleImg).toBeInTheDocument();
+  // });
 
   /* Test key layout elements */
   test('has main layout sections', async () => {

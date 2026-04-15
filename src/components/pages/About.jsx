@@ -43,12 +43,11 @@ const About = () => {
           // mt: { xs: 2, sm: 3 },
           // mb: { xs: 3, sm: 4 },
           /* text */
-          mt: { xs: 0, sm: 1.5 },
-          mb: { xs: 1, sm: 2.2 },
+          mt: { xs: 1.3, sm: 2.7 },
+          mb: { xs: 2.1, sm: 3.4 },
           width: '100%',
         }}
       >
-        {/* Title image */}
         <Typography
           component="h1"
           data-testid="about-title"
@@ -60,8 +59,9 @@ const About = () => {
             // overflow: 'hidden',
             /* text */
             fontWeight: 100,
-            fontSize: '2.5rem',
-            letterSpacing: '1px',
+            fontSize: '2.55rem',
+            lineHeight: 1,
+            letterSpacing: '0.1px',
           }}
         >
           {/* <img

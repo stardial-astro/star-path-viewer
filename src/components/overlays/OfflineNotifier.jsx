@@ -100,9 +100,11 @@ const OfflineNotifier = () => {
             top: 16,
             left: '50%',
             transform: 'translateX(-50%)',
-            minWidth: 240,
+            minWidth: 280,
+            justifyContent: 'center',
             boxShadow: theme.shadows[3],
-            pr: 3,
+            pl: 2,
+            pr: 4,
             zIndex: theme.zIndex.modal + 1,
           })}
         >

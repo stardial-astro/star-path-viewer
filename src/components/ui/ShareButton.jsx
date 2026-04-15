@@ -20,8 +20,8 @@ const ShareButton = ({ setShareStatus }) => {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: `${t('share')} ${import.meta.env.VITE_APP_NAME}`,
-          text: `${import.meta.env.VITE_APP_NAME}: ${t('description')}`,
+          title: `${t('share')} ${t('title')}`,
+          text: `${t('title')}: ${t('description')}`,
           url: SHARE_URL,
         });
         setShareStatus({ success: true, error: '' });
@@ -43,7 +43,7 @@ const ShareButton = ({ setShareStatus }) => {
   return (
     <Tooltip
       describeChild
-      title={`${t('share')} ${import.meta.env.VITE_APP_NAME}`}
+      title={`${t('share')} ${t('title')}`}
       placement="bottom-end"
     >
       <span>

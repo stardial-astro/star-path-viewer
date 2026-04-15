@@ -44,7 +44,11 @@ const StarInputTypeToggle = () => {
       <ToggleButton value={STAR_INPUT_TYPES.hip} aria-label={HIP_LABEL}>
         {t('star')}
       </ToggleButton>
-      <ToggleButton value={STAR_INPUT_TYPES.radec} aria-label={RADEC_LABEL}>
+      <ToggleButton
+        value={STAR_INPUT_TYPES.radec}
+        aria-label={RADEC_LABEL}
+        sx={{ lineHeight: 1.2 }}
+      >
         {t('radec')}
       </ToggleButton>
     </ToggleButtonGroup>

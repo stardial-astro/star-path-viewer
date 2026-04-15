@@ -3,13 +3,13 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
-import titleImage from '@assets/title-image.svg';
+// import titleImage from '@assets/title-image.svg';
 import { useHome } from '@context/HomeContext';
 import { LocationInputProvider } from '@context/LocationInputContext';
 import { DateInputProvider } from '@context/DateInputContext';
 import { StarInputProvider } from '@context/StarInputContext';
 import config from '@utils/config';
-import { enableDevMode, getIsDevMode } from '@utils/devMode';
+import { enableDevMode } from '@utils/devMode';
 import DiagramFetcher from '@components/input/DiagramFetcher';
 import InfoDisplay from '@components/output/InfoDisplay';
 import ImageDisplay from '@components/output/image/ImageDisplay';
@@ -17,8 +17,8 @@ import AnnoDisplay from '@components/output/annotations/AnnoDisplay';
 import Notice from '@/components/overlays/Notice';
 import OfflineNotifier from '@/components/overlays/OfflineNotifier';
 
-/** Counter to trigger dev (verbose) mode */
-let clickCount = 0;
+// /** Counter to trigger dev (verbose) mode */
+// let clickCount = 0;
 
 const hashes = window.location.hash.substring(1).split('&');
 hashes.includes('dev') && enableDevMode();
@@ -52,14 +52,14 @@ const Home = () => {
    * Handlers
    * ------------------------------------------------------------------|
    */
-  const handleTitleClick = () => {
-    if (getIsDevMode()) return;
-    clickCount++;
-    if (clickCount >= config.TRIGGER_DEV_CLICK_COUNT) {
-      enableDevMode();
-      clickCount = 0;
-    }
-  };
+  // const handleTitleClick = () => {
+  //   if (getIsDevMode()) return;
+  //   clickCount++;
+  //   if (clickCount >= config.TRIGGER_DEV_CLICK_COUNT) {
+  //     enableDevMode();
+  //     clickCount = 0;
+  //   }
+  // };
 
   return (
     <>
@@ -83,8 +83,12 @@ const Home = () => {
                 alignItems: 'center',
                 px: 1,
                 mx: 'auto',
-                mt: { xs: 3, sm: 5 },
-                mb: { xs: 1, sm: 2 },
+                /* <img> */
+                // mt: { xs: 3, sm: 5 },
+                // mb: { xs: 1, sm: 2 },
+                /* text */
+                mt: { xs: 2.5, sm: 4.6 },
+                mb: { xs: 0.2, sm: 1.2 },
                 width: '100%',
               }}
             >
@@ -93,13 +97,19 @@ const Home = () => {
                 component="h1"
                 data-testid="home-title"
                 sx={{
-                  width: '100%',
-                  height: 'auto',
-                  lineHeight: 0,
-                  overflow: 'hidden',
+                  /* <img> */
+                  // width: '100%',
+                  // height: 'auto',
+                  // lineHeight: 0,
+                  // overflow: 'hidden',
+                  /* text */
+                  fontWeight: 100,
+                  fontSize: '2.7rem',
+                  lineHeight: 1,
+                  letterSpacing: '0.1px',
                 }}
               >
-                <img
+                {/* <img
                   src={titleImage}
                   alt="Star Path Viewer"
                   style={{
@@ -110,7 +120,8 @@ const Home = () => {
                     cursor: 'default',
                   }}
                   onClick={handleTitleClick}
-                />
+                /> */}
+                {t('title')}
               </Typography>
             </Box>
 
@@ -126,7 +137,10 @@ const Home = () => {
                   sm: 'subtitle2.fontSize',
                   md: 'subtitle1.fontSize',
                 },
-                mt: 0.5,
+                /* <img> */
+                // mt: 0.5,
+                /* text */
+                mt: 0,
                 mb: 1,
               }}
             >

@@ -11,3 +11,9 @@ body {
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: contain;
 }
+
+h1 {
+  font-weight: 100;
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+}

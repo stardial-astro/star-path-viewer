@@ -35,5 +35,8 @@
 
   "draw": "Draw Star Path",
   "drawing": "Preparing results. Just a few more seconds.",
-  "back_to_top": "Back to Top"
+  "back_to_top": "Back to Top",
+
+  "404_not_found": "Oops! Page not found :(",
+  "return_to_home": "Return to Home"
 }

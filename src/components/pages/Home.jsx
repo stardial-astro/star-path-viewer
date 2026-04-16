@@ -92,23 +92,19 @@ const Home = () => {
                 width: '100%',
               }}
             >
-              {/* Title image */}
               <Typography
                 component="h1"
+                variant="h1"
                 data-testid="home-title"
-                fontWeight={100}
-                sx={{
-                  /* <img> */
-                  // width: '100%',
-                  // height: 'auto',
-                  // lineHeight: 0,
-                  // overflow: 'hidden',
-                  /* text */
-                  // fontWeight: 100,
-                  fontSize: '2.7rem',
-                  lineHeight: 1,
-                  letterSpacing: '0.1px',
-                }}
+                // sx={
+                //   {
+                //     /* <img> */
+                //     width: '100%',
+                //     height: 'auto',
+                //     lineHeight: 0,
+                //     overflow: 'hidden',
+                //   }
+                // }
               >
                 {/* <img
                   src={titleImage}
@@ -122,22 +118,21 @@ const Home = () => {
                   }}
                   onClick={handleTitleClick}
                 /> */}
-                {t('title')}
+                Star Path Viewer
               </Typography>
             </Box>
 
             <Typography
+              component="p"
               variant="subtitle1"
-              component="h2"
               data-testid="home-subtitle"
+              fontSize={{
+                xs: '0.7rem',
+                sm: 'subtitle2.fontSize',
+                md: 'subtitle1.fontSize',
+              }}
               sx={{
                 color: isDarkMode ? 'text.secondary' : 'action.active',
-                fontWeight: 400,
-                fontSize: {
-                  xs: '0.7rem',
-                  sm: 'subtitle2.fontSize',
-                  md: 'subtitle1.fontSize',
-                },
                 /* <img> */
                 // mt: 0.5,
                 /* text */

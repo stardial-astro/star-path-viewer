@@ -35,5 +35,8 @@
 
   "draw": "繪製星軌",
   "drawing": "計算中，請稍候片刻",
-  "back_to_top": "回到頂部"
+  "back_to_top": "回到頂部",
+
+  "404_not_found": "您訪問的頁面不存在 :(",
+  "return_to_home": "返回主頁"
 }

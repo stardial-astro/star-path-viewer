@@ -17,17 +17,13 @@ describe('Home Page', () => {
   /* Basic render test */
   test('renders without crashing', async () => {
     renderWithProviders(<Home />);
-    // expect(screen.getByTestId('home-subtitle')).toHaveTextContent('subtitle');
     const title = await screen.getByRole('heading', {
       level: 1,
-      name: 'title',
+      name: 'Star Path Viewer',
     });
-    const subtitle = await screen.getByRole('heading', {
-      level: 2,
-      name: '— subtitle —',
-    });
+    const subtitle = await screen.getByTestId('home-subtitle');
     expect(title).toBeInTheDocument();
-    expect(subtitle).toBeInTheDocument();
+    expect(subtitle).toHaveTextContent('— subtitle —');
   });
 
   /* Test for alt text on title image */

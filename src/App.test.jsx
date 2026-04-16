@@ -39,8 +39,11 @@ describe('App Routes', () => {
 
     /* Test that we're on the NotFound page */
     const notFoundPage = await screen.getByTestId('not-found-page');
-    const notFoundText = await screen.getByText(/404/i);
+    const notFoundTitle = await screen.getByRole('heading', {
+      level: 1,
+      name: '404',
+    });
     expect(notFoundPage).toBeInTheDocument();
-    expect(notFoundText).toBeInTheDocument();
+    expect(notFoundTitle).toBeInTheDocument();
   });
 });

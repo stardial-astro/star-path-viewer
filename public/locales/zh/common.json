@@ -35,5 +35,8 @@
 
   "draw": "绘制星轨",
   "drawing": "计算中，请稍候片刻",
-  "back_to_top": "回到顶部"
+  "back_to_top": "回到顶部",
+
+  "404_not_found": "您访问的页面不存在 :(",
+  "return_to_home": "返回主页"
 }

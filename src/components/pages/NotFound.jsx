@@ -1,9 +1,12 @@
 // src/components/pages/NotFound.jsx
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router';
 
 const NotFound = () => {
+  const { t } = useTranslation();
+
   return (
     <Box
       data-testid="not-found-page"
@@ -16,26 +19,20 @@ const NotFound = () => {
         mt: 4,
       }}
     >
-      <Typography
-        variant="subtitle1"
-        component="h1"
-        fontSize="h4.fontSize"
-        gutterBottom
-        sx={{ color: 'action.active' }}
-      >
+      <Typography component="h1" variant="h1" gutterBottom>
         404
       </Typography>
       <Typography
+        component="p"
         variant="body1"
-        component="div"
         fontSize="h5.fontSize"
         gutterBottom
-        sx={{ color: 'action.active' }}
+        sx={{ color: 'text.secondary' }}
       >
-        Oops! Page not found :(
+        {t('404_not_found')}
       </Typography>
       <Button variant="contained" component={Link} to="/" sx={{ mt: 4 }}>
-        Go Back
+        {t('return_to_home')}
       </Button>
     </Box>
   );

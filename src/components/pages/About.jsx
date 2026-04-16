@@ -50,19 +50,16 @@ const About = () => {
       >
         <Typography
           component="h1"
+          variant="h1"
           data-testid="about-title"
-          sx={{
-            /* <img> */
-            // width: '100%',
-            // height: 'auto',
-            // lineHeight: 0,
-            // overflow: 'hidden',
-            /* text */
-            fontWeight: 100,
-            fontSize: '2.55rem',
-            lineHeight: 1,
-            letterSpacing: '0.1px',
-          }}
+          fontSize="2.55rem"
+          // sx={{
+          //   /* <img> */
+          //   width: '100%',
+          //   height: 'auto',
+          //   lineHeight: 0,
+          //   overflow: 'hidden',
+          // }}
         >
           {/* <img
             src={aboutImage}

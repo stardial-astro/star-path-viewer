@@ -35,8 +35,23 @@
     <meta property="og:url" content="https://star-path-viewer.pages.dev/" />
     <meta name="twitter:card" content="summary_large_image" />
 
+    <link
+      rel="preload"
+      href="/fonts/roboto-latin-100-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <style>
+      @font-face {
+        font-family: 'Roboto Local';
+        src: url('/fonts/roboto-latin-100-normal.woff2') format('woff2');
+        font-weight: 100;
+        font-style: normal;
+        font-display: swap;
+      }
       h1 {
+        font-family: 'Roboto Local', 'Roboto', sans-serif;
         font-weight: 100 !important;
         -webkit-font-smoothing: antialiased;
       }

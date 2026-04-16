@@ -24,6 +24,7 @@ export default defineConfig({
       /* Assets to precache beyond what's in the build output */
       includeAssets: [
         'favicon.*',
+        'fonts/*',
         'icons/*.png',
         'locales/**/*.json',
         'robots.txt',

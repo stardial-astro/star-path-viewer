@@ -15,5 +15,6 @@ body {
 h1 {
   font-weight: 100;
   font-display: swap;
+  font-synthesis: none;
   -webkit-font-smoothing: antialiased;
 }

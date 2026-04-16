@@ -10,9 +10,9 @@
   "about_us": "关于我们",
 
   "color_mode": {
-    "light": "浅色主题",
-    "dark": "深色主题",
-    "system": "系统主题"
+    "light": "切换至浅色主题",
+    "dark": "切换至深色主题",
+    "system": "切换至系统主题"
   },
 
   "change_language": "切换语言",

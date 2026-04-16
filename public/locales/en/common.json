@@ -10,9 +10,9 @@
   "about_us": "About Us",
 
   "color_mode": {
-    "light": "Light mode",
-    "dark": "Dark mode",
-    "system": "System mode"
+    "light": "Switch to light mode",
+    "dark": "Switch to dark mode",
+    "system": "Switch to system mode"
   },
 
   "change_language": "Change Language",

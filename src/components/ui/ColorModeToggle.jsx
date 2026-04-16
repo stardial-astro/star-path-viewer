@@ -14,9 +14,9 @@ const MODE_CYCLES = ['light', 'dark', 'system'];
 const MODE_CYCLE_LEN = MODE_CYCLES.length;
 
 const MODE_LABELS = {
-  light: 'color_mode.light',
-  dark: 'color_mode.dark',
-  system: 'color_mode.system',
+  light: 'color_mode.dark',
+  dark: 'color_mode.system',
+  system: 'color_mode.light',
 }; // i18n keys
 
 const MODE_ICONS = {

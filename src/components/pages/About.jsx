@@ -23,7 +23,8 @@ const TransLink = ({ children, i18nIsDynamicList, ...props }) => (
 const Em = ({ children, i18nIsDynamicList }) => <em>{children}</em>;
 
 const About = () => {
-  const { t } = useTranslation('about');
+  const { i18n, t } = useTranslation('about');
+  const isZh = i18n.language.startsWith('zh');
   const bodyArray = t('body', { returnObjects: true });
   return (
     <>
@@ -41,7 +42,7 @@ const About = () => {
       </Box>
 
       {/* Title */}
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
@@ -61,7 +62,7 @@ const About = () => {
         >
           {t('title')}
         </Typography>
-      </Box>
+      </Box> */}
 
       <Box
         data-testid="about-body"
@@ -69,8 +70,10 @@ const About = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: '1rem',
-          mx: { xs: 0.5, sm: 2.5, md: 3 },
-          pl: 1.8,
+          mt: { xs: 2.1, sm: 3.4 },
+          mx: { xs: 2, sm: 3 },
+          pl: 0.5,
+          pr: isZh ? 0.5 : 0,
         }}
       >
         {Array.isArray(bodyArray) &&
@@ -79,7 +82,7 @@ const About = () => {
               key={p.id || index}
               variant="body1"
               component="p"
-              align="left"
+              align={isZh ? 'justify' : 'left'}
             >
               <Trans
                 t={t}

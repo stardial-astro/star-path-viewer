@@ -1,8 +1,12 @@
 // src/Globali18nStyles.jsx
 import { GlobalStyles } from '@mui/material';
 
-const GLOBAL_FONTS = "'Roboto'";
-const SC_FONTS = "'PingFang SC', 'Microsoft YaHei', '微软雅黑'";
+const GLOBAL_FONTS = '"Roboto"';
+const SC_FONTS = [
+  '"PingFang SC"',
+  '"Microsoft YaHei"',
+  '"微软雅黑"',
+].join(', ');
 
 const Globali18nStyles = () => (
   <GlobalStyles

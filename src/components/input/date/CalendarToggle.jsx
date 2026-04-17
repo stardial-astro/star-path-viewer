@@ -35,7 +35,8 @@ const tooltipSlotProps = {
 
 const CalendarToggle = () => {
   // console.log('Rendering CalendarToggle');
-  const { t } = useTranslation('date');
+  const { i18n, t } = useTranslation('date');
+  const isZh = i18n.language.startsWith('zh');
   const { flag, cal, dateDispatch } = useDateInput();
 
   /* When toggles calendar, KEEP the date values */
@@ -54,7 +55,13 @@ const CalendarToggle = () => {
         row
         name={CAL_GROUP_NAME}
         value={cal}
-        sx={{ mt: -1, mb: 1, justifyContent: 'space-around' }}
+        sx={{
+          justifyContent: 'space-around',
+          mt: -1,
+          mb: 1,
+          // columnGap: { xs: 2, sm: 4, md: 6 },
+          ml: isZh ? 2 : 0,
+        }}
         onChange={handleCalChange}
       >
         <Tooltip

@@ -368,7 +368,9 @@ const AddressInput = () => {
       disabled={!geoService}
       options={suggestions}
       getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.display_name
+        typeof option === 'string'
+          ? option
+          : option.display_name + '|' + option.addresstype
       }
       inputValue={searchTerm}
       isOptionEqualToValue={(option, value) => option.id === value.id}

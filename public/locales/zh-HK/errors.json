@@ -35,7 +35,7 @@
   "gps_not_supported": "當前瀏覽器不支持獲取位置，請手動輸入經緯度座標 ⤴",
   "location_not_found": "地址未找到",
 
-  "out_of_ephemeris_range": "超出歷表範圍: -3000-01-29/+3000-05-06 (格里高利曆)",
+  "out_of_ephemeris_range": "超出歷表範圍: -3000-01-29/+3000-05-06 (格里曆)",
   "no_season_data_returned": "無法獲取二分二至日期: 無返回數據",
   "season_error": "獲取二分二至日期時發生錯誤，請打開控制枱查看詳情",
 

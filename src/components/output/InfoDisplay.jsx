@@ -29,17 +29,16 @@ const nameItemStyle = {
   maxWidth: { md: 320 },
 };
 
-/** @param {boolean} isZh */
-const labelStyle = (isZh, mdMinWidth = '') => ({
+const labelStyle = (mdMinWidth = '') => ({
   fontSize: {
     xs: 'body2.fontSize',
     sm: 'body1.fontSize',
     md: 'body1.fontSize',
   },
   minWidth: {
-    xs: isZh ? '5.4rem' : '5.1rem',
+    xs: '5.1rem',
     sm: '6rem',
-    md: mdMinWidth ? mdMinWidth : isZh ? '6.4rem' : '6rem',
+    md: mdMinWidth ? mdMinWidth : '6rem',
   },
   fontWeight: 500,
 });
@@ -114,7 +113,7 @@ const InfoDisplay = () => {
     return (
       <>
         <Box sx={itemStyle}>
-          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+          <Typography variant="body1" align="left" sx={labelStyle()}>
             [{t('gregorian')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
@@ -122,7 +121,7 @@ const InfoDisplay = () => {
           </Typography>
         </Box>
         <Box sx={itemStyle}>
-          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+          <Typography variant="body1" align="left" sx={labelStyle()}>
             [{t('julian')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
@@ -131,13 +130,13 @@ const InfoDisplay = () => {
         </Box>
       </>
     );
-  }, [info, langCode, isZh, t]);
+  }, [info, langCode, t]);
 
   const locationInfoItem = useMemo(
     () => (
       <>
         <Box sx={itemStyle}>
-          <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+          <Typography variant="body1" align="left" sx={labelStyle()}>
             [{t('location')}]
           </Typography>
           <Typography variant="body1" align="left" sx={detailStyle}>
@@ -146,7 +145,7 @@ const InfoDisplay = () => {
         </Box>
       </>
     ),
-    [info, isZh, t],
+    [info, t],
   );
 
   const starInfoItem = useMemo(
@@ -154,7 +153,7 @@ const InfoDisplay = () => {
       <>
         {info.name && !info.hip ? (
           <Box sx={itemStyle}>
-            <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+            <Typography variant="body1" align="left" sx={labelStyle()}>
               [{t('planet')}]
             </Typography>
             <Typography variant="body1" align="left" sx={detailStyle}>
@@ -168,7 +167,7 @@ const InfoDisplay = () => {
                 <Typography
                   variant="body1"
                   align="left"
-                  sx={labelStyle(isZh, isZh ? '5.4rem' : '6.2rem')}
+                  sx={labelStyle(isZh ? '5.4rem' : '6.2rem')}
                 >
                   [{t('star_name')}]
                 </Typography>
@@ -188,7 +187,7 @@ const InfoDisplay = () => {
                 variant="body1"
                 align="left"
                 mr={{ xs: 0.8, sm: 1.5, md: 1.5 }}
-                sx={labelStyle(isZh)}
+                sx={labelStyle()}
               >
                 [{t('hip')}]
               </Typography>
@@ -200,7 +199,7 @@ const InfoDisplay = () => {
         ) : (
           radecStr && (
             <Box sx={itemStyle}>
-              <Typography variant="body1" align="left" sx={labelStyle(isZh)}>
+              <Typography variant="body1" align="left" sx={labelStyle()}>
                 [{t('radec')}]
               </Typography>
               <Typography variant="body1" align="left" sx={detailStyle}>

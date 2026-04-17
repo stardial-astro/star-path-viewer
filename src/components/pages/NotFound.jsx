@@ -19,12 +19,12 @@ const NotFound = () => {
         mt: 4,
       }}
     >
-      <Typography component="h1" variant="h1" gutterBottom>
+      <Typography variant="h1" component="h1" gutterBottom>
         404
       </Typography>
       <Typography
-        component="p"
         variant="body1"
+        component="p"
         fontSize="h5.fontSize"
         gutterBottom
         sx={{ color: 'text.secondary' }}

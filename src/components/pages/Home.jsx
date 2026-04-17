@@ -93,8 +93,8 @@ const Home = () => {
               }}
             >
               <Typography
-                component="h1"
                 variant="h1"
+                component="h1"
                 data-testid="home-title"
                 // sx={
                 //   {
@@ -123,8 +123,8 @@ const Home = () => {
             </Box>
 
             <Typography
-              component="p"
               variant="subtitle1"
+              component="p"
               data-testid="home-subtitle"
               fontSize={{
                 xs: '0.7rem',

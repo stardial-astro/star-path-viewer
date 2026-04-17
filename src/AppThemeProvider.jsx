@@ -32,20 +32,31 @@ const themeOptions = {
     /* Enables dark mode */
     dark: true,
   },
-  components: {
-    MuiTypography: {
-      styleOverrides: {
-        h1: {
-          fontWeight: 100,
-          fontSize: '2.7rem',
-          lineHeight: 1,
-          letterSpacing: '0.1px',
-        },
-        subtitle1: {
-          fontWeight: 400,
-        }
-      },
+  typography: {
+    h1: {
+      fontWeight: 100,
+      fontSize: '43.2px',
+      lineHeight: 1,
+      letterSpacing: '0.1px',
     },
+    subtitle1: {
+      fontWeight: 400,
+    },
+  },
+  components: {
+    // MuiTypography: {
+    //   styleOverrides: {
+    //     h1: {
+    //       fontWeight: 100,
+    //       fontSize: '43.2px',
+    //       lineHeight: 1,
+    //       letterSpacing: '0.1px',
+    //     },
+    //     subtitle1: {
+    //       fontWeight: 400,
+    //     }
+    //   },
+    // },
     MuiInputBase: {
       defaultProps: {
         /* Needed to prevent adding a global style for every input field */

@@ -28,6 +28,8 @@ const About = () => {
   const bodyArray = t('body', { returnObjects: true });
   return (
     <>
+      <title>{t('head_title')}</title>
+
       <Box data-testid="about-page" sx={{ mt: 4 }}>
         <img
           src={logo}
@@ -70,39 +72,42 @@ const About = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: '1rem',
-          mt: { xs: 2.1, sm: 3.4 },
+          mt: { xs: 1.1, sm: 2.4 },
           mx: { xs: 2, sm: 3 },
           pl: 0.5,
           pr: isZh ? 0.5 : 0,
         }}
       >
         {Array.isArray(bodyArray) &&
-          bodyArray.map((p, index) => (
-            <Typography
-              key={p.id || index}
-              variant="body1"
-              component="p"
-              align={isZh ? 'justify' : 'left'}
-            >
-              <Trans
-                t={t}
-                i18nKey={`body.${index}.content`}
-                values={{
-                  teamName: config.TEAM_NAME,
-                  appName: import.meta.env.VITE_APP_NAME,
-                }}
-                components={{
-                  em: <Em />,
-                  TeamLink: <TransLink href={config.TEAM_URL} />,
-                  RepoLink: <TransLink href={config.REPO_URL} />,
-                  GuideLink: <TransLink href={GUIDE_URL} />,
-                  SkyfieldLink: <TransLink href={SKYFIELD_URL} />,
-                  JplLink: <TransLink href={JPL_URL} />,
-                  HipLink: <TransLink href={HIP_URL} />,
-                }}
-              />
-            </Typography>
-          ))}
+          bodyArray.map((p, index) => {
+            const elm = p.id.split('-')[0];
+            return (
+              <Typography
+                key={p.id || index}
+                variant={elm === 'p' ? 'body1' : elm}
+                component={elm}
+                align={elm === 'p' ? (isZh ? 'justify' : 'left') : 'center'}
+              >
+                <Trans
+                  t={t}
+                  i18nKey={`body.${index}.content`}
+                  values={{
+                    teamName: config.TEAM_NAME,
+                    appName: import.meta.env.VITE_APP_NAME,
+                  }}
+                  components={{
+                    em: <Em />,
+                    TeamLink: <TransLink href={config.TEAM_URL} />,
+                    RepoLink: <TransLink href={config.REPO_URL} />,
+                    GuideLink: <TransLink href={GUIDE_URL} />,
+                    SkyfieldLink: <TransLink href={SKYFIELD_URL} />,
+                    JplLink: <TransLink href={JPL_URL} />,
+                    HipLink: <TransLink href={HIP_URL} />,
+                  }}
+                />
+              </Typography>
+            );
+          })}
       </Box>
     </>
   );

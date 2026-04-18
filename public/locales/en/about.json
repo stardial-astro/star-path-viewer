@@ -1,26 +1,43 @@
 {
   "title": "About Us",
+  "head_title": "Star Path Viewer: About Us",
   "description": "Learn more about Stardial and Star Path Viewer.",
   "body": [
     {
-      "id": "p1",
+      "id": "h2-1",
+      "content": "About Us"
+    },
+    {
+      "id": "p-1",
       "content": "We are <TeamLink>{{teamName}}</TeamLink>, a development team passionate about science and the humanities. Our goal is to create precise, user-friendly, and intuitive astronomical tools to support research in history and social sciences."
     },
     {
-      "id": "p2",
-      "content": "<em>{{appName}}</em> is our first application designed to help historians intuitively understand the apparent motion of a celestial object on any given date. This open-source scientific tool provides an accurate approach to replicating the view of stars crossing the sky that ancient stargazers would have seen."
+      "id": "h2-2",
+      "content": "About This Project"
     },
     {
-      "id": "p3",
+      "id": "p-2",
+      "content": "<em>{{appName}}</em> is an web application designed to help historians intuitively understand the apparent motion of a celestial object on any given date. This open-source scientific tool provides an accurate approach to replicating the view of stars crossing the sky that ancient stargazers would have seen."
+    },
+    {
+      "id": "p-3",
       "content": "Accurately evaluating the position of a star or planet in ancient times is crucial for historians when dating historical events by correlating astrometric data with records. The visibility of stars during twilight stages is especially significant in the study of pre-modern astronomy. For example, the Chinese had a long tradition of observing and calculating the culmination of key stars before dawn or after dusk. These observations were used as seasonal markers to maintain calendrical accuracy and stability. In these cases, determining the times when certain stars become visible after dark and disappear before sunrise is essential for analyzing the foundational texts of the Chinese astronomical tradition and many other historical documents."
     },
     {
-      "id": "p4",
+      "id": "p-4",
       "content": "To meet these needs, <em>{{appName}}</em> integrates with <SkyfieldLink>Skyfield</SkyfieldLink>, <JplLink>JPL Planetary and Lunar Ephemerides</JplLink> (DE406), and <HipLink>Hipparcos Catalogue</HipLink> to precisely calculate and depict the path of a star or planet over the course of the day and night on any specific date in either the Gregorian or Julian calendar, from ancient times to far into the future, in the local horizontal coordinate system. For a comprehensive visual experience, different line styles on the diagram distinguish the path during the day, night, and twilight stages. Key moments in the celestial body's trajectory, such as rising, meridian transit, and setting times, are also marked. <em>{{appName}}</em> particularly highlights the transitions between different twilight stages and provides the target object's positional information at these times."
     },
     {
-      "id": "p5",
-      "content": "Please refer to <GuideLink>this guide</GuideLink> for usage. For more information about this app, please visit our <RepoLink>repository</RepoLink>."
+      "id": "p-5",
+      "content": "Please refer to <GuideLink>this guide</GuideLink> for usage. For more information about this app and references, please visit our <RepoLink>repository</RepoLink>."
+    },
+    {
+      "id": "h2-3",
+      "content": "Privacy Policy"
+    },
+    {
+      "id": "p-6",
+      "content": "To assess the utility of this tool and optimize its features, we record anonymous usage statistics via Google Analytics. We are committed to not collecting any Personally Identifiable Information (PII). All data collected is used solely for research purposes."
     }
   ]
 }

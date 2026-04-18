@@ -1,6 +1,6 @@
 // src/utils/devMode.js
 /** `true` if in development environment. */
-let isDevMode = import.meta.env.DEV === true;
+let isDevMode = import.meta.env.DEV;
 
 /**
  * Sets `isDevMode` to `true` for verbose console output.

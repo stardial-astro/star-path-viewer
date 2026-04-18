@@ -20,6 +20,9 @@ interface Window {
       find: (lat: any, lon: any) => Promise<any>;
     };
   };
+  /* Google Analytics */
+  dataLayer: any[];
+  gtag: (...args: any[]) => void;
 }
 
 type ColorMode = 'light' | 'dark' | 'system';

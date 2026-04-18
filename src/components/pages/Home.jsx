@@ -9,7 +9,7 @@ import { LocationInputProvider } from '@context/LocationInputContext';
 import { DateInputProvider } from '@context/DateInputContext';
 import { StarInputProvider } from '@context/StarInputContext';
 import config from '@utils/config';
-import { enableDevMode } from '@utils/devMode';
+import { enableDevMode, getIsDevMode } from '@utils/devMode';
 import DiagramFetcher from '@components/input/DiagramFetcher';
 import InfoDisplay from '@components/output/InfoDisplay';
 import ImageDisplay from '@components/output/image/ImageDisplay';
@@ -24,16 +24,17 @@ const hashes = window.location.hash.substring(1).split('&');
 hashes.includes('dev') && enableDevMode();
 
 /* Check env and config */
-// if (getIsDevMode() && !import.meta.env.VITEST) {
-//   console.debug('[BASE_URL]', import.meta.env.BASE_URL);
-//   console.debug('[MODE]', import.meta.env.MODE);
-//   // console.debug('[DEV]', import.meta.env.DEV);
-//   console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
-//   console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
-//   // console.debug('[__APP_NAME__]', __APP_NAME__);
-//   console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
-//   // console.debug('[config]', config);
-// }
+if (getIsDevMode() && !import.meta.env.VITEST) {
+  // console.debug('[BASE_URL]', import.meta.env.BASE_URL);
+  console.debug('[MODE]', import.meta.env.MODE);
+  console.debug('[VITE_IS_PREVIEW]', import.meta.env.VITE_IS_PREVIEW);
+  // console.debug('[DEV]', import.meta.env.DEV);
+  // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
+  // console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
+  // console.debug('[__APP_NAME__]', __APP_NAME__);
+  // console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
+  // console.debug('[config]', config);
+}
 
 const Home = () => {
   // console.log('Rendering Home');
@@ -63,6 +64,7 @@ const Home = () => {
 
   return (
     <>
+      <title>{t('head_title')}</title>
       <link rel="canonical" href={config.BASE_URL} />
 
       <LocationInputProvider>

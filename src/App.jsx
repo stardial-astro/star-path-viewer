@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Container, Box } from '@mui/material';
 import { Routes, Route } from 'react-router';
 import { HomeProvider } from '@context/HomeContext';
+import useAnalytics from '@hooks/useAnalytics';
 import useQueryOnlineManager from '@hooks/useQueryOnlineManager';
 import config from '@utils/config';
 import Home from '@components/pages/Home';
@@ -23,6 +24,9 @@ const App = () => {
   useEffect(() => {
     document.documentElement.lang = i18n.language;
   }, [i18n.language]);
+
+  /* Google Analytics */
+  useAnalytics();
 
   return (
     <Box className="app-container">

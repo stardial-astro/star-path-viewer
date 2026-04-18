@@ -39,6 +39,13 @@ const themeOptions = {
       lineHeight: 1,
       letterSpacing: '0.1px',
     },
+    h2: {
+      fontWeight: 500,
+      fontSize: '1.25rem',
+      lineHeight: 1,
+      letterSpacing: '1px',
+      paddingTop: '0.5rem',
+    },
     subtitle1: {
       fontWeight: 400,
     },

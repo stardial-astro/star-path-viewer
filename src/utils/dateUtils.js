@@ -108,8 +108,8 @@ const formatDatetime = ({
   // const dateStr = monthFirst
   //   ? `${monthStr} ${day}, ${yearStr}`
   //   : `${day} ${monthStr} ${yearStr}`;
-  /* Map all traditional Chinese language codes to 'zh-Hant' */
-  const locale = CC_HANT_CODES.includes(langCode) ? 'zh-Hant' : langCode;
+  /* Map all traditional Chinese language codes to 'zh-HK' */
+  const locale = CC_HANT_CODES.includes(langCode) ? 'zh-HK' : langCode;
   /* Construct a Date object */
   const date = new Date(
     Date.UTC(

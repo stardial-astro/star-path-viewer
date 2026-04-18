@@ -40,7 +40,7 @@ const themeOptions = {
       letterSpacing: '0.1px',
     },
     h2: {
-      fontWeight: 500,
+      fontWeight: 400,
       fontSize: '1.25rem',
       lineHeight: 1,
       letterSpacing: '1px',

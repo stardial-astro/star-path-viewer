@@ -5,7 +5,7 @@
   "body": [
     {
       "id": "h2-1",
-      "content": "About Us"
+      "content": "— About Us —"
     },
     {
       "id": "p-1",
@@ -13,7 +13,7 @@
     },
     {
       "id": "h2-2",
-      "content": "About This Project"
+      "content": "— About This Project —"
     },
     {
       "id": "p-2",
@@ -33,7 +33,7 @@
     },
     {
       "id": "h2-3",
-      "content": "Privacy Policy"
+      "content": "— Privacy Policy —"
     },
     {
       "id": "p-6",

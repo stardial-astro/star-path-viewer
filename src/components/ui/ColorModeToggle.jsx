@@ -44,8 +44,6 @@ const ColorModeToggle = () => {
       title={t(MODE_LABELS[currentMode], 'Toggle color mode')}
       placement="bottom"
       disableHoverListener={isMobile}
-      enterTouchDelay={0}
-      leaveTouchDelay={2000}
     >
       <span>
         <CustomIconButton

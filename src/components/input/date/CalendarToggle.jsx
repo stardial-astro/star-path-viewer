@@ -73,7 +73,7 @@ const CalendarToggle = () => {
           placement="top"
           disableHoverListener={isMobile}
           enterDelay={800}
-          enterNextDelay={300}
+          enterNextDelay={500}
           enterTouchDelay={150}
           leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
@@ -96,9 +96,9 @@ const CalendarToggle = () => {
           }
           placement="top"
           disableHoverListener={isMobile}
-          enterDelay={500}
-          enterNextDelay={100}
-          enterTouchDelay={0}
+          enterDelay={800}
+          enterNextDelay={500}
+          enterTouchDelay={150}
           leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
         >

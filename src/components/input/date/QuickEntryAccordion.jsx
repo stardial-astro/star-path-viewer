@@ -85,9 +85,9 @@ const QuickEntryAccordion = () => {
                     : t('click_to_deselect')
                 }
                 disableHoverListener={isMobile}
-                enterDelay={500}
-                enterNextDelay={100}
-                enterTouchDelay={0}
+                enterDelay={800}
+                enterNextDelay={500}
+                enterTouchDelay={150}
                 leaveTouchDelay={2000}
               >
                 <span>

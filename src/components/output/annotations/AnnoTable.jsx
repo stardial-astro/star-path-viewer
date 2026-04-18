@@ -107,7 +107,7 @@ const AnnoTable = ({ anno, tzname }) => {
                   title={tzname || ''}
                   placement="top"
                   disableHoverListener={isMobile}
-                  enterTouchDelay={0}
+                  enterTouchDelay={150}
                   leaveTouchDelay={3000}
                 >
                   <span>

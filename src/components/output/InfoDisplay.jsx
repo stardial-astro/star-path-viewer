@@ -265,7 +265,7 @@ const InfoDisplay = () => {
               placement="top"
               disableHoverListener={isMobile}
               enterDelay={800}
-              enterNextDelay={300}
+              enterNextDelay={500}
               enterTouchDelay={150}
               leaveTouchDelay={2000}
             >

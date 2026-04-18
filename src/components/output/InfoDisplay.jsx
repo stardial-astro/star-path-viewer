@@ -1,8 +1,9 @@
 // src/components/output/InfoDisplay.jsx
 import { memo, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Box, Stack, Typography } from '@mui/material';
+import { Grid, Box, Stack, Typography, Tooltip } from '@mui/material';
 import { useHome } from '@context/HomeContext';
+import isMobile from '@utils/isMobile';
 import {
   formatDecimalHours,
   formatDatetime,
@@ -84,6 +85,18 @@ const coordsToStr = (lat, lng) => {
   );
 };
 
+/**
+ * @param {DateCCSchema | undefined | null} date_cc
+ * @param {boolean} isZhHant
+ */
+const dateCCToStr = (date_cc, isZhHant) => {
+  if (isZhHant) {
+    return date_cc?.zhHK?.formatted || '';
+  } else {
+    return date_cc?.zh?.formatted || '';
+  }
+};
+
 const InfoDisplay = () => {
   // console.log('Rendering InfoDisplay');
   const { i18n, t } = useTranslation('output');
@@ -111,7 +124,7 @@ const InfoDisplay = () => {
     const dateStrIsoG = formatDatetimeIso(info.dateG).date;
     const dateStrIsoJ = formatDatetimeIso(info.dateJ).date;
     return (
-      <>
+      <Stack direction="column" spacing={0.5}>
         <Box sx={itemStyle}>
           <Typography variant="body1" align="left" sx={labelStyle()}>
             [{t('gregorian')}]
@@ -128,9 +141,26 @@ const InfoDisplay = () => {
             {dateStrIsoJ} ({dateStrJ})
           </Typography>
         </Box>
-      </>
+      </Stack>
     );
   }, [info, langCode, t]);
+
+  // const dateCCItem = useMemo(() => {
+  //   if (info.offset !== 8) return null;
+  //   const dateCC = dateCCToStr(info.date_cc, isZhHant);
+  //   return dateCC ? (
+  //     <>
+  //       <Box sx={itemStyle}>
+  //         <Typography variant="body1" align="left" sx={labelStyle()}>
+  //           [{t('chinese')}]
+  //         </Typography>
+  //         <Typography variant="body1" align="left" sx={detailStyle}>
+  //           {dateCC}
+  //         </Typography>
+  //       </Box>
+  //     </>
+  //   ) : null;
+  // }, [info, isZhHant, t]);
 
   const locationInfoItem = useMemo(
     () => (
@@ -228,7 +258,19 @@ const InfoDisplay = () => {
             spacing={0.5}
             ml={{ xs: '1.5%', sm: 4, md: info.name && info.hip ? 4.5 : 6 }}
           >
-            {dateInfoItems}
+            <Tooltip
+              describeChild
+              followCursor
+              title={dateCCToStr(info.date_cc, isZhHant)}
+              placement="top"
+              disableHoverListener={isMobile}
+              enterDelay={800}
+              enterNextDelay={300}
+              enterTouchDelay={150}
+              leaveTouchDelay={2000}
+            >
+              {dateInfoItems}
+            </Tooltip>
             {info.name && info.hip && locationInfoItem}
           </Stack>
         </Grid>

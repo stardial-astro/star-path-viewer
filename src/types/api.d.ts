@@ -37,6 +37,33 @@ interface EqxSolSchema {
   results: number[];
 }
 
+interface DateCCItemSchema {
+  reign: string;
+  date: string;
+  sexagenary: {
+    year: string;
+    month: string;
+    day: string;
+  };
+  meta: {
+    period: string | null;
+    chinese_calendar: string | null;
+    western_calendar: string | null;
+    /** Julian day number (JDN) */
+    jdn: number | null;
+    shengxiao: string | null;
+  };
+  formatted: string;
+}
+
+/** The Chinese calendar date object returned from server. */
+interface DateCCSchema {
+  /** The date object in Simplified Chinese. */
+  zh: DateCCItemSchema | null;
+  /** The date object in Traditional Chinese. */
+  zhHK: DateCCItemSchema | null;
+}
+
 /** The information returned from server when querying diagram. */
 type InfoProps = RadecObj<number | null> & {
   /** The time zone name. */
@@ -53,6 +80,8 @@ type InfoProps = RadecObj<number | null> & {
   hip: string | null;
   /** (Unused) The equinox/solstice times. */
   eqxSolTime: number[];
+  /** The Chinese calendar date object. */
+  date_cc?: DateCCSchema;
 };
 
 /** The diagram object returned from server. */

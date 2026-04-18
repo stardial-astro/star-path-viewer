@@ -1,6 +1,7 @@
 {
   "gregorian": "格里曆",
   "julian": "儒略曆",
+  "chinese": "農曆",
   "location": "緯度/經度",
   "planet": "行星",
   "star_name": "天體名稱",

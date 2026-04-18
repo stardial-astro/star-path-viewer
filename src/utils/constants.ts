@@ -136,6 +136,7 @@ export const INFO_KEYS = new Set([
   'hip',
   'ra',
   'dec',
+  'date_cc',
 ]);
 
 /** Reverse geocoding fails or returns nothing (will toggle to coordinate mode) */

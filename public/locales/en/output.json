@@ -1,6 +1,7 @@
 {
   "gregorian": "Gregorian",
   "julian": "Julian",
+  "chinese": "Chinese",
   "location": "Location",
   "planet": "Planet",
   "star_name": "Star Name",

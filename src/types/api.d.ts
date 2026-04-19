@@ -25,6 +25,13 @@ interface BaiduSearchSchema {
   [key: string]: unknown;
 }
 
+interface TiandituReverseSchema {
+  formatted_address: string;
+  location: { lon: number; lat: number };
+  addressComponent: { town_code: string; [key: string]: unknown };
+  [key: string]: unknown;
+}
+
 /** The equinox/solstice object returned from server. */
 interface EqxSolSchema {
   /** Year. 0 is 1 BCE. */

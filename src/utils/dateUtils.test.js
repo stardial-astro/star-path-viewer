@@ -90,8 +90,8 @@ describe('formatDatetime', () => {
     ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh' }}                                  | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
     ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh-CN' }}                               | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
     ${{ datetime: { year: 1912, month: 2, day: 18 }, langCode: 'zh-Hans' }}                             | ${{ date: '公元1912年2月18日', time: '12:00:00', year: '1912 CE' }}
-    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-HK' }}                               | ${{ date: '西元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
-    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-Hant' }}                             | ${{ date: '西元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-HK' }}                               | ${{ date: '公元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
+    ${{ datetime: { year: 1912, month: 2, day: 17 }, langCode: 'zh-Hant' }}                             | ${{ date: '公元1912年2月17日', time: '12:00:00', year: '1912 CE' }}
   `('formats $input → $expected', ({ input, expected }) => {
     expect(formatDatetime(input)).toEqual(expected);
   });

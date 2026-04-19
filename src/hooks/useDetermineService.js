@@ -15,6 +15,7 @@ const hashes = window.location.hash.substring(1).split('&');
 const forceInCn = hashes.includes('cn');
 
 const isTest = import.meta.env.VITEST;
+const reverseServiceCn = import.meta.env.VITE_REVERSE_SERVICE_CN;
 
 /**
  * Calls `checkNominatimAccessibility` to determine the available geocoding service.
@@ -80,7 +81,12 @@ const useDetermineService = (
     getIsDevMode() &&
       noLocal &&
       console.debug('Cleared:', STORAGE_KEYS.service);
-    data !== null && console.debug('🌎 [Geocoding service]', service);
+    if (data !== null) {
+      console.debug('🌎 [Geocoding service]', service);
+      service === SERVICES.baidu &&
+        reverseServiceCn &&
+        console.debug('🌎 [GPS service]', reverseServiceCn);
+    }
   }, [isPaused, data, setGeoService]);
 };
 

@@ -122,6 +122,7 @@ const fetchGeolocation = async (service, geoMaxAge, signal) => {
     const { latitude, longitude } = position.coords;
     /* Mock for testing Baidu (tz will still be the actual one) ----- */
     // const { latitude, longitude } = { latitude: 31.23, longitude: 121.474 };
+    // const { latitude, longitude } = { latitude: 32.055257, longitude: 118.779539 };
     /* -------------------------------------------------------------- */
 
     /* Get the address from the latitude and longitude */

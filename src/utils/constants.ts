@@ -8,7 +8,8 @@ export const CC_HANT_CODES = ['zh-HK', 'zh-Hant'];
 export const SERVICES = {
   nominatim: 'Nominatim',
   baidu: 'Baidu',
-  // amap: 'Amap',
+  tianditu: 'Tianditu', // 天地图
+  // amap: 'Amap',  // 高德
 } as const;
 
 export const CN_TIMEZONES = new Set([

@@ -5,7 +5,7 @@ import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 const isTest = import.meta.env.VITEST;
-const isDev = import.meta.env.DEV === true;
+const isDev = import.meta.env.DEV;
 
 const instance = i18n.use(LanguageDetector).use(initReactI18next);
 if (!isTest) instance.use(Backend);

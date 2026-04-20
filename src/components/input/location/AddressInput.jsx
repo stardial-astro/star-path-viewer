@@ -46,7 +46,7 @@ const gpsIcon = (
 );
 
 const circularProgress = (
-  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 1 }} />
+  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 0.9 }} />
 );
 
 const AddressInput = () => {
@@ -429,7 +429,8 @@ const AddressInput = () => {
                   describeChild
                   title={t('find_my_location')}
                   disableHoverListener={isMobile}
-                  enterTouchDelay={0}
+                  enterDelay={500}
+                  enterTouchDelay={150}
                   leaveTouchDelay={2000}
                 >
                   <span>

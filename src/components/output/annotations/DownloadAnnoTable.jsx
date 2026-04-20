@@ -24,6 +24,16 @@ const CSV_FMT = 'csv';
 const JSON_FMT = 'json';
 const XLSX_FMT = 'xlsx';
 
+/**
+ * Prints the export error.
+ * @param {string} type
+ * @param {*} err
+ */
+const printExportError = (type, err) =>
+  console.error(
+    `Unable to export ${type}: ${Error.isError(err) ? err.message : err}`,
+  );
+
 /** @param {AnnoItem[]} anno */
 const annoToJson = (anno) => {
   const suffixZ = true; // replace '+00:00' with 'Z'
@@ -91,10 +101,7 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           });
           saveAs(blob, filename);
         } catch (err) {
-          console.error(
-            'Unable to export CSV:',
-            Error.isError(err) ? err.message : err,
-          );
+          printExportError('CSV', err);
           setErrorMessage((prev) => ({
             ...prev,
             download: 'errors:table_csv_error', // i18n key
@@ -109,10 +116,7 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           });
           saveAs(blob, filename);
         } catch (err) {
-          console.error(
-            'Unable to export JSON:',
-            Error.isError(err) ? err.message : err,
-          );
+          printExportError('JSON', err);
           setErrorMessage((prev) => ({
             ...prev,
             download: 'errors:table_json_error', // i18n key
@@ -126,10 +130,7 @@ const DownloadAnnoTable = ({ anno, filenameBase }) => {
           XLSX.utils.book_append_sheet(workbook, worksheet, 'Annotations');
           XLSX.writeFile(workbook, filename);
         } catch (err) {
-          console.error(
-            'Unable to export XLSX:',
-            Error.isError(err) ? err.message : err,
-          );
+          printExportError('XLSX', err);
           setErrorMessage((prev) => ({
             ...prev,
             download: 'errors:table_xlsx_error', // i18n key

@@ -1,5 +1,0 @@
-.gitattributes merge=ours
-public/manifest.json merge=ours
-public/robots.txt merge=ours
-public/sitemap.xml merge=ours
-public/_redirects merge=ours

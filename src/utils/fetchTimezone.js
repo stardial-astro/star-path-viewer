@@ -38,8 +38,7 @@ const fetchTimezone = async (lat, lng) => {
       return null;
     }
     console.warn(
-      `Unable to fetch the time zone ID at (${lat}, ${lng}):`,
-      Error.isError(err) ? err.message : err,
+      `Unable to fetch the time zone ID at (${lat}, ${lng}): ${Error.isError(err) ? err.message : err}`,
     );
     console.debug('The time zone ID will be determined by the server.');
     throw err;

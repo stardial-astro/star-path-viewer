@@ -25,6 +25,7 @@ import {
   SERVER_ERR_PREFIX,
   INTERNAL_ERR_LIST,
 } from '@utils/constants';
+import { trackEvent } from '@utils/analytics';
 import {
   isLocationInputCompleteSync,
   isDateInputCompleteSync,
@@ -146,6 +147,8 @@ const DiagramFetcher = () => {
    * - Retries on error
    */
   const handleDraw = useCallback(async () => {
+    trackEvent('button_click', { button_name: DRAW_BTN_LABEL.toLowerCase() });
+
     /* Skip fetching if offline or loading */
     if (offlineState.dialogOpen || offlineState.dismissed || loading) return;
 

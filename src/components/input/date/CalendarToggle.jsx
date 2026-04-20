@@ -74,8 +74,8 @@ const CalendarToggle = () => {
           disableHoverListener={isMobile}
           enterDelay={800}
           enterNextDelay={500}
-          enterTouchDelay={150}
-          leaveTouchDelay={2000}
+          enterTouchDelay={300}
+          leaveTouchDelay={1500}
           slotProps={tooltipSlotProps}
         >
           <span>

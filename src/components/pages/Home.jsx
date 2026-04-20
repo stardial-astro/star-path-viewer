@@ -25,10 +25,11 @@ hashes.includes('dev') && enableDevMode();
 
 /* Check env and config */
 if (getIsDevMode() && !import.meta.env.VITEST) {
-  // console.debug('[BASE_URL]', import.meta.env.BASE_URL);
   console.debug('[MODE]', import.meta.env.MODE);
+  console.debug('[DEV]', import.meta.env.DEV);
   console.debug('[VITE_IS_PREVIEW]', import.meta.env.VITE_IS_PREVIEW);
-  // console.debug('[DEV]', import.meta.env.DEV);
+  console.debug('[BASE_URL]', import.meta.env.BASE_URL);
+  console.debug('[VITE_GA_ID]', import.meta.env.VITE_GA_ID);
   // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
   // console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
   // console.debug('[__APP_NAME__]', __APP_NAME__);

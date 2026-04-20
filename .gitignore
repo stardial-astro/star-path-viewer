@@ -1,6 +1,8 @@
 tmp
 *.bk
 *.pem
+.dev.vars
+.wrangler/
 
 # Devtools of vite-plugin-pwa in dev mode
 dev-dist/

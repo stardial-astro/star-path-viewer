@@ -206,7 +206,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
           })
           /* @ts-ignore: TS7006 */
           .catch((err) => {
-            console.error('Unable to export PDF:', err?.message ?? err);
+            console.error(`Unable to export PDF: ${err?.message ?? err}`);
             setErrorMessage((prev) => ({
               ...prev,
               download: 'errors:image_pdf_error', // i18n key

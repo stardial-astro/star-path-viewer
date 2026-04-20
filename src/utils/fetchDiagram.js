@@ -2,6 +2,7 @@
 import axios from 'axios';
 import config from './config';
 import { CALS, INFO_KEYS } from './constants';
+import apiClient from './apiClient';
 import { parseApiError } from './apiUtils';
 import { sanitizeSvg } from './outputUtils';
 import { getIsDevMode } from './devMode';
@@ -27,11 +28,15 @@ const fetchDiagram = async (params, signal) => {
   let data;
   try {
     /* Fetch diagram */
-    const response = await axios.get(diagramUrl, {
+    const response = await apiClient.get(diagramUrl, {
       params,
       timeout: config.SERVER_DIAGRAM_TIMEOUT,
       signal,
     });
+    const duration = response.config.metadata?.duration;
+    if (isDevMode && duration) {
+      console.debug(`⏳ (server-diagram) Request took ${duration}ms`);
+    }
     /** @type {DiagramSchema} */
     data = response.data;
     if (!data) throw new Error(NO_DATA_ERR_MSG);

@@ -1,14 +1,14 @@
 // src/utils/fetchAddresses.js
 import axios from 'axios';
-import fetchJsonp from 'fetch-jsonp';
+// import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
+import apiClient from './apiClient';
 import { getIsDevMode } from './devMode';
 
 const NOMINATIM_TIMEOUT = 3_000;
-const BAIDU_TIMEOUT = 5_000;
+const BAIDU_TIMEOUT = 6_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
-const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
 
 // let activeRequests = 0;
 
@@ -26,8 +26,9 @@ const getTailSegments = (str, limit = 3) => {
  * @returns {Promise<AddressItem[]>} An array of address objects.
  * @throws {Error} If location is not found.
  */
-const fetchAddressesWithNominatim = async (query) => {
-  const response = await axios.get(nominatimSearchUrl, {
+const searchWithNominatim = async (query) => {
+  const isDevMode = getIsDevMode();
+  const response = await apiClient.get(nominatimSearchUrl, {
     params: {
       q: query,
       format: 'json',
@@ -36,9 +37,13 @@ const fetchAddressesWithNominatim = async (query) => {
     },
     timeout: NOMINATIM_TIMEOUT,
   });
+  const duration = response.config.metadata?.duration;
+  if (duration && isDevMode) {
+    console.debug(`⏳ (Nominatim-search) Request took ${duration}ms`);
+  }
   /** @type {NominatimSchema[]} */
   const data = response.data;
-  getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', data);
+  isDevMode && console.debug('[Query]', query, '\n[Locations]', data);
   if (Array.isArray(data) && data.length > 0) {
     /* item.lat and item.lon are strings */
     return data.map((item) => ({
@@ -58,22 +63,29 @@ const fetchAddressesWithNominatim = async (query) => {
  * @returns {Promise<AddressItem[]>} An array of address objects.
  * @throws {Error} If location is not found.
  */
-const fetchAddressesWithBaidu = async (query) => {
-  const url =
-    `${baiduSearchUrl}?` +
-    `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
-    `query=${query}&` +
-    'region=全国&' +
-    'output=json&' +
-    'ret_coordtype=gcj02ll';
-  const response = await fetchJsonp(url, {
-    jsonpCallback: 'callback',
+const searchWithBaidu = async (query) => {
+  const isDevMode = getIsDevMode();
+  const response = await apiClient.get('/api/baidu-search', {
+    params: {
+      query,
+      region: '全国',
+      output: 'json',
+      ret_coordtype: 'gcj02ll',
+    },
     timeout: BAIDU_TIMEOUT,
   });
-  const res = await response.json();
-  getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', res);
+  const duration = response.config.metadata?.duration;
+  if (duration && isDevMode) {
+    console.debug(`⏳ (Baidu-search) Request took ${duration}ms`);
+  }
+  const res = response.data;
+  isDevMode && console.debug('[Query]', query, '\n[Locations]', res);
+  isDevMode && console.debug('[Headers]', response.headers);
+  if (res?.status !== 0) {
+    throw new Error(res?.message || `Status: ${res?.status}`);
+  }
   /** @type {BaiduSearchSchema[]} */
-  const data = res?.result;
+  const data = res.result;
   if (Array.isArray(data) && data.length > 0) {
     return data.map((item) => ({
       lat: item.location.lat.toString(),
@@ -86,6 +98,40 @@ const fetchAddressesWithBaidu = async (query) => {
     throw new Error(LOCATION_NOT_FOUND_MSG);
   }
 };
+
+// /**
+//  * @param {string} query
+//  * @returns {Promise<AddressItem[]>} An array of address objects.
+//  * @throws {Error} If location is not found.
+//  */
+// const searchWithBaiduJsonp = async (query) => {
+//   const url =
+//     `${baiduSearchUrl}?` +
+//     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
+//     `query=${query}&` +
+//     'region=全国&' +
+//     'output=json&' +
+//     'ret_coordtype=gcj02ll';
+//   const response = await fetchJsonp(url, {
+//     jsonpCallback: 'callback',
+//     timeout: BAIDU_TIMEOUT,
+//   });
+//   const res = await response.json();
+//   /** @type {BaiduSearchSchema[]} */
+//   const data = res?.result;
+//   getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', data);
+//   if (Array.isArray(data) && data.length > 0) {
+//     return data.map((item) => ({
+//       lat: item.location.lat.toString(),
+//       lng: item.location.lng.toString(),
+//       display_name: [item.address, item.name].filter(Boolean).join(' '),
+//       id: item.uid || `${item.location.lat},${item.location.lng}`,
+//       addresstype: getTailSegments(item.tag),
+//     }));
+//   } else {
+//     throw new Error(LOCATION_NOT_FOUND_MSG);
+//   }
+// };
 
 /**
  * Fetched address suggestions.
@@ -108,9 +154,9 @@ const fetchAddresses = async (query, service) => {
   let res;
   try {
     if (service === SERVICES.baidu) {
-      res = await fetchAddressesWithBaidu(query);
+      res = await searchWithBaidu(query);
     } else {
-      res = await fetchAddressesWithNominatim(query);
+      res = await searchWithNominatim(query);
     }
     return res;
   } catch (err) {

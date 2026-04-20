@@ -1,6 +1,7 @@
 // src/utils/fetchDate.js
 import axios from 'axios';
 import config from './config';
+import apiClient from './apiClient';
 import { parseApiError } from './apiUtils';
 import { getIsDevMode } from './devMode';
 
@@ -25,10 +26,14 @@ const fetchDate = async (year, flag, lat, lng, tz) => {
   isDevMode && console.debug('> Fetching equinox/solstice date...');
   try {
     /* Fetch the equinox/solstice date */
-    const response = await axios.get(eqxSolUrl, {
+    const response = await apiClient.get(eqxSolUrl, {
       params: { lat, lng, tz, year, flag },
       timeout: config.SERVER_TIMEOUT,
     });
+    const duration = response.config.metadata?.duration;
+    if (duration && isDevMode) {
+      console.debug(`⏳ (server-date) Request took ${duration}ms`);
+    }
     /** @type {EqxSolSchema} */
     const data = response.data;
     if (!data) throw new Error(NO_DATA_ERR_MSG);

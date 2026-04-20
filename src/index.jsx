@@ -10,6 +10,7 @@ import { BrowserRouter } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { registerSW } from 'virtual:pwa-register';
+import { trackEvent } from '@utils/analytics';
 import { i18nPromise } from './i18n';
 import queryClient from './queryClient';
 import AppThemeProvider from './AppThemeProvider';
@@ -28,6 +29,21 @@ registerSW({
 window.addEventListener('vite:preloadError', (event) => {
   event.preventDefault();
   window.location.reload();
+});
+
+window.addEventListener('error', (event) => {
+  trackEvent('app_error', {
+    error_type: 'uncaught_error',
+    error_message: event.message,
+    error_source: event.filename,
+  });
+});
+
+window.addEventListener('unhandledrejection', (event) => {
+  trackEvent('app_error', {
+    error_type: 'unhandled_rejection',
+    error_message: event.reason?.message ?? String(event.reason),
+  });
 });
 
 const rootElement = document.getElementById('root');

@@ -42,7 +42,7 @@ const searchIcon = (
 );
 
 const circularProgress = (
-  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 1 }} />
+  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 0.1 }} />
 );
 
 const StarHipInput = () => {

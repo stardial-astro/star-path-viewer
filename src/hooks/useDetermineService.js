@@ -60,10 +60,10 @@ const useDetermineService = (
     if (offlineState.dialogOpen) {
       /* Clear the stored service from local storage */
       localStorage.removeItem(STORAGE_KEYS.service);
-      getIsDevMode() && console.debug('Cleared:', STORAGE_KEYS.service);
+      getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       /* Clear all */
       // setGeoService(null, true);
-      // getIsDevMode() && console.debug('Cleared: geoService');
+      // getIsDevMode() && console.debug('🧽 Cleared: geoService');
     }
   }, [offlineState.dialogOpen, setGeoService]);
 
@@ -80,7 +80,7 @@ const useDetermineService = (
     setGeoService(service, noLocal);
     getIsDevMode() &&
       noLocal &&
-      console.debug('Cleared:', STORAGE_KEYS.service);
+      console.debug('🧽 Cleared:', STORAGE_KEYS.service);
     if (data !== null) {
       console.debug('🌎 [Geocoding service]', service);
       service === SERVICES.baidu &&

@@ -30,7 +30,7 @@ const ShareButton = ({ setShareStatus }) => {
         if (Error.isError(err) && err.name === 'AbortError') {
           getIsDevMode() && console.debug(err.message);
         } else {
-          console.error(err);
+          console.error(String(err));
         }
       }
     } else {

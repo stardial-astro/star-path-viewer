@@ -7,15 +7,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "preview": "vite preview --host --strictPort",
     "dev:ssl": "HTTPS=true vite --host",
+    "dev:w": "bash run_wrangler.sh dev",
+    "dev:w:ssl": "bash run_wrangler.sh dev:ssl",
+    "build": "vite build",
+    "preview": "vite preview --host --strictPort",
     "preview:ssl": "HTTPS=true vite preview --host --strictPort",
+    "preview:w": "bash run_wrangler.sh preview",
+    "preview:w:ssl": "bash run_wrangler.sh preview:ssl",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -55,6 +59,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@types/babel__core": "^7",
     "@types/file-saver": "^2.0.7",
+    "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
@@ -74,7 +79,8 @@
     "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.2",
-    "vitest-canvas-mock": "^1.1.4"
+    "vitest-canvas-mock": "^1.1.4",
+    "wrangler": "^4.83.0"
   },
   "resolutions": {
     "serialize-javascript": ">=7.0.5"

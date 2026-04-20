@@ -8,6 +8,7 @@ import {
   SERVER_DOWN_MSG,
   SERVER_NO_RES_MSG,
 } from './constants';
+import apiClient from '@utils/apiClient';
 import { getIsDevMode } from './devMode';
 
 const SERVER_PROBE_TIMEOUT = config.SERVER_TIMEOUT;
@@ -35,12 +36,14 @@ const parseApiError = (err) => {
     }
     /* Request was made but no response received */
     if (err.request) {
-      console.error(err.message ?? err);
+      console.error(err.message ?? String(err));
       return new Error(SERVER_NO_RES_MSG);
     }
   }
   /* Anything unexpected */
-  console.error('Request setup error:', Error.isError(err) ? err.message : err);
+  console.error(
+    `Request setup error: ${Error.isError(err) ? err.message : err}`,
+  );
   return new Error(SERVER_ERR_MSG);
 };
 
@@ -54,10 +57,14 @@ const checkServerAccessibility = async () => {
   try {
     isDevMode && console.debug('> Checking if server is up...');
     const params = { tz: 'Etc/GMT', year: '-1000', flag: 've' };
-    const start = Date.now();
-    await axios.head(eqxSolUrl, { params, timeout: SERVER_PROBE_TIMEOUT });
-    isDevMode &&
-      console.debug(`⏳ (server) Request took ${Date.now() - start}ms`);
+    const response = await apiClient.head(eqxSolUrl, {
+      params,
+      timeout: SERVER_PROBE_TIMEOUT,
+    });
+    const duration = response.config.metadata?.duration;
+    if (isDevMode && duration) {
+      console.debug(`⏳ (server-probe) Request took ${duration}ms`);
+    }
     isDevMode && console.debug('✅ Server is up.\nURL:', serverUrl);
   } catch (err) {
     if (axios.isCancel(err)) {
@@ -82,14 +89,13 @@ const checkServerAccessibility = async () => {
       }
       /* Request was made but no response received */
       if (err.request) {
-        console.error(err.message ?? err);
+        console.error(err.message ?? String(err));
         throw new Error(SERVER_NO_RES_MSG, { cause: err });
       }
     }
     /* Anything unexpected */
     console.error(
-      'Request setup error:',
-      Error.isError(err) ? err.message : err,
+      `Request setup error: ${Error.isError(err) ? err.message : err}`,
     );
     throw new Error(SERVER_ERR_MSG, { cause: err });
   }
@@ -117,13 +123,14 @@ const checkNominatimAccessibility = async (forceInCn) => {
   try {
     isDevMode && console.debug('> Checking if Nominatim is accessible...');
     const params = { q: '', format: 'json', email: import.meta.env.VITE_EMAIL };
-    const start = Date.now();
-    await axios.head(nominatimSearchUrl, {
+    const response = await apiClient.head(nominatimSearchUrl, {
       params,
       timeout: SERVICE_PROBE_TIMEOUT,
     });
-    isDevMode &&
-      console.debug(`⏳ (Nominatim) Request took ${Date.now() - start}ms`);
+    const duration = response.config.metadata?.duration;
+    if (isDevMode && duration) {
+      console.debug(`⏳ (Nominatim-probe) Request took ${duration}ms`);
+    }
     isDevMode && console.debug('✅ Nominatim is accessible.');
     return { isAccessible: true, isInCn };
   } catch (err) {
@@ -145,8 +152,7 @@ const checkNominatimAccessibility = async (forceInCn) => {
     }
     isDevMode &&
       console.debug(
-        '🔴 Nominatim unaccessible:',
-        Error.isError(err) ? err.message : err,
+        `🔴 Nominatim unaccessible: ${Error.isError(err) ? err.message : err}`,
       );
     return { isAccessible: false, isInCn };
   }

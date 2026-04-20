@@ -101,7 +101,7 @@ const useFetchAddresses = (
          * in local storage to trigger the service accessibility testing
          */
         setGeoService(null, true);
-        getIsDevMode() && console.debug('Cleared:', STORAGE_KEYS.service);
+        getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
         setErrorMessage((prev) => ({ ...prev, location: error.message }));
       }
       dispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });

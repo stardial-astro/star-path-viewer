@@ -1,5 +1,6 @@
 // src/utils/fetchGeolocation.js
 import axios from 'axios';
+import apiClient from './apiClient';
 import reverseGeocode from './reverseGeocode';
 import { getIsDevMode } from './devMode';
 
@@ -22,7 +23,7 @@ const fetchIpLocation = async (signal) => {
   if (signal?.aborted) return null;
 
   try {
-    const response = await axios.get(ipGeoServiceUrl, {
+    const response = await apiClient.get(ipGeoServiceUrl, {
       timeout: GEO_IP_TIMEOUT,
       signal,
     });
@@ -55,8 +56,7 @@ const fetchIpLocation = async (signal) => {
   } catch (err) {
     if (axios.isCancel(err)) throw err;
     console.error(
-      'Error fetching IP geolocation:',
-      Error.isError(err) ? err.message : err,
+      `Error fetching IP geolocation: ${Error.isError(err) ? err.message : err}`,
     );
     throw new Error(GEO_ERR_MSG, { cause: err });
   }
@@ -121,8 +121,8 @@ const fetchGeolocation = async (service, geoMaxAge, signal) => {
 
     const { latitude, longitude } = position.coords;
     /* Mock for testing Baidu (tz will still be the actual one) ----- */
-    // const { latitude, longitude } = { latitude: 31.23, longitude: 121.474 };
-    // const { latitude, longitude } = { latitude: 32.055257, longitude: 118.779539 };
+    // const { latitude, longitude } = { latitude: 31.23, longitude: 121.474 }; // TEST
+    // const { latitude, longitude } = { latitude: 32.055257, longitude: 118.779539 }; // TEST
     /* -------------------------------------------------------------- */
 
     /* Get the address from the latitude and longitude */

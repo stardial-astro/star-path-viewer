@@ -7,6 +7,7 @@ import {
   HIP_NOT_FOUND_MSG,
 } from './constants';
 import config from './config';
+import apiClient from './apiClient';
 import { getIsDevMode } from './devMode';
 
 const HIP_TIMEOUT = 5_000;
@@ -101,9 +102,13 @@ const fetchAndCacheHipList = async (setHipList) => {
   isDevMode && console.debug('> Fetching HIP ident list...');
 
   try {
-    const response = await axios.get(starNamesUrl, {
+    const response = await apiClient.get(starNamesUrl, {
       timeout: HIP_TIMEOUT,
     });
+    const duration = response.config.metadata?.duration;
+    if (isDevMode && duration) {
+      console.debug(`⏳ (hip) Request took ${duration}ms`);
+    }
     /** @type {HipItem[]} */
     const data = response.data;
     if (!data) throw new Error(NO_DATA_ERR_MSG);
@@ -125,8 +130,7 @@ const fetchAndCacheHipList = async (setHipList) => {
       return null;
     }
     console.error(
-      'Error fetching HIP ident list:',
-      Error.isError(err) ? err.message : err,
+      `Error fetching HIP ident list: ${Error.isError(err) ? err.message : err}`,
     );
     throw new Error(DATA_ERR_MSG, { cause: err });
   }

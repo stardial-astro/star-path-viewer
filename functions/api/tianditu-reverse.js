@@ -42,8 +42,9 @@ export async function onRequest(context) {
       redirect: 'follow',
     });
     if (!response.ok) {
+      const errorBody = await response.json(); 
       throw new Error(
-        `Tianditu reverse geocoding responded with ${response.status}`,
+        `Tianditu reverse geocoding responded with ${response.status}: ${errorBody}`,
       );
     }
 

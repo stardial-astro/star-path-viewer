@@ -16,6 +16,7 @@ apiClient.interceptors.request.use((config) => {
 /* Response interceptor: log results */
 apiClient.interceptors.response.use(
   (response) => {
+    /* Log the end time and duration */
     if (response.config.metadata?.startTime) {
       const endTime = performance.now();
       response.config.metadata.endTime = endTime;
@@ -23,6 +24,7 @@ apiClient.interceptors.response.use(
         endTime - response.config.metadata.startTime,
       );
     }
+    /* Send event to GA4 */
     trackEvent('api_request', {
       endpoint: response.config.url,
       method: response.config.method?.toUpperCase(),
@@ -34,6 +36,12 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
+    const serverErr = error.response?.data;
+    const msg = serverErr?.message || serverErr?.error || error.message;
+    const statusCode = error.response?.status || 'Unknown';
+    console.error(`🔴 [API Error ${statusCode}]:`, msg);
+
+    /* Log the end time and duration */
     if (error.config?.metadata?.startTime) {
       const endTime = performance.now();
       error.config.metadata.endTime = endTime;
@@ -41,11 +49,12 @@ apiClient.interceptors.response.use(
         endTime - error.config.metadata.startTime,
       );
     }
+    /* Send event to GA4 */
     trackEvent('api_error', {
       endpoint: error.config?.url,
       method: error.config?.method?.toUpperCase(),
-      status: error.response?.status,
-      error_message: error.message,
+      status: statusCode,
+      error_message: msg,
       ...(error.config?.metadata?.duration !== undefined && {
         duration_ms: error.config.metadata.duration,
       }),

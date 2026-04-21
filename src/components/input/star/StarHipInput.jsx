@@ -201,6 +201,8 @@ const StarHipInput = () => {
           type: actionTypes.SET_SEARCH_TERM,
           payload: value,
         });
+        /* Clear suggestions before fetching */
+        starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: test if any issue caused b this
       } else {
         /* Clear searchTerm and suggestions if value is blank */
         starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
@@ -259,17 +261,21 @@ const StarHipInput = () => {
       return;
     }
     /* When loosing focus, auto-select or warn */
-    if (suggestions.length > 0 && suggestions[0].hip === searchTerm) {
-      /* If the search term itself is a valid HIP, select this option and close */
-      selectOption(suggestions[0]);
-      setOpen(false);
-    } else if (suggestions.length > 0) {
-      /* If none has been selected, warn and set invalid */
-      starDispatch({
-        type: actionTypes.SET_STAR_HIP_ERROR,
-        payload: 'errors:have_not_select_star',
-      });
-      starDispatch({ type: actionTypes.SET_STAR_VALID, payload: false });
+    if (suggestions.length > 0) {
+      if (suggestions[0].hip === trimmedSearchTerm) {
+        /* If the search term itself is a valid HIP, which will always be at the top
+         * in this case, select this option and close
+         */
+        selectOption(suggestions[0]);
+        setOpen(false);
+      } else {
+        /* If none has been selected, warn and set invalid */
+        starDispatch({
+          type: actionTypes.SET_STAR_HIP_ERROR,
+          payload: 'errors:have_not_select_star',
+        });
+        starDispatch({ type: actionTypes.SET_STAR_VALID, payload: false });
+      }
     } else if (!starError.hip && !errorMessage.star) {
       // TODO: this should not happen
       /* If searchTerm is not empty but nothing returned yet for this new search,
@@ -278,7 +284,8 @@ const StarHipInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      getIsDevMode() && console.debug('⚠️ Refetching stars...');
+      getIsDevMode() &&
+        console.debug('🤔 Something went wrong. Refetching stars...');
     }
   }, [
     searchTerm,

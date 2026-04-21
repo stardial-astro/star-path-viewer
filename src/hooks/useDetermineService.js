@@ -1,6 +1,7 @@
 // src/hooks/useDetermineService.js
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import * as actionTypes from '@context/locationInputActionTypes';
 import { SERVICES, STORAGE_KEYS } from '@utils/constants';
 import { checkNominatimAccessibility } from '@utils/apiUtils';
 import { getIsDevMode } from '@utils/devMode';
@@ -15,7 +16,6 @@ const hashes = window.location.hash.substring(1).split('&');
 const forceInCn = hashes.includes('cn');
 
 const isTest = import.meta.env.VITEST;
-const reverseServiceCn = import.meta.env.VITE_REVERSE_SERVICE_CN;
 
 /**
  * Calls `checkNominatimAccessibility` to determine the available geocoding service.
@@ -29,19 +29,24 @@ const reverseServiceCn = import.meta.env.VITE_REVERSE_SERVICE_CN;
  * - Prevents multiple identical requests
  * - No retries on error
  * - Always refetches on mount/reconnect
+ * - Syncs `serviceChecking`
  * @param {boolean} isDelayedOnline
  * @param {OfflineStateObj} offlineState
  * @param {GeoService | null} geoService
+ * @param {GeoService} reverseGeoServiceCn
+ * @param {ReactDispatch} dispatch
  * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
  */
 const useDetermineService = (
   isDelayedOnline,
   offlineState,
   geoService,
+  reverseGeoServiceCn,
+  dispatch,
   setGeoService,
 ) => {
   const isEnabled = (!geoService || forceInCn) && isDelayedOnline && !isTest;
-  const { data, isPaused } = useQuery({
+  const { data, isPaused, isFetching } = useQuery({
     queryKey: [QUERY_KEY, forceInCn, isDelayedOnline],
     queryFn: () => checkNominatimAccessibility(forceInCn),
     enabled: isEnabled,
@@ -54,6 +59,15 @@ const useDetermineService = (
     refetchOnWindowFocus: false,
     refetchOnReconnect: 'always',
   });
+
+  useEffect(() => {
+    /* Sync loading state */
+    dispatch({
+      type: isFetching
+        ? actionTypes.SET_SERVICE_CHECKING_ON
+        : actionTypes.SET_SERVICE_CHECKING_OFF,
+    });
+  }, [isFetching, dispatch]);
 
   /* If online -> offline, clear the saved service */
   useEffect(() => {
@@ -69,7 +83,7 @@ const useDetermineService = (
 
   useEffect(() => {
     if (isPaused) return;
-    /* Determine the geocoding service (fallback to Nominatim) */
+    /* Determine the geocoding service (fall back to Nominatim) */
     const service =
       data?.isAccessible !== false ? SERVICES.nominatim : SERVICES.baidu;
     /* If not in CN but Nominatim is not accessible (e.g., via proxy)
@@ -81,13 +95,10 @@ const useDetermineService = (
     getIsDevMode() &&
       noLocal &&
       console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    if (data !== null) {
-      console.debug('🌎 [Geocoding service]', service);
-      service === SERVICES.baidu &&
-        reverseServiceCn &&
-        console.debug('🌎 [GPS service]', reverseServiceCn);
-    }
-  }, [isPaused, data, setGeoService]);
+    data !== null && console.debug('🌎 [Geocoding service]', service);
+    service !== SERVICES.nominatim &&
+      console.debug('🌎 [GPS service]', reverseGeoServiceCn);
+  }, [isPaused, data, reverseGeoServiceCn, setGeoService]);
 };
 
 export default useDetermineService;

@@ -20,15 +20,24 @@ export async function onRequest(context) {
   }
 
   /* Construct URL */
+  const paramsToForward = [
+    'location',
+    'output',
+    'coordtype',
+    'region_data_source',
+  ];
   const apiUrl = new URL(baseUrl);
-  const { searchParams } = new URL(context.request.url);
-  searchParams.forEach((value, key) => {
-    if (key !== 'ak') apiUrl.searchParams.set(key, value);
+  const requestUrl = new URL(context.request.url);
+  paramsToForward.forEach((key) => {
+    const value = requestUrl.searchParams.get(key);
+    if (value) apiUrl.searchParams.set(key, value);
   });
   apiUrl.searchParams.set('ak', ak);
+  const finalUrl = apiUrl.toString();
+  console.log("DEBUG: Final URL to Baidu ->", finalUrl);
 
   try {
-    const response = await fetch(apiUrl.toString());
+    const response = await fetch(finalUrl);
     if (!response.ok) {
       throw new Error(
         `Baidu reverse geocoding responded with ${response.status}`,

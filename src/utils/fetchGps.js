@@ -2,7 +2,7 @@
 import queryClient from '@/queryClient';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from './config';
-import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from './constants';
+import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from './constants';
 import fetchGeolocation from './fetchGeolocation';
 import { getIsDevMode } from './devMode';
 
@@ -16,6 +16,7 @@ const GC_MS = 30 * 60_000;
 /**
  * Calls `fetchGeolocation` to fetch geolocation and sets the coordinates and address.
  * - Skips fetching if offline or no service defined
+ * - Updates `geoService` and/or `reverseGeoServiceCn` if any of them is actually in use
  * - Updates `location`, `searchTerm`, and `lastSelectedTermRef` if successful
  * - If no valid address returned, toggles to coordinate mode
  * - Sets `tz` returned from the built-in method.
@@ -24,19 +25,37 @@ const GC_MS = 30 * 60_000;
  * - Automatic caching
  * - Prevents multiple identical requests
  * - Retries on error (delay with exponential backoff)
- * @param {GeoService} service - The geocoding service.
+ * @param {GeoService} service - The reverse geocoding service.
+ * @param {GeoService} serviceCn - The CN reverse geocoding service.
  * @param {ReactRef<string>} lastSelectedTermRef
+ * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
+ * @param {ReactSetState<GeoService>} setReverseGeoServiceCn
  * @param {ReactDispatch} dispatch
  * @returns {Promise<Error | null>} The error, or `null` if successful/aborted.
  */
-const fetchGps = async (service, lastSelectedTermRef, dispatch) => {
+const fetchGps = async (
+  service,
+  serviceCn,
+  lastSelectedTermRef,
+  setGeoService,
+  setReverseGeoServiceCn,
+  dispatch,
+) => {
   const controller = new AbortController();
   dispatch({ type: actionTypes.SET_GPS_LOADING_ON });
 
   try {
     const res = await queryClient.fetchQuery({
-      queryKey: [QUERY_KEY, service],
-      queryFn: () => fetchGeolocation(service, STALE_MS, controller.signal),
+      queryKey: [QUERY_KEY, service, serviceCn],
+      queryFn: () =>
+        fetchGeolocation(
+          service,
+          serviceCn,
+          STALE_MS,
+          setGeoService,
+          setReverseGeoServiceCn,
+          controller.signal,
+        ),
       staleTime: STALE_MS,
       gcTime: GC_MS,
       retry: (failureCount, _error) => {
@@ -61,7 +80,7 @@ const fetchGps = async (service, lastSelectedTermRef, dispatch) => {
         id: res.id,
       },
     });
-    if (res.display_name !== LOC_UNKNOWN && res.id !== LOC_UNKNOWN_ID) {
+    if (res.id !== LOC_UNKNOWN_ID) {
       /* If the address is valid, update state and ref */
       lastSelectedTermRef.current = res.display_name.trim();
       dispatch({

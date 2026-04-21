@@ -37,10 +37,8 @@ export const trackTiming = async (eventName, fn, params = {}) => {
 
 /**
  * Sends a custom event to GA4.
- *
- * Has no effect if `window.gtag` is not initialized (e.g. in dev mode or when
- * GA ID is not provided).
- *
+ * - Has no effect if `window.gtag` is not initialized (e.g. in dev mode or when
+ *   `VITE_GA_ID` is not provided).
  * @param {string} eventName - The name of the event. Use snake_case to follow
  *   GA4 naming conventions (e.g. `'button_click'`, `'app_error'`).
  * @param {object} [params={}] - Optional event parameters.
@@ -54,11 +52,9 @@ export const trackTiming = async (eventName, fn, params = {}) => {
  * @param {string} [params.error_message] - Error message for error events.
  * @param {string} [params.error_source] - Source file where the error occurred.
  * @param {string} [params.component_stack] - React component stack trace for error events.
- *
  * @example
  * // Track a button click
  * trackEvent('button_click', { button_name: 'subscribe' });
- *
  * @example
  * // Track an error
  * trackEvent('app_error', { error_message: error.message });

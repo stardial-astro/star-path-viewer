@@ -1,7 +1,7 @@
 // src/utils/reverseGeocode.js
 import axios from 'axios';
 // import fetchJsonp from 'fetch-jsonp';
-import { SERVICES, LOC_UNKNOWN_ID, LOC_UNKNOWN } from './constants';
+import { SERVICES, CN_TIMEZONES, LOC_UNKNOWN_ID } from './constants';
 import apiClient from './apiClient';
 import { getIsDevMode } from './devMode';
 
@@ -12,12 +12,6 @@ const TIANDITU_TIMEOUT = 6_000;
 const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
-
-/** @type {GeoService} The reverse geocoding service for CN. Defaults to `'Baidu'`. */
-const reverseCn =
-  import.meta.env.VITE_REVERSE_SERVICE_CN === SERVICES.tianditu
-    ? SERVICES.tianditu
-    : SERVICES.baidu;
 
 /**
  * @param {CoordObj} coords
@@ -54,7 +48,7 @@ const reverseWithNominatim = async (coords, signal) => {
   return {
     lat: coords.latitude.toString(),
     lng: coords.longitude.toString(),
-    display_name: display_name || LOC_UNKNOWN,
+    display_name: display_name || LOC_UNKNOWN_ID,
     id: display_name ? id : LOC_UNKNOWN_ID,
     addresstype: '',
   };
@@ -97,7 +91,7 @@ const reverseWithBaidu = async (coords, signal) => {
   return {
     lat: coords.latitude.toString(),
     lng: coords.longitude.toString(),
-    display_name: display_name || LOC_UNKNOWN,
+    display_name: display_name || LOC_UNKNOWN_ID,
     id: display_name ? id : LOC_UNKNOWN_ID,
     addresstype: '',
   };
@@ -110,7 +104,7 @@ const reverseWithBaidu = async (coords, signal) => {
 //  * @throws {Error} If location is not found.
 //  */
 // /* eslint-disable-next-line no-unused-vars */
-// const reverseWithBaidu = async (coords, signal) => {
+// const reverseWithBaiduJsonp = async (coords, signal) => {
 //   const url =
 //     `${baiduReverseUrl}?` +
 //     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
@@ -133,7 +127,7 @@ const reverseWithBaidu = async (coords, signal) => {
 //   return {
 //     lat: coords.latitude.toString(),
 //     lng: coords.longitude.toString(),
-//     display_name: display_name || LOC_UNKNOWN,
+//     display_name: display_name || LOC_UNKNOWN_ID,
 //     id: display_name ? id : LOC_UNKNOWN_ID,
 //     addresstype: '',
 //   };
@@ -181,7 +175,7 @@ const reverseWithTianditu = async (coords, signal) => {
   return {
     lat: coords.latitude.toString(),
     lng: coords.longitude.toString(),
-    display_name: display_name || LOC_UNKNOWN,
+    display_name: display_name || LOC_UNKNOWN_ID,
     id: display_name ? id : LOC_UNKNOWN_ID,
     addresstype: '',
   };
@@ -189,63 +183,95 @@ const reverseWithTianditu = async (coords, signal) => {
 
 /**
  * Fetches reverse geocoding data.
+ * - If `service` is `null`, falls back to `'Nominatim'`, or `serviceCn` if in CN
  * @param {CoordObj} coords
- * @param {GeoService} service - The geocoding service.
+ * @param {GeoService | null} service - The reverse geocoding service (`'Nominatim'` | `'Baidu'`).
+ * @param {GeoService} serviceCn - The CN reverse geocoding service (`'Tianditu'` | `'Baidu'`).
  * @param {AbortSignal} signal
- * @returns {Promise<AddressItem | null>} The address object, or `null` if aborted.
+ * @returns {Promise<{ res: AddressItem | null, serviceInUse: GeoService }>}
+ *   The address object or `null` if aborted, and the reverse geocoding service in use.
  */
-const reverseGeocode = async (coords, service, signal) => {
-  if (signal?.aborted) return null;
+const reverseGeocode = async (coords, service, serviceCn, signal) => {
+  /* The serviceInUse returned when aborted is a dummy that will not be used */
+  if (signal?.aborted) return { res: null, serviceInUse: service || serviceCn };
+
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const isInCn = CN_TIMEZONES.has(tz);
+  let serviceInUse = isInCn
+    ? serviceCn
+    : service === SERVICES.baidu
+      ? serviceCn
+      : service || SERVICES.nominatim;
 
   const isDevMode = getIsDevMode();
-  const reverseCnFallback =
-    reverseCn === SERVICES.baidu ? SERVICES.tianditu : SERVICES.baidu;
-  const reverseCnFn =
-    reverseCn === SERVICES.baidu ? reverseWithBaidu : reverseWithTianditu;
-  const reverseCnFallbackFn =
-    reverseCn === SERVICES.baidu ? reverseWithTianditu : reverseWithBaidu;
+  let reverseFn = reverseWithNominatim;
+  let reverseFallbackFn = reverseWithBaidu;
+  /** @type {GeoService} */
+  let serviceFallback = SERVICES.baidu;
+  if (serviceInUse === SERVICES.tianditu) {
+    reverseFn = reverseWithTianditu;
+  } else if (serviceInUse === SERVICES.baidu) {
+    reverseFn = reverseWithBaidu;
+    reverseFallbackFn = reverseWithTianditu;
+    serviceFallback = SERVICES.tianditu;
+  }
 
   /** @type {AddressItem} */
   let res;
-  /* If in CN, try the defined service first */
-  if (service === SERVICES.baidu) {
-    try {
-      res = await reverseCnFn(coords, signal);
-      if (res.display_name && res.display_name !== LOC_UNKNOWN) {
-        return res;
-      } else {
-        isDevMode &&
-          console.debug(
-            `⚠️ ${reverseCn} reverse geocoding failed. Fallback to ${reverseCnFallback}...`,
-          );
-      }
-    } catch (err) {
-      if (Error.isError(err)) {
-        if (
-          axios.isCancel(err) ||
-          err.message === 'cancelled' ||
-          err.name === 'AbortError'
-        ) {
-          isDevMode && console.debug('Reverse geocoding cancelled.');
-          return null;
+  /* If possibly in CN, try the defined CN service first ------------ */
+  if (serviceInUse !== SERVICES.nominatim) {
+    /* If not in CN and not mocking coordinates, warn and skip */
+    if (!isInCn && (coords.longitude < 73 || coords.longitude > 136)) {
+      /* Try Nominatim below */
+      isDevMode &&
+        console.debug(
+          `⚠️ You are not in China. Reverse geocoding for this location is unavailable.` +
+            '\nSwitching to Nominatim...',
+        );
+      serviceInUse = SERVICES.nominatim;
+      reverseFn = reverseWithNominatim;
+    } else {
+      /* Try the specified CN service */
+      try {
+        res = await reverseFn(coords, signal);
+        if (res.id !== LOC_UNKNOWN_ID) {
+          return { res, serviceInUse };
+        } else {
+          /* Try Nominatim below (this should not happen) */
+          isDevMode &&
+            console.debug(
+              `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.` +
+                '\nSwitching to Nominatim...',
+            );
+          serviceInUse = SERVICES.nominatim;
+          reverseFn = reverseWithNominatim;
         }
+      } catch (err) {
+        if (Error.isError(err)) {
+          if (
+            axios.isCancel(err) ||
+            err.message === 'cancelled' ||
+            err.name === 'AbortError'
+          ) {
+            isDevMode && console.debug('Reverse geocoding cancelled.');
+            return { res: null, serviceInUse };
+          }
+          console.error(err.message);
+        }
+        /* Try the fallback service below */
         isDevMode &&
           console.debug(
-            `🔴 ${reverseCn} reverse geocoding unavailable. Fallback to ${reverseCnFallback}...`,
+            `🔴 ${serviceInUse} reverse geocoding failed.\nSwitching to ${serviceFallback}...`,
           );
+        serviceInUse = serviceFallback;
+        reverseFn = reverseFallbackFn;
       }
     }
   }
-  /* Use Nominatim or the fallback when in CN */
+  /* Fetch with Nominatim or the fallback CN service ---------------- */
   try {
-    if (service === SERVICES.baidu) {
-      /* If in CN and failed just now, this is the fallback service */
-      res = await reverseCnFallbackFn(coords, signal);
-    } else {
-      /* If not in CN */
-      res = await reverseWithNominatim(coords, signal);
-    }
-    return res;
+    res = await reverseFn(coords, signal);
+    return { res, serviceInUse };
   } catch (err) {
     if (Error.isError(err)) {
       if (
@@ -254,18 +280,19 @@ const reverseGeocode = async (coords, service, signal) => {
         err.name === 'AbortError'
       ) {
         isDevMode && console.debug('Reverse geocoding cancelled.');
-        return null;
+        return { res: null, serviceInUse };
       }
-      console.error('Reverse geocoding error:', err.message);
+      console.error(err.message);
     }
+    isDevMode && console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
     res = {
       lat: coords.latitude.toString(),
       lng: coords.longitude.toString(),
-      display_name: LOC_UNKNOWN,
+      display_name: LOC_UNKNOWN_ID,
       id: LOC_UNKNOWN_ID,
       addresstype: '',
     };
-    return res;
+    return { res, serviceInUse };
   }
 };
 

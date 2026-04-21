@@ -135,8 +135,9 @@ const searchWithBaidu = async (query) => {
 
 /**
  * Fetched address suggestions.
+ * - If `service` is `null`, falls back to `'Nominatim'`
  * @param {string} query - Case insensitive.
- * @param {GeoService} service - The geocoding service.
+ * @param {GeoService | null} service - The geocoding service.
  * @returns {Promise<AddressItem[] | null>} An array of address objects, or `null` if aborted.
  * @throws {Error} If request failed or location is not found.
  */
@@ -156,6 +157,7 @@ const fetchAddresses = async (query, service) => {
     if (service === SERVICES.baidu) {
       res = await searchWithBaidu(query);
     } else {
+      /* If service is not set, fall back to Nominatim */
       res = await searchWithNominatim(query);
     }
     return res;

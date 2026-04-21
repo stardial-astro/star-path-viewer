@@ -1,5 +1,5 @@
 // src/hooks/useFetchAddresses.js
-import { useEffect } from 'react';
+import { useEffect, useEffectEvent } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
@@ -23,6 +23,9 @@ const MAX_RETRIES = 1;
 /**
  * Calls `fetchAddresses` to fetch address suggestions.
  * - Skips searching if force skipping, GPS is loading, or the input is too short
+ * - If `geoService` is `null`, falls back to `'Nominatim'`
+ * - If `geoService` is `null`, sets to `'Nominatim'` if successful, otherwise to `'Baidu'`
+ * - If error occurs, switch to the other service
  * - Updates `suggestions` on status change
  * Uses TanStack Query:
  * - Pauses while offline and resume/refetch when connectivity returns
@@ -49,8 +52,25 @@ const useFetchAddresses = (
   setGeoService,
   setErrorMessage,
 ) => {
-  const isEnabled =
-    !!geoService && !skipFetch && !gpsLoading && searchTerm.trim().length > 1;
+  const isEnabled = !skipFetch && !gpsLoading && searchTerm.trim().length > 1;
+
+  /**
+   * Sets or switches `geoService` but does not store in local.
+   * - Skips if `isSwitch` is `false` and `geoService` is already set
+   * - Falls back to `'Nominatim'` if `isSwitch` is `true` and `geoService` is not set
+   * @param {boolean} [isSwitch=true]
+   */
+  const updateService = useEffectEvent((isSwitch = true) => {
+    if (!isSwitch && geoService) return;
+    const service =
+      !geoService || geoService !== SERVICES.nominatim
+        ? SERVICES.nominatim
+        : SERVICES.baidu;
+    setGeoService(service, true);
+    getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+    console.debug('🌎 [Geocoding service]', service);
+  });
+
   const { data, error, isFetching } = useQuery({
     queryKey: [
       QUERY_KEY,
@@ -58,11 +78,7 @@ const useFetchAddresses = (
       geoService,
       refreshCount,
     ],
-    queryFn: () =>
-      fetchAddresses(
-        searchTerm.trim().toLowerCase(),
-        geoService || SERVICES.nominatim,
-      ),
+    queryFn: () => fetchAddresses(searchTerm.trim().toLowerCase(), geoService),
     enabled: isEnabled,
     networkMode: 'online',
     staleTime: STALE_MS,
@@ -73,6 +89,7 @@ const useFetchAddresses = (
       }
       return failureCount < MAX_RETRIES;
     },
+    // retry: false,
     retryDelay: config.RETRY_DELAY,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -97,16 +114,15 @@ const useFetchAddresses = (
           payload: error.message,
         });
       } else {
-        /* If other errors occur, clear the service state and existing value
-         * in local storage to trigger the service accessibility testing
-         */
-        setGeoService(null, true);
-        getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+        /* If other errors occur, switch the service but don't store (fall back to Nominatim) */
+        updateService(true);
         setErrorMessage((prev) => ({ ...prev, location: error.message }));
       }
       dispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
       dispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
     } else if (data) {
+      /* If was using the fallback service (Nominatim), set it but don't store */
+      updateService(false);
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }

@@ -32,6 +32,7 @@ window.addEventListener('vite:preloadError', (event) => {
 });
 
 window.addEventListener('error', (event) => {
+  /* Send event to GA4 */
   trackEvent('app_error', {
     error_type: 'uncaught_error',
     error_message: event.message,
@@ -40,6 +41,7 @@ window.addEventListener('error', (event) => {
 });
 
 window.addEventListener('unhandledrejection', (event) => {
+  /* Send event to GA4 */
   trackEvent('app_error', {
     error_type: 'unhandled_rejection',
     error_message: event.reason?.message ?? String(event.reason),

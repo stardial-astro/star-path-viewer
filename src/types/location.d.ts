@@ -57,6 +57,8 @@ interface LocationInitialState {
   /** Address suggestion list. Defaults to `[]`. */
   suggestions: AddressItem[];
   /** Defaults to `false`. */
+  serviceChecking: boolean;
+  /** Defaults to `false`. */
   gpsLoading: boolean;
   /** Defaults to `false`. */
   suggestionsLoading: boolean;
@@ -77,6 +79,9 @@ type LocationContextType = LocationInitialState & {
    *   (defaults to `false`)
    */
   setGeoService: (service: GeoService | null, noLocal?: boolean) => void;
+  /** The CN reverse geocoding service name. Defaults to `'Tianditu'` or from `VITE_REVERSE_SERVICE_CN`. */
+  reverseGeoServiceCn: GeoService;
+  setReverseGeoServiceCn: ReactSetState<GeoService>;
   /** If `true`, skips fetching tz using API. Defaults to `false`. */
   skipTz: boolean;
   setSkipTz: ReactSetState<boolean>;

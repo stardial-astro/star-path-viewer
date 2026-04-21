@@ -147,6 +147,7 @@ const DiagramFetcher = () => {
    * - Retries on error
    */
   const handleDraw = useCallback(async () => {
+    /* Send event to GA4 */
     trackEvent('button_click', { button_name: DRAW_BTN_LABEL.toLowerCase() });
 
     /* Skip fetching if offline or loading */

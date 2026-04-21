@@ -20,15 +20,19 @@ export async function onRequest(context) {
   }
 
   /* Construct URL */
+  const paramsToForward = ['postStr', 'type'];
   const apiUrl = new URL(baseUrl);
-  const { searchParams } = new URL(context.request.url);
-  searchParams.forEach((value, key) => {
-    if (key !== 'tk') apiUrl.searchParams.set(key, value);
+  const requestUrl = new URL(context.request.url);
+  paramsToForward.forEach((key) => {
+    const value = requestUrl.searchParams.get(key);
+    if (value) apiUrl.searchParams.set(key, value);
   });
   apiUrl.searchParams.set('tk', tk);
+  const finalUrl = apiUrl.toString();
+  console.log('DEBUG: Final URL to Tianditu ->', finalUrl);
 
   try {
-    const response = await fetch(apiUrl.toString());
+    const response = await fetch(finalUrl);
     if (!response.ok) {
       throw new Error(
         `Tianditu reverse geocoding responded with ${response.status}`,

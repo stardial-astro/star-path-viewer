@@ -3,6 +3,7 @@ import axios from 'axios';
 import apiClient from './apiClient';
 import reverseGeocode from './reverseGeocode';
 import { getIsDevMode } from './devMode';
+import { SERVICES, STORAGE_KEYS } from './constants';
 
 const GEO_TIMEOUT = 6_000;
 const GEO_IP_TIMEOUT = 5_000;
@@ -40,7 +41,7 @@ const fetchIpLocation = async (signal) => {
      *  "region": "British Columbia",
      *  "country": "CA",
      *  "loc": "49.2497,-123.1193",
-     *  "org": "AS398721 OXIO",
+     *  "org": "...",
      *  "postal": "...",
      *  "timezone": "America/Vancouver",
      *  "readme": "https://ipinfo.io/missingauth"
@@ -64,16 +65,28 @@ const fetchIpLocation = async (signal) => {
 
 /**
  * Fetches geolocation using `navigator.geolocation`.
- * @param {GeoService} service - The geocoding service.
+ * - Updates `geoService` and/or `reverseGeoServiceCn` if any of them is actually in use
+ * @param {GeoService | null} service - The reverse geocoding service.
+ * @param {GeoService} serviceCn - The CN reverse geocoding service.
  * @param {number} geoMaxAge
+ * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
+ * @param {ReactSetState<GeoService>} setReverseGeoServiceCn
  * @param {AbortSignal} signal
  * @returns {Promise<AddressItem | null>} The address object, or `null` if aborted.
  * @throws {Error} If request failed.
  */
-const fetchGeolocation = async (service, geoMaxAge, signal) => {
+const fetchGeolocation = async (
+  service,
+  serviceCn,
+  geoMaxAge,
+  setGeoService,
+  setReverseGeoServiceCn,
+  signal,
+) => {
   if (signal?.aborted) return null;
 
   const isDevMode = getIsDevMode();
+
   if ('geolocation' in navigator) {
     isDevMode && console.debug('> Querying geolocation...');
     /** @type {GeolocationPosition | { coords: CoordObj } | null} */
@@ -83,7 +96,7 @@ const fetchGeolocation = async (service, geoMaxAge, signal) => {
         /* Success */
         (position) => resolve(position),
 
-        /* If fails, fallback to IP geolocation */
+        /* If fails, fall back to IP geolocation */
         async (err) => {
           if (signal?.aborted) resolve(null);
           console.warn('getCurrentPosition failed:', err.message);
@@ -126,9 +139,35 @@ const fetchGeolocation = async (service, geoMaxAge, signal) => {
     /* -------------------------------------------------------------- */
 
     /* Get the address from the latitude and longitude */
-    const res = await reverseGeocode({ latitude, longitude }, service, signal);
+    const { res, serviceInUse } = await reverseGeocode(
+      { latitude, longitude },
+      service,
+      serviceCn,
+      signal,
+    );
     if (!res) return null;
-    isDevMode && console.debug('[Location]', res);
+    isDevMode && console.debug('[Resolved location]', res);
+
+    /* If successful, update the service but don't store */
+    if (serviceInUse === SERVICES.nominatim) {
+      if (service !== serviceInUse) {
+        setGeoService(serviceInUse, true);
+        isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+        console.debug('🌎 [Geocoding service]', serviceInUse);
+      }
+    } else {
+      /* CN */
+      if (service !== SERVICES.baidu) {
+        setGeoService(SERVICES.baidu, true);
+        isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+        console.debug('🌎 [Geocoding service]', SERVICES.baidu);
+      }
+      if (serviceCn !== serviceInUse) {
+        setReverseGeoServiceCn(serviceInUse);
+        console.debug('🌎 [GPS service]', serviceInUse);
+      }
+    }
+
     return res;
   } else {
     /* Geolocation not supported by this browser */

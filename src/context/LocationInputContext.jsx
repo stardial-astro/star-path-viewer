@@ -8,7 +8,7 @@ import {
   useRef,
   useCallback,
 } from 'react';
-import { STORAGE_KEYS, LOC_INPUT_TYPES } from '@utils/constants';
+import { STORAGE_KEYS, LOC_INPUT_TYPES, SERVICES } from '@utils/constants';
 import * as actionTypes from './locationInputActionTypes';
 
 /** 1 hour */
@@ -39,6 +39,7 @@ export const locationInitialState = {
   locationInputType: LOC_INPUT_TYPES.addr,
   searchTerm: '',
   suggestions: [],
+  serviceChecking: false,
   gpsLoading: false,
   suggestionsLoading: false,
   locationError: { address: '', lat: '', lng: '' },
@@ -174,6 +175,10 @@ const locationInputReducer = (state, action) => {
     case actionTypes.CLEAR_SUGGESTIONS:
       return { ...state, suggestions: [] };
 
+    case actionTypes.SET_SERVICE_CHECKING_ON:
+      return { ...state, serviceChecking: true };
+    case actionTypes.SET_SERVICE_CHECKING_OFF:
+      return { ...state, serviceChecking: false };
     case actionTypes.SET_GPS_LOADING_ON:
       return { ...state, gpsLoading: true };
     case actionTypes.SET_GPS_LOADING_OFF:
@@ -201,6 +206,9 @@ export const LocationInputProvider = ({ children }) => {
     locationInitialState,
   );
   const [geoService, setGeoService] = useState(initialService);
+  const [reverseGeoServiceCn, setReverseGeoServiceCn] = useState(
+    import.meta.env.VITE_REVERSE_SERVICE_CN || SERVICES.tianditu,
+  );
   const [skipTz, setSkipTz] = useState(false);
   const locationInputTypeRef = useRef(LOC_INPUT_TYPES.addr);
 
@@ -238,9 +246,11 @@ export const LocationInputProvider = ({ children }) => {
       value={{
         ...locationState,
         geoService,
+        setGeoService: updateService,
+        reverseGeoServiceCn,
+        setReverseGeoServiceCn,
         skipTz,
         setSkipTz,
-        setGeoService: updateService,
         locationInputTypeRef,
         resetLocationValues,
         locationDispatch,

@@ -27,7 +27,7 @@ import useFetchAddresses from '@/hooks/useFetchAddresses';
 import useDebounce from '@hooks/useDebounce';
 import isMobile from '@utils/isMobile';
 import config from '@utils/config';
-import { LOC_INPUT_TYPES, LOC_UNKNOWN, LOC_UNKNOWN_ID } from '@utils/constants';
+import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { getIsDevMode } from '@utils/devMode';
@@ -57,12 +57,15 @@ const AddressInput = () => {
     setSkipTz,
     searchTerm,
     suggestions,
+    serviceChecking,
     gpsLoading,
     suggestionsLoading,
     locationError,
     locationNullError,
     geoService,
     setGeoService,
+    reverseGeoServiceCn,
+    setReverseGeoServiceCn,
     locationInputTypeRef,
     resetLocationValues,
     locationDispatch,
@@ -219,13 +222,25 @@ const AddressInput = () => {
     /* Fetch geolocation and update location & searchTerm */
     const err = await fetchGps(
       geoService,
+      reverseGeoServiceCn,
       lastSelectedTermRef,
+      setGeoService,
+      setReverseGeoServiceCn,
       locationDispatch,
     );
     if (err) {
       setErrorMessage((prev) => ({ ...prev, location: err.message }));
     }
-  }, [offlineState, geoService, setSkipTz, locationDispatch, setErrorMessage]);
+  }, [
+    offlineState,
+    geoService,
+    reverseGeoServiceCn,
+    setSkipTz,
+    setGeoService,
+    setReverseGeoServiceCn,
+    locationDispatch,
+    setErrorMessage,
+  ]);
 
   /**
    * Updates when `onInputChange` fires.
@@ -251,6 +266,8 @@ const AddressInput = () => {
           type: actionTypes.SET_SEARCH_TERM,
           payload: value,
         });
+        /* Clear suggestions before fetching */
+        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: test if any issue caused b this
       } else {
         /* Clear searchTerm and suggestions if value is blank */
         locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
@@ -308,26 +325,31 @@ const AddressInput = () => {
       !trimmedSearchTerm ||
       trimmedSearchTerm === lastSelectedTermRef.current ||
       /* Reverse geocoding failed (should already toggled to coordinate mode) */
-      (suggestions.length > 0 && suggestions[0].display_name === LOC_UNKNOWN)
+      (suggestions.length > 0 && suggestions[0].id === LOC_UNKNOWN_ID)
     ) {
       setOpen(false);
       return;
     }
     /* When loosing focus, auto-select or warn */
-    if (suggestions.length > 0 && suggestions[0].display_name === searchTerm) {
-      /* If the search term itself is a valid address, select this option and close */
-      selectOption(suggestions[0]);
-      setOpen(false);
-    } else if (suggestions.length > 0) {
-      /* If none has been selected, warn and set invalid */
-      locationDispatch({
-        type: actionTypes.SET_ADDRESS_ERROR,
-        payload: 'errors:have_not_select_location',
-      });
-      locationDispatch({
-        type: actionTypes.SET_LOCATION_VALID,
-        payload: false,
-      });
+    if (suggestions.length > 0) {
+      const index = suggestions.findIndex(
+        (item) => item.display_name === trimmedSearchTerm,
+      );
+      if (index >= 0) {
+        /* If the search term itself is a valid address, select this option and close */
+        selectOption(suggestions[index]);
+        setOpen(false);
+      } else {
+        /* If none has been selected, warn and set invalid */
+        locationDispatch({
+          type: actionTypes.SET_ADDRESS_ERROR,
+          payload: 'errors:have_not_select_location',
+        });
+        locationDispatch({
+          type: actionTypes.SET_LOCATION_VALID,
+          payload: false,
+        });
+      }
     } else if (
       !locationError.address &&
       !errorMessage.location &&
@@ -340,7 +362,8 @@ const AddressInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      getIsDevMode() && console.debug('⚠️ Refetching locations...');
+      getIsDevMode() &&
+        console.debug('🤔 Something went wrong. Refetching locations...');
     }
   }, [
     searchTerm,
@@ -365,7 +388,7 @@ const AddressInput = () => {
       clearOnEscape
       autoHighlight
       openOnFocus
-      disabled={!geoService}
+      disabled={serviceChecking}
       options={suggestions}
       getOptionLabel={(option) =>
         typeof option === 'string'
@@ -413,18 +436,16 @@ const AddressInput = () => {
           {...params}
           label={t('search_address')}
           placeholder={
-            !geoService && !errorMessage.location
+            serviceChecking
               ? t('checking_geocoding_service')
-              : !geoService
-                ? t('errors:unknown_service')
-                : t('enter_a_place')
+              : t('enter_a_place')
           }
           inputRef={inputRef}
           error={!!tAddressError}
           helperText={tAddressError}
           startAdornment={
             <InputAdornment position="start" sx={{ ml: 0.5, mr: -0.4 }}>
-              {geoService && !suggestionsLoading && !gpsLoading ? (
+              {!serviceChecking && !suggestionsLoading && !gpsLoading ? (
                 <Tooltip
                   describeChild
                   title={t('find_my_location')}
@@ -437,6 +458,7 @@ const AddressInput = () => {
                     <CustomIconButton
                       aria-label={GPS_LABEL}
                       edge="start"
+                      disabled={!geoService}
                       onClick={handleGpsClick}
                       sx={{ py: 0.5 }}
                     >

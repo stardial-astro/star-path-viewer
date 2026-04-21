@@ -25,6 +25,7 @@ const LocationInput = () => {
     locationInputType,
     geoService,
     setGeoService,
+    reverseGeoServiceCn,
     locationDispatch,
   } = useLocationInput();
 
@@ -45,7 +46,14 @@ const LocationInput = () => {
    */
 
   /* Determine the geocoding service */
-  useDetermineService(isDelayedOnline, offlineState, geoService, setGeoService);
+  useDetermineService(
+    isDelayedOnline,
+    offlineState,
+    geoService,
+    reverseGeoServiceCn,
+    locationDispatch,
+    setGeoService,
+  );
 
   /* ------------------------------------------------------------------|
    * Clear errors when user starts typing

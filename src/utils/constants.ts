@@ -140,10 +140,11 @@ export const INFO_KEYS = new Set([
   'date_cc',
 ]);
 
-/** Reverse geocoding fails or returns nothing (will toggle to coordinate mode) */
-export const LOC_UNKNOWN_ID = 'unknown-id';
-/** Reverse geocoding fails or returns nothing (will toggle to coordinate mode) */
-export const LOC_UNKNOWN = 'unknown';
+/**
+ * Will be set as the `display_name` and `id` if reverse geocoding fails
+ * or returns empty address (then will toggle to coordinate mode).
+ */
+export const LOC_UNKNOWN_ID = 'unknown-address';
 
 export const WARNING_PREFIX_SERVER = 'WARNING:';
 export const WARNING_PREFIX = 'errors:warn_'; // i18n key starts with

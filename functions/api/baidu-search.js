@@ -20,19 +20,22 @@ export async function onRequest(context) {
   }
 
   /* Construct URL */
-  const paramsToForward = ['query', 'region', 'output', 'ret_coordtype'];
+  const paramsToForward = ['query', 'output', 'ret_coordtype'];
   const apiUrl = new URL(baseUrl);
   const requestUrl = new URL(context.request.url);
   paramsToForward.forEach((key) => {
     const value = requestUrl.searchParams.get(key);
     if (value) apiUrl.searchParams.set(key, value);
   });
+  apiUrl.searchParams.set('region', '全国');
   apiUrl.searchParams.set('ak', ak);
   const finalUrl = apiUrl.toString();
-  console.log('DEBUG: Final URL to Baidu ->', finalUrl);
+  console.log('[DEBUG] Final URL to Baidu ->', finalUrl); // TODO: test
 
   try {
     const response = await fetch(finalUrl);
+    const rawText = await response.text();
+    console.log("[DEBUG] Baidu Raw Response:", rawText); // TODO: test
     if (!response.ok) {
       throw new Error(`Baidu search responded with ${response.status}`);
     }

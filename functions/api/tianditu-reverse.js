@@ -29,10 +29,12 @@ export async function onRequest(context) {
   });
   apiUrl.searchParams.set('tk', tk);
   const finalUrl = apiUrl.toString();
-  console.log('DEBUG: Final URL to Tianditu ->', finalUrl);
+  console.log('[DEBUG] Final URL to Tianditu ->', finalUrl); // TODO: test
 
   try {
     const response = await fetch(finalUrl);
+    const rawText = await response.text();
+    console.log('[DEBUG] Tianditu Raw Response:', rawText); // TODO: test
     if (!response.ok) {
       throw new Error(
         `Tianditu reverse geocoding responded with ${response.status}`,

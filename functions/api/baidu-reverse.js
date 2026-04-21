@@ -34,10 +34,12 @@ export async function onRequest(context) {
   });
   apiUrl.searchParams.set('ak', ak);
   const finalUrl = apiUrl.toString();
-  console.log("DEBUG: Final URL to Baidu ->", finalUrl);
+  console.log("[DEBUG] Final URL to Baidu ->", finalUrl); // TODO: test
 
   try {
     const response = await fetch(finalUrl);
+    const rawText = await response.text();
+    console.log("[DEBUG] Baidu Raw Response:", rawText); // TODO: test
     if (!response.ok) {
       throw new Error(
         `Baidu reverse geocoding responded with ${response.status}`,

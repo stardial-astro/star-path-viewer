@@ -10,7 +10,7 @@ const BAIDU_TIMEOUT = 6_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 
-// let activeRequests = 0;
+let activeRequests = 0;
 
 /**
  * @param {string} str
@@ -68,7 +68,6 @@ const searchWithBaidu = async (query) => {
   const response = await apiClient.get('/api/baidu-search', {
     params: {
       query,
-      region: '全国',
       output: 'json',
       ret_coordtype: 'gcj02ll',
     },
@@ -145,11 +144,11 @@ const fetchAddresses = async (query, service) => {
   const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching address suggestions...');
 
-  // activeRequests++;
-  // isDevMode &&
-  //   console.debug(
-  //     `[Search(${service})] concurrency: ${activeRequests}, query: ${query}`,
-  //   );
+  activeRequests++;
+  isDevMode &&
+    console.debug(
+      `[${service}-search] concurrency: ${activeRequests}, query: ${query}`,
+    );
 
   /** @type {AddressItem[]} */
   let res;
@@ -172,12 +171,13 @@ const fetchAddresses = async (query, service) => {
       Error.isError(err) ? err.message : err,
     );
     throw new Error(SERVICE_ERR_MSG, { cause: err });
+  } finally {
+    activeRequests--;
+    isDevMode &&
+      console.debug(
+        `[${service}-search] concurrency: ${activeRequests}, finished`,
+      );
   }
-  // finally {
-  //   activeRequests--;
-  //   isDevMode &&
-  //     console.debug(`[Search(${service})] concurrency: ${activeRequests}, finished`);
-  // }
 };
 
 export default fetchAddresses;

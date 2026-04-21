@@ -13,6 +13,9 @@ const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
 
+const hashes = window.location.hash.substring(1).split('&');
+const forceInCn = hashes.includes('cn');
+
 /**
  * @param {CoordObj} coords
  * @param {AbortSignal} signal
@@ -142,8 +145,8 @@ const reverseWithBaidu = async (coords, signal) => {
 const reverseWithTianditu = async (coords, signal) => {
   const isDevMode = getIsDevMode();
   const postStr = JSON.stringify({
-    lon: coords.longitude,
-    lat: coords.latitude,
+    lon: coords.longitude.toString(),
+    lat: coords.latitude.toString(),
     ver: 1,
   });
   const response = await apiClient.get('/api/tianditu-reverse', {
@@ -195,13 +198,22 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
   /* The serviceInUse returned when aborted is a dummy that will not be used */
   if (signal?.aborted) return { res: null, serviceInUse: service || serviceCn };
 
+  const resUnknown = {
+    lat: coords.latitude.toString(),
+    lng: coords.longitude.toString(),
+    display_name: LOC_UNKNOWN_ID,
+    id: LOC_UNKNOWN_ID,
+    addresstype: '',
+  };
+
   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isInCn = CN_TIMEZONES.has(tz);
-  let serviceInUse = isInCn
-    ? serviceCn
-    : service === SERVICES.baidu
+  let serviceInUse =
+    isInCn || forceInCn
       ? serviceCn
-      : service || SERVICES.nominatim;
+      : service === SERVICES.baidu
+        ? serviceCn
+        : service || SERVICES.nominatim;
 
   const isDevMode = getIsDevMode();
   let reverseFn = reverseWithNominatim;
@@ -220,8 +232,8 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
   let res;
   /* If possibly in CN, try the defined CN service first ------------ */
   if (serviceInUse !== SERVICES.nominatim) {
-    /* If not in CN and not mocking coordinates, warn and skip */
-    if (!isInCn && (coords.longitude < 73 || coords.longitude > 136)) {
+    /* If not in CN and not force in CN (for testing), warn and skip */
+    if (!isInCn && !forceInCn) {
       /* Try Nominatim below */
       isDevMode &&
         console.debug(
@@ -237,14 +249,25 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         if (res.id !== LOC_UNKNOWN_ID) {
           return { res, serviceInUse };
         } else {
-          /* Try Nominatim below (this should not happen) */
-          isDevMode &&
-            console.debug(
-              `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.` +
-                '\nSwitching to Nominatim...',
-            );
-          serviceInUse = SERVICES.nominatim;
-          reverseFn = reverseWithNominatim;
+          if (forceInCn) {
+            /* If force in CN (for testing), try the fallback service below */
+            isDevMode &&
+              console.debug(
+                `⚠️ ${serviceInUse} reverse geocoding for this location is unavailable.` +
+                  `\nSwitching to ${serviceFallback}...`,
+              );
+            serviceInUse = serviceFallback;
+            reverseFn = reverseFallbackFn;
+          } else {
+            /* Try Nominatim below (this should not happen) */
+            isDevMode &&
+              console.debug(
+                `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.` +
+                  '\nSwitching to Nominatim...',
+              );
+            serviceInUse = SERVICES.nominatim;
+            reverseFn = reverseWithNominatim;
+          }
         }
       } catch (err) {
         if (Error.isError(err)) {
@@ -285,14 +308,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
       console.error(err.message);
     }
     isDevMode && console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
-    res = {
-      lat: coords.latitude.toString(),
-      lng: coords.longitude.toString(),
-      display_name: LOC_UNKNOWN_ID,
-      id: LOC_UNKNOWN_ID,
-      addresstype: '',
-    };
-    return { res, serviceInUse };
+    return { res: resUnknown, serviceInUse };
   }
 };
 

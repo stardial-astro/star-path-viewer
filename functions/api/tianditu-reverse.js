@@ -2,8 +2,8 @@
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.TIANDITU_REVERSE_URL;
-  const tk = context.env.TIANDITU_API_KEY;
+  const baseUrl = context.env.TIANDITU_REVERSE_URL.trim();
+  const tk = context.env.TIANDITU_API_KEY.trim();
 
   if (!baseUrl) {
     return new Response(
@@ -32,9 +32,15 @@ export async function onRequest(context) {
   console.log('[DEBUG] Final URL to Tianditu ->', finalUrl); // TODO: test
 
   try {
-    const response = await fetch(finalUrl);
-    const rawText = await response.text();
-    console.log('[DEBUG] Tianditu Raw Response:', rawText); // TODO: test
+    const response = await fetch(finalUrl, {
+      headers: {
+        'User-Agent': 'curl/7.81.0',
+        Accept: '*/*',
+        Connection: 'keep-alive',
+      },
+      referrerPolicy: 'no-referrer',
+      redirect: 'follow',
+    });
     if (!response.ok) {
       throw new Error(
         `Tianditu reverse geocoding responded with ${response.status}`,

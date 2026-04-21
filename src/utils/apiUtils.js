@@ -30,13 +30,13 @@ const parseApiError = (err) => {
     if (err.response) {
       const { status, data } = err.response;
       const errMsg = data?.error || err.message;
-      console.error(`HTTP ${status}: ${errMsg ?? err}`);
+      console.error(`HTTP ${status}: ${errMsg ?? err.toJSON()}`);
       if (status === 503) return new Error(SERVER_DOWN_MSG);
       return new Error(errMsg || SERVER_ERR_MSG);
     }
     /* Request was made but no response received */
     if (err.request) {
-      console.error(err.message ?? String(err));
+      console.error(err.message ?? err.toJSON());
       return new Error(SERVER_NO_RES_MSG);
     }
   }
@@ -83,13 +83,13 @@ const checkServerAccessibility = async () => {
             console.debug('⚠️ HEAD not allowed, but server is alive.');
           return null;
         }
-        console.error(`HTTP ${status}: ${err.message ?? err}`);
+        console.error(`HTTP ${status}: ${err.message ?? err.toJSON()}`);
         if (status === 503) throw new Error(SERVER_DOWN_MSG, { cause: err });
         throw new Error(err.message || SERVER_ERR_MSG, { cause: err });
       }
       /* Request was made but no response received */
       if (err.request) {
-        console.error(err.message ?? String(err));
+        console.error(err.message ?? err.toJSON());
         throw new Error(SERVER_NO_RES_MSG, { cause: err });
       }
     }
@@ -145,7 +145,7 @@ const checkNominatimAccessibility = async (forceInCn) => {
           console.debug('⚠️ HEAD not allowed, but Nominatim is reachable.');
         return { isAccessible: true, isInCn };
       }
-      console.warn(`HTTP ${status}: ${err.message ?? err}`);
+      console.warn(`HTTP ${status}: ${err.message ?? err.toJSON()}`);
       isDevMode &&
         console.debug('⚠️ Using Nominatim but the connection is bad.');
       return { isAccessible: true, isInCn };

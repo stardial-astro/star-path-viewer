@@ -96,6 +96,7 @@ const AddressInput = () => {
     /* Clear errors */
     clearLocationError(locationDispatch, setErrorMessage);
     /* Clear null errors if no flag */
+    getIsDevMode() && console.debug('[AddressInput onInit] flag:', flag); // TODO: test
     if (!flag) {
       locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
       /* Reset validity */

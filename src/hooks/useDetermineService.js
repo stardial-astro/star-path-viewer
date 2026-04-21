@@ -95,7 +95,10 @@ const useDetermineService = (
     getIsDevMode() &&
       noLocal &&
       console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    data !== null && console.debug('🌎 [Geocoding service]', service);
+    data !== null &&
+      console.debug(
+        `🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`,
+      );
     service !== SERVICES.nominatim &&
       console.debug('🌎 [GPS service]', reverseGeoServiceCn);
   }, [isPaused, data, reverseGeoServiceCn, setGeoService]);

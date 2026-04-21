@@ -2,8 +2,8 @@
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.BAIDU_SEARCH_URL;
-  const ak = context.env.BAIDU_API_KEY;
+  const baseUrl = context.env.BAIDU_SEARCH_URL.trim();
+  const ak = context.env.BAIDU_API_KEY.trim();
 
   if (!baseUrl) {
     return new Response(
@@ -33,9 +33,15 @@ export async function onRequest(context) {
   console.log('[DEBUG] Final URL to Baidu ->', finalUrl); // TODO: test
 
   try {
-    const response = await fetch(finalUrl);
-    const rawText = await response.text();
-    console.log("[DEBUG] Baidu Raw Response:", rawText); // TODO: test
+    const response = await fetch(finalUrl, {
+      headers: {
+        'User-Agent': 'curl/7.81.0',
+        Accept: '*/*',
+        Connection: 'keep-alive',
+      },
+      referrerPolicy: 'no-referrer',
+      redirect: 'follow',
+    });
     if (!response.ok) {
       throw new Error(`Baidu search responded with ${response.status}`);
     }

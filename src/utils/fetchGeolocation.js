@@ -153,14 +153,14 @@ const fetchGeolocation = async (
       if (service !== serviceInUse) {
         setGeoService(serviceInUse, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug('🌎 [Geocoding service]', serviceInUse);
+        console.debug(`🌎 [Geocoding service] ${serviceInUse} (temporary)`);
       }
     } else {
       /* CN */
       if (service !== SERVICES.baidu) {
         setGeoService(SERVICES.baidu, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug('🌎 [Geocoding service]', SERVICES.baidu);
+        console.debug(`🌎 [Geocoding service] ${SERVICES.baidu} (temporary)`);
       }
       if (serviceCn !== serviceInUse) {
         setReverseGeoServiceCn(serviceInUse);

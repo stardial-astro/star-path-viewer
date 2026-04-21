@@ -1,5 +1,5 @@
 // src/hooks/useFetchAddresses.js
-import { useEffect, useEffectEvent } from 'react';
+import { useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
@@ -8,6 +8,7 @@ import {
   SERVICES,
   STORAGE_KEYS,
   LOCATION_NOT_FOUND_MSG,
+  SERVICE_ERR_MSG,
 } from '@utils/constants';
 import fetchAddresses from '@/utils/fetchAddresses';
 import { getIsDevMode } from '@utils/devMode';
@@ -60,16 +61,21 @@ const useFetchAddresses = (
    * - Falls back to `'Nominatim'` if `isSwitch` is `true` and `geoService` is not set
    * @param {boolean} [isSwitch=true]
    */
-  const updateService = useEffectEvent((isSwitch = true) => {
-    if (!isSwitch && geoService) return;
-    const service =
-      !geoService || geoService !== SERVICES.nominatim
-        ? SERVICES.nominatim
-        : SERVICES.baidu;
-    setGeoService(service, true);
-    getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    console.debug('🌎 [Geocoding service]', service);
-  });
+  const updateService = useCallback(
+    (isSwitch = true) => {
+      if (!isSwitch && geoService) return;
+      getIsDevMode() &&
+        console.debug('> Updating service... Current:', geoService);
+      const service =
+        !geoService || geoService !== SERVICES.nominatim
+          ? SERVICES.nominatim
+          : SERVICES.baidu;
+      setGeoService(service, true);
+      getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+      console.debug(`🌎 [Geocoding service] ${service} (temporary)`);
+    },
+    [geoService, setGeoService],
+  );
 
   const { data, error, isFetching } = useQuery({
     queryKey: [
@@ -84,7 +90,11 @@ const useFetchAddresses = (
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (axios.isCancel(error) || error.message === LOCATION_NOT_FOUND_MSG) {
+      if (
+        axios.isCancel(error) ||
+        error.message === LOCATION_NOT_FOUND_MSG ||
+        error.message === SERVICE_ERR_MSG
+      ) {
         return false;
       }
       return failureCount < MAX_RETRIES;
@@ -126,7 +136,7 @@ const useFetchAddresses = (
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }
-  }, [data, error, dispatch, setGeoService, setErrorMessage]);
+  }, [data, error, updateService, dispatch, setGeoService, setErrorMessage]);
 };
 
 export default useFetchAddresses;

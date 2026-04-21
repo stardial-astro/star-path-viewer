@@ -250,14 +250,12 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
           return { res, serviceInUse };
         } else {
           if (forceInCn) {
-            /* If force in CN (for testing), try the fallback service below */
+            /* If force in CN (for testing), return */
             isDevMode &&
               console.debug(
-                `⚠️ ${serviceInUse} reverse geocoding for this location is unavailable.` +
-                  `\nSwitching to ${serviceFallback}...`,
+                `⚠️ ${serviceInUse} reverse geocoding for this location is unavailable.`,
               );
-            serviceInUse = serviceFallback;
-            reverseFn = reverseFallbackFn;
+            return { res, serviceInUse };
           } else {
             /* Try Nominatim below (this should not happen) */
             isDevMode &&

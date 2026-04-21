@@ -80,7 +80,7 @@
     "vite-plugin-svgr": "^5.2.0",
     "vitest": "^4.1.2",
     "vitest-canvas-mock": "^1.1.4",
-    "wrangler": "^4.83.0"
+    "wrangler": "^4.84.0"
   },
   "resolutions": {
     "serialize-javascript": ">=7.0.5"

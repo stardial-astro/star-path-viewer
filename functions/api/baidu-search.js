@@ -27,7 +27,7 @@ export async function onRequest(context) {
     const value = requestUrl.searchParams.get(key);
     if (value) apiUrl.searchParams.set(key, value);
   });
-  apiUrl.searchParams.set('region', '全国');
+  apiUrl.searchParams.set('region', 'quanguo');
   apiUrl.searchParams.set('ak', ak);
   const finalUrl = apiUrl.toString();
   console.log('[DEBUG] Final URL to Baidu ->', finalUrl); // TODO: test

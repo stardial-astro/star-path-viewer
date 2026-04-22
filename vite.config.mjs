@@ -21,6 +21,7 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] }),
     VitePWA({
       registerType: 'autoUpdate',
+      disable: process.env.NODE_ENV === 'development',
       /* Assets to precache beyond what's in the build output */
       includeAssets: [
         'favicon.*',

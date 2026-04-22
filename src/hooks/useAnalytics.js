@@ -10,13 +10,16 @@ const shouldTrack =
   !!GA_ID &&
   !import.meta.env.DEV &&
   !import.meta.env.VITEST &&
-  import.meta.env.MODE !== 'preview';
+  import.meta.env.MODE === 'production';
 
 const useAnalytics = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!shouldTrack) return;
+    if (!shouldTrack) {
+      console.debug('------ GA4 Disabled ------');
+      return;
+    }
 
     /* Initialization (singleton) */
     if (!window.gtag) {

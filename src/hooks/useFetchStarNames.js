@@ -42,12 +42,7 @@ const useFetchStarNames = (
   setErrorMessage,
 ) => {
   const { data, error } = useQuery({
-    queryKey: [
-      QUERY_KEY,
-      searchTerm.trim().toLowerCase(),
-      hipList,
-      refreshCount,
-    ],
+    queryKey: [QUERY_KEY, searchTerm.trim().toLowerCase(), refreshCount],
     queryFn: () =>
       fetchStarNames(searchTerm.trim().toLowerCase(), hipList, setHipList),
     enabled: !skipFetch && !!searchTerm.trim(),

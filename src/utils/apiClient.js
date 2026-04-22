@@ -38,7 +38,7 @@ apiClient.interceptors.response.use(
   (error) => {
     const serverErr = error.response?.data;
     const msg = serverErr?.message || serverErr?.error || error.message;
-    const statusCode = error.response?.status || 'Unknown';
+    const statusCode = error.response?.status || serverErr?.status || 'unknown';
     console.error(`🔴 [API Error ${statusCode}]:`, msg);
 
     /* Log the end time and duration */

@@ -61,11 +61,11 @@ const DateFields = () => {
   const dynamicDelay = flag
     ? config.TYPING_DELAY + 300
     : config.TYPING_DELAY / 2;
-  const debouncedYear = useDebounce(date.year, dynamicDelay);
-  const debouncedDay = useDebounce(date.day, config.TYPING_DELAY / 2);
-  const debouncedFlag = useDebounce(flag, config.TYPING_DELAY / 2);
-  const debouncedLat = useDebounce(location.lat, config.TYPING_DELAY + 300);
-  const debouncedLng = useDebounce(location.lng, config.TYPING_DELAY + 300);
+  const debouncedYear = useDebounce(date.year, dynamicDelay); // clamp/fetch
+  const debouncedDay = useDebounce(date.day, config.TYPING_DELAY / 2); // clamp
+  const debouncedFlag = useDebounce(flag, config.TYPING_DELAY); // fetch
+  const debouncedLat = useDebounce(location.lat, config.TYPING_DELAY + 300); // fetch
+  const debouncedLng = useDebounce(location.lng, config.TYPING_DELAY + 300); // fetch
 
   const deferredCal = useDeferredValue(cal, CALS.gregorian);
 

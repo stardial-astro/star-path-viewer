@@ -43,7 +43,7 @@ const searchWithNominatim = async (query) => {
   }
   /** @type {NominatimSchema[]} */
   const data = response.data;
-  isDevMode && console.debug('[Query]', query, '\n[Locations]', data);
+  isDevMode && console.debug('[Query]', query, '\n[Results]', data);
   if (Array.isArray(data) && data.length > 0) {
     /* item.lat and item.lon are strings */
     return data.map((item) => ({
@@ -78,10 +78,10 @@ const searchWithBaidu = async (query) => {
     console.debug(`⏳ (Baidu-search) Request took ${duration}ms`);
   }
   const res = response.data;
-  isDevMode && console.debug('[Query]', query, '\n[Locations]', res);
+  isDevMode && console.debug('[Query]', query, '\n[Results]', res);
   isDevMode && console.debug('[Headers]', response.headers);
   if (res?.status !== 0) {
-    throw new Error(res?.message || `Status: ${res?.status}`);
+    throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
   }
   /** @type {BaiduSearchSchema[]} */
   const data = res.result;
@@ -118,7 +118,7 @@ const searchWithBaidu = async (query) => {
 //   const res = await response.json();
 //   /** @type {BaiduSearchSchema[]} */
 //   const data = res?.result;
-//   getIsDevMode() && console.debug('[Query]', query, '\n[Locations]', data);
+//   getIsDevMode() && console.debug('[Query]', query, '\n[Results]', data);
 //   if (Array.isArray(data) && data.length > 0) {
 //     return data.map((item) => ({
 //       lat: item.location.lat.toString(),

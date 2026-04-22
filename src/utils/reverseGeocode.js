@@ -5,6 +5,8 @@ import { SERVICES, CN_TIMEZONES, LOC_UNKNOWN_ID } from './constants';
 import apiClient from './apiClient';
 import { getIsDevMode } from './devMode';
 
+const NO_FALLBACK = false;
+
 const NOMINATIM_TIMEOUT = 5_000;
 const BAIDU_TIMEOUT = 6_000;
 const TIANDITU_TIMEOUT = 6_000;
@@ -12,6 +14,8 @@ const TIANDITU_TIMEOUT = 6_000;
 const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
+const tiandituReverseUrl = import.meta.env.VITE_TIANDITU_REVERSE_URL;
+const tiandituApiKey = import.meta.env.VITE_TIANDITU_API_KEY;
 
 const hashes = window.location.hash.substring(1).split('&');
 const forceInCn = hashes.includes('cn');
@@ -44,7 +48,7 @@ const reverseWithNominatim = async (coords, signal) => {
   const data = response.data;
   if (!data)
     throw new Error(NO_DATA_ERR_MSG + 'Nominatim reverse geocoding API');
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Address]', data);
+  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', data);
   const display_name = data.display_name;
   const id =
     data.osm_id?.toString() || `${coords.latitude},${coords.longitude}`;
@@ -80,7 +84,7 @@ const reverseWithBaidu = async (coords, signal) => {
     console.debug(`⏳ (Baidu-reverse) Request took ${duration}ms`);
   }
   const res = response.data;
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Address]', res);
+  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
   isDevMode && console.debug('[Headers]', response.headers);
   if (res?.status !== 0) {
     throw new Error(res?.message || `Status: ${res?.status}`);
@@ -123,7 +127,7 @@ const reverseWithBaidu = async (coords, signal) => {
 //   /** @type {BaiduReverseSchema} */
 //   const data = res?.result;
 //   if (!data) throw new Error(NO_DATA_ERR_MSG + 'Baidu reverse geocoding API');
-//   getIsDevMode() && console.debug('[lat,lng]', coords, '\n[Address]', data);
+//   getIsDevMode() && console.debug('[lat,lng]', coords, '\n[Results]', data);
 //   const display_name = data?.formatted_address;
 //   const id =
 //     data?.addressComponent?.adcode || `${coords.latitude},${coords.longitude}`;
@@ -149,10 +153,13 @@ const reverseWithTianditu = async (coords, signal) => {
     lat: coords.latitude.toString(),
     ver: 1,
   });
-  const response = await apiClient.get('/api/tianditu-reverse', {
+  isDevMode &&
+    console.debug(`[Tianditu tk] ${tiandituApiKey.slice(0, 3)}******`);
+  const response = await apiClient.get(tiandituReverseUrl, {
     params: {
       postStr,
       type: 'geocode',
+      tk: tiandituApiKey,
     },
     timeout: TIANDITU_TIMEOUT,
     signal,
@@ -162,7 +169,7 @@ const reverseWithTianditu = async (coords, signal) => {
     console.debug(`⏳ (Tianditu-reverse) Request took ${duration}ms`);
   }
   const res = response.data;
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Address]', res);
+  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
   isDevMode && console.debug('[Headers]', response.headers);
   if (res?.status !== '0') {
     throw new Error(res?.msg || `Status: ${res?.status}`);
@@ -232,12 +239,11 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
   let res;
   /* If possibly in CN, try the defined CN service first ------------ */
   if (serviceInUse !== SERVICES.nominatim) {
-    /* If not in CN and not force in CN (for testing), warn and skip */
     if (!isInCn && !forceInCn) {
-      /* Try Nominatim below */
+      /* If not in CN and not force in CN (for testing), try Nominatim below */
       isDevMode &&
         console.debug(
-          `⚠️ You are not in China. Reverse geocoding for this location is unavailable.` +
+          `⚠️ You are not in China. Reverse geocoding for this location might be unavailable.` +
             '\nSwitching to Nominatim...',
         );
       serviceInUse = SERVICES.nominatim;
@@ -248,25 +254,19 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         res = await reverseFn(coords, signal);
         if (res.id !== LOC_UNKNOWN_ID) {
           return { res, serviceInUse };
-        } else {
-          if (forceInCn) {
-            /* If force in CN (for testing), return */
-            isDevMode &&
-              console.debug(
-                `⚠️ ${serviceInUse} reverse geocoding for this location is unavailable.`,
-              );
-            return { res, serviceInUse };
-          } else {
-            /* Try Nominatim below (this should not happen) */
-            isDevMode &&
-              console.debug(
-                `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.` +
-                  '\nSwitching to Nominatim...',
-              );
-            serviceInUse = SERVICES.nominatim;
-            reverseFn = reverseWithNominatim;
-          }
         }
+        /* If returns an empty address, return or use a fallback */
+        isDevMode &&
+          console.debug(
+            `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`,
+          );
+        if (NO_FALLBACK) {
+          return { res, serviceInUse };
+        }
+        /* Try Nominatim below */
+        isDevMode && console.debug('Switching to Nominatim...');
+        serviceInUse = SERVICES.nominatim;
+        reverseFn = reverseWithNominatim;
       } catch (err) {
         if (Error.isError(err)) {
           if (
@@ -278,6 +278,19 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
             return { res: null, serviceInUse };
           }
           console.error(err.message);
+        }
+        if (forceInCn) {
+          /* If force in CN (for testing), this could be that you forgot to use a proxy */
+          isDevMode &&
+            console.debug(
+              `🔴 ${serviceInUse} reverse geocoding failed.\nDid you forgot to use a proxy?`,
+            );
+          return { res: resUnknown, serviceInUse };
+        }
+        if (NO_FALLBACK) {
+          isDevMode &&
+            console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
+          return { res: resUnknown, serviceInUse };
         }
         /* Try the fallback service below */
         isDevMode &&

@@ -1,14 +1,14 @@
 // src/hooks/useFetchAddresses.js
 import { useEffect, useCallback } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
-import config from '@utils/config';
+// import config from '@utils/config';
 import {
   SERVICES,
   STORAGE_KEYS,
   LOCATION_NOT_FOUND_MSG,
-  SERVICE_ERR_MSG,
+  // SERVICE_ERR_MSG,
 } from '@utils/constants';
 import fetchAddresses from '@/utils/fetchAddresses';
 import { getIsDevMode } from '@utils/devMode';
@@ -19,7 +19,7 @@ const QUERY_KEY = 'address';
 const STALE_MS = 10 * 60_000;
 /** 10 minutes */
 const GC_MS = 10 * 60_000;
-const MAX_RETRIES = 1;
+// const MAX_RETRIES = 1;
 
 /**
  * Calls `fetchAddresses` to fetch address suggestions.
@@ -32,7 +32,8 @@ const MAX_RETRIES = 1;
  * - Pauses while offline and resume/refetch when connectivity returns
  * - Automatic caching
  * - Prevents multiple identical requests
- * - Retries on error
+//  * - Retries on error
+ * - No retries on error
  * - Syncs `suggestionsLoading`
  * @param {string} searchTerm
  * @param {GeoService | null} geoService
@@ -56,25 +57,30 @@ const useFetchAddresses = (
   const isEnabled = !skipFetch && !gpsLoading && searchTerm.trim().length > 1;
 
   /**
-   * Sets or switches `geoService` but does not store in local.
-   * - Skips if `isSwitch` is `false` and `geoService` is already set
-   * - Falls back to `'Nominatim'` if `isSwitch` is `true` and `geoService` is not set
-   * @param {boolean} [isSwitch=true]
+   * Updates `geoService` but does not store in local.
+   * - If not enabled, skips
+   * - If `geoService` is already set to `'Baidu'` in any case, skips to avoid loops
+   * - If `success` is `true` and `geoService` is already set to any service, skips
+   * - If `success` is `true` and `geoService` is not set, falls back to `'Nominatim'`
+   * - if `success` is `false` and `geoService` is not set, switches to `'Baidu'`
+   * @param {boolean} [success=true]
    */
   const updateService = useCallback(
-    (isSwitch = true) => {
-      if (!isSwitch && geoService) return;
+    (success = true) => {
+      if (
+        !isEnabled ||
+        geoService === SERVICES.baidu ||
+        (success && geoService)
+      )
+        return;
       getIsDevMode() &&
         console.debug('> Updating service... Current:', geoService);
-      const service =
-        !geoService || geoService !== SERVICES.nominatim
-          ? SERVICES.nominatim
-          : SERVICES.baidu;
+      const service = success ? SERVICES.nominatim : SERVICES.baidu;
       setGeoService(service, true);
       getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       console.debug(`🌎 [Geocoding service] ${service} (temporary)`);
     },
-    [geoService, setGeoService],
+    [isEnabled, geoService, setGeoService],
   );
 
   const { data, error, isFetching } = useQuery({
@@ -89,18 +95,18 @@ const useFetchAddresses = (
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,
-    retry: (failureCount, error) => {
-      if (
-        axios.isCancel(error) ||
-        error.message === LOCATION_NOT_FOUND_MSG ||
-        error.message === SERVICE_ERR_MSG
-      ) {
-        return false;
-      }
-      return failureCount < MAX_RETRIES;
-    },
-    // retry: false,
-    retryDelay: config.RETRY_DELAY,
+    // retry: (failureCount, error) => {
+    //   if (
+    //     axios.isCancel(error) ||
+    //     error.message === LOCATION_NOT_FOUND_MSG ||
+    //     error.message === SERVICE_ERR_MSG
+    //   ) {
+    //     return false;
+    //   }
+    //   return failureCount < MAX_RETRIES;
+    // },
+    retry: false,
+    // retryDelay: config.RETRY_DELAY,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
@@ -125,14 +131,14 @@ const useFetchAddresses = (
         });
       } else {
         /* If other errors occur, switch the service but don't store (fall back to Nominatim) */
-        updateService(true);
+        updateService(false);
         setErrorMessage((prev) => ({ ...prev, location: error.message }));
       }
       dispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
       dispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
     } else if (data) {
       /* If was using the fallback service (Nominatim), set it but don't store */
-      updateService(false);
+      updateService(true);
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }

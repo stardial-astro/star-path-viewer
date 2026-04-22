@@ -7,34 +7,46 @@ export async function onRequest(context) {
 
   if (!baseUrl) {
     return new Response(
-      JSON.stringify({ error: 'Missing API config: BAIDU_REVERSE_URL' }),
-      { status: 500 },
+      JSON.stringify({ error: 'Configuration missing: BAIDU_REVERSE_URL' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
   if (!ak) {
     return new Response(
-      JSON.stringify({ error: 'Missing API config: BAIDU_API_KEY' }),
-      { status: 500 },
+      JSON.stringify({ error: 'Configuration missing: BAIDU_API_KEY' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
   /* Construct URL */
-  const paramsToForward = [
-    'location',
-    'output',
-    'coordtype',
-    'region_data_source',
-  ];
-  const apiUrl = new URL(baseUrl);
   const requestUrl = new URL(context.request.url);
-  paramsToForward.forEach((key) => {
-    const value = requestUrl.searchParams.get(key);
-    if (value) apiUrl.searchParams.set(key, value);
-  });
-  apiUrl.searchParams.set('ak', ak);
-  const finalUrl = apiUrl.toString();
-  console.log('[DEBUG] Final URL to Baidu ->', finalUrl); // TODO: test
+  const location = requestUrl.searchParams.get('location') || '';
+  if (!location) {
+    return new Response(
+      JSON.stringify({ error: "Parameter missing: 'location'" }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
+    );
+  }
+  const output = requestUrl.searchParams.get('output') || 'json';
+  const coordtype = requestUrl.searchParams.get('coordtype') || 'wgs84ll';
+  const region_data_source =
+    requestUrl.searchParams.get('region_data_source') || 2;
+  // const paramsToForward = [
+  //   'location',
+  //   'output',
+  //   'coordtype',
+  //   'region_data_source',
+  // ];
+  // const apiUrl = new URL(baseUrl);
+  // paramsToForward.forEach((key) => {
+  //   const value = requestUrl.searchParams.get(key);
+  //   if (value) apiUrl.searchParams.set(key, value);
+  // });
+  // apiUrl.searchParams.set('ak', ak);
+  // const finalUrl = apiUrl.toString();
+  const finalUrl = `${baseUrl}?ak=${ak}&location=${location}&output=${output}&coordtype=${coordtype}&region_data_source=${region_data_source}`;
+  console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
   try {
     const response = await fetch(finalUrl, {
@@ -47,37 +59,42 @@ export async function onRequest(context) {
       redirect: 'follow',
     });
     if (!response.ok) {
-      throw new Error(
-        `Baidu reverse geocoding responded with ${response.status}`,
+      return new Response(
+        JSON.stringify({
+          status: -1, // frontend will handle this non-zero code
+          message: `Baidu Error: ${response.status}`,
+        }),
+        { status: response.status },
       );
     }
 
     const data = await response.json();
 
-    const origin = context.request.headers.get('Origin');
-    const host = context.request.headers.get('Host');
-
     /* Response to be returned to the frontend */
     const res = new Response(JSON.stringify(data), {
       headers: {
         'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
         'X-CF-Node': context.request.cf.colo,
       },
     });
 
-    if (origin) {
-      if (origin.includes('localhost') || origin.includes('pages.dev')) {
-        res.headers.set('Access-Control-Allow-Origin', origin);
-      } else if (host && host.includes('localhost')) {
-        res.headers.set('Access-Control-Allow-Origin', '*');
-      }
-    }
+    // const origin = context.request.headers.get('Origin');
+    // const host = context.request.headers.get('Host');
+    // if (origin) {
+    //   if (origin.includes('localhost') || origin.includes('pages.dev')) {
+    //     res.headers.set('Access-Control-Allow-Origin', origin);
+    //   } else if (host && host.includes('localhost')) {
+    //     res.headers.set('Access-Control-Allow-Origin', '*');
+    //   }
+    // }
 
     return res;
   } catch (err) {
     return new Response(
       JSON.stringify({
-        error: `Baidu reverse geocoding failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
+        status: -2, // frontend will handle this non-zero code
+        message: `Baidu reverse geocoding failed: ${err instanceof Error ? err.message : err}`,
       }),
       { status: 500 },
     );

@@ -9,8 +9,8 @@ const config = {
   STAR_NAMES_URL: '/data/hip_ident_zh.json',
   /** Defaults to 2. */
   MAX_RETRIES: parseInt(import.meta.env.VITE_MAX_RETRIES) || 2,
-  /** Defaults to 500ms. */
-  RETRY_DELAY: parseInt(import.meta.env.VITE_RETRY_DELAY) || 500,
+  /** Defaults to 600ms. */
+  RETRY_DELAY: parseInt(import.meta.env.VITE_RETRY_DELAY) || 600,
   /** 30 seconds */
   RETRY_DELAY_MAX: 30_000,
   /** Resumed query delay after reconnect: 500ms */

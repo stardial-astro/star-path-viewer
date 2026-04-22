@@ -16,13 +16,11 @@ VITE_GA_ID = "G-WRBP5P612C"
 VITE_IS_PREVIEW = "true"
 VITE_NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse"
 VITE_NOMINATIM_SEARCH_URL = "https://nominatim.openstreetmap.org/search"
+VITE_TIANDITU_REVERSE_URL = "https://api.tianditu.gov.cn/geocoder"
 VITE_REVERSE_SERVICE_CN = "Tianditu"
 VITE_SEARCH_SERVICE_CN = "Baidu"
 VITE_SERVER_URL = "https://teststarpathcalculator.pythonanywhere.com/"
 YARN_VERSION = "4"
-
-[env.production]
-compatibility_date = "2024-09-10"
 
 [env.production.vars]
 VITE_IS_PREVIEW = "false"

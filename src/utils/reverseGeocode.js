@@ -284,7 +284,8 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
     } else {
       /* Try the specified CN service */
       try {
-        isDevMode && console.debug(`> Querying address using ${serviceInUse}...`);
+        isDevMode &&
+          console.debug(`> Querying address using ${serviceInUse}...`);
         res = await reverseFn(coords, signal);
         if (res.id !== LOC_UNKNOWN_ID) return { res, serviceInUse };
         /* If returns an empty address, return or use a fallback */
@@ -309,24 +310,17 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
           }
           console.error(err.message);
         }
-        if (forceInCn) {
-          /* If force in CN (for testing), you might need a proxy */
-          isDevMode &&
-            console.debug(
-              `🔴 ${serviceInUse} reverse geocoding failed.\nDid you forgot to use a proxy?`,
-            );
-          return { res: resUnknown, serviceInUse };
-        }
+        isDevMode &&
+          console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
+        /* If force in CN (for testing), you might need a proxy */
+        isDevMode &&
+          forceInCn &&
+          console.debug('Did you forgot to use a proxy?');
         if (NO_FALLBACK) {
-          isDevMode &&
-            console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
           return { res: resUnknown, serviceInUse };
         }
         /* Try the fallback service below */
-        isDevMode &&
-          console.debug(
-            `🔴 ${serviceInUse} reverse geocoding failed.\nSwitching to ${serviceFallback}...`,
-          );
+        isDevMode && console.debug(`Switching to ${serviceFallback}...`);
         serviceInUse = serviceFallback;
         reverseFn = reverseFallbackFn;
       }

@@ -202,7 +202,7 @@ const StarHipInput = () => {
           payload: value,
         });
         /* Clear suggestions before fetching */
-        starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: test if any issue caused b this
+        // starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep in case just adding spaces
       } else {
         /* Clear searchTerm and suggestions if value is blank */
         starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });

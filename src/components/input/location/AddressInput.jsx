@@ -262,7 +262,7 @@ const AddressInput = () => {
           payload: value,
         });
         /* Clear suggestions before fetching */
-        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: test if any issue caused b this
+        // locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep in case just adding spaces
       } else {
         /* Clear location and suggestions if value is blank */
         resetLocationValues();

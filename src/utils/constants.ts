@@ -13,16 +13,28 @@ export const SERVICES = {
   // amap: 'Amap',  // 高德
 } as const;
 
-const searchServiceCnFromEnv = import.meta.env.VITE_SEARCH_SERVICE_CN || '';
+const serviceCnFromEnv = import.meta.env.VITE_SERVICE_CN;
 /**
  * @type {GeoService} Default primary geocoding service in CN.
- * Sets to `'QQ'` or reads from `VITE_SEARCH_SERVICE_CN`.
+ * Sets to `'QQ'` or reads from `VITE_SERVICE_CN`.
  */
 export const DEFAULT_SERVICE_CN =
-  Object.values(SERVICES).includes(searchServiceCnFromEnv) &&
-  searchServiceCnFromEnv !== SERVICES.tianditu
-    ? searchServiceCnFromEnv
+  Object.values(SERVICES).includes(serviceCnFromEnv) &&
+  serviceCnFromEnv !== SERVICES.tianditu &&
+  serviceCnFromEnv !== SERVICES.nominatim
+    ? serviceCnFromEnv
     : SERVICES.qq;
+
+const reverseServiceCnFromEnv = import.meta.env.VITE_REVERSE_SERVICE_CN;
+/**
+ * @type {GeoService} Default reverse geocoding service in CN.
+ * Sets to `'Tianditu'` or reads from `VITE_REVERSE_SERVICE_CN`.
+ */
+export const DEFAULT_REVERSE_SERVICE_CN =
+  Object.values(SERVICES).includes(reverseServiceCnFromEnv) &&
+  reverseServiceCnFromEnv !== SERVICES.nominatim
+    ? reverseServiceCnFromEnv
+    : SERVICES.tianditu;
 
 export const CN_TIMEZONES = new Set([
   'Asia/Shanghai',

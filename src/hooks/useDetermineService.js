@@ -2,7 +2,12 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
-import { SERVICES, DEFAULT_SERVICE_CN, STORAGE_KEYS } from '@utils/constants';
+import {
+  SERVICES,
+  DEFAULT_SERVICE_CN,
+  DEFAULT_REVERSE_SERVICE_CN,
+  STORAGE_KEYS,
+} from '@utils/constants';
 import { isInCn, checkNominatimAccessibility } from '@utils/apiUtils';
 import {
   isDevMode,
@@ -48,7 +53,6 @@ const reverseServiceOverride = forceTianditu
  * @param {boolean} isDelayedOnline
  * @param {OfflineStateObj} offlineState
  * @param {GeoService | null} geoService
- * @param {GeoService} reverseGeoServiceCn
  * @param {ReactDispatch} dispatch
  * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
  * @param {ReactSetState<GeoService>} setReverseGeoServiceCn
@@ -57,7 +61,6 @@ const useDetermineService = (
   isDelayedOnline,
   offlineState,
   geoService,
-  reverseGeoServiceCn,
   dispatch,
   setGeoService,
   setReverseGeoServiceCn,
@@ -68,7 +71,7 @@ const useDetermineService = (
     isPaused,
     isFetching,
   } = useQuery({
-    queryKey: [QUERY_KEY, forceInCn, isDelayedOnline],
+    queryKey: [QUERY_KEY, isDelayedOnline],
     queryFn: () => checkNominatimAccessibility(),
     enabled: isEnabled,
     initialData: null,
@@ -122,17 +125,12 @@ const useDetermineService = (
       );
     /* If using CN service, update the reverse geocoding service */
     if (service !== SERVICES.nominatim) {
-      const reverseService = reverseServiceOverride || reverseGeoServiceCn;
+      const reverseService =
+        reverseServiceOverride || DEFAULT_REVERSE_SERVICE_CN;
       setReverseGeoServiceCn(reverseService);
       console.debug('🌎 [GPS service]', reverseService);
     }
-  }, [
-    isPaused,
-    isAccessible,
-    reverseGeoServiceCn,
-    setGeoService,
-    setReverseGeoServiceCn,
-  ]);
+  }, [isPaused, isAccessible, setGeoService, setReverseGeoServiceCn]);
 };
 
 export default useDetermineService;

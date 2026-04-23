@@ -11,9 +11,11 @@ const QQ_TIMEOUT = 6_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 
+// const baiduSearchUrl = '/api/baidu-search';
 const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
 const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
 
+const qqSearchUrl = '/api/qq-search';
 // const qqSearchUrl = import.meta.env.VITE_QQ_SEARCH_URL;
 // const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
 
@@ -89,7 +91,7 @@ const searchWithBaidu = async (query) => {
   });
   const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
-  // const response = await apiClient.get('/api/baidu-search', {
+  // const response = await apiClient.get(baiduSearchUrl, {
   //   params: {
   //     query,
   //     ret_coordtype: 'gcj02ll',
@@ -139,7 +141,7 @@ const searchWithQq = async (query) => {
   // });
   // const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
-  const response = await apiClient.get('/api/qq-search', {
+  const response = await apiClient.get(qqSearchUrl, {
     params: {
       keyword: query,
       policy: 1,

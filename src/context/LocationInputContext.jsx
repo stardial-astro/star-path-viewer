@@ -8,7 +8,11 @@ import {
   useRef,
   useCallback,
 } from 'react';
-import { STORAGE_KEYS, LOC_INPUT_TYPES, SERVICES } from '@utils/constants';
+import {
+  STORAGE_KEYS,
+  DEFAULT_REVERSE_SERVICE_CN,
+  LOC_INPUT_TYPES,
+} from '@utils/constants';
 import * as actionTypes from './locationInputActionTypes';
 
 /** 1 hour */
@@ -207,7 +211,7 @@ export const LocationInputProvider = ({ children }) => {
   );
   const [geoService, setGeoService] = useState(initialService);
   const [reverseGeoServiceCn, setReverseGeoServiceCn] = useState(
-    import.meta.env.VITE_REVERSE_SERVICE_CN || SERVICES.tianditu,
+    DEFAULT_REVERSE_SERVICE_CN,
   );
   const [skipTz, setSkipTz] = useState(false);
   const locationInputTypeRef = useRef(LOC_INPUT_TYPES.addr);

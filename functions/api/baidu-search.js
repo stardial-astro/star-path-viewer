@@ -21,7 +21,7 @@ export async function onRequest(context) {
 
   /* Construct URL */
   const requestUrl = new URL(context.request.url);
-  const query = requestUrl.searchParams.get('query') || '';
+  const query = requestUrl.searchParams.get('query');
   if (!query) {
     return new Response(
       JSON.stringify({ error: "Parameter missing: 'query'" }),
@@ -46,11 +46,11 @@ export async function onRequest(context) {
   try {
     const response = await fetch(finalUrl, {
       headers: {
-        'User-Agent': 'curl/7.81.0',
+        Referrer: 'https://star-path-viewer.pages.dev',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         Accept: '*/*',
-        Connection: 'keep-alive',
       },
-      referrerPolicy: 'no-referrer',
       redirect: 'follow',
     });
     if (!response.ok) {

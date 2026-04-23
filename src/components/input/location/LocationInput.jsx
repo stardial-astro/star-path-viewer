@@ -26,7 +26,6 @@ const LocationInput = () => {
     geoService,
     setGeoService,
     setReverseGeoServiceCn,
-    reverseGeoServiceCn,
     locationDispatch,
   } = useLocationInput();
 
@@ -51,7 +50,6 @@ const LocationInput = () => {
     isDelayedOnline,
     offlineState,
     geoService,
-    reverseGeoServiceCn,
     locationDispatch,
     setGeoService,
     setReverseGeoServiceCn,

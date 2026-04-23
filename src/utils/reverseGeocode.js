@@ -17,9 +17,11 @@ const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
 
+// const baiduReverseUrl = '/api/baidu-reverse';
 const baiduReverseUrl = import.meta.env.VITE_BAIDU_REVERSE_URL;
 const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
 
+const qqReverseUrl = '/api/qq-reverse';
 // const qqReverseUrl = import.meta.env.VITE_QQ_REVERSE_URL;
 // const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
 
@@ -87,7 +89,7 @@ const reverseWithBaidu = async (coords, signal) => {
   });
   const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
-  // const response = await apiClient.get('/api/baidu-reverse', {
+  // const response = await apiClient.get(baiduReverseUrl, {
   //   params: {
   //     location: `${coords.latitude},${coords.longitude}`,
   //     output: 'json',
@@ -142,7 +144,7 @@ const reverseWithQq = async (coords, signal) => {
   // });
   // const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
-  const response = await apiClient.get('/api/qq-reverse', {
+  const response = await apiClient.get(qqReverseUrl, {
     params: {
       location: `${coords.latitude},${coords.longitude}`,
       radius: 1000,
@@ -185,8 +187,8 @@ const reverseWithQq = async (coords, signal) => {
  */
 const reverseWithTianditu = async (coords, signal) => {
   const postStr = JSON.stringify({
-    lon: coords.longitude.toString(),
-    lat: coords.latitude.toString(),
+    lon: coords.longitude,
+    lat: coords.latitude,
     ver: 1,
   });
   isDevMode &&

@@ -4,11 +4,8 @@ pages_build_output_dir = "dist"
 compatibility_date = "2026-04-19"
 
 [vars]
-BAIDU_REVERSE_URL = "https://api.map.baidu.com/reverse_geocoding/v3/"
-BAIDU_SEARCH_URL = "https://api.map.baidu.com/place/v3/suggestion"
 QQ_REVERSE_URL = "https://apis.map.qq.com/ws/geocoder/v1/"
 QQ_SEARCH_URL = "https://apis.map.qq.com/ws/place/v1/suggestion"
-TIANDITU_REVERSE_URL="https://api.tianditu.gov.cn/geocoder"
 CI = "true"
 GENERATE_SOURCEMAP = "false"
 NODE_VERSION = "24.14.0"

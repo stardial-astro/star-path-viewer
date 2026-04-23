@@ -296,7 +296,6 @@ export const StarInputProvider = ({ children }) => {
     starDispatch({ type: actionTypes.CLEAR_STAR_HIP_AND_NAME });
     starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
     starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-    /* Clearing debounced searchTerm also clears lastSelectedTermRef in [StarHipInput] */
     /* Clear RA/Dec */
     starDispatch({ type: actionTypes.CLEAR_STAR_RADEC });
     starDispatch({ type: actionTypes.CLEAR_STAR_RA_HMS });

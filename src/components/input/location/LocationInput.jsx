@@ -37,7 +37,6 @@ const LocationInput = () => {
    */
   /* [AddressInput] Clear errors; clear null errors and reset validity if no flag;
    * clear location and suggestions
-   * > Clearing debounced searchTerm also clears lastSelectedTermRef in [AddressInput]
    */
   /* [CoordinatesInput] Clear errors; clear null errors and reset validity if no flag;
    * KEEP location and suggestions

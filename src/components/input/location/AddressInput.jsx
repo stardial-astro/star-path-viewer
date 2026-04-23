@@ -30,7 +30,7 @@ import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
-import { isDevMode } from '@utils/devMode';
+import { isDevMode, forceInCn } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
 import CustomIconButton from '@/components/ui/CustomIconButton';
 
@@ -96,7 +96,6 @@ const AddressInput = () => {
     /* Clear errors */
     clearLocationError(locationDispatch, setErrorMessage);
     /* Clear null errors if no flag */
-    isDevMode && console.debug('[AddressInput onInit] flag:', flag); // TODO: test
     if (!flag) {
       locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
       /* Reset validity */
@@ -104,7 +103,9 @@ const AddressInput = () => {
     }
     /* Clear location and suggestions */
     resetLocationValues();
-    /* Clearing debounced searchTerm also clears lastSelectedTermRef below */
+    lastSelectedTermRef.current = '';
+    isDevMode &&
+      console.debug(`[AddressInput onInit] flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */
@@ -123,18 +124,11 @@ const AddressInput = () => {
     locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
   }, [searchTerm, locationDispatch, setErrorMessage]);
 
-  /* Clear suggestions and lastSelectedTermRef if debounced searchTerm is cleared */
+  // TODO: this should not happen
   useEffect(() => {
-    if (!debouncedSearchTerm) {
-      lastSelectedTermRef.current = '';
-      locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
-      if (locationInputTypeRef.current === LOC_INPUT_TYPES.addr) {
-        /* When in address mode, also clear location */
-        locationDispatch({ type: actionTypes.CLEAR_LOCATION });
-      } else {
-        /* When in coordinate mode, only clear id */
-        locationDispatch({ type: actionTypes.SET_ID, payload: '' });
-      }
+    if (locationInputTypeRef.current === LOC_INPUT_TYPES.coord) {
+      /* When in coordinate mode, do nothing */
+      isDevMode && console.debug('🤔 You are in coordinate mode?');
     }
   }, [debouncedSearchTerm, locationInputTypeRef, locationDispatch]);
 
@@ -212,7 +206,7 @@ const AddressInput = () => {
     /* Do not fetch suggestions */
     setSkipFetch(true);
     /* Do not fetch tz using API */
-    setSkipTz(true);
+    if (!forceInCn) setSkipTz(true);
     /* Clear errors & null errors and suggestions */
     clearLocationError(locationDispatch, setErrorMessage);
     locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
@@ -270,12 +264,12 @@ const AddressInput = () => {
         /* Clear suggestions before fetching */
         locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: test if any issue caused b this
       } else {
-        /* Clear searchTerm and suggestions if value is blank */
-        locationDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
-        locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+        /* Clear location and suggestions if value is blank */
+        resetLocationValues();
+        isDevMode && console.debug('Location and suggestions cleared.');
       }
     },
-    [gpsLoading, locationDispatch],
+    [gpsLoading, locationDispatch, resetLocationValues],
   );
 
   /**

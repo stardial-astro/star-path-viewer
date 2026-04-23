@@ -20,7 +20,7 @@ const qqSearchUrl = '/api/qq-search';
 // const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
 
 /** At most this number of items to show. */
-const limit = 30;
+const limit = 20;
 
 let activeRequests = 0;
 
@@ -132,7 +132,9 @@ const searchWithBaidu = async (query) => {
  */
 const searchWithQq = async (query) => {
   /* [JSONP] -------------------------------------------------------- */
-  // const url = `${qqSearchUrl}?key=${qqApiKey}&keyword=${query}&policy=1&output=jsonp`;
+  // const url =
+  //   `${qqSearchUrl}?key=${qqApiKey}&keyword=${query}&policy=1&` +
+  //   `output=jsonp&page_index=1&page_size=20`;
   // isDevMode && console.debug(`[QQ key] ${qqApiKey.slice(0, 3)}******`);
   // const startTime = performance.now();
   // const response = await fetchJsonp(url, {

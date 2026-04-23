@@ -117,13 +117,13 @@ const StarHipInput = () => {
     starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
   }, [starHip, searchTerm, starDispatch, setErrorMessage]);
 
-  /* Clear name, HIP, suggestions, RA/Dec, lastSelectedTermRef and resets validity
+  /* Clear name, HIP, suggestions, RA/Dec, and resets validity
    * if deferred searchTerm is cleared
    */
   useEffect(() => {
     if (!deferredSearchTerm) {
-      lastSelectedTermRef.current = '';
       resetStarValues();
+      isDevMode && console.debug('Name, HIP, suggestions, and RA/Dec cleared.');
     }
   }, [deferredSearchTerm, resetStarValues, starDispatch]);
 

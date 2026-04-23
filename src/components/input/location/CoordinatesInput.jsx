@@ -39,7 +39,6 @@ const CoordinatesInput = () => {
     /* Clear errors */
     clearLocationError(locationDispatch, setErrorMessage);
     /* Clear null errors if no flag */
-    isDevMode && console.debug('[CoordinatesInput onInit] flag:', flag); // TODO: test
     if (!flag) {
       locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
       /* Reset validity */
@@ -49,6 +48,8 @@ const CoordinatesInput = () => {
      * (so if there is a reverse geocoding unavailable warning triggered by
      * id === LOC_UNKNOWN_ID, it keeps open)
      */
+    isDevMode &&
+      console.debug(`[CoordinatesInput onInit] flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */

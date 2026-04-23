@@ -1,9 +1,7 @@
 // src/utils/fetchGeolocation.js
 import axios from 'axios';
 import apiClient from './apiClient';
-import reverseGeocode from './reverseGeocode';
 import { isDevMode } from './devMode';
-import { SERVICES, DEFAULT_SERVICE_CN, STORAGE_KEYS } from './constants';
 
 const GEO_TIMEOUT = 6_000;
 const GEO_IP_TIMEOUT = 5_000;
@@ -64,25 +62,14 @@ const fetchIpLocation = async (signal) => {
 };
 
 /**
- * Fetches geolocation using `navigator.geolocation`.
- * - Updates `geoService` and/or `reverseGeoServiceCn` if any of them is actually in use
- * @param {GeoService | null} service - The reverse geocoding service.
- * @param {GeoService} serviceCn - The CN reverse geocoding service.
+ * Fetches geolocation coordinates using `navigator.geolocation`.
+ * - Keeps only 4 fraction digits
  * @param {number} geoMaxAge
- * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
- * @param {ReactSetState<GeoService>} setReverseGeoServiceCn
  * @param {AbortSignal} signal
- * @returns {Promise<AddressItem | null>} The address object, or `null` if aborted.
+ * @returns {Promise<CoordObj | null>} The address object, or `null` if aborted.
  * @throws {Error} If request failed.
  */
-const fetchGeolocation = async (
-  service,
-  serviceCn,
-  geoMaxAge,
-  setGeoService,
-  setReverseGeoServiceCn,
-  signal,
-) => {
+const fetchGeolocation = async (geoMaxAge, signal) => {
   if (signal?.aborted) return null;
 
   if ('geolocation' in navigator) {
@@ -133,44 +120,12 @@ const fetchGeolocation = async (
     const { latitude, longitude } = position.coords;
     /* Mock for testing Baidu (tz will still be the actual one) ----- */
     // const { latitude, longitude } = { latitude: 31.23, longitude: 121.474 }; // TODO: mock
-    // const { latitude, longitude } = { latitude: 32.055257, longitude: 118.779539 }; // TODO: mock
+    // const { latitude, longitude } = { latitude: 32.0553, longitude: 118.7795 }; // TODO: mock
     /* -------------------------------------------------------------- */
-
-    /* Get the address from the latitude and longitude */
-    const { res, serviceInUse } = await reverseGeocode(
-      { latitude, longitude },
-      service,
-      serviceCn,
-      signal,
-    );
-    if (!res) return null;
-    isDevMode && console.debug('[Resolved location]', res);
-
-    /* If successful, update the primary service but don't store */
-    if (serviceInUse === SERVICES.nominatim) {
-      if (service !== serviceInUse) {
-        setGeoService(serviceInUse, true);
-        isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug(`🌎 [Geocoding service] ${serviceInUse} (temporary)`);
-      }
-    } else {
-      /* CN */
-      /* Set the primary CN service to the default but don't store */
-      if (service === SERVICES.nominatim) {
-        setGeoService(DEFAULT_SERVICE_CN, true);
-        isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug(
-          `🌎 [Geocoding service] ${DEFAULT_SERVICE_CN} (temporary)`,
-        );
-      }
-      /* Update the reverse geocoding service */
-      if (serviceCn !== serviceInUse) {
-        setReverseGeoServiceCn(serviceInUse);
-        console.debug('🌎 [GPS service]', serviceInUse);
-      }
-    }
-
-    return res;
+    return {
+      latitude: parseFloat(latitude.toFixed(4)),
+      longitude: parseFloat(longitude.toFixed(4)),
+    };
   } else {
     /* Geolocation not supported by this browser */
     throw new Error(NO_GEO_MSG);

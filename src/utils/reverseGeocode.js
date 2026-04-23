@@ -284,6 +284,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
     } else {
       /* Try the specified CN service */
       try {
+        isDevMode && console.debug(`> Querying address using ${serviceInUse}...`);
         res = await reverseFn(coords, signal);
         if (res.id !== LOC_UNKNOWN_ID) return { res, serviceInUse };
         /* If returns an empty address, return or use a fallback */
@@ -333,6 +334,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
   }
   /* Fetch with Nominatim or the fallback CN service ---------------- */
   try {
+    isDevMode && console.debug(`> Querying address using ${serviceInUse}...`);
     res = await reverseFn(coords, signal);
     return { res, serviceInUse };
   } catch (err) {

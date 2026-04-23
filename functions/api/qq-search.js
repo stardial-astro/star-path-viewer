@@ -38,7 +38,7 @@ export async function onRequest(context) {
   // });
   // apiUrl.searchParams.set('key', key);
   // const finalUrl = apiUrl.toString();
-  const finalUrl = `${baseUrl}?key=${key}&keyword=${keyword}&policy=${policy}`;
+  const finalUrl = `${baseUrl}?key=${key}&keyword=${keyword}&policy=${policy}&page_index=1&page_size=20`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
   try {

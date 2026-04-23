@@ -12,12 +12,8 @@ const COORD_LABEL = 'Enter coordinates';
 
 const LocationInputTypeToggle = () => {
   const { t } = useTranslation('location');
-  const {
-    locationInputType,
-    locationInputTypeRef,
-    resetLocationValues,
-    locationDispatch,
-  } = useLocationInput();
+  const { locationInputType, locationInputTypeRef, locationDispatch } =
+    useLocationInput();
 
   /* [AddressInput] When toggles to address mode, clear errors; clear null errors
    * and reset validity if no flag
@@ -34,16 +30,17 @@ const LocationInputTypeToggle = () => {
       locationInputTypeRef.current = value;
       locationDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: value });
       /* When toggles to address mode, clear location and suggestions */
-      if (value === LOC_INPUT_TYPES.addr) {
-        resetLocationValues();
-        /* Clearing debounced searchTerm also clears lastSelectedTermRef below */
-      }
+      // TODO: test, these should be done in AddressInput
+      // if (value === LOC_INPUT_TYPES.addr) {
+      //   resetLocationValues();
+      //   /* Clearing debounced searchTerm also clears lastSelectedTermRef below */
+      // }
       /* When toggles to coordinate mode, KEEP location and suggestions
        * (so if there is a reverse geocoding unavailable warning triggered by
        * id === LOC_UNKNOWN_ID, it keeps open)
        */
     },
-    [locationInputTypeRef, resetLocationValues, locationDispatch],
+    [locationInputTypeRef, locationDispatch],
   );
 
   return (

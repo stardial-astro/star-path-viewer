@@ -2,7 +2,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, use, useReducer, useState, useCallback } from 'react';
 import { STORAGE_KEYS, STAR_INPUT_TYPES, RADEC_TYPES } from '@utils/constants';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import * as actionTypes from './starInputActionTypes';
 
 /** 6 hours */
@@ -18,7 +18,7 @@ const getInitialHipList = () => {
   /** @type {{data: HipItem[], timestamp: number}} */
   const { data, timestamp } = JSON.parse(raw);
   if (Date.now() - timestamp > HIP_STALE_MS) return null;
-  getIsDevMode() &&
+  isDevMode &&
     console.debug('📦 [HIP ident]', data.length, 'entries (from storage)');
   return data;
 };

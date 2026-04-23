@@ -7,12 +7,12 @@ import config from '@utils/config';
 import { SERVER_ERR_PREFIX, EPH_RANGE_ERR_MSG_G } from '@utils/constants';
 import { validateYearSync } from '@utils/dateInputUtils';
 import fetchDate from '@utils/fetchDate';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 
 const QUERY_KEY = 'date';
 
 /** dev: 5 minutes; prod: 1 hour */
-const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
+const STALE_MS = isDevMode ? 5 * 60_000 : 60 * 60_000;
 /** 1 hour */
 const GC_MS = 60 * 60_000;
 

@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from '@utils/config';
 import fetchTimezone from '@utils/fetchTimezone';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 
 const QUERY_KEY = 'timezone';
 
 /** dev: 1 minute; prod: 10 minutes */
-const STALE_MS = getIsDevMode() ? 60_000 : 10 * 60_000;
+const STALE_MS = isDevMode ? 60_000 : 10 * 60_000;
 /** 10 minutes */
 const GC_MS = 10 * 60_000;
 

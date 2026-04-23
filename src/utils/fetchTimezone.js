@@ -1,5 +1,5 @@
 // src/utils/fetchTimezone.js
-import { getIsDevMode } from './devMode';
+import { isDevMode } from './devMode';
 
 /**
  * Calls `window.GeoTZ.find` to find the time zone IDs at the given GPS coordinates.
@@ -10,7 +10,6 @@ import { getIsDevMode } from './devMode';
  * @throws {Error} If tz is not found or invalid.
  */
 const fetchTimezone = async (lat, lng) => {
-  const isDevMode = getIsDevMode();
   try {
     /* Fetch the time zone IDs */
     const res = await window.GeoTZ.find(parseFloat(lat), parseFloat(lng));
@@ -26,15 +25,14 @@ const fetchTimezone = async (lat, lng) => {
     if (res[0] === 'Asia/Urumqi' && res.includes('Asia/Shanghai')) {
       /* Select one as the primary tz */
       tz = 'Asia/Shanghai';
-      getIsDevMode() &&
-        console.debug(`Reset primary tz from ${res[0]} to ${tz}`);
+      isDevMode && console.debug(`Reset primary tz from ${res[0]} to ${tz}`);
     }
 
     return tz;
   } catch (err) {
     /* If the request was cancelled/aborted, stop retrying */
     if (Error.isError(err) && err.name === 'AbortError') {
-      getIsDevMode() && console.debug('Time zone ID fetching cancelled.');
+      isDevMode && console.debug('Time zone ID fetching cancelled.');
       return null;
     }
     console.warn(

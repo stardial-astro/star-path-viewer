@@ -1,24 +1,30 @@
 // src/utils/reverseGeocode.js
 import axios from 'axios';
-// import fetchJsonp from 'fetch-jsonp';
-import { SERVICES, CN_TIMEZONES, LOC_UNKNOWN_ID } from './constants';
+import fetchJsonp from 'fetch-jsonp';
+import { SERVICES, LOC_UNKNOWN_ID } from './constants';
 import apiClient from './apiClient';
-import { getIsDevMode } from './devMode';
+import { isInCn } from './apiUtils';
+import { isDevMode, forceInCn } from './devMode';
 
 const NO_FALLBACK = false;
 
 const NOMINATIM_TIMEOUT = 5_000;
 const BAIDU_TIMEOUT = 6_000;
+const QQ_TIMEOUT = 6_000;
 const TIANDITU_TIMEOUT = 6_000;
 
 const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
+
+const baiduReverseUrl = import.meta.env.VITE_BAIDU_REVERSE_URL;
+const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
+
+// const qqReverseUrl = import.meta.env.VITE_QQ_REVERSE_URL;
+// const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
+
 const tiandituReverseUrl = import.meta.env.VITE_TIANDITU_REVERSE_URL;
 const tiandituApiKey = import.meta.env.VITE_TIANDITU_API_KEY;
-
-const hashes = window.location.hash.substring(1).split('&');
-const forceInCn = hashes.includes('cn');
 
 /**
  * @param {CoordObj} coords
@@ -27,7 +33,6 @@ const forceInCn = hashes.includes('cn');
  * @throws {Error} If location is not found.
  */
 const reverseWithNominatim = async (coords, signal) => {
-  const isDevMode = getIsDevMode();
   const response = await apiClient.get(nominatimReverseUrl, {
     params: {
       lat: coords.latitude,
@@ -35,21 +40,21 @@ const reverseWithNominatim = async (coords, signal) => {
       format: 'json',
       addressdetails: 1,
       zoom: 10, // City level
-      email: import.meta.env.VITE_EMAIL,
+      email: import.meta.env.VITE_EMAIL || 'stardial.astro@gmail.com',
     },
     timeout: NOMINATIM_TIMEOUT,
     signal,
   });
   const duration = response.config.metadata?.duration;
-  if (isDevMode && duration) {
+  isDevMode &&
+    duration &&
     console.debug(`⏳ (Nominatim-reverse) Request took ${duration}ms`);
-  }
   /** @type {NominatimSchema} */
   const data = response.data;
   if (!data)
     throw new Error(NO_DATA_ERR_MSG + 'Nominatim reverse geocoding API');
   isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', data);
-  const display_name = data.display_name;
+  const display_name = data.display_name.trim();
   const id =
     data.osm_id?.toString() || `${coords.latitude},${coords.longitude}`;
   return {
@@ -63,38 +68,52 @@ const reverseWithNominatim = async (coords, signal) => {
 
 /**
  * @param {CoordObj} coords
- * @param {AbortSignal} signal - (unused)
+ * @param {AbortSignal} signal - Unused if via JSONP.
  * @returns {Promise<AddressItem>} The address object.
  * @throws {Error} If location is not found.
  */
+/* eslint-disable-next-line no-unused-vars */
 const reverseWithBaidu = async (coords, signal) => {
-  const isDevMode = getIsDevMode();
-  const response = await apiClient.get('/api/baidu-reverse', {
-    params: {
-      location: `${coords.latitude},${coords.longitude}`,
-      output: 'json',
-      coordtype: 'wgs84ll',
-      region_data_source: 2,
-    },
+  /* [JSONP] -------------------------------------------------------- */
+  const url =
+    `${baiduReverseUrl}?` +
+    `ak=${baiduApiKey}&location=${coords.latitude},${coords.longitude}&` +
+    'output=json&coordtype=wgs84ll&region_data_source=2';
+  isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
+  const startTime = performance.now();
+  const response = await fetchJsonp(url, {
+    jsonpCallback: 'callback',
     timeout: BAIDU_TIMEOUT,
-    signal,
   });
-  const duration = response.config.metadata?.duration;
-  if (duration && isDevMode) {
+  const duration = performance.now() - startTime;
+  /* [Proxy] -------------------------------------------------------- */
+  // const response = await apiClient.get('/api/baidu-reverse', {
+  //   params: {
+  //     location: `${coords.latitude},${coords.longitude}`,
+  //     output: 'json',
+  //     coordtype: 'wgs84ll',
+  //     region_data_source: 2,
+  //   },
+  //   timeout: BAIDU_TIMEOUT,
+  //   signal,
+  // });
+  // const duration = response.config.metadata?.duration;
+  /* ---------------------------------------------------------------- */
+  isDevMode &&
+    duration &&
     console.debug(`⏳ (Baidu-reverse) Request took ${duration}ms`);
-  }
-  const res = response.data;
-  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
-  isDevMode && console.debug('[Headers]', response.headers);
-  if (res?.status !== 0) {
-    throw new Error(res?.message || `Status: ${res?.status}`);
-  }
   /** @type {BaiduReverseSchema} */
+  const res = await response.json(); // [JSONP]
+  // const res = response.data; // [Proxy]
+  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
+  // isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
+  if (res?.status !== 0) {
+    throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
+  }
   const data = res.result;
   if (!data) throw new Error(NO_DATA_ERR_MSG + 'Baidu reverse geocoding API');
-  const display_name = data?.formatted_address;
-  const id =
-    data?.addressComponent?.adcode || `${coords.latitude},${coords.longitude}`;
+  const display_name = data.formatted_address.trim();
+  const id = `${coords.latitude},${coords.longitude}`;
   return {
     lat: coords.latitude.toString(),
     lng: coords.longitude.toString(),
@@ -104,41 +123,59 @@ const reverseWithBaidu = async (coords, signal) => {
   };
 };
 
-// /**
-//  * @param {CoordObj} coords
-//  * @param {AbortSignal} signal - (unused)
-//  * @returns {Promise<AddressItem>} The address object.
-//  * @throws {Error} If location is not found.
-//  */
-// /* eslint-disable-next-line no-unused-vars */
-// const reverseWithBaiduJsonp = async (coords, signal) => {
-//   const url =
-//     `${baiduReverseUrl}?` +
-//     `ak=${import.meta.env.VITE_BAIDU_API_KEY}&` +
-//     `location=${coords.latitude},${coords.longitude}&` +
-//     'output=json&' +
-//     'coordtype=wgs84ll' +
-//     'region_data_source=2';
-//   const response = await fetchJsonp(url, {
-//     jsonpCallback: 'callback',
-//     timeout: BAIDU_TIMEOUT,
-//   });
-//   const res = await response.json();
-//   /** @type {BaiduReverseSchema} */
-//   const data = res?.result;
-//   if (!data) throw new Error(NO_DATA_ERR_MSG + 'Baidu reverse geocoding API');
-//   getIsDevMode() && console.debug('[lat,lng]', coords, '\n[Results]', data);
-//   const display_name = data?.formatted_address;
-//   const id =
-//     data?.addressComponent?.adcode || `${coords.latitude},${coords.longitude}`;
-//   return {
-//     lat: coords.latitude.toString(),
-//     lng: coords.longitude.toString(),
-//     display_name: display_name || LOC_UNKNOWN_ID,
-//     id: display_name ? id : LOC_UNKNOWN_ID,
-//     addresstype: '',
-//   };
-// };
+/**
+ * @param {CoordObj} coords
+ * @param {AbortSignal} signal - Unused if via JSONP.
+ * @returns {Promise<AddressItem>} The address object.
+ * @throws {Error} If location is not found.
+ */
+const reverseWithQq = async (coords, signal) => {
+  /* [JSONP] -------------------------------------------------------- */
+  // const url =
+  //   `${qqReverseUrl}?` +
+  //   `key=${qqApiKey}&location=${coords.latitude},${coords.longitude}&radius=1000&output=jsonp`;
+  // isDevMode && console.debug(`[QQ key] ${qqApiKey.slice(0, 3)}******`);
+  // const startTime = performance.now();
+  // const response = await fetchJsonp(url, {
+  //   jsonpCallback: 'callback',
+  //   timeout: QQ_TIMEOUT,
+  // });
+  // const duration = performance.now() - startTime;
+  /* [Proxy] -------------------------------------------------------- */
+  const response = await apiClient.get('/api/qq-reverse', {
+    params: {
+      location: `${coords.latitude},${coords.longitude}`,
+      radius: 1000,
+    },
+    timeout: QQ_TIMEOUT,
+    signal,
+  });
+  const duration = response.config.metadata?.duration;
+  /* ---------------------------------------------------------------- */
+  isDevMode &&
+    duration &&
+    console.debug(`⏳ (QQ-reverse) Request took ${duration}ms`);
+  /** @type {QqReverseSchema} */
+  // const res = await response.json(); // [JSONP]
+  const res = response.data; // [Proxy]
+  isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
+  isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
+  if (res?.status !== 0) {
+    throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
+  }
+  const data = res.result;
+  if (!data) throw new Error(NO_DATA_ERR_MSG + 'QQ reverse geocoding API');
+  const display_name =
+    data.address.trim() || data.formatted_addresses?.recommend.trim() || '';
+  const id = `${coords.latitude},${coords.longitude}`;
+  return {
+    lat: coords.latitude.toString(),
+    lng: coords.longitude.toString(),
+    display_name: display_name || LOC_UNKNOWN_ID,
+    id: display_name ? id : LOC_UNKNOWN_ID,
+    addresstype: '',
+  };
+};
 
 /**
  * @param {CoordObj} coords
@@ -147,7 +184,6 @@ const reverseWithBaidu = async (coords, signal) => {
  * @throws {Error} If location is not found.
  */
 const reverseWithTianditu = async (coords, signal) => {
-  const isDevMode = getIsDevMode();
   const postStr = JSON.stringify({
     lon: coords.longitude.toString(),
     lat: coords.latitude.toString(),
@@ -165,23 +201,21 @@ const reverseWithTianditu = async (coords, signal) => {
     signal,
   });
   const duration = response.config.metadata?.duration;
-  if (isDevMode && duration) {
+  isDevMode &&
+    duration &&
     console.debug(`⏳ (Tianditu-reverse) Request took ${duration}ms`);
-  }
+  /** @type {TiandituReverseSchema} */
   const res = response.data;
   isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
   isDevMode && console.debug('[Headers]', response.headers);
   if (res?.status !== '0') {
-    throw new Error(res?.msg || `Status: ${res?.status}`);
+    throw new Error(res?.msg || `Status: ${res?.status || 'unknown'}`);
   }
-  /** @type {TiandituReverseSchema} */
   const data = res.result;
   if (!data)
     throw new Error(NO_DATA_ERR_MSG + 'Tianditu reverse geocoding API');
-  const display_name = data.formatted_address;
-  const id =
-    data.addressComponent?.town_code ||
-    `${coords.latitude},${coords.longitude}`;
+  const display_name = data.formatted_address.trim();
+  const id = `${coords.latitude},${coords.longitude}`;
   return {
     lat: coords.latitude.toString(),
     lng: coords.longitude.toString(),
@@ -195,8 +229,8 @@ const reverseWithTianditu = async (coords, signal) => {
  * Fetches reverse geocoding data.
  * - If `service` is `null`, falls back to `'Nominatim'`, or `serviceCn` if in CN
  * @param {CoordObj} coords
- * @param {GeoService | null} service - The reverse geocoding service (`'Nominatim'` | `'Baidu'`).
- * @param {GeoService} serviceCn - The CN reverse geocoding service (`'Tianditu'` | `'Baidu'`).
+ * @param {GeoService | null} service - The primary geocoding service.
+ * @param {GeoService} serviceCn - The CN reverse geocoding service.
  * @param {AbortSignal} signal
  * @returns {Promise<{ res: AddressItem | null, serviceInUse: GeoService }>}
  *   The address object or `null` if aborted, and the reverse geocoding service in use.
@@ -213,26 +247,23 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
     addresstype: '',
   };
 
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const isInCn = CN_TIMEZONES.has(tz);
   let serviceInUse =
-    isInCn || forceInCn
+    isInCn || forceInCn || service !== SERVICES.nominatim
       ? serviceCn
-      : service === SERVICES.baidu
-        ? serviceCn
-        : service || SERVICES.nominatim;
+      : service || SERVICES.nominatim;
 
-  const isDevMode = getIsDevMode();
   let reverseFn = reverseWithNominatim;
-  let reverseFallbackFn = reverseWithBaidu;
+  let reverseFallbackFn = reverseWithQq;
   /** @type {GeoService} */
-  let serviceFallback = SERVICES.baidu;
+  let serviceFallback = SERVICES.qq;
   if (serviceInUse === SERVICES.tianditu) {
     reverseFn = reverseWithTianditu;
-  } else if (serviceInUse === SERVICES.baidu) {
-    reverseFn = reverseWithBaidu;
+  } else if (serviceInUse === SERVICES.qq) {
+    reverseFn = reverseWithQq;
     reverseFallbackFn = reverseWithTianditu;
     serviceFallback = SERVICES.tianditu;
+  } else if (serviceInUse === SERVICES.baidu) {
+    reverseFn = reverseWithBaidu;
   }
 
   /** @type {AddressItem} */
@@ -252,17 +283,13 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
       /* Try the specified CN service */
       try {
         res = await reverseFn(coords, signal);
-        if (res.id !== LOC_UNKNOWN_ID) {
-          return { res, serviceInUse };
-        }
+        if (res.id !== LOC_UNKNOWN_ID) return { res, serviceInUse };
         /* If returns an empty address, return or use a fallback */
         isDevMode &&
           console.debug(
             `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`,
           );
-        if (NO_FALLBACK) {
-          return { res, serviceInUse };
-        }
+        if (NO_FALLBACK) return { res, serviceInUse };
         /* Try Nominatim below */
         isDevMode && console.debug('Switching to Nominatim...');
         serviceInUse = SERVICES.nominatim;
@@ -280,7 +307,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
           console.error(err.message);
         }
         if (forceInCn) {
-          /* If force in CN (for testing), this could be that you forgot to use a proxy */
+          /* If force in CN (for testing), you might need a proxy */
           isDevMode &&
             console.debug(
               `🔴 ${serviceInUse} reverse geocoding failed.\nDid you forgot to use a proxy?`,

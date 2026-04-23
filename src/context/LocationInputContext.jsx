@@ -15,8 +15,8 @@ import * as actionTypes from './locationInputActionTypes';
 const SERVICE_STALE_MS = 60 * 60_000;
 
 /**
- * Loads the geocoding service name from `localStorage`.
- * @returns {GeoService | null} The geocoding service name, or `null` if stale or missing.
+ * Loads the primary geocoding service name from `localStorage`.
+ * @returns {GeoService | null} The primary geocoding service name, or `null` if stale or missing.
  */
 const getInitialService = () => {
   const raw = localStorage.getItem(STORAGE_KEYS.service);

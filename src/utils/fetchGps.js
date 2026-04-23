@@ -4,12 +4,12 @@ import * as actionTypes from '@context/locationInputActionTypes';
 import config from './config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from './constants';
 import fetchGeolocation from './fetchGeolocation';
-import { getIsDevMode } from './devMode';
+import { isDevMode } from './devMode';
 
 const QUERY_KEY = 'gps';
 
 /** dev: 5 minutes; prod: 30 minutes */
-const STALE_MS = getIsDevMode() ? 5 * 60_000 : 30 * 60_000;
+const STALE_MS = isDevMode ? 5 * 60_000 : 30 * 60_000;
 /** 30 minutes */
 const GC_MS = 30 * 60_000;
 
@@ -102,7 +102,7 @@ const fetchGps = async (
     return null;
   } catch (err) {
     if (controller.signal.aborted) {
-      getIsDevMode() && console.debug('GPS query cancelled.');
+      isDevMode && console.debug('GPS query cancelled.');
       return null;
     }
     return Error.isError(err) ? err : new Error(`GPS query failed: ${err}`);

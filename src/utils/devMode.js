@@ -1,16 +1,23 @@
 // src/utils/devMode.js
-/** `true` if in development environment. */
-let isDevMode = import.meta.env.DEV;
 
-/**
- * Sets `isDevMode` to `true` for verbose console output.
- */
-export const enableDevMode = () => {
-  isDevMode = true;
-  console.debug('****** Dev Mode Enabled ******');
-};
+/** The fragment identifier list from the hash of the URL (lowercase). */
+const hashSet = new Set(
+  window.location.hash.substring(1).toLowerCase().split('&'),
+);
 
-/**
- * @returns {boolean} The value of `isDevMode`.
- */
-export const getIsDevMode = () => isDevMode;
+/** `true` if hash includes `'cn'`, `'baidu'`, `'qq'`, or `'tianditu'`. */
+export const forceInCn = ['cn', 'baidu', 'qq', 'tianditu'].some((item) =>
+  hashSet.has(item),
+);
+/** `true` if hash includes `'baidu'`. */
+export const forceBaidu = hashSet.has('baidu'); // use Baidu for both search and reverse geocoding
+/** `true` if hash includes `'qq'`, overriding `'baidu'`. */
+export const forceQq = hashSet.has('qq'); // use QQ for both search and reverse geocoding
+/** `true` if hash includes `'tianditu'`, overriding others when setting the reverse geocoding service. */
+export const forceTianditu = hashSet.has('tianditu'); // use Tianditu for reverse geocoding
+
+/** `true` if in development environment or hashes include `'dev'`. */
+export const isDevMode = import.meta.env.DEV || hashSet.has('dev');
+
+/** `true` if hashes include `'today'`. */
+export const isToday = hashSet.has('today');

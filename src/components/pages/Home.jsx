@@ -9,7 +9,7 @@ import { LocationInputProvider } from '@context/LocationInputContext';
 import { DateInputProvider } from '@context/DateInputContext';
 import { StarInputProvider } from '@context/StarInputContext';
 import config from '@utils/config';
-import { enableDevMode, getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import DiagramFetcher from '@components/input/DiagramFetcher';
 import InfoDisplay from '@components/output/InfoDisplay';
 import ImageDisplay from '@components/output/image/ImageDisplay';
@@ -17,19 +17,14 @@ import AnnoDisplay from '@components/output/annotations/AnnoDisplay';
 import Notice from '@/components/overlays/Notice';
 import OfflineNotifier from '@/components/overlays/OfflineNotifier';
 
-// /** Counter to trigger dev (verbose) mode */
-// let clickCount = 0;
-
-const hashes = window.location.hash.substring(1).split('&');
-hashes.includes('dev') && enableDevMode();
-
 /* Check env and config */
-if (getIsDevMode() && !import.meta.env.VITEST) {
+if (isDevMode && !import.meta.env.VITEST) {
+  console.debug('****** Dev Mode Enabled ******');
   console.debug('[MODE]', import.meta.env.MODE);
   console.debug('[DEV]', import.meta.env.DEV);
   console.debug('[VITE_IS_PREVIEW]', import.meta.env.VITE_IS_PREVIEW);
   console.debug('[BASE_URL]', import.meta.env.BASE_URL);
-  console.debug('[VITE_GA_ID]', import.meta.env.VITE_GA_ID);
+  // console.debug('[VITE_GA_ID]', import.meta.env.VITE_GA_ID);
   // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
   // console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
   // console.debug('[__APP_NAME__]', __APP_NAME__);
@@ -49,19 +44,6 @@ const Home = () => {
    * ------------------------------------------------------------------|
    */
   /* [DiagramFetcher] Call useServerStatusCheck */
-
-  /* ------------------------------------------------------------------|
-   * Handlers
-   * ------------------------------------------------------------------|
-   */
-  // const handleTitleClick = () => {
-  //   if (getIsDevMode()) return;
-  //   clickCount++;
-  //   if (clickCount >= config.TRIGGER_DEV_CLICK_COUNT) {
-  //     enableDevMode();
-  //     clickCount = 0;
-  //   }
-  // };
 
   return (
     <>

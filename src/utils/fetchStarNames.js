@@ -8,7 +8,7 @@ import {
 } from './constants';
 import config from './config';
 import apiClient from './apiClient';
-import { getIsDevMode } from './devMode';
+import { isDevMode } from './devMode';
 
 const HIP_TIMEOUT = 5_000;
 
@@ -98,7 +98,6 @@ const itemContainsQuery = (item, query) => {
  * @throws {Error} If request failed or result is invalid.
  */
 const fetchAndCacheHipList = async (setHipList) => {
-  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching HIP ident list...');
 
   try {
@@ -146,7 +145,6 @@ const fetchAndCacheHipList = async (setHipList) => {
  * @throws {Error} If HIP is out of range, not found, or failed to fetch valid data.
  */
 const fetchStarNames = async (query, hipList, setHipList) => {
-  const isDevMode = getIsDevMode();
   let data = hipList;
   /* Fetch and cache the HIP ident list */
   if (!data || (Array.isArray(data) && data.length === 0)) {

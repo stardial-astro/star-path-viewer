@@ -9,8 +9,20 @@ export const SERVICES = {
   nominatim: 'Nominatim',
   baidu: 'Baidu',
   tianditu: 'Tianditu', // 天地图
+  qq: 'QQ', // 腾讯
   // amap: 'Amap',  // 高德
 } as const;
+
+const searchServiceCnFromEnv = import.meta.env.VITE_SEARCH_SERVICE_CN || '';
+/**
+ * @type {GeoService} Default primary geocoding service in CN.
+ * Sets to `'QQ'` or reads from `VITE_SEARCH_SERVICE_CN`.
+ */
+export const DEFAULT_SERVICE_CN =
+  Object.values(SERVICES).includes(searchServiceCnFromEnv) &&
+  searchServiceCnFromEnv !== SERVICES.tianditu
+    ? searchServiceCnFromEnv
+    : SERVICES.qq;
 
 export const CN_TIMEZONES = new Set([
   'Asia/Shanghai',

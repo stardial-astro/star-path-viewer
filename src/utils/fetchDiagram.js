@@ -5,7 +5,7 @@ import { CALS, INFO_KEYS } from './constants';
 import apiClient from './apiClient';
 import { parseApiError } from './apiUtils';
 import { sanitizeSvg } from './outputUtils';
-import { getIsDevMode } from './devMode';
+import { isDevMode } from './devMode';
 
 const NO_DATA_ERR_MSG = 'errors:no_diagram_data_returned'; // i18n key
 const DIAGRAM_ERR_MSG = 'errors:diagram_error'; // i18n key
@@ -22,7 +22,6 @@ const diagramUrl = `${import.meta.env.VITE_SERVER_URL}/diagram`;
 const fetchDiagram = async (params, signal) => {
   if (signal?.aborted) return null;
 
-  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching diagram...');
   /** @type {DiagramSchema} */
   let data;

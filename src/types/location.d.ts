@@ -71,7 +71,7 @@ interface LocationInitialState {
 }
 
 type LocationContextType = LocationInitialState & {
-  /** The geocoding service name. Initialized by `getInitialService`. */
+  /** The primary geocoding service name. Initialized by `getInitialService`. */
   geoService: GeoService | null;
   /**
    * Sets `geoService` and stores in `localStorage`.
@@ -79,7 +79,10 @@ type LocationContextType = LocationInitialState & {
    *   (defaults to `false`)
    */
   setGeoService: (service: GeoService | null, noLocal?: boolean) => void;
-  /** The CN reverse geocoding service name. Defaults to `'Tianditu'` or from `VITE_REVERSE_SERVICE_CN`. */
+  /**
+   * The CN reverse geocoding service name.
+   * Initially sets to `'Tianditu'` or from `VITE_REVERSE_SERVICE_CN`.
+   */
   reverseGeoServiceCn: GeoService;
   setReverseGeoServiceCn: ReactSetState<GeoService>;
   /** If `true`, skips fetching tz using API. Defaults to `false`. */

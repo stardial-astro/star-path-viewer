@@ -12,7 +12,7 @@ import {
   clearLngError,
   clearLocationError,
 } from '@utils/locationInputUtils';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomNumberField from '@components/ui/CustomNumberField';
 
 const LAT_ID = 'latitude-input';
@@ -39,7 +39,7 @@ const CoordinatesInput = () => {
     /* Clear errors */
     clearLocationError(locationDispatch, setErrorMessage);
     /* Clear null errors if no flag */
-    getIsDevMode() && console.debug('[CoordinatesInput onInit] flag:', flag); // TODO: test
+    isDevMode && console.debug('[CoordinatesInput onInit] flag:', flag); // TODO: test
     if (!flag) {
       locationDispatch({ type: actionTypes.CLEAR_LOCATION_NULL_ERROR });
       /* Reset validity */

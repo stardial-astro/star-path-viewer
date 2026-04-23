@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from './config';
 import apiClient from './apiClient';
 import { parseApiError } from './apiUtils';
-import { getIsDevMode } from './devMode';
+import { isDevMode } from './devMode';
 
 const NO_DATA_ERR_MSG = 'errors:no_season_data_returned'; // i18n key
 const DATE_ERR_MSG = 'errors:season_error'; // i18n key
@@ -22,7 +22,6 @@ const eqxSolUrl = `${import.meta.env.VITE_SERVER_URL}/equinox`;
  * @throws {Error} If request failed.
  */
 const fetchDate = async (year, flag, lat, lng, tz) => {
-  const isDevMode = getIsDevMode();
   isDevMode && console.debug('> Fetching equinox/solstice date...');
   try {
     /* Fetch the equinox/solstice date */

@@ -10,26 +10,91 @@ interface NominatimSchema {
 }
 
 interface BaiduReverseSchema {
-  location: { lng: number; lat: number };
-  formatted_address: string;
-  addressComponent: { adcode: string; [key: string]: unknown };
-  [key: string]: unknown;
+  /** 0 is success */
+  status: number;
+  result: {
+    location: { lng: number; lat: number };
+    formatted_address: string;
+    [key: string]: unknown;
+  };
+  /** Error massage (only for proxy) */
+  message?: string;
 }
 
-interface BaiduSearchSchema {
+interface BaiduSearchItemSchema {
   name: string;
   location: { lat: number; lng: number };
   uid: string;
   tag: string;
+  classified_poi_tag?: string;
   address: string;
   [key: string]: unknown;
 }
 
-interface TiandituReverseSchema {
-  formatted_address: string;
-  location: { lon: number; lat: number };
-  addressComponent: { town_code: string; [key: string]: unknown };
+interface BaiduSearchV2Schema {
+  /** 0 is success */
+  status: number;
+  /** `'ok'` is success */
+  message: string;
+  result: BaiduSearchItemSchema[];
+}
+
+interface BaiduSearchV3Schema {
+  /** 0 is success */
+  status: number;
+  /** `'ok'` is success */
+  message: string;
+  results: BaiduSearchItemSchema[];
+}
+
+interface QqReverseSchema {
+  /** 0 is success */
+  status: number;
+  /** `'Success'` is success */
+  message: string;
+  request_id: string;
+  result: {
+    location: { lat: number; lng: number };
+    address: string;
+    formatted_addresses?: {
+      recommend: string;
+      rough: string;
+      standard_address: string;
+    };
+    [key: string]: unknown;
+  };
+}
+
+interface QqSearchItemSchema {
+  id: string;
+  title: string;
+  address: string;
+  category: string;
+  location: { lat: number; lng: number };
+  adcode: string;
   [key: string]: unknown;
+}
+
+interface QqSearchSchema {
+  /** 0 is success */
+  status: number;
+  /** `'query ok'` is success */
+  message: string;
+  request_id: string;
+  count: number;
+  data: QqSearchItemSchema[];
+}
+
+interface TiandituReverseSchema {
+  /** `'0'` is success */
+  status: string;
+  /** `'ok'` is success */
+  msg: string;
+  result: {
+    formatted_address: string;
+    location: { lon: number; lat: number };
+    [key: string]: unknown;
+  };
 }
 
 /** The equinox/solstice object returned from server. */

@@ -58,27 +58,27 @@ const deriveRangeFromDate = (date, cal) => {
   } else if ([4, 6, 9, 11].includes(monthInt)) {
     dayMax = 30;
   }
-  // getIsDevMode() && console.debug('Current day range:', dayMin, dayMax);
+  // isDevMode && console.debug('Current day range:', dayMin, dayMax);
   if (!date.year) return { monthMin, monthMax, dayMin, dayMax };
 
   /* If year is given, reset according to the ephemeris date range and calendar */
   if (yearInt === ephDateMin[0]) {
     /* Reset monthMin */
     monthMin = ephDateMin[1];
-    // getIsDevMode() && console.debug('Updated month range:', monthMin, monthMax);
+    // isDevMode && console.debug('Updated month range:', monthMin, monthMax);
     /* If month is given, reset dayMin */
     if (monthInt > 0 && monthInt <= ephDateMin[1]) {
       dayMin = ephDateMin[2];
-      // getIsDevMode() && console.debug('Updated day range:', dayMin, dayMax);
+      // isDevMode && console.debug('Updated day range:', dayMin, dayMax);
     }
   } else if (yearInt === ephDateMax[0]) {
     /* Reset monthMax */
     monthMax = ephDateMax[1];
-    // getIsDevMode() && console.debug('Updated month range:', monthMin, monthMax);
+    // isDevMode && console.debug('Updated month range:', monthMin, monthMax);
     /* If month is given, reset dayMax */
     if (monthInt >= ephDateMax[1]) {
       dayMax = ephDateMax[2];
-      // getIsDevMode() && console.debug('Updated day range:', dayMin, dayMax);
+      // isDevMode && console.debug('Updated day range:', dayMin, dayMax);
     }
   }
 

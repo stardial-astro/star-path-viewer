@@ -30,7 +30,7 @@ import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
 import CustomIconButton from '@/components/ui/CustomIconButton';
 
@@ -96,7 +96,7 @@ const AddressInput = () => {
     /* Clear errors */
     clearLocationError(locationDispatch, setErrorMessage);
     /* Clear null errors if no flag */
-    getIsDevMode() && console.debug('[AddressInput onInit] flag:', flag); // TODO: test
+    isDevMode && console.debug('[AddressInput onInit] flag:', flag); // TODO: test
     if (!flag) {
       locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
       /* Reset validity */
@@ -194,7 +194,7 @@ const AddressInput = () => {
         payload: option.display_name,
       });
       locationDispatch({ type: actionTypes.SET_LOCATION_VALID, payload: true });
-      getIsDevMode() && console.debug('[Selected location]', option);
+      isDevMode && console.debug('[Selected location]', option);
     },
     [locationDispatch],
   );
@@ -363,7 +363,7 @@ const AddressInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      getIsDevMode() &&
+      isDevMode &&
         console.debug('🤔 Something went wrong. Refetching locations...');
     }
   }, [

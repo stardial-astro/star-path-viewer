@@ -33,7 +33,7 @@ import {
   clearNullError,
 } from '@utils/inputUtils';
 import fetchDiagram from '@utils/fetchDiagram';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomDivider from '@components/ui/CustomDivider';
 import CustomAlert from '@components/ui/CustomAlert';
 import LocationInput from './location/LocationInput';
@@ -43,7 +43,7 @@ import StarInput from './star/StarInput';
 const QUERY_KEY = 'diagram';
 
 /** dev: 5 minutes; prod: 1 hour */
-const STALE_MS = getIsDevMode() ? 5 * 60_000 : 60 * 60_000;
+const STALE_MS = isDevMode ? 5 * 60_000 : 60 * 60_000;
 /** 1 hour */
 const GC_MS = 60 * 60_000;
 const MAX_RETRIES = 1;
@@ -158,7 +158,6 @@ const DiagramFetcher = () => {
     clearImage();
     setSuccess(false);
 
-    const isDevMode = getIsDevMode();
     isDevMode &&
       console.debug(
         '[Inputs]',

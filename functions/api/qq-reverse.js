@@ -1,46 +1,44 @@
-// functions/api/baidu-search.js
+// functions/api/qq-reverse.js
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.BAIDU_SEARCH_URL.trim();
-  const ak = context.env.BAIDU_API_KEY.trim();
+  const baseUrl = context.env.QQ_REVERSE_URL.trim();
+  const key = context.env.QQ_API_KEY.trim();
 
   if (!baseUrl) {
     return new Response(
-      JSON.stringify({ error: 'Configuration missing: BAIDU_SEARCH_URL' }),
+      JSON.stringify({ error: 'Configuration missing: QQ_REVERSE_URL' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
-  if (!ak) {
+  if (!key) {
     return new Response(
-      JSON.stringify({ error: 'Configuration missing: BAIDU_API_KEY' }),
+      JSON.stringify({ error: 'Configuration missing: QQ_API_KEY' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
   /* Construct URL */
   const requestUrl = new URL(context.request.url);
-  const query = requestUrl.searchParams.get('query') || '';
-  if (!query) {
+  const location = requestUrl.searchParams.get('location') || '';
+  if (!location) {
     return new Response(
-      JSON.stringify({ error: "Parameter missing: 'query'" }),
+      JSON.stringify({ error: "Parameter missing: 'location'" }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
-  const ret_coordtype =
-    requestUrl.searchParams.get('ret_coordtype') || 'gcj02ll';
+  const radius = requestUrl.searchParams.get('radius') || 0;
 
-  // const paramsToForward = ['query', 'ret_coordtype'];
+  // const paramsToForward = ['location', 'radius'];
   // const apiUrl = new URL(baseUrl);
-  // paramsToForward.forEach((key) => {
-  //   const value = requestUrl.searchParams.get(key);
-  //   if (value) apiUrl.searchParams.set(key, value);
+  // paramsToForward.forEach((k) => {
+  //   const value = requestUrl.searchParams.get(k);
+  //   if (value) apiUrl.searchParams.set(k, value);
   // });
-  // apiUrl.searchParams.set('region', '全国');
-  // apiUrl.searchParams.set('ak', ak);
+  // apiUrl.searchParams.set('key', key);
   // const finalUrl = apiUrl.toString();
-  const finalUrl = `${baseUrl}?ak=${ak}&query=${query}&region=%E5%85%A8%E5%9B%BD&ret_coordtype=${ret_coordtype}`;
+  const finalUrl = `${baseUrl}?key=${key}&location=${location}&radius=${radius}`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
   try {
@@ -57,7 +55,7 @@ export async function onRequest(context) {
       return new Response(
         JSON.stringify({
           status: -1, // frontend will handle this non-zero code
-          message: `Baidu Error: ${response.status}`,
+          message: `QQ Error: ${response.status}`,
         }),
         { status: response.status },
       );
@@ -89,7 +87,7 @@ export async function onRequest(context) {
     return new Response(
       JSON.stringify({
         status: -2, // frontend will handle this non-zero code
-        message: `Baidu search failed: ${err instanceof Error ? err.message : err}`,
+        message: `QQ reverse geocoding failed: ${err instanceof Error ? err.message : err}`,
       }),
       { status: 500 },
     );

@@ -2,9 +2,15 @@
 import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
-import { SERVICES, STORAGE_KEYS } from '@utils/constants';
-import { checkNominatimAccessibility } from '@utils/apiUtils';
-import { getIsDevMode } from '@utils/devMode';
+import { SERVICES, DEFAULT_SERVICE_CN, STORAGE_KEYS } from '@utils/constants';
+import { isInCn, checkNominatimAccessibility } from '@utils/apiUtils';
+import {
+  isDevMode,
+  forceInCn,
+  forceBaidu,
+  forceQq,
+  forceTianditu,
+} from '@utils/devMode';
 
 const QUERY_KEY = 'geoServiceStatus';
 
@@ -12,10 +18,19 @@ const STALE_MS = 0;
 /** 5 seconds */
 const GC_MS = 5_000;
 
-const hashes = window.location.hash.substring(1).split('&');
-const forceInCn = hashes.includes('cn');
-
 const isTest = import.meta.env.VITEST;
+
+/** @type {GeoService | null} */
+const serviceOverride = forceQq
+  ? SERVICES.qq
+  : forceBaidu
+    ? SERVICES.baidu
+    : null;
+
+/** @type {GeoService | null} */
+const reverseServiceOverride = forceTianditu
+  ? SERVICES.tianditu
+  : serviceOverride;
 
 /**
  * Calls `checkNominatimAccessibility` to determine the available geocoding service.
@@ -36,6 +51,7 @@ const isTest = import.meta.env.VITEST;
  * @param {GeoService} reverseGeoServiceCn
  * @param {ReactDispatch} dispatch
  * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
+ * @param {ReactSetState<GeoService>} setReverseGeoServiceCn
  */
 const useDetermineService = (
   isDelayedOnline,
@@ -44,11 +60,16 @@ const useDetermineService = (
   reverseGeoServiceCn,
   dispatch,
   setGeoService,
+  setReverseGeoServiceCn,
 ) => {
   const isEnabled = (!geoService || forceInCn) && isDelayedOnline && !isTest;
-  const { data, isPaused, isFetching } = useQuery({
+  const {
+    data: isAccessible,
+    isPaused,
+    isFetching,
+  } = useQuery({
     queryKey: [QUERY_KEY, forceInCn, isDelayedOnline],
-    queryFn: () => checkNominatimAccessibility(forceInCn),
+    queryFn: () => checkNominatimAccessibility(),
     enabled: isEnabled,
     initialData: null,
     networkMode: 'online',
@@ -74,34 +95,44 @@ const useDetermineService = (
     if (offlineState.dialogOpen) {
       /* Clear the stored service from local storage */
       localStorage.removeItem(STORAGE_KEYS.service);
-      getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+      isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       /* Clear all */
       // setGeoService(null, true);
-      // getIsDevMode() && console.debug('🧽 Cleared: geoService');
+      // isDevMode && console.debug('🧽 Cleared: geoService');
     }
   }, [offlineState.dialogOpen, setGeoService]);
 
   useEffect(() => {
     if (isPaused) return;
-    /* Determine the geocoding service (fall back to Nominatim) */
+    /* Determine the primary geocoding service (fall back to Nominatim) */
     const service =
-      data?.isAccessible !== false ? SERVICES.nominatim : SERVICES.baidu;
-    /* If not in CN but Nominatim is not accessible (e.g., via proxy)
-     * do not save to local storage and clear existing value
+      isAccessible !== false
+        ? SERVICES.nominatim
+        : serviceOverride || DEFAULT_SERVICE_CN;
+    /* Update the primary service
+     * If not in CN but Nominatim is not accessible (e.g., testing via a proxy)
+     * do not store in local and clear existing value
      */
-    const noLocal = data !== null && !data.isAccessible && !data.isInCn;
-    /* Update state and ref */
+    const noLocal = isAccessible !== null && !isAccessible && !isInCn;
     setGeoService(service, noLocal);
-    getIsDevMode() &&
-      noLocal &&
-      console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    data !== null &&
+    isDevMode && noLocal && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+    isAccessible !== null &&
       console.debug(
         `🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`,
       );
-    service !== SERVICES.nominatim &&
-      console.debug('🌎 [GPS service]', reverseGeoServiceCn);
-  }, [isPaused, data, reverseGeoServiceCn, setGeoService]);
+    /* If using CN service, update the reverse geocoding service */
+    if (service !== SERVICES.nominatim) {
+      const reverseService = reverseServiceOverride || reverseGeoServiceCn;
+      setReverseGeoServiceCn(reverseService);
+      console.debug('🌎 [GPS service]', reverseService);
+    }
+  }, [
+    isPaused,
+    isAccessible,
+    reverseGeoServiceCn,
+    setGeoService,
+    setReverseGeoServiceCn,
+  ]);
 };
 
 export default useDetermineService;

@@ -25,6 +25,7 @@ const LocationInput = () => {
     locationInputType,
     geoService,
     setGeoService,
+    setReverseGeoServiceCn,
     reverseGeoServiceCn,
     locationDispatch,
   } = useLocationInput();
@@ -53,6 +54,7 @@ const LocationInput = () => {
     reverseGeoServiceCn,
     locationDispatch,
     setGeoService,
+    setReverseGeoServiceCn,
   );
 
   /* ------------------------------------------------------------------|

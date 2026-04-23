@@ -9,7 +9,7 @@ import {
   SERVER_NO_RES_MSG,
 } from './constants';
 import apiClient from '@utils/apiClient';
-import { getIsDevMode } from './devMode';
+import { isDevMode, forceInCn } from './devMode';
 
 const SERVER_PROBE_TIMEOUT = config.SERVER_TIMEOUT;
 const SERVICE_PROBE_TIMEOUT = 3_000;
@@ -18,11 +18,14 @@ const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const eqxSolUrl = `${serverUrl}/equinox`;
 
+const currentTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+export const isInCn = CN_TIMEZONES.has(currentTz);
+
 /**
  * Parses and returns errors when `axios` request to the **server** failed.
  * @param {*} err
  */
-const parseApiError = (err) => {
+export const parseApiError = (err) => {
   if (axios.isAxiosError(err)) {
     /* Timed out or unreachable */
     if (err.code === 'ECONNABORTED') return new Error(SERVER_TIMEOUT_MSG);
@@ -52,8 +55,7 @@ const parseApiError = (err) => {
  * @returns {Promise<null>}
  * @throws {Error} If request failed.
  */
-const checkServerAccessibility = async () => {
-  const isDevMode = getIsDevMode();
+export const checkServerAccessibility = async () => {
   try {
     isDevMode && console.debug('> Checking if server is up...');
     const params = { tz: 'Etc/GMT', year: '-1000', flag: 've' };
@@ -105,20 +107,17 @@ const checkServerAccessibility = async () => {
 /**
  * Checks Nominatim accessibility by sending HTTP HEAD request.
  * - If already in CN or `forceInCn` is `true`, skips prob and set `isAccessible` to `false`
- * @param {boolean} forceInCn
- * @returns {Promise<{isAccessible: boolean, isInCn: boolean}>}
+ * @returns {Promise<boolean>} `true` if accessible and not force in CN.
  */
-const checkNominatimAccessibility = async (forceInCn) => {
-  const isDevMode = getIsDevMode();
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const isInCn = CN_TIMEZONES.has(tz);
+export const checkNominatimAccessibility = async () => {
   if (isInCn) {
-    isDevMode && console.debug(`🇨🇳 You are currently in China (${tz})`);
-    return { isAccessible: false, isInCn };
+    isDevMode && console.debug(`🇨🇳 You are currently in China (${currentTz})`);
+    return false;
   }
   if (forceInCn) {
-    isDevMode && console.debug(`🇨🇳 Suppose you are in China (actual: ${tz})`);
-    return { isAccessible: false, isInCn };
+    isDevMode &&
+      console.debug(`🇨🇳 Suppose you are in China (actual: ${currentTz})`);
+    return false;
   }
   try {
     isDevMode && console.debug('> Checking if Nominatim is accessible...');
@@ -132,30 +131,28 @@ const checkNominatimAccessibility = async (forceInCn) => {
       console.debug(`⏳ (Nominatim-probe) Request took ${duration}ms`);
     }
     isDevMode && console.debug('✅ Nominatim is accessible.');
-    return { isAccessible: true, isInCn };
+    return true;
   } catch (err) {
     if (axios.isCancel(err)) {
       isDevMode && console.debug('Nominatim probe cancelled.');
-      return { isAccessible: true, isInCn };
+      return true;
     }
     if (axios.isAxiosError(err) && err.response) {
       const { status } = err.response;
       if (status === 405) {
         isDevMode &&
           console.debug('⚠️ HEAD not allowed, but Nominatim is reachable.');
-        return { isAccessible: true, isInCn };
+        return true;
       }
       console.warn(`HTTP ${status}: ${err.message ?? err.toJSON()}`);
       isDevMode &&
         console.debug('⚠️ Using Nominatim but the connection is bad.');
-      return { isAccessible: true, isInCn };
+      return true;
     }
     isDevMode &&
       console.debug(
         `🔴 Nominatim unaccessible: ${Error.isError(err) ? err.message : err}`,
       );
-    return { isAccessible: false, isInCn };
+    return false;
   }
 };
-
-export { parseApiError, checkServerAccessibility, checkNominatimAccessibility };

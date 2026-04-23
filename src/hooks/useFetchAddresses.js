@@ -6,12 +6,14 @@ import * as actionTypes from '@context/locationInputActionTypes';
 // import config from '@utils/config';
 import {
   SERVICES,
+  DEFAULT_SERVICE_CN,
   STORAGE_KEYS,
   LOCATION_NOT_FOUND_MSG,
   // SERVICE_ERR_MSG,
 } from '@utils/constants';
 import fetchAddresses from '@/utils/fetchAddresses';
-import { getIsDevMode } from '@utils/devMode';
+import { isInCn } from '@utils/apiUtils';
+import { isDevMode } from '@utils/devMode';
 
 const QUERY_KEY = 'address';
 
@@ -59,25 +61,27 @@ const useFetchAddresses = (
   /**
    * Updates `geoService` but does not store in local.
    * - If not enabled, skips
-   * - If `geoService` is already set to `'Baidu'` in any case, skips to avoid loops
-   * - If `success` is `true` and `geoService` is already set to any service, skips
-   * - If `success` is `true` and `geoService` is not set, falls back to `'Nominatim'`
-   * - if `success` is `false` and `geoService` is not set, switches to `'Baidu'`
+   * - If `geoService` is already set to `DEFAULT_SERVICE_CN` in any case, skips to avoid loops
+   * - If `success` is `true` and `geoService` is already set, skips
+   * - If `success` is `true` and `geoService` is not set, falls back to `'Nominatim'` or `DEFAULT_SERVICE_CN`
+   * - if `success` is `false` and `geoService` is not set, indicating either `'Nominatim'`
+   *   or any CN service other than `DEFAULT_SERVICE_CN` fails, switches to `DEFAULT_SERVICE_CN`
    * @param {boolean} [success=true]
    */
   const updateService = useCallback(
     (success = true) => {
       if (
         !isEnabled ||
-        geoService === SERVICES.baidu ||
+        geoService === DEFAULT_SERVICE_CN ||
         (success && geoService)
-      )
+      ) {
         return;
-      getIsDevMode() &&
-        console.debug('> Updating service... Current:', geoService);
-      const service = success ? SERVICES.nominatim : SERVICES.baidu;
+      }
+      isDevMode && console.debug('> Updating service... Current:', geoService);
+      const service =
+        success && !isInCn ? SERVICES.nominatim : DEFAULT_SERVICE_CN;
       setGeoService(service, true);
-      getIsDevMode() && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
+      isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       console.debug(`🌎 [Geocoding service] ${service} (temporary)`);
     },
     [isEnabled, geoService, setGeoService],

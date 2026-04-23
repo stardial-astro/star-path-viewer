@@ -2,8 +2,8 @@
 import axios from 'axios';
 import apiClient from './apiClient';
 import reverseGeocode from './reverseGeocode';
-import { getIsDevMode } from './devMode';
-import { SERVICES, STORAGE_KEYS } from './constants';
+import { isDevMode } from './devMode';
+import { SERVICES, DEFAULT_SERVICE_CN, STORAGE_KEYS } from './constants';
 
 const GEO_TIMEOUT = 6_000;
 const GEO_IP_TIMEOUT = 5_000;
@@ -47,7 +47,7 @@ const fetchIpLocation = async (signal) => {
      *  "readme": "https://ipinfo.io/missingauth"
      *}
      */
-    getIsDevMode() && console.debug('[IP]', data.ip);
+    isDevMode && console.debug('[IP]', data.ip);
     /** @type {string[]} */
     const [latitude, longitude] = data.loc.split(',');
     return {
@@ -84,8 +84,6 @@ const fetchGeolocation = async (
   signal,
 ) => {
   if (signal?.aborted) return null;
-
-  const isDevMode = getIsDevMode();
 
   if ('geolocation' in navigator) {
     isDevMode && console.debug('> Querying geolocation...');
@@ -148,7 +146,7 @@ const fetchGeolocation = async (
     if (!res) return null;
     isDevMode && console.debug('[Resolved location]', res);
 
-    /* If successful, update the service but don't store */
+    /* If successful, update the primary service but don't store */
     if (serviceInUse === SERVICES.nominatim) {
       if (service !== serviceInUse) {
         setGeoService(serviceInUse, true);
@@ -157,11 +155,15 @@ const fetchGeolocation = async (
       }
     } else {
       /* CN */
-      if (service !== SERVICES.baidu) {
-        setGeoService(SERVICES.baidu, true);
+      /* Set the primary CN service to the default but don't store */
+      if (service === SERVICES.nominatim) {
+        setGeoService(DEFAULT_SERVICE_CN, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug(`🌎 [Geocoding service] ${SERVICES.baidu} (temporary)`);
+        console.debug(
+          `🌎 [Geocoding service] ${DEFAULT_SERVICE_CN} (temporary)`,
+        );
       }
+      /* Update the reverse geocoding service */
       if (serviceCn !== serviceInUse) {
         setReverseGeoServiceCn(serviceInUse);
         console.debug('🌎 [GPS service]', serviceInUse);

@@ -23,7 +23,7 @@ import useFetchHipList from '@hooks/useFetchHipList';
 import useFetchStarNames from '@/hooks/useFetchStarNames';
 import { CC_HANT_CODES } from '@utils/constants';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
 
 const hipStyle = { mr: 1 };
@@ -175,7 +175,7 @@ const StarHipInput = () => {
         payload: option.display_name,
       });
       starDispatch({ type: actionTypes.SET_STAR_VALID, payload: true });
-      getIsDevMode() && console.debug('[Selected star]', option);
+      isDevMode && console.debug('[Selected star]', option);
     },
     [starDispatch],
   );
@@ -284,7 +284,7 @@ const StarHipInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      getIsDevMode() &&
+      isDevMode &&
         console.debug('🤔 Something went wrong. Refetching stars...');
     }
   }, [

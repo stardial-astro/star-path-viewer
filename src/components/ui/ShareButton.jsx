@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from '@mui/material';
 import ShareIcon from '@mui/icons-material/Share';
 import isMobile from '@utils/isMobile';
-import { getIsDevMode } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomIconButton from './CustomIconButton';
 
 const SHARE_URL = import.meta.env.BASE_URL; // or window.location.href
@@ -28,7 +28,7 @@ const ShareButton = ({ setShareStatus }) => {
         setShareStatus({ success: true, error: '' });
       } catch (err) {
         if (Error.isError(err) && err.name === 'AbortError') {
-          getIsDevMode() && console.debug(err.message);
+          isDevMode && console.debug(err.message);
         } else {
           console.error(String(err));
         }

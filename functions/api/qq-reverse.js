@@ -2,8 +2,8 @@
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.QQ_REVERSE_URL.trim();
-  const key = context.env.QQ_API_KEY.trim();
+  const baseUrl = (context.env.QQ_REVERSE_URL || '').trim();
+  const key = (context.env.QQ_API_KEY || '').trim();
 
   if (!baseUrl) {
     return new Response(
@@ -49,7 +49,7 @@ export async function onRequest(context) {
     const response = await fetch(finalUrl, {
       method: 'GET',
       headers,
-      referrerPolicy: 'no-referrer',
+      // referrerPolicy: 'no-referrer',
       redirect: 'follow',
     });
     if (!response.ok) {

@@ -82,7 +82,7 @@ const searchWithBaidu = async (query) => {
   // const url =
   //   `${baiduSearchUrl}?` +
   //   `ak=${baiduApiKey}&query=${query}&` +
-  //   `region=全国&ret_coordtype=gcj02ll`;
+  //   `region=全国&output=json&ret_coordtype=gcj02ll`;
   // isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
   // const startTime = performance.now();
   // const response = await fetchJsonp(url, {

@@ -2,8 +2,8 @@
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.BAIDU_SEARCH_URL.trim();
-  const ak = context.env.BAIDU_API_KEY.trim();
+  const baseUrl = (context.env.BAIDU_SEARCH_URL || '').trim();
+  const ak = (context.env.BAIDU_API_KEY || '').trim();
 
   if (!baseUrl) {
     return new Response(
@@ -33,6 +33,7 @@ export async function onRequest(context) {
   const params = new URLSearchParams({
     query,
     region: '全国',
+    output: 'json',
     ret_coordtype,
     ak,
   });
@@ -51,7 +52,7 @@ export async function onRequest(context) {
     const response = await fetch(finalUrl, {
       method: 'GET',
       headers,
-      referrerPolicy: 'no-referrer',
+      // referrerPolicy: 'no-referrer',
       redirect: 'follow',
     });
     if (!response.ok) {

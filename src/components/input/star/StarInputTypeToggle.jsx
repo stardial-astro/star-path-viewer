@@ -5,6 +5,7 @@ import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { STAR_INPUT_TYPES } from '@utils/constants';
+import { isDevMode } from '@utils/devMode';
 
 const STAR_INPUT_TYPE_LABEL = 'Star input type';
 
@@ -24,6 +25,7 @@ const StarInputTypeToggle = () => {
       starDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: value });
       /* Clear name, HIP, suggestions, RA/Dec and resets validity */
       resetStarValues();
+      isDevMode && console.debug('* Star and suggestions cleared.'); // TODO: test
     },
     [resetStarValues, starDispatch],
   );

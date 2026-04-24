@@ -1,6 +1,6 @@
 // src/utils/reverseGeocode.js
 import axios from 'axios';
-import fetchJsonp from 'fetch-jsonp';
+// import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, LOC_UNKNOWN_ID } from './constants';
 import apiClient from './apiClient';
 import { isInCn } from './apiUtils';
@@ -17,16 +17,17 @@ const NO_DATA_ERR_MSG = 'No data returned from ';
 
 const nominatimReverseUrl = import.meta.env.VITE_NOMINATIM_REVERSE_URL;
 
-// const baiduReverseUrl = '/api/baidu-reverse';
-const baiduReverseUrl = import.meta.env.VITE_BAIDU_REVERSE_URL;
-const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
+const baiduReverseUrlInternal = '/api/baidu-reverse';
+// const baiduReverseUrl = import.meta.env.VITE_BAIDU_REVERSE_URL;
+// const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
 
-const qqReverseUrl = '/api/qq-reverse';
+const qqReverseUrlInternal = '/api/qq-reverse';
 // const qqReverseUrl = import.meta.env.VITE_QQ_REVERSE_URL;
 // const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
 
-const tiandituReverseUrl = import.meta.env.VITE_TIANDITU_REVERSE_URL;
-const tiandituApiKey = import.meta.env.VITE_TIANDITU_API_KEY;
+const tiandituReverseUrlInternal = '/api/tianditu-reverse';
+// const tiandituReverseUrl = import.meta.env.VITE_TIANDITU_REVERSE_URL;
+// const tiandituApiKey = import.meta.env.VITE_TIANDITU_API_KEY;
 
 /**
  * @param {CoordObj} coords
@@ -74,41 +75,39 @@ const reverseWithNominatim = async (coords, signal) => {
  * @returns {Promise<AddressItem>} The address object.
  * @throws {Error} If location is not found.
  */
-/* eslint-disable-next-line no-unused-vars */
 const reverseWithBaidu = async (coords, signal) => {
   /* [JSONP] -------------------------------------------------------- */
-  const url =
-    `${baiduReverseUrl}?` +
-    `ak=${baiduApiKey}&location=${coords.latitude},${coords.longitude}&` +
-    'output=json&coordtype=wgs84ll&region_data_source=2';
-  isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
-  const startTime = performance.now();
-  const response = await fetchJsonp(url, {
-    jsonpCallback: 'callback',
-    timeout: BAIDU_TIMEOUT,
-  });
-  const duration = performance.now() - startTime;
-  /* [Proxy] -------------------------------------------------------- */
-  // const response = await apiClient.get(baiduReverseUrl, {
-  //   params: {
-  //     location: `${coords.latitude},${coords.longitude}`,
-  //     output: 'json',
-  //     coordtype: 'wgs84ll',
-  //     region_data_source: 2,
-  //   },
+  // const url =
+  //   `${baiduReverseUrl}?` +
+  //   `ak=${baiduApiKey}&location=${coords.latitude},${coords.longitude}&` +
+  //   'output=json&coordtype=wgs84ll&region_data_source=2';
+  // isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
+  // const startTime = performance.now();
+  // const response = await fetchJsonp(url, {
+  //   jsonpCallback: 'callback',
   //   timeout: BAIDU_TIMEOUT,
-  //   signal,
   // });
-  // const duration = response.config.metadata?.duration;
+  // const duration = performance.now() - startTime;
+  /* [Proxy] -------------------------------------------------------- */
+  const response = await apiClient.get(baiduReverseUrlInternal, {
+    params: {
+      location: `${coords.latitude},${coords.longitude}`,
+      coordtype: 'wgs84ll',
+      region_data_source: 2,
+    },
+    timeout: BAIDU_TIMEOUT,
+    signal,
+  });
+  const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
   isDevMode &&
     duration &&
     console.debug(`⏳ (Baidu-reverse) Request took ${duration}ms`);
   /** @type {BaiduReverseSchema} */
-  const res = await response.json(); // [JSONP]
-  // const res = response.data; // [Proxy]
+  // const res = await response.json(); // [JSONP]
+  const res = response.data; // [Proxy]
   isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
-  // isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
+  isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
   if (res?.status !== 0) {
     throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
   }
@@ -144,7 +143,7 @@ const reverseWithQq = async (coords, signal) => {
   // });
   // const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
-  const response = await apiClient.get(qqReverseUrl, {
+  const response = await apiClient.get(qqReverseUrlInternal, {
     params: {
       location: `${coords.latitude},${coords.longitude}`,
       radius: 1000,
@@ -191,17 +190,27 @@ const reverseWithTianditu = async (coords, signal) => {
     lat: coords.latitude,
     ver: 1,
   });
-  isDevMode &&
-    console.debug(`[Tianditu tk] ${tiandituApiKey.slice(0, 3)}******`);
-  const response = await apiClient.get(tiandituReverseUrl, {
+  /* [axios] -------------------------------------------------------- */
+  // isDevMode &&
+  //   console.debug(`[Tianditu tk] ${tiandituApiKey.slice(0, 3)}******`);
+  // const response = await apiClient.get(tiandituReverseUrl, {
+  //   params: {
+  //     postStr,
+  //     type: 'geocode',
+  //     tk: tiandituApiKey,
+  //   },
+  //   timeout: TIANDITU_TIMEOUT,
+  //   signal,
+  // });
+  /* [Proxy] -------------------------------------------------------- */
+  const response = await apiClient.get(tiandituReverseUrlInternal, {
     params: {
       postStr,
-      type: 'geocode',
-      tk: tiandituApiKey,
     },
     timeout: TIANDITU_TIMEOUT,
     signal,
   });
+  /* ---------------------------------------------------------------- */
   const duration = response.config.metadata?.duration;
   isDevMode &&
     duration &&
@@ -315,7 +324,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         /* If force in CN (for testing), you might need a proxy */
         isDevMode &&
           forceInCn &&
-          console.debug('Did you forgot to use a proxy?');
+          console.debug('🤔 Did you forgot to use a proxy?');
         if (NO_FALLBACK) {
           return { res: resUnknown, serviceInUse };
         }

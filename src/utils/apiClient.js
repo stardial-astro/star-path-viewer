@@ -1,6 +1,7 @@
 // src/utils/apiClient.js
 import axios from 'axios';
-import { trackEvent } from '@utils/analytics';
+import { WARNING_PREFIX_SERVER } from './constants';
+import { trackEvent } from './analytics';
 
 /** An `axios` instance including `startTime`, `endTime`, and `duration`
  * in `metadata` and a GA4 event tracker.
@@ -39,7 +40,11 @@ apiClient.interceptors.response.use(
     const serverErr = error.response?.data;
     const msg = serverErr?.message || serverErr?.error || error.message;
     const statusCode = error.response?.status || serverErr?.status || 'unknown';
-    console.error(`🔴 [API Error ${statusCode}]:`, msg);
+    if (msg.startsWith(WARNING_PREFIX_SERVER)) {
+      console.warn(`⚠️`, msg);
+    } else {
+      console.error(`🔴 [API Error ${statusCode}]:`, msg);
+    }
 
     /* Log the end time and duration */
     if (error.config?.metadata?.startTime) {

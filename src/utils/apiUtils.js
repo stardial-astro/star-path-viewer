@@ -8,7 +8,7 @@ import {
   SERVER_DOWN_MSG,
   SERVER_NO_RES_MSG,
 } from './constants';
-import apiClient from '@utils/apiClient';
+import apiClient from './apiClient';
 import { isDevMode, forceInCn } from './devMode';
 
 const SERVER_PROBE_TIMEOUT = config.SERVER_TIMEOUT;

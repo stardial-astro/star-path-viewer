@@ -103,6 +103,7 @@ const StarHipInput = () => {
     /* Clear errors & null errors */
     clearStarError(starDispatch, setErrorMessage);
     starDispatch({ type: actionTypes.CLEAR_STAR_NULL_ERROR });
+    lastSelectedTermRef.current = '';
   }, [resetStarValues, starDispatch, setErrorMessage]);
 
   useFetchHipList(hipList, setHipList, setErrorMessage);
@@ -120,12 +121,9 @@ const StarHipInput = () => {
   /* Clear name, HIP, suggestions, RA/Dec, and resets validity
    * if deferred searchTerm is cleared
    */
-  useEffect(() => {
-    if (!deferredSearchTerm) {
-      resetStarValues();
-      isDevMode && console.debug('Name, HIP, suggestions, and RA/Dec cleared.');
-    }
-  }, [deferredSearchTerm, resetStarValues, starDispatch]);
+  // useEffect(() => {
+  //   if (!deferredSearchTerm) resetStarValues();
+  // }, [deferredSearchTerm, resetStarValues, starDispatch]);
 
   /* Fetch suggestions on deferred searchTerm change */
   useFetchStarNames(
@@ -140,6 +138,7 @@ const StarHipInput = () => {
 
   /* Watch fetched suggestions and focus */
   useEffect(() => {
+    isDevMode && console.debug('* Star suggestions:', suggestions.length); // TODO: test
     /* If empty, skip */
     if (suggestions.length === 0) return;
     /* If have multiple options, focus and open options */
@@ -204,12 +203,12 @@ const StarHipInput = () => {
         /* Clear suggestions before fetching */
         // starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep in case just adding spaces
       } else {
-        /* Clear searchTerm and suggestions if value is blank */
-        starDispatch({ type: actionTypes.CLEAR_SEARCH_TERM });
-        starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+        /* Clear name, HIP, suggestions, RA/Dec, and resets validity if value is blank */
+        resetStarValues();
+        isDevMode && console.debug('Star and suggestions cleared.');
       }
     },
-    [starDispatch],
+    [starDispatch, resetStarValues],
   );
 
   /**
@@ -231,6 +230,7 @@ const StarHipInput = () => {
       setSkipFetch(true);
       selectOption(value);
       starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+      isDevMode && console.debug('* Star suggestions cleared'); // TODO: test
     },
     [selectOption, starDispatch],
   );
@@ -349,11 +349,7 @@ const StarHipInput = () => {
           {...params}
           label={t('search_hip')}
           placeholder={
-            isLoading
-              ? t('loading_data')
-              : !hipList
-                ? t('errors:hip_data_not_loaded')
-                : t('enter_number_or_name')
+            isLoading ? t('loading_data') : t('enter_number_or_name')
           }
           inputRef={inputRef}
           error={!!tHipError}

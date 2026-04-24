@@ -71,17 +71,7 @@ const LocationInput = () => {
    * Clear stale data on input change
    * ------------------------------------------------------------------|
    */
-  /* [AddressInput] Clear suggestions and lastSelectedTermRef if
-   * debounced searchTerm is cleared
-   * > When in address mode, also clear location
-   * > When in coordinate mode, only clear id
-   */
-  /* [LocationInputTypeToggle]
-   * > When toggles to address mode, clear location and suggestions
-   * > When toggles to coordinate mode, KEEP location and suggestions
-   * (so if there is a reverse geocoding unavailable warning triggered by
-   * id === LOC_UNKNOWN_ID, it keeps open)
-   */
+  /* [AddressInput] When typing, clear location and suggestions */
 
   /* ------------------------------------------------------------------|
    * Fetch data

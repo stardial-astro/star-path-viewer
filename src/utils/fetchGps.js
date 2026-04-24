@@ -11,7 +11,7 @@ import {
 } from './constants';
 import fetchGeolocation from './fetchGeolocation';
 import reverseGeocode from './reverseGeocode';
-import { isDevMode } from './devMode';
+import { isDevMode, forceInCn } from './devMode';
 
 const QUERY_KEY = 'gps';
 
@@ -22,17 +22,17 @@ const GC_MS = 30 * 60_000;
 
 /**
  * Calls `fetchGeolocation` to fetch geolocation and sets the coordinates and address.
- * - Skips fetching if offline or no service defined
+ * - Skips fetching if no coordinates
  * - Updates `geoService` and/or `reverseGeoServiceCn` if any of them is actually in use
  * - Updates `location`, `searchTerm`, and `lastSelectedTermRef` if successful
  * - If no valid address returned, toggles to coordinate mode
- * - Sets `tz` returned from the built-in method.
+ * - Sets `tz` returned from the built-in method if not force in CN
  * - Turns off `gpsLoading` on exit
  * Uses TanStack Query:
  * - Automatic caching
  * - Prevents multiple identical requests
  * - Retries on error (delay with exponential backoff)
- * @param {GeoService} service - The reverse geocoding service.
+ * @param {GeoService | null} service - The reverse geocoding service.
  * @param {GeoService} serviceCn - The CN reverse geocoding service.
  * @param {ReactRef<string>} lastSelectedTermRef
  * @param {(service: GeoService | null, noLocal?: boolean) => void} setGeoService
@@ -95,10 +95,12 @@ const fetchGps = async (
         type: actionTypes.SET_SEARCH_TERM,
         payload: res.display_name,
       });
-      /* Also update tz */
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      dispatch({ type: actionTypes.SET_TZ, payload: tz });
-      console.debug('📍 [Timezone ID]', tz);
+      /* Also update tz if not force in CN */
+      if (!forceInCn) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        dispatch({ type: actionTypes.SET_TZ, payload: tz });
+        console.debug('📍 [Timezone ID]', tz);
+      }
     } else {
       /* If no valid address returned, toggle to coordinate mode and return */
       dispatch({

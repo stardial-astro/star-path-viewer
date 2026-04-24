@@ -29,8 +29,8 @@ const LocationInputTypeToggle = () => {
       if (value === null) return;
       locationInputTypeRef.current = value;
       locationDispatch({ type: actionTypes.SET_INPUT_TYPE, payload: value });
+      // TODO: test: cleaning should be done in AddressInput
       /* When toggles to address mode, clear location and suggestions */
-      // TODO: test, these should be done in AddressInput
       // if (value === LOC_INPUT_TYPES.addr) {
       //   resetLocationValues();
       //   /* Clearing debounced searchTerm also clears lastSelectedTermRef below */

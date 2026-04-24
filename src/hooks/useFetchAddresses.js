@@ -70,21 +70,18 @@ const useFetchAddresses = (
    */
   const updateService = useCallback(
     (success = true) => {
-      if (
-        !isEnabled ||
-        geoService === DEFAULT_SERVICE_CN ||
-        (success && geoService)
-      ) {
+      if (geoService === DEFAULT_SERVICE_CN || (success && geoService)) {
         return;
       }
-      isDevMode && console.debug('> Updating service... Current:', geoService);
+      isDevMode &&
+        console.debug(`> Updating service... (current: ${geoService || 'null'})`);
       const service =
         success && !isInCn ? SERVICES.nominatim : DEFAULT_SERVICE_CN;
       setGeoService(service, true);
       isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       console.debug(`🌎 [Geocoding service] ${service} (temporary)`);
     },
-    [isEnabled, geoService, setGeoService],
+    [geoService, setGeoService],
   );
 
   const { data, error, isFetching } = useQuery({
@@ -126,6 +123,8 @@ const useFetchAddresses = (
   }, [isFetching, dispatch]);
 
   useEffect(() => {
+    /* Skip if not enabled, avoiding refetch after selection */
+    if (!isEnabled) return;
     if (error) {
       /* Show errors, set invalid, and clear suggestions */
       if (error.message === LOCATION_NOT_FOUND_MSG) {
@@ -146,7 +145,15 @@ const useFetchAddresses = (
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }
-  }, [data, error, updateService, dispatch, setGeoService, setErrorMessage]);
+  }, [
+    isEnabled,
+    data,
+    error,
+    updateService,
+    dispatch,
+    setGeoService,
+    setErrorMessage,
+  ]);
 };
 
 export default useFetchAddresses;

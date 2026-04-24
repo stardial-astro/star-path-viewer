@@ -5,6 +5,7 @@ import { FormControl, RadioGroup, Radio } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import { RADEC_TYPES } from '@utils/constants';
+import { isDevMode } from '@utils/devMode';
 import CustomFormControlLabel from '@components/ui/CustomFormControlLabel';
 
 const RadecFormatToggle = () => {
@@ -19,6 +20,7 @@ const RadecFormatToggle = () => {
       starDispatch({ type: actionTypes.CLEAR_STAR_RADEC });
       starDispatch({ type: actionTypes.CLEAR_STAR_RA_HMS });
       starDispatch({ type: actionTypes.CLEAR_STAR_DEC_DMS });
+      isDevMode && console.debug('* RA/Dec cleared.'); // TODO: test
     },
     [starDispatch],
   );

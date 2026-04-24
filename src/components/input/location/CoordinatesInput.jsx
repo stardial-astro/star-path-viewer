@@ -49,7 +49,7 @@ const CoordinatesInput = () => {
      * id === LOC_UNKNOWN_ID, it keeps open)
      */
     isDevMode &&
-      console.debug(`[CoordinatesInput onInit] flag: ${flag || 'unset'}`); // TODO: test
+      console.debug(`* (CoordinatesInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */

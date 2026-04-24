@@ -1,40 +1,37 @@
-// functions/api/baidu-search.js
+// functions/api/tianditu-reverse.js
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = context.env.BAIDU_SEARCH_URL.trim();
-  const ak = context.env.BAIDU_API_KEY.trim();
+  const baseUrl = context.env.TIANDITU_REVERSE_URL.trim();
+  const tk = context.env.TIANDITU_API_KEY.trim();
 
   if (!baseUrl) {
     return new Response(
-      JSON.stringify({ error: 'Configuration missing: BAIDU_SEARCH_URL' }),
+      JSON.stringify({ error: 'Configuration missing: TIANDITU_REVERSE_URL' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
-  if (!ak) {
+  if (!tk) {
     return new Response(
-      JSON.stringify({ error: 'Configuration missing: BAIDU_API_KEY' }),
+      JSON.stringify({ error: 'Configuration missing: TIANDITU_API_KEY' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
 
   /* Construct URL */
   const requestUrl = new URL(context.request.url);
-  const query = requestUrl.searchParams.get('query');
-  if (!query) {
+  const postStr = requestUrl.searchParams.get('postStr');
+  if (!postStr) {
     return new Response(
-      JSON.stringify({ error: "Parameter missing: 'query'" }),
+      JSON.stringify({ error: "Parameter missing: 'postStr'" }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
-  const ret_coordtype =
-    requestUrl.searchParams.get('ret_coordtype') || 'gcj02ll';
   const params = new URLSearchParams({
-    query,
-    region: '全国',
-    ret_coordtype,
-    ak,
+    postStr,
+    type: 'geocode',
+    tk,
   });
   const finalUrl = `${baseUrl}?${params.toString()}`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
@@ -58,7 +55,7 @@ export async function onRequest(context) {
       return new Response(
         JSON.stringify({
           status: -1, // frontend will handle this non-zero code
-          message: `Baidu Error: ${response.status}`,
+          message: `Tianditu Error: ${response.status}`,
         }),
         { status: response.status },
       );
@@ -80,7 +77,7 @@ export async function onRequest(context) {
     return new Response(
       JSON.stringify({
         status: -2, // frontend will handle this non-zero code
-        message: `Baidu search failed: ${err instanceof Error ? err.message : err}`,
+        message: `Tianditu reverse geocoding failed: ${err instanceof Error ? err.message : err}`,
       }),
       { status: 500 },
     );

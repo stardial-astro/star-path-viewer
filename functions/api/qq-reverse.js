@@ -28,27 +28,28 @@ export async function onRequest(context) {
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
-  const radius = requestUrl.searchParams.get('radius') || 0;
-
-  // const paramsToForward = ['location', 'radius'];
-  // const apiUrl = new URL(baseUrl);
-  // paramsToForward.forEach((k) => {
-  //   const value = requestUrl.searchParams.get(k);
-  //   if (value) apiUrl.searchParams.set(k, value);
-  // });
-  // apiUrl.searchParams.set('key', key);
-  // const finalUrl = apiUrl.toString();
-  const finalUrl = `${baseUrl}?key=${key}&location=${location}&radius=${radius}`;
+  const radius = requestUrl.searchParams.get('radius') || '0';
+  const params = new URLSearchParams({
+    location,
+    radius,
+    key,
+  });
+  const finalUrl = `${baseUrl}?${params.toString()}`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
+
+  const headers = new Headers({
+    Referer: 'https://star-path-viewer.pages.dev',
+    'User-Agent':
+      context.request.headers.get('User-Agent') ||
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    Accept: '*/*',
+  });
 
   try {
     const response = await fetch(finalUrl, {
-      headers: {
-        Referrer: 'https://star-path-viewer.pages.dev',
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        Accept: '*/*',
-      },
+      method: 'GET',
+      headers,
+      referrerPolicy: 'no-referrer',
       redirect: 'follow',
     });
     if (!response.ok) {
@@ -71,16 +72,6 @@ export async function onRequest(context) {
         'X-CF-Node': context.request.cf.colo,
       },
     });
-
-    // const origin = context.request.headers.get('Origin');
-    // const host = context.request.headers.get('Host');
-    // if (origin) {
-    //   if (origin.includes('localhost') || origin.includes('pages.dev')) {
-    //     res.headers.set('Access-Control-Allow-Origin', origin);
-    //   } else if (host && host.includes('localhost')) {
-    //     res.headers.set('Access-Control-Allow-Origin', '*');
-    //   }
-    // }
 
     return res;
   } catch (err) {

@@ -105,7 +105,7 @@ const AddressInput = () => {
     resetLocationValues();
     lastSelectedTermRef.current = '';
     isDevMode &&
-      console.debug(`[AddressInput onInit] flag: ${flag || 'unset'}`); // TODO: test
+      console.debug(`* (AddressInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */
@@ -146,6 +146,7 @@ const AddressInput = () => {
 
   /* Watch fetched suggestions and focus */
   useEffect(() => {
+    isDevMode && console.debug('* Location suggestions:', suggestions.length); // TODO: test
     /* If empty, skip */
     if (suggestions.length === 0) return;
     /* If have multiple options, focus and open options */
@@ -199,13 +200,13 @@ const AddressInput = () => {
    * - Updates `lastSelectedTermRef`
    */
   const handleGpsClick = useCallback(async () => {
-    /* Skip fetching if offline or no service defined */
-    if (offlineState.dialogOpen || offlineState.dismissed || !geoService) {
+    /* Skip fetching if offline or checking service */
+    if (offlineState.dialogOpen || offlineState.dismissed || serviceChecking) {
       return null;
     }
     /* Do not fetch suggestions */
     setSkipFetch(true);
-    /* Do not fetch tz using API */
+    /* Do not fetch tz using API if not force in CN (for testing) */
     if (!forceInCn) setSkipTz(true);
     /* Clear errors & null errors and suggestions */
     clearLocationError(locationDispatch, setErrorMessage);
@@ -228,6 +229,7 @@ const AddressInput = () => {
     }
   }, [
     offlineState,
+    serviceChecking,
     geoService,
     reverseGeoServiceCn,
     setSkipTz,
@@ -293,6 +295,7 @@ const AddressInput = () => {
       setSkipTz(false);
       selectOption(value);
       locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
+      isDevMode && console.debug('* Location suggestions cleared'); // TODO: test
     },
     [setSkipTz, selectOption, locationDispatch],
   );

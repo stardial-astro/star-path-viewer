@@ -146,9 +146,9 @@ const fetchAndCacheHipList = async (setHipList) => {
  */
 const fetchStarNames = async (query, hipList, setHipList) => {
   let data = hipList;
-  /* Fetch and cache the HIP ident list */
+  /* Fetch and cache the HIP ident list (should be fetched automatically before querying) */
   if (!data || (Array.isArray(data) && data.length === 0)) {
-    isDevMode && console.debug('⚠️ HIP ident list not cached yet.');
+    isDevMode && console.debug('🤔 HIP ident list not cached yet.');
     /* Update if not aborted and no errors */
     data = await fetchAndCacheHipList(setHipList);
   }

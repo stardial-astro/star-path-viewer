@@ -4862,9 +4862,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react-hooks@npm:^7.0.1":
-  version: 7.0.1
-  resolution: "eslint-plugin-react-hooks@npm:7.0.1"
+"eslint-plugin-react-hooks@npm:^7.1.1":
+  version: 7.1.1
+  resolution: "eslint-plugin-react-hooks@npm:7.1.1"
   dependencies:
     "@babel/core": "npm:^7.24.4"
     "@babel/parser": "npm:^7.24.4"
@@ -4872,8 +4872,8 @@ __metadata:
     zod: "npm:^3.25.0 || ^4.0.0"
     zod-validation-error: "npm:^3.5.0 || ^4.0.0"
   peerDependencies:
-    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
-  checksum: 10c0/1e711d1a9d1fa9cfc51fa1572500656577201199c70c795c6a27adfc1df39e5c598f69aab6aa91117753d23cc1f11388579a2bed14921cf9a4efe60ae8618496
+    eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0 || ^10.0.0
+  checksum: 10c0/cee8454915d71ac5d70a0d8f4f260e76eaf45fcd4162747dd4282b792ee5616d187351dabe6cdcff9040c79d0cec625635c4fd0777276be119efa88ebe058525
   languageName: node
   linkType: hard
 
@@ -5716,26 +5716,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"i18next-http-backend@npm:^3.0.4":
-  version: 3.0.4
-  resolution: "i18next-http-backend@npm:3.0.4"
+"i18next-http-backend@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "i18next-http-backend@npm:3.0.6"
   dependencies:
     cross-fetch: "npm:4.1.0"
-  checksum: 10c0/f816e8fba65c9e0855fb5827e68e4f0cb5d3262516663b4ff82d957abd2415192bd53a1b801ed608c01ad0b63c73e4b2d1d805acfc536672c75fc8af9a6af0d7
+  checksum: 10c0/b799c4c49943cca5f215d8a7b563785e194e9061724213d5942c049855ed00a340a2478a305dd66cac59cf5fc32c90cbfe3d62c7063a59ad4401948196d430a5
   languageName: node
   linkType: hard
 
-"i18next@npm:^26.0.3":
-  version: 26.0.5
-  resolution: "i18next@npm:26.0.5"
-  dependencies:
-    "@babel/runtime": "npm:^7.29.2"
+"i18next@npm:^26.0.7":
+  version: 26.0.7
+  resolution: "i18next@npm:26.0.7"
   peerDependencies:
     typescript: ^5 || ^6
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10c0/4e4f7801c4caff597a2c454c3405f3e151a64bcd22424d5671041eaebeaaa8c964804aa5ea36eb512c616f6334d6e671b02174c7abefebbe31487b0fc3d07244
+  checksum: 10c0/5bcf5535a9b0612d5e580673c89e6a0f7e09202011f4161aa096afe35283857e129df3adb0521ccae60823791178a011f6724ad838f66b4fd3b95bb8be324b11
   languageName: node
   linkType: hard
 
@@ -7969,15 +7967,15 @@ __metadata:
     eslint: "npm:^10.1.0"
     eslint-import-resolver-typescript: "npm:^4.4.4"
     eslint-plugin-import-x: "npm:^4.16.2"
-    eslint-plugin-react-hooks: "npm:^7.0.1"
+    eslint-plugin-react-hooks: "npm:^7.1.1"
     eslint-plugin-react-refresh: "npm:^0.5.2"
     fetch-jsonp: "npm:^1.4.0"
     file-saver: "npm:^2.0.5"
     globals: "npm:^17.4.0"
     html-react-parser: "npm:^6.0.1"
-    i18next: "npm:^26.0.3"
+    i18next: "npm:^26.0.7"
     i18next-browser-languagedetector: "npm:^8.2.1"
-    i18next-http-backend: "npm:^3.0.4"
+    i18next-http-backend: "npm:^3.0.6"
     jsdom: "npm:^29.0.1"
     jspdf: "npm:^4.2.1"
     react: "npm:^19.2.4"

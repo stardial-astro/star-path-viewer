@@ -41,8 +41,8 @@ const AboutButton = ({ title }) => (
     title={title}
     placement="bottom"
     disableHoverListener={isMobile}
-    enterTouchDelay={0}
-    leaveTouchDelay={2000}
+    enterTouchDelay={300}
+    leaveTouchDelay={1000}
   >
     <RouterLink to={ABOUT_ROUT} aria-label={ABOUT_LABEL}>
       <img src={logo} alt={LOGO_ALT} style={logoCssStyle} />
@@ -69,6 +69,8 @@ const GithubButton = ({ title }) => (
     title={title}
     placement="bottom"
     disableHoverListener={isMobile}
+    enterTouchDelay={800}
+    leaveTouchDelay={1000}
   >
     <span>
       <CustomIconButton

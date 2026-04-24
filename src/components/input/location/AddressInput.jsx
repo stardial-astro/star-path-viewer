@@ -449,8 +449,8 @@ const AddressInput = () => {
                   title={t('find_my_location')}
                   disableHoverListener={isMobile}
                   enterDelay={500}
-                  enterTouchDelay={150}
-                  leaveTouchDelay={2000}
+                  enterTouchDelay={300}
+                  leaveTouchDelay={1000}
                 >
                   <span>
                     <CustomIconButton

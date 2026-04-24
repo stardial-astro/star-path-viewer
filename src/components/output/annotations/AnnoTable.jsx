@@ -103,12 +103,12 @@ const AnnoTable = ({ anno, tzname }) => {
               <StyledHeadCell colSpan={2}>
                 <Tooltip
                   describeChild
-                  followCursor
+                  followCursor={!isMobile}
                   title={tzname || ''}
                   placement="top"
                   disableHoverListener={isMobile}
-                  enterTouchDelay={150}
-                  leaveTouchDelay={3000}
+                  enterTouchDelay={500}
+                  leaveTouchDelay={1000}
                 >
                   <span>
                     {`${t('standard_time')} (${tzStr})`} {redAsterisk}

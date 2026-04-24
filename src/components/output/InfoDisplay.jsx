@@ -260,14 +260,14 @@ const InfoDisplay = () => {
           >
             <Tooltip
               describeChild
-              followCursor
+              followCursor={!isMobile}
               title={dateCCToStr(info.date_cc, isZhHant)}
               placement="top"
               disableHoverListener={isMobile}
               enterDelay={800}
               enterNextDelay={500}
-              enterTouchDelay={150}
-              leaveTouchDelay={2000}
+              enterTouchDelay={500}
+              leaveTouchDelay={1500}
             >
               {dateInfoItems}
             </Tooltip>

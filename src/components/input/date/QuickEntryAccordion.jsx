@@ -87,7 +87,7 @@ const QuickEntryAccordion = () => {
                 disableHoverListener={isMobile}
                 enterDelay={800}
                 enterNextDelay={500}
-                enterTouchDelay={300}
+                enterTouchDelay={500}
                 leaveTouchDelay={1500}
               >
                 <span>

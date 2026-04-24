@@ -45,6 +45,8 @@ const LanguageSelector = () => {
         title={t('change_language')}
         placement="bottom"
         disableHoverListener={isMobile}
+        enterTouchDelay={800}
+        leaveTouchDelay={1000}
       >
         <span>
           <CustomIconButton

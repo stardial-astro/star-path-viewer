@@ -109,7 +109,7 @@ const BackToTopButton = () => {
         title={t('back_to_top')}
         placement="left"
         disableHoverListener={isMobile}
-        enterTouchDelay={300}
+        enterTouchDelay={500}
         leaveTouchDelay={1000}
         slotProps={tooltipSlotProps}
       >

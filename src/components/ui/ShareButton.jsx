@@ -47,6 +47,8 @@ const ShareButton = ({ setShareStatus }) => {
       title={`${t('share')} ${t('title')}`}
       placement="bottom-end"
       disableHoverListener={isMobile}
+      enterTouchDelay={800}
+      leaveTouchDelay={1000}
     >
       <span>
         <CustomIconButton aria-label={SHARE_LABEL} onClick={handleShare}>

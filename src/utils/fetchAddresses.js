@@ -1,6 +1,6 @@
 // src/utils/fetchAddresses.js
 import axios from 'axios';
-// import fetchJsonp from 'fetch-jsonp';
+import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
 import apiClient from './apiClient';
 import { isDevMode } from './devMode';
@@ -11,9 +11,9 @@ const QQ_TIMEOUT = 6_000;
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 
-const baiduSearchUrlInternal = '/api/baidu-search';
-// const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
-// const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
+// const baiduSearchUrlInternal = '/api/baidu-search';
+const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
+const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
 
 const qqSearchUrlInternal = '/api/qq-search';
 // const qqSearchUrl = import.meta.env.VITE_QQ_SEARCH_URL;
@@ -79,35 +79,35 @@ const searchWithNominatim = async (query) => {
  */
 const searchWithBaidu = async (query) => {
   /* [JSONP] -------------------------------------------------------- */
-  // const url =
-  //   `${baiduSearchUrl}?` +
-  //   `ak=${baiduApiKey}&query=${query}&` +
-  //   `region=全国&output=json&ret_coordtype=gcj02ll`;
-  // isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
-  // const startTime = performance.now();
-  // const response = await fetchJsonp(url, {
-  //   jsonpCallback: 'callback',
-  //   timeout: BAIDU_TIMEOUT,
-  // });
-  // const duration = performance.now() - startTime;
-  /* [Proxy] -------------------------------------------------------- */
-  const response = await apiClient.get(baiduSearchUrlInternal, {
-    params: {
-      query,
-      ret_coordtype: 'gcj02ll',
-    },
+  const url =
+    `${baiduSearchUrl}?` +
+    `ak=${baiduApiKey}&query=${query}&` +
+    `region=全国&output=json&ret_coordtype=gcj02ll`;
+  isDevMode && console.debug(`[Baidu ak] ${baiduApiKey.slice(0, 3)}******`);
+  const startTime = performance.now();
+  const response = await fetchJsonp(url, {
+    jsonpCallback: 'callback',
     timeout: BAIDU_TIMEOUT,
   });
-  const duration = response.config.metadata?.duration;
+  const duration = performance.now() - startTime;
+  /* [Proxy] -------------------------------------------------------- */
+  // const response = await apiClient.get(baiduSearchUrlInternal, {
+  //   params: {
+  //     query,
+  //     ret_coordtype: 'gcj02ll',
+  //   },
+  //   timeout: BAIDU_TIMEOUT,
+  // });
+  // const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
   isDevMode &&
     duration &&
     console.debug(`⏳ (Baidu-search) Request took ${duration}ms`);
   /** @type {BaiduSearchV3Schema} */
-  // const res = await response.json(); // [JSONP]
-  const res = response.data; // [Proxy]
+  const res = await response.json(); // [JSONP]
+  // const res = response.data; // [Proxy]
   isDevMode && console.debug('[Query]', query, '\n[Results]', res);
-  isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
+  // isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
   if (res?.status !== 0) {
     throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
   }

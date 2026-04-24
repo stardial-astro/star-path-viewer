@@ -41,10 +41,11 @@ export async function onRequest(context) {
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
   const headers = new Headers({
-    Referer: 'https://star-path-viewer.pages.dev',
-    'User-Agent':
-      context.request.headers.get('User-Agent') ||
-      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    // Referer: 'https://star-path-viewer.pages.dev',
+    // 'User-Agent':
+    //   context.request.headers.get('User-Agent') ||
+    //   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'User-Agent': 'curl/7.81.0',
     Accept: '*/*',
   });
 
@@ -53,8 +54,21 @@ export async function onRequest(context) {
       method: 'GET',
       headers,
       // referrerPolicy: 'no-referrer',
-      redirect: 'follow',
+      // redirect: 'follow',
+      redirect: 'manual',
     });
+
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get('Location');
+      return new Response(
+        JSON.stringify({
+          status: -3,
+          message: `Blocked by Baidu WAF Redirect. WAF tried to send us to: ${location}`,
+        }),
+        { status: 502, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
     if (!response.ok) {
       return new Response(
         JSON.stringify({

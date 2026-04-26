@@ -30,7 +30,7 @@ const useFetchHipList = (hipList, setHipList, setErrorMessage) => {
   const { error } = useQuery({
     queryKey: [QUERY_KEY],
     queryFn: () => fetchAndCacheHipList(setHipList),
-    enabled: !!hipList,
+    enabled: !hipList,
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,

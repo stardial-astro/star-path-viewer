@@ -4,6 +4,11 @@ tmp
 .dev.vars
 .wrangler/
 
+# VitePress
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+docs/.vitepress/.temp/
+
 # Devtools of vite-plugin-pwa in dev mode
 dev-dist/
 

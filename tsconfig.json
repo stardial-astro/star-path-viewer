@@ -12,15 +12,31 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@components/*": ["./src/components/*"],
       "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
       "@context/*": ["./src/context/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@utils/*": ["./src/utils/*"],
-      "@types/*": ["./src/types/*"]
+      "@lib/*": ["./src/lib/*"],
+      "@pwa/*": ["./src/pwa/*"],
+      "@types/*": ["./src/types/*"],
+      "@utils/*": ["./src/utils/*"]
     },
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*", "functions/**/*", "docs/.vitepress/config.ts", "eslint.config.js"],
-  "exclude": ["dist", "dev-dist", "build", "public", "__mocks__"]
+  "include": [
+    "src/**/*",
+    "functions/**/*",
+    "docs/.vitepress/config.ts",
+    "eslint.config.js"
+  ],
+  "exclude": [
+    "dist",
+    "dev-dist",
+    "build",
+    "public",
+    "__mocks__",
+    "docs/.vitepress/cache",
+    "docs/.vitepress/dist",
+    "docs/.vitepress/.temp",
+  ]
 }

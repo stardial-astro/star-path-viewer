@@ -20,7 +20,7 @@ export default defineConfig({
     svgr(), // Transform SVGs into React components
     babel({ presets: [reactCompilerPreset()] }),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'autoUpdate', // default: 'prompt'
       disable: process.env.NODE_ENV === 'development',
       /* Assets to precache beyond what's in the build output */
       includeAssets: [
@@ -59,10 +59,10 @@ export default defineConfig({
 
       workbox: {
         cleanupOutdatedCaches: true, // removes stale chunk caches automatically
-        skipWaiting: true, // new SW activates immediately
-        clientsClaim: true, // claims all open tabs/windows
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
+        skipWaiting: true, // new SW activates immediately
+        clientsClaim: true, // claims all open tabs/windows
       },
 
       // devOptions: {
@@ -74,12 +74,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
-      '@components': resolve(__dirname, 'src/components'),
       '@assets': resolve(__dirname, 'src/assets'),
+      '@components': resolve(__dirname, 'src/components'),
       '@context': resolve(__dirname, 'src/context'),
       '@hooks': resolve(__dirname, 'src/hooks'),
-      '@utils': resolve(__dirname, 'src/utils'),
+      '@lib': resolve(__dirname, 'src/lib'),
+      '@pwa': resolve(__dirname, 'src/pwa'),
       '@types': resolve(__dirname, 'src/types'),
+      '@utils': resolve(__dirname, 'src/utils'),
     },
   },
   server: {

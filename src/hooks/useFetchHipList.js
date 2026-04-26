@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import config from '@utils/config';
-import { fetchAndCacheHipList } from '@/utils/fetchStarNames';
+import { fetchAndCacheHipList } from '@utils/fetchStarNames';
 
 const QUERY_KEY = 'hipList';
 

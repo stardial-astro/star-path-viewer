@@ -1,4 +1,4 @@
-// src/AppThemeProvider.jsx
+// src/components/providers/AppThemeProvider.jsx
 import { useMemo } from 'react';
 import {
   // GlobalStyles,
@@ -8,7 +8,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as muiLocales from '@mui/material/locale';
-import Globali18nStyles from './Globali18nStyles';
+import Globali18nStyles from '@components/providers/Globali18nStyles';
 
 /**
  * Maps i18next language code to MUI locale keys.

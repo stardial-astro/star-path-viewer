@@ -4,8 +4,8 @@ import { beforeAll } from 'vitest';
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { i18nPromise } from './i18n';
-import AppThemeProvider from './AppThemeProvider';
+import { i18nPromise } from '@lib/i18n';
+import AppThemeProvider from '@components/providers/AppThemeProvider';
 
 /* Wait for i18n to be ready before any test runs */
 beforeAll(async () => {

@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import queryClient from '@/queryClient';
+import queryClient from '@lib/queryClient';
 import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import { useDateInput } from '@context/DateInputContext';

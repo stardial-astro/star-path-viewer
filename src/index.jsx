@@ -10,10 +10,10 @@ import { BrowserRouter } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { registerSW } from 'virtual:pwa-register';
+import { i18nPromise } from '@lib/i18n';
+import queryClient from '@lib/queryClient';
 import { trackEvent } from '@utils/analytics';
-import { i18nPromise } from './i18n';
-import queryClient from './queryClient';
-import AppThemeProvider from './AppThemeProvider';
+import AppThemeProvider from '@components/providers/AppThemeProvider';
 import App from './App';
 
 /* Ensure i18n is ready before mounting */

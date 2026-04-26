@@ -20,7 +20,7 @@ import { useHome } from '@context/HomeContext';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
 import useFetchHipList from '@hooks/useFetchHipList';
-import useFetchStarNames from '@/hooks/useFetchStarNames';
+import useFetchStarNames from '@hooks/useFetchStarNames';
 import { CC_HANT_CODES } from '@utils/constants';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
 import { isDevMode } from '@utils/devMode';

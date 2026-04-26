@@ -12,12 +12,14 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),
-      '@components': resolve(__dirname, 'src/components'),
       '@assets': resolve(__dirname, 'src/assets'),
+      '@components': resolve(__dirname, 'src/components'),
       '@context': resolve(__dirname, 'src/context'),
       '@hooks': resolve(__dirname, 'src/hooks'),
-      '@utils': resolve(__dirname, 'src/utils'),
+      '@lib': resolve(__dirname, 'src/lib'),
+      '@pwa': resolve(__dirname, 'src/pwa'),
       '@types': resolve(__dirname, 'src/types'),
+      '@utils': resolve(__dirname, 'src/utils'),
     },
   },
   plugins: [react()],

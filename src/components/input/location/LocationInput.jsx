@@ -6,7 +6,7 @@ import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
-import useFetchTimezone from '@/hooks/useFetchTimezone';
+import useFetchTimezone from '@hooks/useFetchTimezone';
 import useDetermineService from '@hooks/useDetermineService';
 import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';

@@ -10,7 +10,7 @@ import {
   LOCATION_NOT_FOUND_MSG,
   // SERVICE_ERR_MSG,
 } from '@utils/constants';
-import fetchAddresses from '@/utils/fetchAddresses';
+import fetchAddresses from '@utils/fetchAddresses';
 import { fallbackGeoService } from '@utils/apiUtils';
 import { isDevMode } from '@utils/devMode';
 

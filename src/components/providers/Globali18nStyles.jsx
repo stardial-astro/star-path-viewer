@@ -1,4 +1,4 @@
-// src/Globali18nStyles.jsx
+// src/components/providers/Globali18nStyles.jsx
 import { GlobalStyles } from '@mui/material';
 
 const GLOBAL_FONTS = '"Roboto"';

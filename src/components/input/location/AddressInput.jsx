@@ -23,16 +23,16 @@ import { useHome } from '@context/HomeContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import { useDateInput } from '@context/DateInputContext';
 import * as actionTypes from '@context/locationInputActionTypes';
-import useFetchAddresses from '@/hooks/useFetchAddresses';
+import useFetchAddresses from '@hooks/useFetchAddresses';
 import useDebounce from '@hooks/useDebounce';
 import isMobile from '@utils/isMobile';
 import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
-import fetchGps from '@/utils/fetchGps';
+import fetchGps from '@utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { isDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
-import CustomIconButton from '@/components/ui/CustomIconButton';
+import CustomIconButton from '@components/ui/CustomIconButton';
 
 const GPS_LABEL = 'GPS';
 

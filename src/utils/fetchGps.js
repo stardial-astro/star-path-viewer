@@ -1,5 +1,5 @@
 // src/utils/fetchGps.js
-import queryClient from '@/queryClient';
+import queryClient from '@lib/queryClient';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from './config';
 import {

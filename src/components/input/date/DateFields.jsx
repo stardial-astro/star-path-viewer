@@ -14,7 +14,7 @@ import { useDateInput } from '@context/DateInputContext';
 import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import useDebounce from '@hooks/useDebounce';
-import useFetchDate from '@/hooks/useFetchDate';
+import useFetchDate from '@hooks/useFetchDate';
 import config from '@utils/config';
 import { EPH_RANGE, CALS } from '@utils/constants';
 import { clampDateSync, clearDateError } from '@utils/dateInputUtils';

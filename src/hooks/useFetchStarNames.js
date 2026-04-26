@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/starInputActionTypes';
 import config from '@utils/config';
 import { HIP_OUT_OF_RANGE_MSG, HIP_NOT_FOUND_MSG } from '@utils/constants';
-import { fetchStarNames } from '@/utils/fetchStarNames';
+import { fetchStarNames } from '@utils/fetchStarNames';
 
 const QUERY_KEY = 'starName';
 

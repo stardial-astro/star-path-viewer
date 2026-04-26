@@ -5,6 +5,9 @@
   "description": "Astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "docs"
+  ],
   "scripts": {
     "dev": "vite --host",
     "dev:ssl": "HTTPS=true vite --host",
@@ -19,7 +22,10 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "docs:dev": "yarn workspace docs dev",
+    "docs:build": "yarn workspace docs build",
+    "docs:preview": "yarn workspace docs preview"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -78,8 +84,10 @@
     "vite": "^8.0.8",
     "vite-plugin-pwa": "^1.2.0",
     "vite-plugin-svgr": "^5.2.0",
+    "vitepress": "^1.6.4",
     "vitest": "^4.1.2",
     "vitest-canvas-mock": "^1.1.4",
+    "vue": "^3.5.33",
     "wrangler": "^4.84.0"
   },
   "resolutions": {

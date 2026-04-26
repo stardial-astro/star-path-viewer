@@ -21,6 +21,6 @@
     },
     "typeRoots": ["./src/types", "./node_modules/@types"]
   },
-  "include": ["src/**/*", "functions/**/*", "eslint.config.js"],
+  "include": ["src/**/*", "functions/**/*", "docs/.vitepress/config.ts", "eslint.config.js"],
   "exclude": ["dist", "dev-dist", "build", "public", "__mocks__"]
 }

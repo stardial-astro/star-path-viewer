@@ -5,14 +5,13 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
 // import config from '@utils/config';
 import {
-  SERVICES,
   DEFAULT_SERVICE_CN,
   STORAGE_KEYS,
   LOCATION_NOT_FOUND_MSG,
   // SERVICE_ERR_MSG,
 } from '@utils/constants';
 import fetchAddresses from '@/utils/fetchAddresses';
-import { isInCn } from '@utils/apiUtils';
+import { fallbackGeoService } from '@utils/apiUtils';
 import { isDevMode } from '@utils/devMode';
 
 const QUERY_KEY = 'address';
@@ -26,9 +25,8 @@ const GC_MS = 10 * 60_000;
 /**
  * Calls `fetchAddresses` to fetch address suggestions.
  * - Skips searching if force skipping, GPS is loading, or the input is too short
- * - If `geoService` is `null`, falls back to `'Nominatim'`
- * - If `geoService` is `null`, sets to `'Nominatim'` if successful, otherwise to `'Baidu'`
- * - If error occurs, switch to the other service
+ * - If `geoService` is `null`, falls back to `fallbackGeoService`
+ * - Updates `geoService` if needed
  * - Updates `suggestions` on status change
  * Uses TanStack Query:
  * - Pauses while offline and resume/refetch when connectivity returns
@@ -60,12 +58,12 @@ const useFetchAddresses = (
 
   /**
    * Updates `geoService` but does not store in local.
-   * - If not enabled, skips
    * - If `geoService` is already set to `DEFAULT_SERVICE_CN` in any case, skips to avoid loops
-   * - If `success` is `true` and `geoService` is already set, skips
-   * - If `success` is `true` and `geoService` is not set, falls back to `'Nominatim'` or `DEFAULT_SERVICE_CN`
-   * - if `success` is `false` and `geoService` is not set, indicating either `'Nominatim'`
-   *   or any CN service other than `DEFAULT_SERVICE_CN` fails, switches to `DEFAULT_SERVICE_CN`
+   * - If `success` and `geoService` is already set, skips
+   * - If `success` and `geoService` is not set, falls back to `fallbackGeoService`
+   *   because `fetchAddresses` uses `fallbackGeoService` as the fallback
+   * - if not `success`, indicating either `DEFAULT_SERVICE` or any CN service
+   *   other than `DEFAULT_SERVICE_CN` fails, so switches to `DEFAULT_SERVICE_CN`
    * @param {boolean} [success=true]
    */
   const updateService = useCallback(
@@ -74,9 +72,10 @@ const useFetchAddresses = (
         return;
       }
       isDevMode &&
-        console.debug(`> Updating service... (current: ${geoService || 'null'})`);
-      const service =
-        success && !isInCn ? SERVICES.nominatim : DEFAULT_SERVICE_CN;
+        console.debug(
+          `> Updating service... (current: ${geoService || 'null'})`,
+        );
+      const service = success ? fallbackGeoService : DEFAULT_SERVICE_CN;
       setGeoService(service, true);
       isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
       console.debug(`🌎 [Geocoding service] ${service} (temporary)`);
@@ -133,14 +132,14 @@ const useFetchAddresses = (
           payload: error.message,
         });
       } else {
-        /* If other errors occur, switch the service but don't store (fall back to Nominatim) */
+        /* If other errors occur, switch the service but don't store */
         updateService(false);
         setErrorMessage((prev) => ({ ...prev, location: error.message }));
       }
       dispatch({ type: actionTypes.SET_LOCATION_VALID, payload: false });
       dispatch({ type: actionTypes.CLEAR_SUGGESTIONS });
     } else if (data) {
-      /* If was using the fallback service (Nominatim), set it but don't store */
+      /* If was using the fallback service, set it but don't store */
       updateService(true);
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });

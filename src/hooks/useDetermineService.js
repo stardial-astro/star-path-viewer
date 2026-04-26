@@ -4,11 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/locationInputActionTypes';
 import {
   SERVICES,
+  DEFAULT_SERVICE,
   DEFAULT_SERVICE_CN,
   DEFAULT_REVERSE_SERVICE_CN,
   STORAGE_KEYS,
 } from '@utils/constants';
-import { isInCn, checkNominatimAccessibility } from '@utils/apiUtils';
+import { isCST, checkGeoServiceAccessibility } from '@utils/apiUtils';
 import {
   isDevMode,
   forceInCn,
@@ -38,10 +39,10 @@ const reverseServiceOverride = forceTianditu
   : serviceOverride;
 
 /**
- * Calls `checkNominatimAccessibility` to determine the available geocoding service.
- * - Skips determination if `geoService` is already set (from localStorage or previous run)
- *   unless force in CN
- * - Updates `geoService` on status change
+ * Calls `checkGeoServiceAccessibility` and determines the available geocoding service.
+ * - Skips determination if `geoService` is already set (from `localStorage` or previous run)
+ *   unless forcing in CN
+ * - Updates `geoService` on status change if checked
  * - If online -> offline, clears the saved service from local storage
  * Uses TanStack Query:
  * - Pauses while offline and resume/refetch when connectivity returns
@@ -72,7 +73,7 @@ const useDetermineService = (
     isFetching,
   } = useQuery({
     queryKey: [QUERY_KEY, isDelayedOnline],
-    queryFn: () => checkNominatimAccessibility(),
+    queryFn: checkGeoServiceAccessibility,
     enabled: isEnabled,
     initialData: null,
     networkMode: 'online',
@@ -106,25 +107,28 @@ const useDetermineService = (
   }, [offlineState.dialogOpen, setGeoService]);
 
   useEffect(() => {
-    if (isPaused) return;
-    /* Determine the primary geocoding service (fall back to Nominatim) */
-    const service =
-      isAccessible !== false
-        ? SERVICES.nominatim
-        : serviceOverride || DEFAULT_SERVICE_CN;
-    /* Update the primary service
-     * If not in CN but Nominatim is not accessible (e.g., testing via a proxy)
-     * do not store in local and clear existing value
+    if (isPaused || isAccessible === null) return;
+    /* Determine the primary geocoding service (fall back to DEFAULT_SERVICE) */
+    const service = isAccessible
+      ? DEFAULT_SERVICE
+      : serviceOverride || DEFAULT_SERVICE_CN;
+    /* Update the primary service */
+    /**
+     * Do not store in local and clear existing value if in one of these cases:
+     * - System time is not CST but Nominatim is inaccessible,
+     *   e.g., using a CN IP outside CN or in CN but system time isn't set to CST
+     * - System time is CST but Google is still accessible,
+     *   e.g., using a non-CN IP in CN or outside CN but system time is set to CST
+     * - Forcing in CN
      */
-    const noLocal = isAccessible !== null && !isAccessible && !isInCn;
+    const noLocal = isAccessible === isCST || forceInCn;
     setGeoService(service, noLocal);
     isDevMode && noLocal && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    isAccessible !== null &&
-      console.debug(
-        `🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`,
-      );
-    /* If using CN service, update the reverse geocoding service */
-    if (service !== SERVICES.nominatim) {
+    console.debug(
+      `🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`,
+    );
+    /* If using CN service, update the reverse geocoding service as well */
+    if (service !== DEFAULT_SERVICE) {
       const reverseService =
         reverseServiceOverride || DEFAULT_REVERSE_SERVICE_CN;
       setReverseGeoServiceCn(reverseService);

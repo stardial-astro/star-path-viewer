@@ -8,6 +8,7 @@ import {
 } from './constants';
 import config from './config';
 import apiClient from './apiClient';
+import { printDuration } from './apiUtils';
 import { isDevMode } from './devMode';
 
 const HIP_TIMEOUT = 5_000;
@@ -105,9 +106,7 @@ const fetchAndCacheHipList = async (setHipList) => {
       timeout: HIP_TIMEOUT,
     });
     const duration = response.config.metadata?.duration;
-    if (isDevMode && duration) {
-      console.debug(`⏳ (hip) Request took ${duration}ms`);
-    }
+    isDevMode && duration && printDuration('hip', duration);
     /** @type {HipItem[]} */
     const data = response.data;
     if (!data) throw new Error(NO_DATA_ERR_MSG);

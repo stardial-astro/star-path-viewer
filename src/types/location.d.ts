@@ -75,7 +75,7 @@ type LocationContextType = LocationInitialState & {
   geoService: GeoService | null;
   /**
    * Sets `geoService` and stores in `localStorage`.
-   * - If `noLocal` is `true`, do not save to `localStorage` and clear existing value
+   * - If `noLocal`, do not save to `localStorage` and clear existing value
    *   (defaults to `false`)
    */
   setGeoService: (service: GeoService | null, noLocal?: boolean) => void;

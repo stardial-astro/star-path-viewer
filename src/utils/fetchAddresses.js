@@ -3,6 +3,7 @@ import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
 import { SERVICES, SERVICE_ERR_MSG, LOCATION_NOT_FOUND_MSG } from './constants';
 import apiClient from './apiClient';
+import { fallbackGeoService, printDuration } from './apiUtils';
 import { isDevMode } from './devMode';
 
 const NOMINATIM_TIMEOUT = 3_000;
@@ -52,9 +53,7 @@ const searchWithNominatim = async (query) => {
     timeout: NOMINATIM_TIMEOUT,
   });
   const duration = response.config.metadata?.duration;
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (Nominatim-search) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('Nominatim-search', duration);
   /** @type {NominatimSchema[]} */
   const data = response.data;
   isDevMode && console.debug('[Query]', query, '\n[Results]', data);
@@ -100,9 +99,7 @@ const searchWithBaidu = async (query) => {
   // });
   // const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (Baidu-search) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('Baidu-search', duration);
   /** @type {BaiduSearchV3Schema} */
   const res = await response.json(); // [JSONP]
   // const res = response.data; // [Proxy]
@@ -154,9 +151,7 @@ const searchWithQq = async (query) => {
   });
   const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (QQ-search) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('QQ-search', duration);
   /** @type {QqSearchSchema} */
   // const res = await response.json(); // [JSONP]
   const res = response.data; // [Proxy]
@@ -181,7 +176,7 @@ const searchWithQq = async (query) => {
 
 /**
  * Fetched address suggestions.
- * - If `service` is `null`, falls back to `'Nominatim'`
+ * - If `service` is `null`, falls back to `fallbackGeoService`
  * @param {string} query - Case insensitive.
  * @param {GeoService | null} service - The geocoding service.
  * @returns {Promise<AddressItem[] | null>} An array of address objects, or `null` if aborted.
@@ -190,21 +185,23 @@ const searchWithQq = async (query) => {
 const fetchAddresses = async (query, service) => {
   isDevMode && console.debug('> Fetching address suggestions...');
 
+  /** The given service or `fallbackGeoService`. */
+  const serviceInUse = service || fallbackGeoService;
+
   activeRequests++;
   isDevMode &&
     console.debug(
-      `[${service}-search] concurrency: ${activeRequests}, query: ${query}`,
+      `[${serviceInUse}-search] concurrency: ${activeRequests}, query: ${query}`,
     );
 
   /** @type {AddressItem[]} */
   let res;
   try {
-    if (service === SERVICES.qq) {
+    if (serviceInUse === SERVICES.qq) {
       res = await searchWithQq(query);
-    } else if (service === SERVICES.baidu) {
+    } else if (serviceInUse === SERVICES.baidu) {
       res = await searchWithBaidu(query);
     } else {
-      /* If service is not set, this is the fallback */
       res = await searchWithNominatim(query);
     }
     return res;
@@ -223,7 +220,7 @@ const fetchAddresses = async (query, service) => {
     activeRequests--;
     isDevMode &&
       console.debug(
-        `[${service}-search] concurrency: ${activeRequests}, finished`,
+        `[${serviceInUse}-search] concurrency: ${activeRequests}, finished`,
       );
   }
 };

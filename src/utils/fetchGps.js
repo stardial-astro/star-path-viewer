@@ -3,7 +3,7 @@ import queryClient from '@/queryClient';
 import * as actionTypes from '@context/locationInputActionTypes';
 import config from './config';
 import {
-  SERVICES,
+  DEFAULT_SERVICE,
   DEFAULT_SERVICE_CN,
   STORAGE_KEYS,
   LOC_INPUT_TYPES,
@@ -11,7 +11,7 @@ import {
 } from './constants';
 import fetchGeolocation from './fetchGeolocation';
 import reverseGeocode from './reverseGeocode';
-import { isDevMode, forceInCn } from './devMode';
+import { isDevMode } from './devMode';
 
 const QUERY_KEY = 'gps';
 
@@ -21,12 +21,13 @@ const STALE_MS = isDevMode ? 5 * 60_000 : 30 * 60_000;
 const GC_MS = 30 * 60_000;
 
 /**
- * Calls `fetchGeolocation` to fetch geolocation and sets the coordinates and address.
- * - Skips fetching if no coordinates
+ * Calls `fetchGeolocation` to determine the geolocation and calls `reverseGeocode`
+ * to fetch the address.
+ * - Skips fetching if no coordinates retrieved from `fetchGeolocation`
  * - Updates `geoService` and/or `reverseGeoServiceCn` if any of them is actually in use
  * - Updates `location`, `searchTerm`, and `lastSelectedTermRef` if successful
  * - If no valid address returned, toggles to coordinate mode
- * - Sets `tz` returned from the built-in method if not force in CN
+//  * - Sets `tz` returned from the built-in method only if not forcing in CN
  * - Turns off `gpsLoading` on exit
  * Uses TanStack Query:
  * - Automatic caching
@@ -53,7 +54,7 @@ const fetchGps = async (
 
   try {
     /* Get coordinates ---------------------------------------------- */
-    const coords = await fetchGeolocation(STALE_MS, controller.signal);
+    const { coords } = await fetchGeolocation(STALE_MS, controller.signal);
     if (!coords) return null;
 
     /* Get the address from the latitude and longitude -------------- */
@@ -81,11 +82,7 @@ const fetchGps = async (
     /* Update coordinates if not aborted and no errors */
     dispatch({
       type: actionTypes.SET_LOCATION,
-      payload: {
-        lat: res.lat,
-        lng: res.lng,
-        id: res.id,
-      },
+      payload: { lat: res.lat, lng: res.lng, id: res.id },
     });
 
     if (res.id !== LOC_UNKNOWN_ID) {
@@ -95,12 +92,12 @@ const fetchGps = async (
         type: actionTypes.SET_SEARCH_TERM,
         payload: res.display_name,
       });
-      /* Also update tz if not force in CN */
-      if (!forceInCn) {
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        dispatch({ type: actionTypes.SET_TZ, payload: tz });
-        console.debug('📍 [Timezone ID]', tz);
-      }
+      /* Also update tz if not forcing in CN */
+      // if (!isIpGeo && !forceInCn) {
+      //   const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      //   dispatch({ type: actionTypes.SET_TZ, payload: tz });
+      //   console.debug('📍 [Timezone ID]', tz);
+      // }
     } else {
       /* If no valid address returned, toggle to coordinate mode and return */
       dispatch({
@@ -110,8 +107,8 @@ const fetchGps = async (
       return null;
     }
 
-    /* If successful, update the primary service but don't store */
-    if (serviceInUse === SERVICES.nominatim) {
+    /* If successful, update the service but don't store ------------ */
+    if (serviceInUse === DEFAULT_SERVICE) {
       if (service !== serviceInUse) {
         setGeoService(serviceInUse, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
@@ -120,7 +117,7 @@ const fetchGps = async (
     } else {
       /* If using any CN service */
       /* Set the primary service to the default CN service but don't store */
-      if (service === SERVICES.nominatim) {
+      if (service === DEFAULT_SERVICE) {
         setGeoService(DEFAULT_SERVICE_CN, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
         console.debug(
@@ -133,7 +130,6 @@ const fetchGps = async (
         console.debug('🌎 [GPS service]', serviceInUse);
       }
     }
-
     return null;
   } catch (err) {
     if (controller.signal.aborted) {

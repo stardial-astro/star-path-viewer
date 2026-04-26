@@ -1,9 +1,9 @@
 // src/utils/reverseGeocode.js
 import axios from 'axios';
 import fetchJsonp from 'fetch-jsonp';
-import { SERVICES, LOC_UNKNOWN_ID } from './constants';
+import { SERVICES, DEFAULT_SERVICE, LOC_UNKNOWN_ID } from './constants';
 import apiClient from './apiClient';
-import { isInCn } from './apiUtils';
+import { isCST, fallbackGeoService, printDuration } from './apiUtils';
 import { isDevMode, forceInCn } from './devMode';
 
 const NO_FALLBACK = false;
@@ -49,9 +49,7 @@ const reverseWithNominatim = async (coords, signal) => {
     signal,
   });
   const duration = response.config.metadata?.duration;
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (Nominatim-reverse) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('Nominatim-reverse', duration);
   /** @type {NominatimSchema} */
   const data = response.data;
   if (!data)
@@ -99,9 +97,7 @@ const reverseWithBaidu = async (coords) => {
   // });
   // const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (Baidu-reverse) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('Baidu-reverse', duration);
   /** @type {BaiduReverseSchema} */
   const res = await response.json(); // [JSONP]
   // const res = response.data; // [Proxy]
@@ -152,9 +148,7 @@ const reverseWithQq = async (coords, signal) => {
   });
   const duration = response.config.metadata?.duration;
   /* ---------------------------------------------------------------- */
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (QQ-reverse) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('QQ-reverse', duration);
   /** @type {QqReverseSchema} */
   // const res = await response.json(); // [JSONP]
   const res = response.data; // [Proxy]
@@ -211,9 +205,7 @@ const reverseWithTianditu = async (coords, signal) => {
   // });
   /* ---------------------------------------------------------------- */
   const duration = response.config.metadata?.duration;
-  isDevMode &&
-    duration &&
-    console.debug(`⏳ (Tianditu-reverse) Request took ${duration}ms`);
+  isDevMode && duration && printDuration('Tianditu-reverse', duration);
   /** @type {TiandituReverseSchema} */
   const res = response.data;
   isDevMode && console.debug('[lat,lng]', coords, '\n[Results]', res);
@@ -236,8 +228,9 @@ const reverseWithTianditu = async (coords, signal) => {
 };
 
 /**
- * Fetches reverse geocoding data.
- * - If `service` is `null`, falls back to `'Nominatim'`, or `serviceCn` if in CN
+ * Fetches address by reverse geocoding.
+ * - If `service` is `null`, falls back to `DEFAULT_SERVICE`, or `serviceCn`
+ * - Try a fallback only when using a CN service
  * @param {CoordObj} coords
  * @param {GeoService | null} service - The primary geocoding service.
  * @param {GeoService} serviceCn - The CN reverse geocoding service.
@@ -246,7 +239,7 @@ const reverseWithTianditu = async (coords, signal) => {
  *   The address object or `null` if aborted, and the reverse geocoding service in use.
  */
 const reverseGeocode = async (coords, service, serviceCn, signal) => {
-  /* The serviceInUse returned when aborted is a dummy that will not be used */
+  /* The serviceInUse returned when aborted is a dummy that we don't care */
   if (signal?.aborted) return { res: null, serviceInUse: service || serviceCn };
 
   const resUnknown = {
@@ -257,12 +250,14 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
     addresstype: '',
   };
 
+  /* The region should be align with the primary geocoding service */
   let serviceInUse =
-    isInCn || forceInCn || service !== SERVICES.nominatim
+    (service || fallbackGeoService) !== DEFAULT_SERVICE
       ? serviceCn
-      : service || SERVICES.nominatim;
+      : service || DEFAULT_SERVICE;
 
-  let reverseFn = reverseWithNominatim;
+  const reverseDefaultFn = reverseWithNominatim;
+  let reverseFn = reverseDefaultFn;
   let reverseFallbackFn = reverseWithQq;
   /** @type {GeoService} */
   let serviceFallback = SERVICES.qq;
@@ -278,17 +273,16 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
 
   /** @type {AddressItem} */
   let res;
-  /* If possibly in CN, try the defined CN service first ------------ */
-  if (serviceInUse !== SERVICES.nominatim) {
-    if (!isInCn && !forceInCn) {
-      /* If not in CN and not force in CN (for testing), try Nominatim below */
-      isDevMode &&
-        console.debug(
-          `⚠️ You are not in China. Reverse geocoding for this location might be unavailable.` +
-            '\nSwitching to Nominatim...',
-        );
-      serviceInUse = SERVICES.nominatim;
-      reverseFn = reverseWithNominatim;
+  /* If possibly in CN, try the specified CN service first ---------- */
+  if (serviceInUse !== DEFAULT_SERVICE) {
+    if (!isCST && !forceInCn) {
+      /* If time is not CST and not forcing in CN, try DEFAULT_SERVICE below */
+      console.debug(
+        `🤔 System time is not CST. If your are outside CN, reverse geocoding for this location might be unavailable.` +
+          `\nSwitching to ${DEFAULT_SERVICE}...`,
+      );
+      serviceInUse = DEFAULT_SERVICE;
+      reverseFn = reverseDefaultFn;
     } else {
       /* Try the specified CN service */
       try {
@@ -297,15 +291,14 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         res = await reverseFn(coords, signal);
         if (res.id !== LOC_UNKNOWN_ID) return { res, serviceInUse };
         /* If returns an empty address, return or use a fallback */
-        isDevMode &&
-          console.debug(
-            `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`,
-          );
+        console.debug(
+          `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`,
+        );
         if (NO_FALLBACK) return { res, serviceInUse };
-        /* Try Nominatim below */
-        isDevMode && console.debug('Switching to Nominatim...');
-        serviceInUse = SERVICES.nominatim;
-        reverseFn = reverseWithNominatim;
+        /* Try DEFAULT_SERVICE below */
+        isDevMode && console.debug(`Switching to ${DEFAULT_SERVICE}...`);
+        serviceInUse = DEFAULT_SERVICE;
+        reverseFn = reverseDefaultFn;
       } catch (err) {
         if (Error.isError(err)) {
           if (
@@ -320,13 +313,9 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         }
         isDevMode &&
           console.debug(`🔴 ${serviceInUse} reverse geocoding failed.`);
-        /* If force in CN (for testing), you might need a proxy */
-        isDevMode &&
-          forceInCn &&
-          console.debug('🤔 Did you forgot to use a proxy?');
-        if (NO_FALLBACK) {
-          return { res: resUnknown, serviceInUse };
-        }
+        /* If forcing in CN (for testing), you might need a proxy */
+        forceInCn && console.debug('🤔 Did you forgot using a proxy?');
+        if (NO_FALLBACK) return { res: resUnknown, serviceInUse };
         /* Try the fallback service below */
         isDevMode && console.debug(`Switching to ${serviceFallback}...`);
         serviceInUse = serviceFallback;
@@ -334,7 +323,7 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
       }
     }
   }
-  /* Fetch with Nominatim or the fallback CN service ---------------- */
+  /* Fetch with DEFAULT_SERVICE or the fallback CN service ---------- */
   try {
     isDevMode && console.debug(`> Querying address using ${serviceInUse}...`);
     res = await reverseFn(coords, signal);

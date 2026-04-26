@@ -39,10 +39,8 @@ apiClient.interceptors.response.use(
   (error) => {
     const serverErr = error.response?.data;
     const msg = serverErr?.message || serverErr?.error || error.message;
-    const statusCode = error.response?.status || serverErr?.status || 'unknown';
-    if (msg.startsWith(WARNING_PREFIX_SERVER)) {
-      console.warn(`⚠️`, msg);
-    } else {
+    const statusCode = error.response?.status || serverErr?.status || 0;
+    if (!msg.startsWith(WARNING_PREFIX_SERVER)) {
       console.error(`🔴 [API Error ${statusCode}]:`, msg);
     }
 

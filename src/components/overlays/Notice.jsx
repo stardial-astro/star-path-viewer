@@ -12,11 +12,7 @@ import { Alert } from '@mui/material';
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { useHome } from '@context/HomeContext';
-import {
-  CC_HANT_CODES,
-  SERVER_ERR_MSG,
-  SERVER_TIMEOUT_MSG,
-} from '@utils/constants';
+import { CC_HANT_CODES } from '@utils/constants';
 
 const isServerUpdate = import.meta.env.VITE_IS_SERVER_UPDATE === 'true';
 const isMaintain = import.meta.env.VITE_IS_MAINTAIN === 'true';
@@ -117,18 +113,7 @@ const Notice = () => {
 
   const serverError = useMemo(() => {
     if (!errorMessage.server) return '';
-    if (
-      errorMessage.server === SERVER_ERR_MSG ||
-      errorMessage.server === SERVER_TIMEOUT_MSG
-    ) {
-      return t(errorMessage.server);
-    } else {
-      return (
-        t(errorMessage.server) +
-        t('errors:delim') +
-        t('errors:check_back')
-      );
-    }
+    return t(errorMessage.server);
   }, [errorMessage.server, t]);
 
   useEffect(() => {

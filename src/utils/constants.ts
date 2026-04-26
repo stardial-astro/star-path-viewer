@@ -13,6 +13,11 @@ export const SERVICES = {
   // amap: 'Amap',  // 高德
 } as const;
 
+/**
+ * @type {GeoService} Default primary geocoding service outside CN.
+ */
+export const DEFAULT_SERVICE = SERVICES.nominatim;
+
 const serviceCnFromEnv = import.meta.env.VITE_SERVICE_CN;
 /**
  * @type {GeoService} Default primary geocoding service in CN.
@@ -36,7 +41,25 @@ export const DEFAULT_REVERSE_SERVICE_CN =
     ? reverseServiceCnFromEnv
     : SERVICES.tianditu;
 
-export const CN_TIMEZONES = new Set([
+/**
+ * IANA time zone IDs representing China Standard Time (CST, UTC+08:00).
+ * This is used only for a quick determination of the available geocoding service.
+ * The official TZID of CN is `'Asia/Shanghai'` (Beijing Time).
+ *
+ * Unofficial and backward TZIDs are included for compatibility:
+ * - `'Asia/Urumqi'` - UTC+06:00, Xinjiang Time, unofficial
+ * - `'Asia/Chongqing'` - UTC+08:00, backzone, linked back to `'Asia/Shanghai'`
+ * - `'Asia/Harbin'` - UTC+08:00, backzone, linked back to `'Asia/Shanghai'`
+ * - `'Asia/Kashgar'` - UTC+06:00, backzone, linked back to `'Asia/Urumqi'`
+ *
+ * Not included:
+ * - 香港 HK: `'Asia/Hong_Kong'` - UTC+08:00, Hong Kong Time (HKT)
+ * - 澳门 MO: `'Asia/Macau'` - UTC+08:00, Macau Standard Time (MST)
+ * - 台湾 TW: `'Asia/Taipei'` - UTC+08:00, Taiwan Standard Time (TST), Taipei Time
+ *
+ * Reference: https://en.wikipedia.org/wiki/Time_in_China
+ */
+export const CN_MAIN_TIMEZONES = new Set([
   'Asia/Shanghai',
   'Asia/Urumqi',
   'Asia/Chongqing',

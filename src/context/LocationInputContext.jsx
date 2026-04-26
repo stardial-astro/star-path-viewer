@@ -218,7 +218,7 @@ export const LocationInputProvider = ({ children }) => {
 
   /**
    * Sets `geoService` and stores in `localStorage`.
-   * - If `noLocal` is `true`, do not save to `localStorage` and clear existing value
+   * - If `noLocal`, do not save to `localStorage` and clear existing value
    *   (defaults to `false`)
    * @type {(service: GeoService | null, noLocal?: boolean) => void}
    */

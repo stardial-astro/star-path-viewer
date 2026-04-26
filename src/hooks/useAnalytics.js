@@ -1,6 +1,7 @@
 // src/hooks/useAnalytics.js
 import { useEffect } from 'react';
 import { useLocation } from 'react-router';
+import { isDevMode } from '@utils/devMode';
 
 const GA_ID = import.meta.env.VITE_GA_ID;
 const gtagUrl = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
@@ -17,7 +18,7 @@ const useAnalytics = () => {
 
   useEffect(() => {
     if (!shouldTrack) {
-      console.debug('------ GA4 Disabled ------');
+      isDevMode && console.debug('------ GA4 Disabled ------');
       return;
     }
 

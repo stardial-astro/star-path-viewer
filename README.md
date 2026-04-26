@@ -25,7 +25,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
   - [Main Functions](#main-functions)
   - [User Interface](#user-interface)
 - [Usage](#usage)
-- [Services](#services)
+- [External APIs](#external-apis)
 - [Resources](#resources)
 - [References](#references)
 - [Changelog](#changelog)
@@ -70,17 +70,21 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 
 See [our wiki page](https://github.com/stardial-astro/star-path-viewer/wiki/1.-Guides) for detailed instructions.
 
-## Services
+## External APIs
 
 This app relies on the following services:
 
-1. **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)** - A browser variant of the geographical timezone lookup package [node-geo-tz](https://github.com/evansiroky/node-geo-tz).
+1. **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)** - A light-weighted variant of the geographical timezone lookup package [node-geo-tz](https://github.com/evansiroky/node-geo-tz).
 
-2. **[Nominatim API](https://nominatim.org/release-docs/latest/api/Overview)** - An API to search [OSM](www.openstreetmap.org) data by name and address (geocoding) and to generate synthetic addresses of OSM points (reverse geocoding).
+2. **[Nominatim](https://nominatim.org/release-docs/latest/api/Overview)** - The default **geocoding** and **reverse geocoding** service using [OSM](www.openstreetmap.org) data.
 
-3. **[Baidu Web Service API](https://lbsyun.baidu.com/faq/api?title=webapi)** - If a connection to Nominatim cannot be established, the system will switch to this alternative geocoding service.
+3. **[Tianditu](http://lbs.tianditu.gov.cn/server/guide.html)** - For regions where Nominatim is inaccessible, this is the default **reverse geocoding** service.
 
-> :bulb: The geocoding service is automatically determined when the website loads. If you are outside mainland China but notice that Baidu is being used, clearing cache and refreshing the page should resolve it and select Nominatim as intended.
+4. **[QQ Map](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)** - For regions where Nominatim is inaccessible, this is the default **geocoding** service.
+
+5. **[Baidu](https://lbsyun.baidu.com/faq/api?title=webapi)** - For regions where Nominatim is inaccessible, this is the fallback for **geocoding**.
+
+> :bulb: The geocoding service is automatically determined and cached when the app loads. If you see an incorrect service is in use, check the system time zone, clearing cache, then refresh the page and try again.
 
 ## Resources
 
@@ -111,6 +115,7 @@ This app relies on the following services:
 - [v1.3.1] 2026-03-29
   - Upgraded to MUI 7 and React 19.
   - Added dark mode and Chinese translations.
+  - Integrated Tianditu and QQ Map.
 
 - [v1.3.0] 2025-03-07
   - Migrated to Vite.

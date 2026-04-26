@@ -9,10 +9,9 @@
 
   "delim": " ",
   "server_error": "Server error. Please try again or check back in a few minutes.",
-  "server_timeout": "Unable to connect to the server. Please check your network connection.",
-  "server_503": "It looks like the server is temporarily down or overloaded.",
-  "server_no_response": "It looks like the server is not accessible due to a network error.",
-  "check_back": "We apologize for the inconvenience and our team is working to resolve this as quickly as possible. Please check back later.",
+  "server_timeout": "Unable to connect to the server. Please check your network connection and reload the page.",
+  "server_503": "It looks like the server is temporarily down or overloaded. Our team is working to resolve this as quickly as possible. Please check back later.",
+  "server_no_response": "It looks like the server is inaccessible due to a network error. Please check your network connection and reload the page.",
 
   "please_enter_year": "Please enter a year.",
   "please_enter_month": "Please enter a month.",

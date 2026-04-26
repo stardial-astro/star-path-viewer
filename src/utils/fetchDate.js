@@ -2,7 +2,7 @@
 import axios from 'axios';
 import config from './config';
 import apiClient from './apiClient';
-import { parseApiError } from './apiUtils';
+import { printDuration, parseApiError } from './apiUtils';
 import { isDevMode } from './devMode';
 
 const NO_DATA_ERR_MSG = 'errors:no_season_data_returned'; // i18n key
@@ -30,9 +30,7 @@ const fetchDate = async (year, flag, lat, lng, tz) => {
       timeout: config.SERVER_TIMEOUT,
     });
     const duration = response.config.metadata?.duration;
-    if (duration && isDevMode) {
-      console.debug(`⏳ (server-date) Request took ${duration}ms`);
-    }
+    duration && isDevMode && printDuration('server-date', duration);
     /** @type {EqxSolSchema} */
     const data = response.data;
     if (!data) throw new Error(NO_DATA_ERR_MSG);

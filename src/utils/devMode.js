@@ -9,6 +9,9 @@ const hashSet = new Set(
 export const forceInCn = ['cn', 'baidu', 'qq', 'tianditu'].some((item) =>
   hashSet.has(item),
 );
+/** Force `isCST` in `apiUtils.js` to be `true` if hash includes `'cst'` for testing global URLs. */
+export const forceCST = hashSet.has('cst');
+
 /** `true` if hash includes `'baidu'`. */
 export const forceBaidu = hashSet.has('baidu'); // use Baidu for both search and reverse geocoding
 /** `true` if hash includes `'qq'`, overriding `'baidu'`. */

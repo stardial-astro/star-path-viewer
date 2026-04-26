@@ -2,24 +2,45 @@
 import axios from 'axios';
 import config from './config';
 import {
-  CN_TIMEZONES,
+  DEFAULT_SERVICE,
+  DEFAULT_SERVICE_CN,
+  CN_MAIN_TIMEZONES,
   SERVER_ERR_MSG,
   SERVER_TIMEOUT_MSG,
   SERVER_DOWN_MSG,
   SERVER_NO_RES_MSG,
 } from './constants';
-import apiClient from './apiClient';
-import { isDevMode, forceInCn } from './devMode';
+import { isDevMode, forceInCn, forceCST } from './devMode';
 
 const SERVER_PROBE_TIMEOUT = config.SERVER_TIMEOUT;
-const SERVICE_PROBE_TIMEOUT = 3_000;
+const SERVICE_PROBE_TIMEOUT_SHORT = 700;
+const SERVICE_PROBE_TIMEOUT = 2_500;
+
+// const globalUrl = 'https://www.google.com/favicon.ico';
+const globalUrl = 'https://www.google.com/generate_204';
+const globalName = 'Google';
+const altGlobalUrl = 'https://www.v2ex.com/generate_204';
+const altGlobalName = 'V2ex';
 
 const nominatimSearchUrl = import.meta.env.VITE_NOMINATIM_SEARCH_URL;
 const serverUrl = import.meta.env.VITE_SERVER_URL;
 const eqxSolUrl = `${serverUrl}/equinox`;
 
 const currentTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-export const isInCn = CN_TIMEZONES.has(currentTz);
+/** `true` if the current system time is CST or force to be `true`. */
+export const isCST = CN_MAIN_TIMEZONES.has(currentTz) || forceCST;
+
+/** @type {GeoService} The fallback primary geocoding service when not set. */
+export const fallbackGeoService =
+  isCST || forceInCn ? DEFAULT_SERVICE_CN : DEFAULT_SERVICE;
+
+/**
+ * @param {string} title
+ * @param {number} dt - Keeps 1 fraction digit.
+ */
+export const printDuration = (title, dt) => {
+  console.debug(`⏳ (${title}) Request took ${dt.toFixed(1)}ms`);
+};
 
 /**
  * Parses and returns errors when `axios` request to the **server** failed.
@@ -51,23 +72,21 @@ export const parseApiError = (err) => {
 };
 
 /**
- * Checks the server's accessibility by sending HTTP HEAD request.
+ * Checks the server's accessibility by sending `HEAD` request using `axios`.
  * @returns {Promise<null>}
  * @throws {Error} If request failed.
  */
 export const checkServerAccessibility = async () => {
+  const timeout = SERVER_PROBE_TIMEOUT;
   try {
     isDevMode && console.debug('> Checking if server is up...');
     const params = { tz: 'Etc/GMT', year: '-1000', flag: 've' };
-    const response = await apiClient.head(eqxSolUrl, {
-      params,
-      timeout: SERVER_PROBE_TIMEOUT,
-    });
-    const duration = response.config.metadata?.duration;
-    if (isDevMode && duration) {
-      console.debug(`⏳ (server-probe) Request took ${duration}ms`);
+    const startTime = performance.now();
+    await axios.head(eqxSolUrl, { params, timeout });
+    if (isDevMode) {
+      printDuration('server-probe', performance.now() - startTime);
+      console.debug('✅ Server is up.\nURL:', serverUrl);
     }
-    isDevMode && console.debug('✅ Server is up.\nURL:', serverUrl);
   } catch (err) {
     if (axios.isCancel(err)) {
       isDevMode && console.debug('Server probe cancelled.');
@@ -105,53 +124,129 @@ export const checkServerAccessibility = async () => {
 };
 
 /**
- * Checks Nominatim accessibility by sending HTTP HEAD request.
- * - If already in CN or `forceInCn` is `true`, skips prob and set `isAccessible` to `false`
- * @returns {Promise<boolean>} `true` if accessible and not force in CN.
+ * Probes Nominatim by sending `HEAD` request using `axios`.
+ * @param {number} [timeout]
+ * @throws {Error} If request failed.
  */
-export const checkNominatimAccessibility = async () => {
-  if (isInCn) {
-    isDevMode && console.debug(`🇨🇳 You are currently in China (${currentTz})`);
+export const probeNominatim = async (timeout = SERVICE_PROBE_TIMEOUT) => {
+  isDevMode && console.debug('> Checking if Nominatim is accessible...');
+  const startTime = performance.now();
+  const params = {
+    q: '',
+    format: 'json',
+    email: import.meta.env.VITE_EMAIL,
+  };
+  await axios.head(nominatimSearchUrl, { params, timeout });
+  if (isDevMode) {
+    printDuration('Nominatim-probe', performance.now() - startTime);
+    console.debug('✅ Nominatim is accessible.');
+  }
+};
+
+/**
+ * Probes this endpoint by sending `HEAD` request in `'no-cors'` mode using `fetch`.
+ * @param {string} name
+ * @param {string} url
+ * @param {number} [timeout]
+ * @returns {Promise<boolean>} `true` if accessible; otherwise `false` (Network error / CORS / Timeout).
+ */
+const testEndpoint = async (
+  name,
+  url,
+  timeout = SERVICE_PROBE_TIMEOUT_SHORT,
+) => {
+  isDevMode && console.debug(`> Checking if ${name} is accessible...`);
+  const startTime = performance.now();
+  try {
+    /* fetch results in an opaque response (response.type is 'opaque')
+     * that response.ok will be false and response.status will always be 0
+     */
+    await fetch(url, {
+      method: 'HEAD',
+      mode: 'no-cors', // to avoid CORS errors
+      cache: 'no-cache', // ensures a fresh request is made
+      signal: AbortSignal.timeout(timeout),
+    });
+    if (isDevMode) {
+      printDuration(`${name}-probe`, performance.now() - startTime);
+      console.debug(`✅ ${name} is accessible.`);
+    }
+    return true;
+  } catch (err) {
+    /* Network error / CORS / Timeout */
+    if (isDevMode) {
+      const reason = Error.isError(err)
+        ? err.name === 'AbortError' || err.name === 'TimeoutError'
+          ? 'timeout'
+          : 'rejected'
+        : String(err);
+      printDuration(`${name}-probe`, performance.now() - startTime);
+      console.debug(`❌ ${name} is inaccessible: ${reason}`);
+    }
     return false;
   }
+};
+
+/**
+ * @returns {Promise<boolean>} The result when any of the provided tests are resolved or rejected.
+ */
+const checkGlobal = async () =>
+  Promise.race([
+    testEndpoint(globalName, globalUrl),
+    testEndpoint(altGlobalName, altGlobalUrl),
+  ]);
+
+/**
+ * Checks the accessibility of the primary geocoding service `DEFAULT_SERVICE`.
+ * - If `forceInCn`, returns `false` immediately
+ * - If `isCST`, checks global domains with a shorter time limit
+ * @returns {Promise<boolean>} `true` if accessible and not `forceInCn`.
+ */
+export const checkGeoServiceAccessibility = async () => {
+  const service = DEFAULT_SERVICE;
   if (forceInCn) {
     isDevMode &&
-      console.debug(`🇨🇳 Suppose you are in China (actual: ${currentTz})`);
+      console.debug(`🇨🇳 Pretend to be in CN (system tz: ${currentTz})`);
     return false;
   }
   try {
-    isDevMode && console.debug('> Checking if Nominatim is accessible...');
-    const params = { q: '', format: 'json', email: import.meta.env.VITE_EMAIL };
-    const response = await apiClient.head(nominatimSearchUrl, {
-      params,
-      timeout: SERVICE_PROBE_TIMEOUT,
-    });
-    const duration = response.config.metadata?.duration;
-    if (isDevMode && duration) {
-      console.debug(`⏳ (Nominatim-probe) Request took ${duration}ms`);
+    if (!isCST) {
+      await probeNominatim();
+    } else {
+      /* Possibly in CN, return the result */
+      const isGlobal = await checkGlobal();
+      if (isGlobal) {
+        isDevMode &&
+          console.debug(`✈️ You are outside CN but system tz is ${currentTz}`);
+        return true;
+      } else {
+        isDevMode &&
+          console.debug(`🇨🇳 You are in CN (system tz: ${currentTz})`);
+        return false;
+      }
     }
-    isDevMode && console.debug('✅ Nominatim is accessible.');
     return true;
   } catch (err) {
+    /* When requesting by axios */
     if (axios.isCancel(err)) {
-      isDevMode && console.debug('Nominatim probe cancelled.');
+      isDevMode && console.debug(`${service} probe cancelled.`);
       return true;
     }
     if (axios.isAxiosError(err) && err.response) {
       const { status } = err.response;
       if (status === 405) {
         isDevMode &&
-          console.debug('⚠️ HEAD not allowed, but Nominatim is reachable.');
+          console.debug(`⚠️ HEAD not allowed, but ${service} is reachable.`);
         return true;
       }
       console.warn(`HTTP ${status}: ${err.message ?? err.toJSON()}`);
       isDevMode &&
-        console.debug('⚠️ Using Nominatim but the connection is bad.');
+        console.debug(`⚠️ Using ${service} but the connection is bad.`);
       return true;
     }
     isDevMode &&
       console.debug(
-        `🔴 Nominatim unaccessible: ${Error.isError(err) ? err.message : err}`,
+        `🔴 ${service} inaccessible: ${Error.isError(err) ? err.message : err}`,
       );
     return false;
   }

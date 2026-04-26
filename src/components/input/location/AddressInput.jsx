@@ -30,7 +30,7 @@ import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
 import fetchGps from '@/utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
-import { isDevMode, forceInCn } from '@utils/devMode';
+import { isDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
 import CustomIconButton from '@/components/ui/CustomIconButton';
 
@@ -46,7 +46,10 @@ const gpsIcon = (
 );
 
 const circularProgress = (
-  <CircularProgress size={20} sx={{ color: 'action.disabled', mr: 0.9 }} />
+  <CircularProgress
+    size={20}
+    sx={{ color: 'action.disabled', ml: 0.4, mr: 0.5 }}
+  />
 );
 
 const AddressInput = () => {
@@ -206,8 +209,8 @@ const AddressInput = () => {
     }
     /* Do not fetch suggestions */
     setSkipFetch(true);
-    /* Do not fetch tz using API if not force in CN (for testing) */
-    if (!forceInCn) setSkipTz(true);
+    /* Do not fetch tz using API if not forcing in CN (for testing) */
+    // if (!forceInCn) setSkipTz(true);
     /* Clear errors & null errors and suggestions */
     clearLocationError(locationDispatch, setErrorMessage);
     locationDispatch({ type: actionTypes.CLEAR_ADDRESS_NULL_ERROR });
@@ -232,7 +235,7 @@ const AddressInput = () => {
     serviceChecking,
     geoService,
     reverseGeoServiceCn,
-    setSkipTz,
+    // setSkipTz,
     setGeoService,
     setReverseGeoServiceCn,
     locationDispatch,

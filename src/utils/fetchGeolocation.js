@@ -66,11 +66,14 @@ const fetchIpLocation = async (signal) => {
  * - Keeps only 4 fraction digits
  * @param {number} geoMaxAge
  * @param {AbortSignal} signal
- * @returns {Promise<CoordObj | null>} The address object, or `null` if aborted.
+ * @returns {Promise<{ coords: CoordObj | null, isIpGeo: boolean }>}
+ * - `coords`: The address object, or `null` if aborted
+ * - `isIpGeo` `true` if using IP geolocation. Defaults to `false`.
  * @throws {Error} If request failed.
  */
 const fetchGeolocation = async (geoMaxAge, signal) => {
-  if (signal?.aborted) return null;
+  let isIpGeo = false;
+  if (signal?.aborted) return { coords: null, isIpGeo };
 
   if ('geolocation' in navigator) {
     isDevMode && console.debug('> Querying geolocation...');
@@ -88,6 +91,7 @@ const fetchGeolocation = async (geoMaxAge, signal) => {
           isDevMode && console.debug('> Querying IP geolocation...');
           try {
             const ipLocation = await fetchIpLocation(signal);
+            isIpGeo = true;
             resolve(
               ipLocation
                 ? {
@@ -106,7 +110,6 @@ const fetchGeolocation = async (geoMaxAge, signal) => {
             reject(ipErr);
           }
         },
-
         {
           enableHighAccuracy: false,
           timeout: GEO_TIMEOUT,
@@ -115,7 +118,7 @@ const fetchGeolocation = async (geoMaxAge, signal) => {
       );
     });
 
-    if (!position || signal?.aborted) return null;
+    if (!position || signal?.aborted) return { coords: null, isIpGeo };
 
     const { latitude, longitude } = position.coords;
     /* Mock for testing Baidu (tz will still be the actual one) ----- */
@@ -123,8 +126,11 @@ const fetchGeolocation = async (geoMaxAge, signal) => {
     // const { latitude, longitude } = { latitude: 32.0553, longitude: 118.7795 }; // TODO: mock
     /* -------------------------------------------------------------- */
     return {
-      latitude: parseFloat(latitude.toFixed(4)),
-      longitude: parseFloat(longitude.toFixed(4)),
+      coords: {
+        latitude: parseFloat(latitude.toFixed(4)),
+        longitude: parseFloat(longitude.toFixed(4)),
+      },
+      isIpGeo,
     };
   } else {
     /* Geolocation not supported by this browser */

@@ -3,6 +3,9 @@ name: React Vite CI
 on:
   push:
     branches: [ dev-cf-vite, main ]
+    paths-ignore:
+      - 'docs/**'
+      - '**.md'
   pull_request:
     branches: [ main ]
   workflow_dispatch:

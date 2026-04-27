@@ -20,6 +20,7 @@ hero:
       text: 惯例约定
       link: /zh/conventions
 
+features:
   - title: 跨越古今
     details: 支持查询公元前3001年至公元3000年间任意一天
   - title: 晨昏、升落、中天
@@ -29,4 +30,3 @@ hero:
   - title: 二分二至
     details: 便捷获得指定年份春分、夏至、秋分和冬至日期
 ---
-

@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vitepress dev",
-    "build": "vitepress build",
-    "preview": "vitepress preview"
+    "dev": "../node_modules/.bin/vitepress dev",
+    "build": "../node_modules/.bin/vitepress build",
+    "preview": "../node_modules/.bin/vitepress preview"
   }
 }

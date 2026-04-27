@@ -21,11 +21,12 @@ hero:
       link: /conventions
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Across the Ages
+    details: Covers dates from 3001 BCE to 3000 CE.
+  - title: Rising, Setting, and Twilights
+    details: Marks the rising/setting/transit points and twilights.
+  - title: Gregorian and Julian
+    details: Supports the Gregorian and Julian calendars.
+  - title: Equinoxes and Solstices
+    details: Easily queries equinoxes and solstices.
 ---
-

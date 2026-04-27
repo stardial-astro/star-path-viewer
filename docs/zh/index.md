@@ -20,12 +20,13 @@ hero:
       text: 惯例约定
       link: /zh/conventions
 
-features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 跨越古今
+    details: 支持查询公元前3001年至公元3000年间任意一天
+  - title: 晨昏、升落、中天
+    details: 标记晨昏蒙影、升落点和过中天位置及时刻
+  - title: 格里历与儒略历
+    details: 同时支持格里历和儒略历日期输入和显示
+  - title: 二分二至
+    details: 便捷获得指定年份春分、夏至、秋分和冬至日期
 ---
 

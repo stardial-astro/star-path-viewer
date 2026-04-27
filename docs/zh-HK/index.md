@@ -21,11 +21,13 @@ hero:
       link: /zh-HK/conventions
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 跨越古今
+    details: 支持查詢公元前3001年至公元3000年間任意一天
+  - title: 晨昏、升落、中天
+    details: 標記晨昏蒙影、升落點和過中天位置及時刻
+  - title: 格里曆與儒略曆
+    details: 同時支持格里曆和儒略曆日期輸入和顯示
+  - title: 二分二至
+    details: 便捷獲得指定年份春分、夏至、秋分和冬至日期
 ---
 

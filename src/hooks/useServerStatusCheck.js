@@ -23,7 +23,8 @@ const isTest = import.meta.env.VITEST;
  * - Prevents multiple identical requests
  * - Re-probes periodically
  * - No retries on error
- * - Always refetches on mount/reconnect
+ * - Refetches on mount if stale
+ * - Always refetches on reconnect
  * @param {boolean} isDelayedOnline
  * @param {ReactSetState<ErrorObj>} setErrorMessage
  */
@@ -38,7 +39,7 @@ const useServerStatusCheck = (isDelayedOnline, setErrorMessage) => {
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: false,
-    refetchOnMount: 'always',
+    refetchOnMount: true,
     refetchOnWindowFocus: false,
     refetchOnReconnect: 'always',
   });

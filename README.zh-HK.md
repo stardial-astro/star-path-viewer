@@ -4,7 +4,7 @@
 
 天體軌跡追蹤天文小工具——顯示上下五千年間制定日期和地點的天體視運動軌跡。
 
-[![版本](https://img.shields.io/badge/Version-v1.3.1-blue)](#功能特性)
+[![版本](https://img.shields.io/badge/Version-v1.3.2-blue)](#功能特性)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)
@@ -115,6 +115,9 @@
   R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
 
 ## 修改日誌
+
+- [v1.3.2] 2026-04-26
+  - Bug 修復
 
 - [v1.3.1] 2026-03-29
   - 升級至 MUI 7 和 React 19

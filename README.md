@@ -4,7 +4,7 @@
 
 An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/Version-v1.3.1-blue)](#features)
+[![Version](https://img.shields.io/badge/Version-v1.3.2-blue)](#features)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)
@@ -113,6 +113,9 @@ This app relies on the following services:
 - R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
 
 ## Changelog
+
+- [v1.3.2] 2026-04-26
+  - Bug fix
 
 - [v1.3.1] 2026-03-29
   - Upgraded to MUI 7 and React 19.

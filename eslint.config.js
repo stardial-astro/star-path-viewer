@@ -29,6 +29,7 @@ export default defineConfig([
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
       globals: {
+        __APP_VERSION__: true,
         __APP_NAME__: true,
         __APP_DESCRIPTION__: true,
         ...globals.browser,

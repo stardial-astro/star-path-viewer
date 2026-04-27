@@ -19,15 +19,16 @@ import OfflineNotifier from '@components/overlays/OfflineNotifier';
 /* Check env and config */
 if (isDevMode && !import.meta.env.VITEST) {
   console.debug('****** Dev Mode Enabled ******');
+  console.debug('[__APP_VERSION__]', __APP_VERSION__);
+  // console.debug('[__APP_NAME__]', __APP_NAME__);
+  // console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
+  // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
   console.debug('[MODE]', import.meta.env.MODE);
   console.debug('[DEV]', import.meta.env.DEV);
   console.debug('[VITE_IS_PREVIEW]', import.meta.env.VITE_IS_PREVIEW);
   console.debug('[BASE_URL]', import.meta.env.BASE_URL);
   // console.debug('[VITE_GA_ID]', import.meta.env.VITE_GA_ID);
-  // console.debug('[VITE_APP_NAME]', import.meta.env.VITE_APP_NAME);
   // console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
-  // console.debug('[__APP_NAME__]', __APP_NAME__);
-  // console.debug('[__APP_DESCRIPTION__]', __APP_DESCRIPTION__);
   // console.debug('[config]', config);
 }
 
@@ -128,8 +129,6 @@ const Home = () => {
               })}
             >
               {`— ${t('subtitle')} —`}
-              {/* TODO: test updates */}
-              v1
             </Typography>
 
             <Box

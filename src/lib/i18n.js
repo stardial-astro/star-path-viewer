@@ -11,8 +11,8 @@ if (!isTest) instance.use(Backend);
 
 /* Export the initialization promise */
 export const i18nPromise = instance.init({
-  debug: !isTest && import.meta.env.DEV, // TODO: set false in prod
-  // debug: false,
+  // debug: !isTest && import.meta.env.DEV, // TODO: set false in prod
+  debug: false,
   fallbackLng: 'en',
   supportedLngs: ['en', 'zh', 'zh-HK'],
   load: 'all',

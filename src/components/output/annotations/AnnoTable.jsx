@@ -53,7 +53,7 @@ const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   textAlign: 'center',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  backgroundColor: (theme.vars || theme).palette.background.paper, // TODO: test
+  backgroundColor: (theme.vars || theme).palette.background.paper,
   borderRight: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
   zIndex: 1,
   ...theme.applyStyles('dark', {

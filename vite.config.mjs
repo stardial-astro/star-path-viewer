@@ -11,6 +11,7 @@ import pkg from './package.json';
 /* https://vitejs.dev/config/ */
 export default defineConfig({
   define: {
+    __APP_VERSION__: JSON.stringify(pkg.version),
     __APP_NAME__: JSON.stringify(pkg.name),
     __APP_DESCRIPTION__: JSON.stringify(pkg.description),
   },
@@ -20,7 +21,7 @@ export default defineConfig({
     svgr(), // Transform SVGs into React components
     babel({ presets: [reactCompilerPreset()] }),
     VitePWA({
-      registerType: 'autoUpdate', // default: 'prompt'
+      // registerType: 'autoUpdate', // default: 'prompt'
       disable: process.env.NODE_ENV === 'development',
       /* Assets to precache beyond what's in the build output */
       includeAssets: [
@@ -61,8 +62,8 @@ export default defineConfig({
         cleanupOutdatedCaches: true, // removes stale chunk caches automatically
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
-        skipWaiting: true, // new SW activates immediately
-        clientsClaim: true, // claims all open tabs/windows
+        // skipWaiting: true, // new SW activates immediately
+        // clientsClaim: true, // claims all open tabs/windows
       },
 
       // devOptions: {

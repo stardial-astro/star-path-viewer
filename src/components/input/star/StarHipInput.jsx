@@ -33,9 +33,9 @@ const searchIcon = (
   <SearchIcon
     fontSize="small"
     sx={(theme) => ({
-      color: theme.palette.action.active,
+      color: 'action.active',
       ...theme.applyStyles('dark', {
-        color: theme.palette.text.secondary,
+        color: 'text.secondary',
       }),
     })}
   />
@@ -181,10 +181,9 @@ const StarHipInput = () => {
 
   /**
    * Updates when `onInputChange` fires.
-   * - `reason`: `'input'`, `'reset'`, `'clear'`, `'blur'`, `'selectOption'`, `'removeOption'`
    * - Only updates if user is actually typing (`reason` is not 'reset')
    * - Only fetches suggestions if user is typing and `value` is non-blank
-   * @type {(event: ReactSyntheticEvent, value: string, reason: string) => void}
+   * @type {(event: ReactSyntheticEvent, value: string, reason: 'input' | 'reset' | 'clear' | 'blur' | 'selectOption' | 'removeOption') => void}
    */
   const handleInputChange = useCallback(
     (event, value, reason) => {
@@ -213,13 +212,12 @@ const StarHipInput = () => {
 
   /**
    * Selects the option when `onChange` fires.
-   * - `reason`: `'createOption'`, `'selectOption'`, `'removeOption'`, `'blur'`, `'clear'`
    * - If presses Enter but no data returned yet, `value` is a string, skips
    * - Set `location` and `searchTerm`
    * - Skips fetching suggestions
    * - Updates `lastSelectedTermRef`
    * - Clears suggestions
-   * @type {(event: ReactSyntheticEvent, value: string | StarItem | null, reason: string) => void}
+   * @type {(event: ReactSyntheticEvent, value: string | StarItem | null, reason: 'createOption' | 'selectOption' | 'removeOption' | 'blur' | 'clear') => void}
    */
   const handleSelect = useCallback(
     (event, value, reason) => {

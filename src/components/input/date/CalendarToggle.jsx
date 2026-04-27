@@ -96,9 +96,9 @@ const CalendarToggle = () => {
           }
           placement="top"
           disableHoverListener={isMobile}
-          enterDelay={800}
-          enterNextDelay={500}
-          enterTouchDelay={150}
+          enterDelay={1000}
+          enterNextDelay={700}
+          enterTouchDelay={200}
           leaveTouchDelay={2000}
           slotProps={tooltipSlotProps}
         >

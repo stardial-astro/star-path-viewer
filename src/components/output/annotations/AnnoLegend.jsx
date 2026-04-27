@@ -1,7 +1,7 @@
 // src/components/output/annotations/AnnoLegend.jsx
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme, styled, lighten } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { Grid, Box, Stack, Typography, IconButton } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -10,12 +10,10 @@ import { LINE_STYLES } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 import CustomDivider from '@components/ui/CustomDivider';
 
-/** @param {boolean} isDarkMode */
-const labelStyle = (isDarkMode) => ({
-  filter: colorFilter(isDarkMode),
+const labelStyle = {
   fontWeight: 500,
   minWidth: '1.5rem',
-});
+};
 
 const detailStyle = { color: 'text.primary', ml: 1.5 };
 
@@ -25,32 +23,40 @@ const detailStyle = { color: 'text.primary', ml: 1.5 };
  */
 const Line = ({ type }) => (
   <Box
-    sx={({ palette }) => ({
+    sx={{
       display: 'inline-block',
       width: '31px',
       height: '0px',
-      borderBottom:
-        type === 'dotted'
-          ? `2px dotted ${palette.text.disabled}`
-          : type === 'solid'
-            ? `3px solid ${palette.text.primary}`
-            : type === 'lightDashed'
-              ? `3px dashed ${palette.text.disabled}`
-              : type === 'darkDashed'
-                ? `3px dashed ${palette.text.primary}`
-                : 'none',
+      borderBottomWidth: type === 'dotted' ? '2px' : '3px',
+      borderBottomStyle: type.toLowerCase().includes('dashed')
+        ? 'dashed'
+        : type === 'dotted'
+          ? 'dotted'
+          : 'solid',
+      borderBottomColor:
+        type.includes('dark') || type === 'solid'
+          ? 'text.primary'
+          : 'text.disabled',
+      // borderBottom:
+      //   type === 'dotted'
+      //     ? '2px dotted text.disabled'
+      //     : type === 'solid'
+      //       ? '3px solid text.primary'
+      //       : type === 'lightDashed'
+      //         ? '3px dashed text.disabled'
+      //         : type === 'darkDashed'
+      //           ? '3px dashed text.primary'
+      //           : 'none',
       verticalAlign: 'middle',
       mb: '1px',
       mr: 1,
-    })}
+    }}
   />
 );
 
-/** @param {*} param */
-const Dot = ({ isDarkMode }) => (
+const Dot = () => (
   <Box
-    sx={{
-      filter: colorFilter(isDarkMode),
+    sx={(theme) => ({
       display: 'inline-block',
       width: '7px',
       height: '7px',
@@ -59,7 +65,10 @@ const Dot = ({ isDarkMode }) => (
       verticalAlign: 'middle',
       mr: 1,
       mt: '6px',
-    }}
+      ...theme.applyStyles('dark', {
+        filter: colorFilter,
+      }),
+    })}
   />
 );
 
@@ -87,16 +96,16 @@ const DetailTooltip = styled(({ className, ...props }) => (
   />
 ))(({ theme }) => ({
   [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.background.paper,
+    color: theme.vars.palette.primary.main,
+    backgroundColor: theme.vars.palette.background.paper,
     maxWidth: 480,
     fontSize: theme.typography.body2.fontSize,
     fontWeight: 400,
-    border: `1px solid ${theme.palette.primary.main}`,
-    boxShadow: `0px 2px 6px ${theme.palette.action.disabledBackground}`,
+    border: `1px solid ${theme.vars.palette.primary.main}`,
+    boxShadow: `0px 2px 6px ${theme.vars.palette.action.disabledBackground}`,
     ...theme.applyStyles('dark', {
-      backgroundColor: lighten(theme.palette.background.paper, 0.1),
-      border: `1px solid ${theme.palette.primary.main}`,
+      backgroundColor: 'rgb(41, 41, 41)',
+      border: `1px solid ${theme.vars.palette.primary.main}`,
     }),
   },
 }));
@@ -112,8 +121,6 @@ const AnnoLegend = ({ anno }) => {
   const pointAnno = t('point_anno', { returnObjects: true });
   /** @type {Record<LineStyle | string, any>} */
   const lineLegend = t('line_legend', { returnObjects: true });
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
 
   return (
     <>
@@ -159,12 +166,17 @@ const AnnoLegend = ({ anno }) => {
                 flexWrap="wrap"
                 alignItems="flex-start"
               >
-                <Dot isDarkMode={isDarkMode} />
+                <Dot />
                 <Typography
                   variant="body2"
                   align="left"
                   color="red"
-                  sx={labelStyle(isDarkMode)}
+                  sx={(theme) => ({
+                    ...labelStyle,
+                    ...theme.applyStyles('dark', {
+                      filter: colorFilter,
+                    }),
+                  })}
                 >
                   {item.name}
                 </Typography>

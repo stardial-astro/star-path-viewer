@@ -1,7 +1,6 @@
 // src/components/input/DiagramFetcher.jsx
 import { memo, useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material/styles';
 import {
   Box,
   Stack,
@@ -63,8 +62,6 @@ const circularProgress = (
 const DiagramFetcher = () => {
   // console.log('Rendering DiagramFetcher');
   const { t } = useTranslation();
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
   const {
     isDelayedOnline,
     offlineState,
@@ -388,10 +385,13 @@ const DiagramFetcher = () => {
           <Typography
             variant="body1"
             align="center"
-            sx={{
-              color: isDarkMode ? 'text.secondary' : 'action.active',
+            sx={(theme) => ({
+              color: 'action.active',
               pt: 1,
-            }}
+              ...theme.applyStyles('dark', {
+                color: 'text.secondary',
+              }),
+            })}
           >
             <em>{t('drawing')}</em>
           </Typography>

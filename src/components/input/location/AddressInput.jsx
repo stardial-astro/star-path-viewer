@@ -244,11 +244,10 @@ const AddressInput = () => {
 
   /**
    * Updates when `onInputChange` fires.
-   * - `reason`: `'input'`, `'reset'`, `'clear'`, `'blur'`, `'selectOption'`, `'removeOption'`
    * - Only updates if user is actually typing (`reason` is not 'reset')
    *   and is not loading GPS
    * - Only fetches suggestions if user is typing and `value` is non-blank
-   * @type {(event: ReactSyntheticEvent, value: string, reason: string) => void}
+   * @type {(event: ReactSyntheticEvent, value: string, reason: 'input' | 'reset' | 'clear' | 'blur' | 'selectOption' | 'removeOption') => void}
    */
   const handleInputChange = useCallback(
     (event, value, reason) => {
@@ -279,13 +278,12 @@ const AddressInput = () => {
 
   /**
    * Selects the option when `onChange` fires.
-   * - `reason`: `'createOption'`, `'selectOption'`, `'removeOption'`, `'blur'`, `'clear'`
    * - If presses Enter but no data returned yet, `value` is a string, skips
    * - Set `location` and `searchTerm`
    * - Skips fetching suggestions
    * - Updates `lastSelectedTermRef`
    * - Clears suggestions
-   * @type {(event: ReactSyntheticEvent, value: string | AddressItem | null, reason: string) => void}
+   * @type {(event: ReactSyntheticEvent, value: string | AddressItem | null, reason: 'createOption' | 'selectOption' | 'removeOption' | 'blur' | 'clear') => void}
    */
   const handleSelect = useCallback(
     (event, value, reason) => {

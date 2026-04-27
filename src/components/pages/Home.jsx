@@ -1,7 +1,6 @@
 // src/components/pages/Home.jsx
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
 // import titleImage from '@assets/title-image.svg';
 import { useHome } from '@context/HomeContext';
@@ -35,8 +34,6 @@ if (isDevMode && !import.meta.env.VITEST) {
 const Home = () => {
   // console.log('Rendering Home');
   const { t } = useTranslation();
-  const theme = useTheme();
-  const isDarkMode = theme.palette.mode === 'dark';
   const { success, svgData, anno } = useHome();
 
   /* ------------------------------------------------------------------|
@@ -94,13 +91,15 @@ const Home = () => {
                 {/* <img
                   src={titleImage}
                   alt="Star Path Viewer"
-                  style={{
-                    filter: isDarkMode ? 'invert(1) contrast(200%)' : 'none',
+                  style={(theme) => ({
                     maxHeight: '2.1rem',
                     // minHeight: '1rem', // Not working in Safari
                     objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
                     cursor: 'default',
-                  }}
+                    ...theme.applyStyles('dark', {
+                      filter: 'invert(1) contrast(200%)',
+                    }),
+                  })}
                   onClick={handleTitleClick}
                 /> */}
                 Star Path Viewer
@@ -116,16 +115,21 @@ const Home = () => {
                 sm: 'subtitle2.fontSize',
                 md: 'subtitle1.fontSize',
               }}
-              sx={{
-                color: isDarkMode ? 'text.secondary' : 'action.active',
+              sx={(theme) => ({
+                color: 'action.active',
                 /* <img> */
                 // mt: 0.5,
                 /* text */
                 mt: 0,
                 mb: 1,
-              }}
+                ...theme.applyStyles('dark', {
+                  color: 'text.secondary',
+                }),
+              })}
             >
               {`— ${t('subtitle')} —`}
+              {/* TODO: test updates */}
+              v1
             </Typography>
 
             <Box

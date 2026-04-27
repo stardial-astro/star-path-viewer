@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
 const ErrorHelperText = styled(Typography)(({ theme }) => ({
-  color: theme.palette.error.main,
+  color: (theme.vars || theme).palette.error.main,
   marginTop: '4px',
   marginLeft: '14px',
   marginRight: '14px',

@@ -9,6 +9,10 @@
   "about": "关于",
   "about_us": "关于我们",
 
+  "pwa_new_version_found": "新版本已就绪，是否现在刷新页面？",
+  "pwa_refresh": "好的",
+  "pwa_later": "稍后",
+
   "color_mode": {
     "light": "切换至浅色主题",
     "dark": "切换至深色主题",

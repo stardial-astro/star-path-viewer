@@ -4,10 +4,14 @@
   "title": "Star Path Viewer",
   "head_title": "Star Path Viewer: 追蹤古今天體軌跡",
   "subtitle": "追蹤古今天體軌跡",
-  "description": "古今天體軌跡追蹤應用程式",
+  "description": "古今天體軌跡追蹤工具",
 
   "about": "關於",
   "about_us": "關於我們",
+
+  "pwa_new_version_found": "新版本已就緒，是否現在刷新頁面？",
+  "pwa_refresh": "好的",
+  "pwa_later": "稍後",
 
   "color_mode": {
     "light": "切換至淺色主題",

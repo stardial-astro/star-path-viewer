@@ -8,14 +8,14 @@ const CustomIconButton = ({ ref, size = 'small', sx, ...rest }) => {
       ref={ref}
       size={size}
       sx={(theme) => ({
-        color: theme.palette.action.active,
+        color: 'action.active',
         '&:hover': {
-          color: theme.palette.primary.main,
+          color: 'primary.main',
         },
         ...theme.applyStyles('dark', {
-          color: theme.palette.text.secondary,
+          color: 'text.secondary',
           '&:hover': {
-            color: theme.palette.primary.main,
+            color: 'primary.main',
           },
         }),
         ...sx, // allow overriding styles from parent

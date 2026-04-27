@@ -2,7 +2,8 @@
 import { useMemo } from 'react';
 import {
   // GlobalStyles,
-  createTheme,
+  // createTheme,
+  extendTheme,
   ThemeProvider,
   CssBaseline,
 } from '@mui/material';
@@ -29,9 +30,12 @@ const LANG_CODE_TO_MUI_LOCALE = {
 
 const themeOptions = {
   colorSchemes: {
-    /* Enables dark mode */
+    light: true,
     dark: true,
   },
+  // palette: {
+  //   contrastThreshold: 3,
+  // },
   typography: {
     h1: {
       fontWeight: 100,
@@ -111,14 +115,15 @@ const AppThemeProvider = ({ children }) => {
       muiLocales[LANG_CODE_TO_MUI_LOCALE[i18n.language] || 'enUS'];
 
     /* Create theme with the selected MUI locale */
-    return createTheme(
-      themeOptions,
+    return extendTheme(
+      { ...themeOptions, colorSchemeSelector: 'data' },
       selectedLocale, // inject MUI's internal translations
     );
   }, [i18n.language]);
 
   return (
-    <ThemeProvider theme={theme} noSsr>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
       {/* <GlobalStyles
         styles={{
           '@keyframes mui-auto-fill': { from: { display: 'block' } },
@@ -126,7 +131,6 @@ const AppThemeProvider = ({ children }) => {
         }}
       /> */}
       <Globali18nStyles />
-      <CssBaseline />
       {children}
     </ThemeProvider>
   );

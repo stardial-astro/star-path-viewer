@@ -2,7 +2,6 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import parse from 'html-react-parser';
-import { useTheme } from '@mui/material/styles';
 import { Box, Stack } from '@mui/material';
 import { useHome } from '@context/HomeContext';
 import { colorFilter } from '@utils/outputUtils';
@@ -11,20 +10,21 @@ import DownloadImage from './DownloadImage';
 
 const ImageDisplay = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const { errorMessage, setErrorMessage, diagramId, svgData } = useHome();
   return (
     <>
       <Box
         id="svg-container"
-        sx={{
-          filter: colorFilter(theme.palette.mode === 'dark'),
+        sx={(theme) => ({
           mr: 0.5,
           '& svg': {
             width: '100%',
             height: 'auto',
           },
-        }}
+          ...theme.applyStyles('dark', {
+            filter: colorFilter,
+          }),
+        })}
       >
         {parse(svgData)}
       </Box>

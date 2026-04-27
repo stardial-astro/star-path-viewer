@@ -20,36 +20,39 @@ const tooltipSlotProps = {
   },
 };
 
-const StyledFab = styled(Fab)(({ theme }) => ({
-  // position: 'fixed',
-  // bottom: theme.spacing(2),
-  // right: theme.spacing(2),
-  opacity: 0.5,
-  color: theme.palette.text.secondary,
-  backgroundColor: theme.palette.action.disabledBackground,
-  border: `1px solid ${theme.palette.action.disabled}`,
-  '&:hover': {
-    opacity: 1, // Fully opaque when hovered
-    color: theme.palette.primary.main,
-    backgroundColor: theme.palette.background.paper,
-    border: `1px solid ${theme.palette.primary.main}`,
-    ...theme.applyStyles('dark', {
-      color: theme.palette.primary.contrastText,
-      backgroundColor: theme.palette.primary.main,
-      border: `1px solid ${theme.palette.primary.dark}`,
-    }),
-  },
-  // [theme.breakpoints.between('sm', 'md')]: {
-  //   right: theme.spacing(3),
-  // },
-  // [theme.breakpoints.between('md', 'lg')]: {
-  //   right: 'calc(36% - 310px)',
-  // },
-  // [theme.breakpoints.up('lg')]: {
-  //   right: 'calc(50% - 480px)',
-  // },
-  // zIndex: theme.zIndex.speedDial,
-}));
+const StyledFab = styled(Fab)(({ theme }) => {
+  const palette = (theme.vars || theme).palette;
+  return {
+    // position: 'fixed',
+    // bottom: theme.spacing(2),
+    // right: theme.spacing(2),
+    opacity: 0.5,
+    color: palette.text.secondary,
+    backgroundColor: palette.action.disabledBackground,
+    border: `1px solid ${palette.action.disabled}`,
+    '&:hover': {
+      opacity: 1, // Fully opaque when hovered
+      color: palette.primary.main,
+      backgroundColor: palette.background.paper,
+      border: `1px solid ${palette.primary.main}`,
+      ...theme.applyStyles('dark', {
+        color: palette.primary.contrastText,
+        backgroundColor: palette.primary.main,
+        border: `1px solid ${palette.primary.dark}`,
+      }),
+    },
+    // [theme.breakpoints.between('sm', 'md')]: {
+    //   right: theme.spacing(3),
+    // },
+    // [theme.breakpoints.between('md', 'lg')]: {
+    //   right: 'calc(36% - 310px)',
+    // },
+    // [theme.breakpoints.up('lg')]: {
+    //   right: 'calc(50% - 480px)',
+    // },
+    // zIndex: theme.zIndex.speedDial,
+  };
+});
 
 /**
  * @param {object} props

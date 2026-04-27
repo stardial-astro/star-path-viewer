@@ -1,7 +1,7 @@
 // src/components/output/annotations/AnnoTable.jsx
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useTheme, styled, lighten } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import {
   Table,
   TableBody,
@@ -53,14 +53,17 @@ const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   textAlign: 'center',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
-  backgroundColor: lighten(theme.palette.background.paper, 0.1),
-  borderRight: `1px solid ${theme.palette.action.disabledBackground}`,
+  backgroundColor: (theme.vars || theme).palette.background.paper, // TODO: test
+  borderRight: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
   zIndex: 1,
+  ...theme.applyStyles('dark', {
+    backgroundColor: 'rgb(41, 41, 41)',
+  }),
 }));
 
 const StyledRow = styled(TableRow)(() => ({
   // '&:nth-of-type(odd)': {
-  //   backgroundColor: theme.palette.action.hover,
+  //   backgroundColor: (theme.vars || theme).palette.action.hover,
   // },
   /* Hide last border */
   '&:last-child td, &:last-child th': {
@@ -75,18 +78,16 @@ const StyledRow = styled(TableRow)(() => ({
  */
 const AnnoTable = ({ anno, tzname }) => {
   const { t } = useTranslation('output');
-  const theme = useTheme();
   const redAsterisk = (
-    <span style={{ color: theme.palette.error.main }}>*</span>
+    <Typography component="span" variant="body2" sx={{ color: 'error.main' }}>
+      *
+    </Typography>
   );
   const tzStr = formatTimezone(anno[0].time_zone);
 
   return (
     <>
-      <TableContainer
-        component={Paper}
-        sx={{ overflow: 'auto', colorScheme: theme.palette.mode }}
-      >
+      <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
         <Table size="small" sx={{ borderCollapse: 'separate' }}>
           <TableHead>
             <TableRow>

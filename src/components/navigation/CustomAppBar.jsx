@@ -102,7 +102,7 @@ const CustomAppBar = () => {
         sx={(theme) => ({
           width: '100%',
           backgroundColor: 'background.paper',
-          borderBottom: `1px solid ${theme.palette.action.disabledBackground}`,
+          borderBottom: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
           height: { xs: '2.1rem', sm: '2.5rem', md: '2.5rem' },
           display: 'flex',
           justifyContent: 'space-between',

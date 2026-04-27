@@ -20,7 +20,7 @@ const loadingAdornment = (
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiInputBase-root.Mui-disabled': {
-    backgroundColor: theme.palette.action.hover,
+    backgroundColor: (theme.vars || theme).palette.action.hover,
   },
 }));
 

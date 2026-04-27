@@ -9,6 +9,10 @@
   "about": "About",
   "about_us": "About Us",
 
+  "pwa_new_version_found": "A new version is ready. Would you like to refresh now?",
+  "pwa_refresh": "Yes",
+  "pwa_later": "Later",
+
   "color_mode": {
     "light": "Switch to light mode",
     "dark": "Switch to dark mode",

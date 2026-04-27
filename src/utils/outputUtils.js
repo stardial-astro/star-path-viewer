@@ -32,8 +32,6 @@ const sanitizeSvg = (svgBase64) => {
   return sanitizedSvg;
 };
 
-/** @param {boolean} isDarkMode */
-const colorFilter = (isDarkMode) =>
-  isDarkMode ? 'invert(1) hue-rotate(170deg) contrast(0.9)' : 'none';
+const colorFilter = 'invert(1) hue-rotate(170deg) contrast(0.9)';
 
 export { capitalize, sanitizeSvg, colorFilter };

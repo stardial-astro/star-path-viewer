@@ -19,14 +19,19 @@ const PwaUpdater = () => {
   const [needRefresh, setNeedRefresh] = useState(false);
   /** @type {ReactRef<(() => void) | null>} */
   const updateActionRef = useRef(null);
+  /** @type {ReactRef<ServiceWorkerRegistration | null>} */
+  const swRegistrationRef = useRef(null);
 
   /* Use manually */
   useEffect(() => {
     /* Ensures that PWA registration is only after the component is mounted, avoiding warnings */
     const updateSW = registerSW({
       immediate: true, // register immediately
-      onRegisteredSW(r) {
-        isDevMode && console.debug('⚙️ SW Registered:', r);
+      onRegisteredSW(swScriptUrl, r) {
+        if (r) {
+          swRegistrationRef.current = r;
+          isDevMode && console.debug('⚙️ SW Registered:', swScriptUrl);
+        }
       },
       onRegisterError(error) {
         console.error('SW Registration Error:', error);
@@ -38,6 +43,19 @@ const PwaUpdater = () => {
         console.debug('✨ A new version is ready.');
       },
     });
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && swRegistrationRef.current) {
+        isDevMode && console.debug('⚙️ Checking updates...');
+        swRegistrationRef.current.update();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
     /* No need to cleanup (Service Worker registration is an application-level persistence behavior) */
   }, []);
 

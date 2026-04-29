@@ -29,7 +29,7 @@
 
   "service_unavailable": "Service not available. Please enter the coordinates manually. ⤴",
   "unknown_service": "Unknown geocoding service → Please reload the page",
-  "reverse_geo_error": "We are having trouble fetching your current address. Please use the determined coordinates as inputs instead. ↓",
+  "reverse_geo_error": "We are having trouble fetching your current address. Please use the determined coordinates as inputs. ↓",
   "gps_error": "Unable to determine the current location. Please enter the coordinates manually. ⤴",
   "gps_not_supported": "Geolocation is not supported by this browser. Please enter the coordinates manually. ⤴",
   "location_not_found": "Location not found.",

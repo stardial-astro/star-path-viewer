@@ -109,7 +109,12 @@ const LocationInput = () => {
         autoHideDuration={12_000}
         onClose={handleSnackbarClose}
         sx={(theme) => ({
+          top: {
+            xs: 'calc(2.1rem - 5px)',
+            sm: 'calc(2.5rem - 5px)',
+          },
           boxShadow: theme.shadows[2],
+          zIndex: theme.zIndex.tooltip,
         })}
       >
         <CustomAlert severity="warning" onClose={handleSnackbarClose}>

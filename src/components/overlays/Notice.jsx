@@ -8,7 +8,7 @@
  */
 import { memo, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert } from '@mui/material';
+import { Box, Alert } from '@mui/material';
 import AnnouncementOutlinedIcon from '@mui/icons-material/AnnouncementOutlined';
 import ErrorOutlineOutlinedIcon from '@mui/icons-material/ErrorOutlineOutlined';
 import { useHome } from '@context/HomeContext';
@@ -125,32 +125,46 @@ const Notice = () => {
   return (
     <>
       {(msg || errorMessage.server) && (
-        <Alert
-          severity="info"
-          icon={
-            msg ? (
-              <AnnouncementOutlinedIcon fontSize="inherit" />
-            ) : (
-              <ErrorOutlineOutlinedIcon fontSize="inherit" />
-            )
-          }
+        <Box
           sx={(theme) => ({
             position: 'fixed',
-            top: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            minWidth: 360,
-            textAlign: 'left',
-            boxShadow: theme.shadows[2],
+            top: {
+              xs: 'calc(2.1rem + 12px)',
+              sm: 'calc(2.5rem + 12px)',
+            },
+            display: 'flex',
+            justifyContent: 'center',
+            left: 0,
+            right: 0,
+            mx: 2,
             zIndex: theme.zIndex.modal,
+            // pointerEvents: 'none',
           })}
-          onClose={() =>
-            errorMessage.server &&
-            setErrorMessage((prev) => ({ ...prev, server: '' }))
-          }
         >
-          {msg || serverError}
-        </Alert>
+          <Alert
+            severity="info"
+            icon={
+              msg ? (
+                <AnnouncementOutlinedIcon fontSize="inherit" />
+              ) : (
+                <ErrorOutlineOutlinedIcon fontSize="inherit" />
+              )
+            }
+            sx={(theme) => ({
+              minWidth: 200,
+              maxWidth: 'sm',
+              textAlign: 'left',
+              boxShadow: theme.shadows[2],
+            })}
+            onClose={
+              errorMessage.server
+                ? () => setErrorMessage((prev) => ({ ...prev, server: '' }))
+                : undefined
+            }
+          >
+            {msg || serverError}
+          </Alert>
+        </Box>
       )}
     </>
   );

@@ -2,6 +2,7 @@
 import { memo, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -91,27 +92,38 @@ const OfflineNotifier = () => {
       </Dialog>
 
       {/* Persistent offline Alert (shown after dialog is dismissed) */}
-      <Collapse in={showAlert} unmountOnExit>
-        <Alert
-          severity="error"
-          icon={<WifiOffIcon fontSize="inherit" />}
-          sx={(theme) => ({
-            position: 'fixed',
-            top: 16,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            minWidth: 280,
-            justifyContent: 'center',
-            boxShadow: theme.shadows[3],
-            pl: 2,
-            pr: 4,
-            zIndex: theme.zIndex.modal + 1,
-          })}
-        >
-          <AlertTitle>{t('offline_alert_title')}</AlertTitle>
-          {t('offline_alert_description')}
-        </Alert>
-      </Collapse>
+      <Box
+        sx={(theme) => ({
+          position: 'fixed',
+          top: {
+            xs: 'calc(2.1rem + 12px)',
+            sm: 'calc(2.5rem + 12px)',
+          },
+          display: 'flex',
+          justifyContent: 'center',
+          left: 0,
+          right: 0,
+          mx: 2,
+          zIndex: theme.zIndex.modal + 1,
+        })}
+      >
+        <Collapse in={showAlert} unmountOnExit>
+          <Alert
+            severity="error"
+            icon={<WifiOffIcon fontSize="inherit" />}
+            sx={(theme) => ({
+              minWidth: 280,
+              justifyContent: 'center',
+              boxShadow: theme.shadows[3],
+              pl: 2,
+              pr: 4,
+            })}
+          >
+            <AlertTitle>{t('offline_alert_title')}</AlertTitle>
+            {t('offline_alert_description')}
+          </Alert>
+        </Collapse>
+      </Box>
     </>
   );
 };

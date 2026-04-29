@@ -32,6 +32,11 @@ const App = () => {
     <Box className="app-container">
       {/* <Box id="back-to-top-anchor" /> */}
       <CustomAppBar />
+      <Box
+        sx={{
+          height: { xs: '2.35rem', sm: '2.75rem' },
+        }}
+      />
 
       <Container maxWidth="md" sx={{ flex: '1 0 auto', pt: 0, pb: 0 }}>
         <Routes>

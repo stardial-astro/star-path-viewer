@@ -1,7 +1,14 @@
 // src/components/navigation/CustomAppBar.jsx
 import { memo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Box, Tooltip, Snackbar } from '@mui/material';
+import {
+  Container,
+  Box,
+  Slide,
+  Tooltip,
+  Snackbar,
+  useScrollTrigger,
+} from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -85,81 +92,128 @@ const GithubButton = ({ title }) => (
   </Tooltip>
 );
 
+/** @param {*} param */
+const HideOnScroll = ({ children, trigger }) => {
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+};
+
 const CustomAppBar = () => {
   const { t } = useTranslation();
   const [shareStatus, setShareStatus] = useState({ success: false, error: '' });
   const currentRoute = useLocation();
+
+  const trigger = useScrollTrigger({
+    threshold: 10,
+  });
 
   const handleSnackbarClose = useCallback(() => {
     setShareStatus({ success: false, error: '' });
   }, []);
 
   return (
-    <Container
-      sx={{ display: 'flex', maxWidth: 'md', alignItems: 'center', px: 0 }}
-    >
+    <HideOnScroll trigger={trigger}>
       <Box
         sx={(theme) => ({
-          width: '100%',
-          backgroundColor: 'background.paper',
-          borderBottom: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
-          height: { xs: '2.1rem', sm: '2.5rem', md: '2.5rem' },
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          mt: 0.5,
-          px: { xs: 2, sm: 0 },
+          position: 'fixed', // must be 'fixed' to enable hiding
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: theme.zIndex.appBar,
         })}
       >
-        {/* Left Side */}
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          alignItems="center"
-          minWidth="82px"
-          gap={1.5}
+        <Container
+          sx={(theme) => ({
+            display: 'flex',
+            flexDirection: 'column',
+            maxWidth: 'md',
+            // alignItems: 'center',
+            // position: 'sticky',
+            // top: 0,
+            px: 0,
+            transition: 'all 0.3s ease',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            backdropFilter: 'blur(8px)',
+            // boxShadow: trigger ? theme.shadows[2] : 'none',
+            zIndex: theme.zIndex.appBar,
+            ...theme.applyStyles('dark', {
+              backgroundColor: 'rgba(18, 18, 18, 0.7)',
+            }),
+          })}
         >
-          {currentRoute.pathname === '/' ? (
-            <AboutButton
-              title={t('about_us')}
-              alt={`${t('about')} ${config.TEAM_NAME}`}
-            />
-          ) : (
-            <HomeButton />
-          )}
-        </Box>
-
-        {/* Right Side */}
-        <Box
-          display="flex"
-          alignItems="center"
-          gap={{ xs: 0, sm: 0.5 }}
-          sx={{ mr: -0.5 }}
-        >
-          <ColorModeToggle />
-          <LanguageSelector />
-          <GithubButton title={t('github_repo')} />
-          <ShareButton setShareStatus={setShareStatus} />
-        </Box>
-      </Box>
-
-      {(shareStatus.success || shareStatus.error) && (
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={shareStatus.success || !!shareStatus.error}
-          autoHideDuration={5000}
-          onClose={handleSnackbarClose}
-          sx={(theme) => ({ boxShadow: theme.shadows[2] })}
-        >
-          <CustomAlert
-            severity={shareStatus.error ? 'warning' : 'success'}
-            onClose={handleSnackbarClose}
+          <Box
+            sx={(theme) => ({
+              width: '100%',
+              borderBottom: `1px solid ${(theme.vars || theme).palette.action.disabledBackground}`,
+              height: { xs: '2.1rem', sm: '2.5rem' },
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mt: 0.5,
+              px: { xs: 2, sm: 0 },
+            })}
           >
-            {shareStatus.error || t('share_success')}
-          </CustomAlert>
-        </Snackbar>
-      )}
-    </Container>
+            {/* Left Side */}
+            <Box
+              display="flex"
+              justifyContent="flex-start"
+              alignItems="center"
+              minWidth="82px"
+              gap={1.5}
+            >
+              {currentRoute.pathname === '/' ? (
+                <AboutButton
+                  title={t('about_us')}
+                  alt={`${t('about')} ${config.TEAM_NAME}`}
+                />
+              ) : (
+                <HomeButton />
+              )}
+            </Box>
+
+            {/* Right Side */}
+            <Box
+              display="flex"
+              alignItems="center"
+              gap={{ xs: 0, sm: 0.5 }}
+              sx={{ mr: -0.5 }}
+            >
+              <ColorModeToggle />
+              <LanguageSelector />
+              <GithubButton title={t('github_repo')} />
+              <ShareButton setShareStatus={setShareStatus} />
+            </Box>
+          </Box>
+
+          {(shareStatus.success || shareStatus.error) && (
+            <Snackbar
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              open={shareStatus.success || !!shareStatus.error}
+              autoHideDuration={5000}
+              onClose={handleSnackbarClose}
+              sx={(theme) => ({
+                top: {
+                  xs: 'calc(2.1rem + 12px) !important',
+                  sm: 'calc(2.5rem + 12px) !important',
+                },
+                boxShadow: theme.shadows[2],
+                zIndex: theme.zIndex.tooltip,
+              })}
+            >
+              <CustomAlert
+                severity={shareStatus.error ? 'warning' : 'success'}
+                onClose={handleSnackbarClose}
+              >
+                {shareStatus.error || t('share_success')}
+              </CustomAlert>
+            </Snackbar>
+          )}
+        </Container>
+      </Box>
+    </HideOnScroll>
   );
 };
 

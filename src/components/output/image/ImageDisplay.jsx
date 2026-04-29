@@ -16,6 +16,7 @@ const ImageDisplay = () => {
       <Box
         id="svg-container"
         sx={(theme) => ({
+          mt: -2,
           mr: 0.5,
           '& svg': {
             width: '100%',
@@ -29,7 +30,7 @@ const ImageDisplay = () => {
         {parse(svgData)}
       </Box>
 
-      <Stack id="download-img" direction="column" spacing={1} sx={{ mt: -1 }}>
+      <Stack id="download-img" direction="column" spacing={1} sx={{ mt: -2 }}>
         <DownloadImage filenameBase={`sp_${diagramId}`} dpi={300} />
         {errorMessage.download &&
           !errorMessage.download.startsWith('errors:table_') && (

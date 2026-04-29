@@ -32,7 +32,7 @@ const ImageDisplay = () => {
       <Stack id="download-img" direction="column" spacing={1} sx={{ mt: -1 }}>
         <DownloadImage filenameBase={`sp_${diagramId}`} dpi={300} />
         {errorMessage.download &&
-          !errorMessage.download.startsWith('table_') && (
+          !errorMessage.download.startsWith('errors:table_') && (
             <CustomAlert
               sx={{ mt: 1 }}
               onClose={() =>

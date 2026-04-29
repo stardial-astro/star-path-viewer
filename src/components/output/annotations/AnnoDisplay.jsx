@@ -31,7 +31,7 @@ const AnnoDisplay = () => {
           filenameBase={`tb_${diagramId}`}
         />
         {errorMessage.download &&
-          errorMessage.download.startsWith('table_') && (
+          errorMessage.download.startsWith('errors:table_') && (
             <CustomAlert
               sx={{ mt: 1 }}
               onClose={() =>

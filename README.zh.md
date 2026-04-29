@@ -45,7 +45,7 @@
 - :night_with_stars: 以不同线条表示天体经过昼夜和不同晨昏蒙影阶段的轨迹
 - :clock1: 计算结果中同时包含[标准时间](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E6%99%82%E9%96%93), [地方平时（LMT）](https://zh.wikipedia.org/wiki/%E5%9C%B0%E6%96%B9%E5%B9%B3%E6%99%82)和[世界时（UT1）](https://zh.wikipedia.org/wiki/%E4%B8%96%E7%95%8C%E6%97%B6)
 
-  *输出的标准时间仅反映所选地点当前的时区划分供用户参考，且不考虑夏令时。*
+  *输出的标准时间仅反映所选地点当前的时区划分供用户参考，且不采用夏令时。*
 
 ### 用户界面
 
@@ -74,7 +74,7 @@
 
 ## 地理位置服务
 
-该应用使用了一下地理位置服务：
+该应用使用了以下地理位置服务：
 
 1. 📍 **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)**：根据 [node-geo-tz](https://github.com/evansiroky/node-geo-tz) 修改的轻量时区查询包
 

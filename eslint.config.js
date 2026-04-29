@@ -11,16 +11,7 @@ import { importX } from 'eslint-plugin-import-x';
 
 export default defineConfig([
   /* Global configuration */
-  globalIgnores([
-    'dist',
-    'dev-dist',
-    'build',
-    'public',
-    '__mocks__',
-    'docs/.vitepress/cache',
-    'docs/.vitepress/dist',
-    'docs/.vitepress/.temp',
-  ]),
+  globalIgnores(['dist', 'dev-dist', 'build', 'public', '__mocks__']),
 
   eslintReact.configs.recommended,
 

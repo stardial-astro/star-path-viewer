@@ -10,6 +10,25 @@ const SKYFIELD_URL = 'https://rhodesmill.org/skyfield';
 const JPL_URL = 'https://ssd.jpl.nasa.gov/planets/eph_export.html';
 const HIP_URL = 'https://www.cosmos.esa.int/web/hipparcos/catalogues';
 
+// const justifyStyle = {
+//   textJustify: 'inter-word',
+//   hyphens: 'auto',
+//   hyphenateLimitChars: '8 3 4',
+// };
+
+const logoImg = (
+  <img
+    src={logo}
+    alt="Logo"
+    data-testid="about-logo"
+    style={{
+      maxWidth: '15%',
+      minWidth: '100px',
+      objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
+    }}
+  />
+);
+
 /** @param {*} param */
 /* eslint-disable-next-line no-unused-vars */
 const TransLink = ({ children, i18nIsDynamicList, ...props }) => (
@@ -23,23 +42,15 @@ const TransLink = ({ children, i18nIsDynamicList, ...props }) => (
 const Em = ({ children, i18nIsDynamicList }) => <em>{children}</em>;
 
 const About = () => {
-  const { t } = useTranslation('about');
+  const { i18n, t } = useTranslation('about');
+  const isZh = i18n.language.startsWith('zh');
   const bodyArray = t('body', { returnObjects: true });
   return (
     <>
       <title>{t('head_title')}</title>
 
       <Box data-testid="about-page" sx={{ mt: 4 }}>
-        <img
-          src={logo}
-          alt="Logo"
-          data-testid="about-logo"
-          style={{
-            maxWidth: '20%',
-            minWidth: '130px',
-            objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
-          }}
-        />
+        {logoImg}
       </Box>
 
       {/* Title */}
@@ -71,9 +82,11 @@ const About = () => {
           display: 'flex',
           flexDirection: 'column',
           rowGap: '1rem',
-          mt: { xs: 1.1, sm: 2.4 },
-          mx: { xs: 2, sm: 3 },
-          px: 0.5,
+          mt: { xs: 1, sm: 2 },
+          mx: { xs: 1.5, sm: 3 },
+          pl: 0.5,
+          pr: isZh ? 0.5 : 0.2,
+          // px: 0.5,
         }}
       >
         {Array.isArray(bodyArray) &&
@@ -82,9 +95,11 @@ const About = () => {
             return (
               <Typography
                 key={p.id || index}
-                variant={elm === 'p' ? 'body1' : elm}
+                variant={elm === 'p' ? 'body2' : elm}
                 component={elm}
-                align={elm === 'p' ? 'justify' : 'center'}
+                align={elm === 'p' ? (isZh ? 'justify' : 'left') : 'center'}
+                // align={elm === 'p' ? 'justify' : 'center'}
+                // sx={justifyStyle}
               >
                 <Trans
                   t={t}

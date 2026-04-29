@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
-An astronomical tool for tracing the positions of planets and stars on any chosen date in the ancient or future sky.
+An astronomical tool for tracking the apparent motion of any planet or star on any chosen date in the ancient or future sky.
 
 [![Version](https://img.shields.io/badge/Version-v1.3.2-blue)](#features)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
@@ -70,7 +70,7 @@ An astronomical tool for tracing the positions of planets and stars on any chose
 
 > :bulb: Note that the [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) has been taken into account in the calculation.
 
-See [our wiki page](https://github.com/stardial-astro/star-path-viewer/wiki/1.-Guides) for detailed instructions.
+See the [documentation](https://star-path-docs.pages.dev/) for detailed instructions.
 
 ## Geolocation Services
 
@@ -115,7 +115,7 @@ This app relies on the following services:
 ## Changelog
 
 - [v1.3.2] 2026-04-26
-  - Bug fix
+  - Bug fix and UI optimization.
 
 - [v1.3.1] 2026-03-29
   - Upgraded to MUI 7 and React 19.

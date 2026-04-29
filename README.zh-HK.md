@@ -2,7 +2,7 @@
 
 [English](README.md) | [簡體中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
-天體軌跡追蹤天文小工具——顯示上下五千年間制定日期和地點的天體視運動軌跡。
+天體軌跡追蹤天文小工具——顯示上下五千年間指定日期和地點的天體視運動軌跡。
 
 [![版本](https://img.shields.io/badge/Version-v1.3.2-blue)](#功能特性)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
@@ -70,7 +70,7 @@
 
 > :bulb: *計算天體位置時考慮了[大氣折射](https://zh.wikipedia.org/wiki/%E5%A4%A7%E6%B0%A3%E6%8A%98%E5%B0%84)效應。*
 
-更多使用細節參見[使用指南](https://github.com/stardial-astro/star-path-viewer/wiki/1.-Guides)。
+詳細使用方法參見[文檔](https://star-path-docs.pages.dev/)。
 
 ## 地理位置服務
 
@@ -117,7 +117,7 @@
 ## 修改日誌
 
 - [v1.3.2] 2026-04-26
-  - Bug 修復
+  - Bug 修復和 UI 優化
 
 - [v1.3.1] 2026-03-29
   - 升級至 MUI 7 和 React 19

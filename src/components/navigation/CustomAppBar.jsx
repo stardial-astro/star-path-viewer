@@ -32,9 +32,8 @@ const LOGO_ALT = 'About Stardial';
 
 /** @type {React.CSSProperties} */
 const logoCssStyle = {
-  maxHeight: '1.3rem',
-  maxWidth: '82.58px',
-  width: '100%',
+  // maxHeight: '1.3rem',
+  width: '82.58px',
   objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
   justifyContent: 'flex-start',
   marginTop: '6px',

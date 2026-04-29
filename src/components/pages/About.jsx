@@ -5,10 +5,16 @@ import { Box, Typography, Link } from '@mui/material';
 import logo from '@assets/logo.svg';
 import config from '@utils/config';
 
-const GUIDE_URL = config.REPO_URL + '/wiki/1.-Guides';
 const SKYFIELD_URL = 'https://rhodesmill.org/skyfield';
 const JPL_URL = 'https://ssd.jpl.nasa.gov/planets/eph_export.html';
 const HIP_URL = 'https://www.cosmos.esa.int/web/hipparcos/catalogues';
+
+/** @type {Record<LangCode | string, string>} */
+const DOCS_URLS = {
+  en: config.DOCS_URL,
+  zh: config.DOCS_URL + '/zh/',
+  'zh-HK': config.DOCS_URL + '/zh-HK/',
+};
 
 // const justifyStyle = {
 //   textJustify: 'inter-word',
@@ -17,13 +23,23 @@ const HIP_URL = 'https://www.cosmos.esa.int/web/hipparcos/catalogues';
 // };
 
 const logoImg = (
-  <img
+  // <img
+  //   src={logo}
+  //   alt="Logo"
+  //   data-testid="about-logo"
+  //   style={{
+  //     // maxWidth: '15%',
+  //     width: '120px',
+  //     objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
+  //   }}
+  // />
+  <Box
+    component="img"
     src={logo}
     alt="Logo"
     data-testid="about-logo"
-    style={{
-      maxWidth: '15%',
-      minWidth: '100px',
+    sx={{
+      width: { xs: '90px', sm: '130px' },
       objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
     }}
   />
@@ -112,7 +128,11 @@ const About = () => {
                     em: <Em />,
                     TeamLink: <TransLink href={config.TEAM_URL} />,
                     RepoLink: <TransLink href={config.REPO_URL} />,
-                    GuideLink: <TransLink href={GUIDE_URL} />,
+                    DocsLink: (
+                      <TransLink
+                        href={DOCS_URLS[i18n.resolvedLanguage || 'en']}
+                      />
+                    ),
                     SkyfieldLink: <TransLink href={SKYFIELD_URL} />,
                     JplLink: <TransLink href={JPL_URL} />,
                     HipLink: <TransLink href={HIP_URL} />,

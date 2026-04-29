@@ -29,7 +29,7 @@
     },
     {
       "id": "p-5",
-      "content": "Please refer to <GuideLink>this guide</GuideLink> for usage. For more information about this app and references, please visit our <RepoLink>repository</RepoLink>."
+      "content": "Please refer to the <DocsLink>documentation</DocsLink> for more details, or visit our <RepoLink>repository</RepoLink>."
     },
     {
       "id": "h2-3",

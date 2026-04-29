@@ -29,7 +29,7 @@
     },
     {
       "id": "p-5",
-      "content": "本工具的使用方法参见<GuideLink>指南</GuideLink>。有关 <em>{{appName}}</em> 的更多详细信息和参考资料，请访问项目的 <RepoLink>GitHub 仓库</RepoLink>。"
+      "content": "有关 <em>{{appName}}</em> 的更多细节参见<DocsLink>文档</DocsLink>，或访问本项目的 <RepoLink>GitHub 仓库</RepoLink>。"
     },
     {
       "id": "h2-3",

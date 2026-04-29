@@ -5,12 +5,7 @@ const config = {
   TEAM_NAME: 'Stardial',
   TEAM_URL: 'https://github.com/stardial-astro',
   REPO_URL: 'https://github.com/stardial-astro/star-path-viewer',
-  DOC_URLS: {
-    en: 'https://github.com/stardial-astro/star-path-viewer/blob/main/README.md',
-    zh: 'https://github.com/stardial-astro/star-path-viewer/blob/main/README.zh.md',
-    'zh-HK':
-      'https://github.com/stardial-astro/star-path-viewer/blob/main/README.zh-HK.md',
-  },
+  DOCS_URL: 'https://star-path-docs.pages.dev',
   APP_CARD_URL:
     'https://stardial-astro.github.io/star-path-data/images/star-path-viewer_card.jpg',
   STAR_NAMES_URL: '/data/hip_ident_zh.json',

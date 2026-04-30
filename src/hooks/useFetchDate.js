@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/dateInputActionTypes';
 import config from '@utils/config';
 import { SERVER_ERR_PREFIX, EPH_RANGE_ERR_MSG_G } from '@utils/constants';
+import { skipRetry, parseApiError } from '@utils/apiUtils';
 import { validateYearSync } from '@utils/dateInputUtils';
 import fetchDate from '@utils/fetchDate';
 import { isDevMode } from '@utils/devMode';
@@ -47,7 +48,7 @@ const useFetchDate = (year, flag, lat, lng, tz, dispatch, setErrorMessage) => {
     staleTime: STALE_MS,
     gcTime: GC_MS,
     retry: (failureCount, error) => {
-      if (axios.isCancel(error)) return false;
+      if (axios.isCancel(error) || skipRetry(error)) return false;
       return failureCount < config.MAX_RETRIES;
     },
     retryDelay: (attemptIndex) =>
@@ -78,7 +79,8 @@ const useFetchDate = (year, flag, lat, lng, tz, dispatch, setErrorMessage) => {
 
   useEffect(() => {
     if (error) {
-      const msg = error.message;
+      const err = parseApiError(error);
+      const msg = err.message;
       if (msg.startsWith(SERVER_ERR_PREFIX)) {
         /* Show server errors */
         setErrorMessage((prev) => ({ ...prev, server: msg }));

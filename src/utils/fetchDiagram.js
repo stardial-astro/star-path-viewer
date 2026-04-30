@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from './config';
 import { CALS, INFO_KEYS } from './constants';
 import apiClient from './apiClient';
-import { printDuration, parseApiError } from './apiUtils';
+import { printDuration } from './apiUtils';
 import { sanitizeSvg } from './outputUtils';
 import { isDevMode } from './devMode';
 
@@ -56,7 +56,8 @@ const fetchDiagram = async (params, signal) => {
       isDevMode && console.debug('Diagram fetching cancelled.');
       return null;
     }
-    throw parseApiError(err);
+    /* Parse the error by the caller */
+    throw err;
   }
 
   /* Construct info: location, tz, calendar, star */

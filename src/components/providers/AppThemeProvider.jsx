@@ -6,6 +6,7 @@ import {
   extendTheme,
   ThemeProvider,
   CssBaseline,
+  alpha,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import * as muiLocales from '@mui/material/locale';
@@ -68,6 +69,20 @@ const themeOptions = {
     //     }
     //   },
     // },
+    MuiAlert: {
+      styleOverrides: {
+        /* @ts-ignore: TS7031 */
+        root: ({ theme, ownerState }) => ({
+          [theme.getColorSchemeSelector('dark')]: {
+            /* Match the severity color */
+            border: `1px solid ${alpha(
+              theme.palette[ownerState.severity ?? 'info'].main,
+              0.4,
+            )}`,
+          },
+        }),
+      },
+    },
     MuiInputBase: {
       defaultProps: {
         /* Needed to prevent adding a global style for every input field */

@@ -49,9 +49,9 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 
 ### User Interface
 
-- :mag: Offers various location input options, including location search, geolocation lookup, or manual latitude and longitude entry.
+- :world_map: Offers various location input options, including location search, geolocation lookup, or manual latitude and longitude entry.
 - :calendar: Accepts the **[Gregorian](https://en.wikipedia.org/wiki/Gregorian_calendar)** or **[Julian](https://en.wikipedia.org/wiki/Julian_calendar)** calendar date input.
-- :magic_wand: Allows users to quickly retrieve **equinox** or **solstice** dates by inputting just the year and location, instead of a full date.
+- :aries: Allows users to quickly retrieve **equinox** or **solstice** dates by providing a year and a location.
 - :star: Supports star or planet input by **name**, **Hipparcos Catalogue number**, or [ICRS coordinates](https://en.wikipedia.org/wiki/International_Celestial_Reference_System_and_its_realizations) **[(RA, Dec)](https://en.wikipedia.org/wiki/Equatorial_coordinate_system)**.
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or names, supporting [Bayer designations](https://en.wikipedia.org/wiki/Bayer_designation), [proper names](https://en.wikipedia.org/wiki/Stellar_designations_and_names), and Chinese names (traditional, simplified, and pinyin) (see [Resources](#resources)).
 - :framed_picture: SVG diagrams are available for download in SVG, PNG, or PDF formats.
@@ -62,7 +62,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 1. **Location** — Toggle to `SEARCH ADDRESS` and search a location or toggle to `ENTER COORDINATES` to manually enter the `latitude` and `longitude` in decimal degrees.
 2. **Local Date** — Input a date or click one of the **equinox/solstice** buttons to look up the date (standard time) by the year and location.
    - The default calendar is the **Gregorian** calendar.
-   - For equinox or solstice queries, only the **Gregorian** calendar is available.
+   - For equinox/solstice queries, the dates are always in **Gregorian** calendar.
 3. **Celestial Object** — Select a **planet**, or specify a **star** by giving its Hipparcos Catalogue number or **(RA, Dec)**.
    - Type a name or number and choose a star from the drop-down list. The corresponding Hipparcos Catalogue number will be set up as well.
    - Enter `RA` in HMS format and `Dec` in DMS format, or both in decimal degrees.
@@ -76,17 +76,17 @@ See the [documentation](https://star-path-docs.pages.dev/) for detailed instruct
 
 This app relies on the following services:
 
-1. 📍 **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)** — A light-weighted variant of the geographical timezone lookup package [node-geo-tz](https://github.com/evansiroky/node-geo-tz).
+1. :round_pushpin: **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)** — A light-weighted variant of the geographical timezone lookup package [node-geo-tz](https://github.com/evansiroky/node-geo-tz).
 
-2. 🌎 **[Nominatim](https://nominatim.org/release-docs/latest/api/Overview)** — The default **geocoding** and **reverse geocoding** APIs using [OSM](www.openstreetmap.org) data.
+2. :earth_americas: **[Nominatim](https://nominatim.org/release-docs/latest/api/Overview)** — The default **geocoding** and **reverse geocoding** APIs using [OSM](www.openstreetmap.org) data.
 
-3. 🇨🇳 **[Tianditu](http://lbs.tianditu.gov.cn/server/guide.html)** — For regions where Nominatim is inaccessible, this is the default **reverse geocoding** service.
+3. :cn: **[Tianditu](http://lbs.tianditu.gov.cn/server/guide.html)** — For regions where Nominatim is inaccessible, this is the default **reverse geocoding** service.
 
-4. 🇨🇳 **[QQ Map](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)** — For regions where Nominatim is inaccessible, this is the default **geocoding** service.
+4. :cn: **[QQ Map](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)** — For regions where Nominatim is inaccessible, this is the default **geocoding** service.
 
-5. 🇨🇳 **[Baidu](https://lbsyun.baidu.com/faq/api?title=webapi)** — For regions where Nominatim is inaccessible, this is the fallback for **geocoding**.
+5. :cn: **[Baidu](https://lbsyun.baidu.com/faq/api?title=webapi)** — For regions where Nominatim is inaccessible, this is the fallback for **geocoding**.
 
-> :bulb: The geocoding service is automatically determined and cached when the app loads. If you see an incorrect service is in use, please check your system time zone, clearing cache, then refresh the page and try again.
+> :bulb: The geocoding service is automatically determined and cached when the app loads. If you see an incorrect service is in use, please check your system time zone, clear cache, then refresh the page and try again.
 
 ## Resources
 

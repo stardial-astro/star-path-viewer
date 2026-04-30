@@ -5,6 +5,7 @@ import {
   DEFAULT_SERVICE,
   DEFAULT_SERVICE_CN,
   CN_MAIN_TIMEZONES,
+  WARNING_PREFIX_SERVER,
   SERVER_ERR_MSG,
   SERVER_TIMEOUT_MSG,
   SERVER_DOWN_MSG,
@@ -42,8 +43,24 @@ export const printDuration = (title, dt) => {
   console.debug(`⏳ (${title}) Request took ${dt.toFixed(1)}ms`);
 };
 
+/** @param {*} err */
+export const skipRetry = (err) => {
+  if (!axios.isAxiosError(err)) return true;
+  const status = err.response?.status;
+  if (
+    status !== undefined &&
+    status >= 400 &&
+    status !== 408 &&
+    status !== 429
+  ) {
+    return true;
+  }
+  return false;
+};
+
 /**
- * Parses and returns errors when `axios` request to the **server** failed.
+ * Parses `axios` errors and returns constructed messages when the request
+ * to the **server** failed.
  * @param {*} err
  */
 export const parseApiError = (err) => {
@@ -54,7 +71,9 @@ export const parseApiError = (err) => {
     if (err.response) {
       const { status, data } = err.response;
       const errMsg = data?.error || err.message;
-      console.error(`HTTP ${status}: ${errMsg ?? err.toJSON()}`);
+      if (!errMsg.startsWith(WARNING_PREFIX_SERVER)) {
+        console.error(`HTTP ${status}: ${errMsg ?? err.toJSON()}`);
+      }
       if (status === 503) return new Error(SERVER_DOWN_MSG);
       return new Error(errMsg || SERVER_ERR_MSG);
     }

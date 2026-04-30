@@ -25,6 +25,7 @@ import {
   INTERNAL_ERR_LIST,
 } from '@utils/constants';
 import { trackEvent } from '@utils/analytics';
+import { skipRetry, parseApiError } from '@utils/apiUtils';
 import {
   isLocationInputCompleteSync,
   isDateInputCompleteSync,
@@ -222,8 +223,8 @@ const DiagramFetcher = () => {
         queryFn: () => fetchDiagram(params, controller.signal),
         staleTime: STALE_MS,
         gcTime: GC_MS,
-        retry: (failureCount, _error) => {
-          if (controller.signal.aborted) return false;
+        retry: (failureCount, error) => {
+          if (controller.signal.aborted || skipRetry(error)) return false;
           return failureCount < MAX_RETRIES;
         },
         retryDelay: config.RETRY_DELAY,
@@ -252,7 +253,8 @@ const DiagramFetcher = () => {
       setErrorMessage({});
       clearNullError(locationDispatch, dateDispatch, starDispatch);
       setSuccess(true);
-    } catch (err) {
+    } catch (errRaw) {
+      const err = parseApiError(errRaw);
       if (Error.isError(err)) {
         let msg = err.message;
         if (msg.startsWith(SERVER_ERR_PREFIX)) {

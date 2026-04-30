@@ -2,7 +2,7 @@
 import axios from 'axios';
 import config from './config';
 import apiClient from './apiClient';
-import { printDuration, parseApiError } from './apiUtils';
+import { printDuration } from './apiUtils';
 import { isDevMode } from './devMode';
 
 const NO_DATA_ERR_MSG = 'errors:no_season_data_returned'; // i18n key
@@ -66,7 +66,8 @@ const fetchDate = async (year, flag, lat, lng, tz) => {
         console.debug(`Equinox/Solstice(${flag}) date fetching cancelled.`);
       return null;
     }
-    throw parseApiError(err);
+    /* Parse the error by the caller */
+    throw err;
   }
 };
 

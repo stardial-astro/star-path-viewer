@@ -49,11 +49,11 @@
 
 ### 用户界面
 
-- :mag: 提供兩種指定地點的方式供選擇：地址搜索或經緯度輸入
+- :world_map: 提供兩種指定地點的方式供選擇：地址搜索或經緯度輸入
 - :calendar: 支持以[格里曆](https://zh.wikipedia.org/wiki/%E5%85%AC%E5%8E%86)或[儒略曆](https://zh.wikipedia.org/wiki/%E5%84%92%E7%95%A5%E6%9B%86)輸入日期
-- :magic_wand: 可手動輸入年月日，或選擇某一年的二分二至點來快速輸入日期
+- :aries: 可選擇某一年的二分二至點來快速輸入日期
 - :star: 可通過選擇行星、查找依巴谷星表或輸入[赤經赤緯](https://zh.wikipedia.org/wiki/%E8%B5%A4%E9%81%93%E5%9D%90%E6%A8%99%E7%B3%BB%E7%B5%B1)來選定天體或指定天球座標[天球座標](https://zh.wikipedia.org/wiki/%E5%9B%BD%E9%99%85%E5%A4%A9%E7%90%83%E5%8F%82%E8%80%83%E7%B3%BB)
-- :mag: 可輸入數字或名稱來查找依巴谷星表編號，支持[拜耳命名法](https://zh.wikipedia.org/wiki/%E6%8B%9C%E8%80%B3%E5%91%BD%E5%90%8D%E6%B3%95)和[固有名稱](https://en.wikipedia.org/wiki/Stellar_designations_and_names)（參見[參考資料](#參考資料)部分）
+- :mag: 可輸入數字或名稱來查找依巴谷星表編號，支持[拜耳命名法](https://zh.wikipedia.org/wiki/%E6%8B%9C%E8%80%B3%E5%91%BD%E5%90%8D%E6%B3%95)和[固有名稱](https://zh.wikipedia.org/wiki/%E6%81%86%E6%98%9F%E5%91%BD%E5%90%8D)（參見[參考資料](#參考資料)部分）
 - :framed_picture: 圖像下載支持 SVG、PNG 和 PDF 格式
 - :clipboard: 表格下載支持 CSV、JSON 和 XLSX 格式
 
@@ -62,7 +62,7 @@
 1. **地理位置**：使用`搜索地址`搜索和選擇一個地點，或者切換到`輸入座標`手動輸入十進制小數的經緯度
 2. **當地日期**：輸入年月日，或者輸入年份然後選擇一個二分二至點來獲得日期
    - 默認使用**格里曆**進行日期輸入
-   - 選擇二分二至點時將自動選擇且只能選擇**格里曆**
+   - 選擇二分二至點時日期一定是**格里曆**
 3. **選擇天體**：選擇一顆行星，根據依巴谷星表編號選擇一個天體，或指定赤經赤緯
    - 搜索依巴谷星表編號時下拉選單會顯示編號和星名，選擇一個即可
    - 赤經赤緯的輸入可選擇用`HMS與DMS格式`或`十進制格式`
@@ -76,17 +76,17 @@
 
 該應用使用了以下地理位置服務：
 
-1. 📍 **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)**：根據 [node-geo-tz](https://github.com/evansiroky/node-geo-tz) 修改的輕量時區查詢包
+1. :round_pushpin: **[browser-geo-tz](https://github.com/kevmo314/browser-geo-tz)**：根據 [node-geo-tz](https://github.com/evansiroky/node-geo-tz) 修改的輕量時區查詢包
 
-2. 🌎 **[Nominatim](https://nominatim.org/release-docs/latest/api/Overview)**：默認的**地點提示**和**逆地理解析**接口，使用 [OSM](www.openstreetmap.org) 地圖數據
+2. :earth_americas: **[Nominatim](https://nominatim.org/release-docs/latest/api/Overview)**：默認的**地點提示**和**逆地理解析**接口，使用 [OSM](www.openstreetmap.org) 地圖數據
 
-3. 🇨🇳 **[天地圖](http://lbs.tianditu.gov.cn/server/guide.html)**：對於 Nominatim 不可用的地區，此為默認的**逆地理解析**服務
+3. :cn: **[天地圖](http://lbs.tianditu.gov.cn/server/guide.html)**：對於 Nominatim 不可用的地區，此為默認的**逆地理解析**服務
 
-4. 🇨🇳 **[騰訊位置服務](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)**：對於 Nominatim 不可用的地區，此為默認的**地點提示**服務
+4. :cn: **[騰訊位置服務](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)**：對於 Nominatim 不可用的地區，此為默認的**地點提示**服務
 
-5. 🇨🇳 **[百度地圖](https://lbsyun.baidu.com/faq/api?title=webapi)**：對於 Nominatim 不可用的地區，此為默認的**逆地理解析**服務
+5. :cn: **[百度地圖](https://lbsyun.baidu.com/faq/api?title=webapi)**：對於 Nominatim 不可用的地區，此為默認的**逆地理解析**服務
 
-> :bulb: 應用啟動時會自動判斷使用何種服務。如果您發現自動選擇的服務有誤，請檢查系統時區、清空緩存然後刷新頁面重試。
+> :bulb: 應用啟動時會自動判斷使用何種服務。如果發現自動選擇的服務有誤，請檢查系統時區、清空緩存然後刷新頁面重試。
 
 ## 外部資源
 

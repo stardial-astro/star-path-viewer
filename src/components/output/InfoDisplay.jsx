@@ -27,7 +27,7 @@ const nameItemStyle = {
   flexWrap: 'wrap',
   columnGap: '0.5em',
   justifyContent: 'start',
-  maxWidth: { md: 320 },
+  maxWidth: { md: 305 },
 };
 
 const labelStyle = (mdMinWidth = '') => ({

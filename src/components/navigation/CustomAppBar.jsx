@@ -9,9 +9,10 @@ import {
   Snackbar,
   useScrollTrigger,
 } from '@mui/material';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import HomeIcon from '@mui/icons-material/Home';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
+// import GitHubIcon from '@mui/icons-material/GitHub';
 import { Link as RouterLink, useLocation } from 'react-router';
 import logo from '@assets/logo-text.svg';
 import isMobile from '@utils/isMobile';
@@ -26,7 +27,8 @@ const ABOUT_ROUT = '/about';
 
 const ABOUT_LABEL = 'About';
 const HOME_LABEL = 'Home';
-const GITHUB_LABEL = 'GitHub';
+const DOCS_LABEL = 'Docs';
+// const GITHUB_LABEL = 'GitHub';
 
 const LOGO_ALT = 'About Stardial';
 
@@ -69,7 +71,7 @@ const HomeButton = () => (
 );
 
 /** @param {*} param */
-const GithubButton = ({ title }) => (
+const DocsButton = ({ title }) => (
   <Tooltip
     describeChild
     title={title}
@@ -80,16 +82,39 @@ const GithubButton = ({ title }) => (
   >
     <span>
       <CustomIconButton
-        href={config.REPO_URL}
+        href={config.DOCS_URL}
         target="_blank"
         rel="noopener noreferrer"
-        aria-label={GITHUB_LABEL}
+        aria-label={DOCS_LABEL}
       >
-        <GitHubIcon fontSize="inherit" />
+        <MenuBookOutlinedIcon fontSize="inherit" />
       </CustomIconButton>
     </span>
   </Tooltip>
 );
+
+// /** @param {*} param */
+// const GithubButton = ({ title }) => (
+//   <Tooltip
+//     describeChild
+//     title={title}
+//     placement="bottom"
+//     disableHoverListener={isMobile}
+//     enterTouchDelay={800}
+//     leaveTouchDelay={1000}
+//   >
+//     <span>
+//       <CustomIconButton
+//         href={config.REPO_URL}
+//         target="_blank"
+//         rel="noopener noreferrer"
+//         aria-label={GITHUB_LABEL}
+//       >
+//         <GitHubIcon fontSize="inherit" />
+//       </CustomIconButton>
+//     </span>
+//   </Tooltip>
+// );
 
 /** @param {*} param */
 const HideOnScroll = ({ children, trigger }) => {
@@ -182,7 +207,8 @@ const CustomAppBar = () => {
             >
               <ColorModeToggle />
               <LanguageSelector />
-              <GithubButton title={t('github_repo')} />
+              <DocsButton title={t('docs')} />
+              {/* <GithubButton title={t('github_repo')} /> */}
               <ShareButton setShareStatus={setShareStatus} />
             </Box>
           </Box>

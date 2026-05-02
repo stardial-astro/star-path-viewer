@@ -32,6 +32,13 @@ const DOCS_LABEL = 'Docs';
 
 const LOGO_ALT = 'About Stardial';
 
+/** @type {Record<LangCode | string, string>} */
+const DOCS_URLS = {
+  en: config.DOCS_URL,
+  zh: config.DOCS_URL + '/zh/',
+  'zh-HK': config.DOCS_URL + '/zh-HK/',
+};
+
 /** @type {React.CSSProperties} */
 const logoCssStyle = {
   // maxHeight: '1.3rem',
@@ -71,7 +78,7 @@ const HomeButton = () => (
 );
 
 /** @param {*} param */
-const DocsButton = ({ title }) => (
+const DocsButton = ({ title, url }) => (
   <Tooltip
     describeChild
     title={title}
@@ -82,7 +89,7 @@ const DocsButton = ({ title }) => (
   >
     <span>
       <CustomIconButton
-        href={config.DOCS_URL}
+        href={url}
         target="_blank"
         rel="noopener noreferrer"
         aria-label={DOCS_LABEL}
@@ -126,7 +133,7 @@ const HideOnScroll = ({ children, trigger }) => {
 };
 
 const CustomAppBar = () => {
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [shareStatus, setShareStatus] = useState({ success: false, error: '' });
   const currentRoute = useLocation();
 
@@ -207,7 +214,10 @@ const CustomAppBar = () => {
             >
               <ColorModeToggle />
               <LanguageSelector />
-              <DocsButton title={t('docs')} />
+              <DocsButton
+                title={t('docs')}
+                url={DOCS_URLS[i18n.resolvedLanguage || 'en']}
+              />
               {/* <GithubButton title={t('github_repo')} /> */}
               <ShareButton setShareStatus={setShareStatus} />
             </Box>

@@ -2,6 +2,8 @@
 
 [English](README.md) | [简体中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
+[→ Go to documentation](https://star-path-docs.pages.dev/)
+
 An astronomical tool for tracking the apparent motion of any planet or star on any chosen date in the ancient or future sky.
 
 [![Version](https://img.shields.io/badge/Version-v1.3.2-blue)](#features)

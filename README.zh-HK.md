@@ -2,6 +2,8 @@
 
 [English](README.md) | [簡體中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
+[→ 查看文檔](https://star-path-docs.pages.dev/zh-HK/)
+
 天體軌跡追蹤天文小工具——顯示上下五千年間指定日期和地點的天體視運動軌跡。
 
 [![版本](https://img.shields.io/badge/Version-v1.3.2-blue)](#功能特性)
@@ -70,7 +72,7 @@
 
 > :bulb: *計算天體位置時考慮了[大氣折射](https://zh.wikipedia.org/wiki/%E5%A4%A7%E6%B0%A3%E6%8A%98%E5%B0%84)效應。*
 
-詳細使用方法參見[文檔](https://star-path-docs.pages.dev/)。
+詳細使用方法參見[文檔](https://star-path-docs.pages.dev/zh-HK/)。
 
 ## 地理位置服務
 

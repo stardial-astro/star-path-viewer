@@ -63,7 +63,7 @@ export default defineConfig({
         navigateFallback: '/index.html',
         globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
         // skipWaiting: true, // new SW activates immediately
-        // clientsClaim: true, // claims all open tabs/windows
+        clientsClaim: true, // claims all open tabs/windows
       },
 
       // devOptions: {

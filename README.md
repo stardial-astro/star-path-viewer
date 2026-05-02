@@ -42,7 +42,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - :classical_building: Covers dates from **3001 BCE to 3000 CE**.
 - :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate the positions of planets and stars for any given time.
 - :telescope: Includes [proper motion](https://en.wikipedia.org/wiki/Proper_motion) of a star if the Hipparcos Catalogue number is provided.
-- :night_with_stars: Displays star paths with distinct line styles for daytime, twilight stages, and nighttime.
+- :night_with_stars: Displays star paths with distinct line styles for daytime, twilight transitions, and nighttime.
 - :clock1: Provides **[Standard Time](https://en.wikipedia.org/wiki/Standard_time)**, **[Local Mean Time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference.
 
   ***Note:** The offset represents the Standard Time in the current time zone of a specific location, indicating that Daylight Saving Time (DST) is not in effect.*

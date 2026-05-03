@@ -45,7 +45,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - :ringed_planet: Utilizes [JPL DE406 ephemeris](https://ssd.jpl.nasa.gov/planets/eph_export.html) and [Hipparcos Catalogue](https://www.cosmos.esa.int/web/hipparcos/home) to calculate the positions of planets and stars for any given time.
 - :telescope: Includes [proper motion](https://en.wikipedia.org/wiki/Proper_motion) of a star if the Hipparcos Catalogue number is provided.
 - :night_with_stars: Displays star paths with distinct line styles for daytime, twilight transitions, and nighttime.
-- :clock1: Provides **[Standard Time](https://en.wikipedia.org/wiki/Standard_time)**, **[Local Mean Time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1](https://en.wikipedia.org/wiki/Universal_Time)** in the results for the user's reference.
+- :clock1: Offers **[Standard Time](https://en.wikipedia.org/wiki/Standard_time)**, **[Local Mean Time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1](https://en.wikipedia.org/wiki/Universal_Time)** results for the user's reference.
 
   ***Note:** The offset represents the Standard Time in the current time zone of a specific location, indicating that Daylight Saving Time (DST) is not in effect.*
 
@@ -56,8 +56,8 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - :aries: Allows users to quickly retrieve **equinox** or **solstice** dates by providing a year and a location.
 - :star: Supports star or planet input by **name**, **Hipparcos Catalogue number**, or [ICRS coordinates](https://en.wikipedia.org/wiki/International_Celestial_Reference_System_and_its_realizations) **[(RA, Dec)](https://en.wikipedia.org/wiki/Equatorial_coordinate_system)**.
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or names, supporting [Bayer designations](https://en.wikipedia.org/wiki/Bayer_designation), [proper names](https://en.wikipedia.org/wiki/Stellar_designations_and_names), and Chinese names (traditional, simplified, and pinyin) (see [Resources](#resources)).
-- :framed_picture: SVG diagrams are available for download in SVG, PNG, or PDF formats.
-- :clipboard: Annotation tables are available for download in CSV, JSON, or XLSX formats.
+- :framed_picture: SVG diagrams are available for download in `SVG`, `PNG`, or `PDF` formats.
+- :clipboard: Annotation tables are available for download in `CSV`, `JSON`, or `XLSX` formats.
 
 ## Basic Usage
 
@@ -84,9 +84,9 @@ This app relies on the following services:
 
 3. :cn: **[Tianditu](http://lbs.tianditu.gov.cn/server/guide.html)** — For regions where Nominatim is inaccessible, this is the default **reverse geocoding** service.
 
-4. :cn: **[QQ Map](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)** — For regions where Nominatim is inaccessible, this is the default **geocoding** service.
+4. :cn: **[QQ Map](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)** — For regions where Nominatim is inaccessible, this is the default **geocoding** service and **reverse geocoding** fallback.
 
-5. :cn: **[Baidu](https://lbsyun.baidu.com/faq/api?title=webapi)** — For regions where Nominatim is inaccessible, this is the fallback for **geocoding**.
+5. :cn: **[Baidu](https://lbsyun.baidu.com/faq/api?title=webapi)** — For regions where Nominatim is inaccessible, this is the testing-only service for **reverse geocoding** and **geocoding** (won't be called directly in the app).
 
 > :bulb: The geocoding service is automatically determined and cached when the app loads. If you see an incorrect service is in use, please check your system time zone, clear cache, then refresh the page and try again.
 
@@ -116,13 +116,15 @@ This app relies on the following services:
 
 ## Changelog
 
-- [v1.3.2] 2026-04-26
+- [v1.3.2] 2026-05-03
   - Bug fix and UI optimization.
+  - Sticky App Bar.
 
 - [v1.3.1] 2026-03-29
   - Upgraded to MUI 7 and React 19.
   - Added dark mode and Chinese translations.
   - Integrated Tianditu and QQ Map.
+  - React PWA
 
 - [v1.3.0] 2025-03-07
   - Migrated to Vite.

@@ -4,7 +4,7 @@
 
 [→ 查看文档](https://star-path-docs.pages.dev/zh/)
 
-天体轨迹追踪天文小工具——显示上下五千年间指定日期和地点的天体视运动轨迹。
+天体轨迹追踪天文小工具：显示上下五千年间指定日期和地点的天体视运动轨迹
 
 [![版本](https://img.shields.io/badge/Version-v1.3.2-blue)](#功能特性)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
@@ -30,7 +30,7 @@
   - [用户界面](#用户界面)
 - [基本用法](#基本用法)
 - [地理位置服务](#地理位置服务)
-- [外部资源](#外部资源)
+- [引用资源](#引用资源)
 - [参考资料](#参考资料)
 - [修改日志](#修改日志)
 
@@ -45,7 +45,7 @@
 - :ringed_planet: 调用[美国喷气推进实验室（JPL）星历表](https://ssd.jpl.nasa.gov/planets/eph_export.html)和[依巴谷星表](https://www.cosmos.esa.int/web/hipparcos/home)
 - :telescope: 如使用依巴谷星表检索天体，计算时考虑天体[自行](https://zh.wikipedia.org/wiki/%E8%87%AA%E8%A1%8C)
 - :night_with_stars: 以不同线条表示天体经过昼夜和不同晨昏蒙影阶段的轨迹
-- :clock1: 计算结果中同时包含[标准时间](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E6%99%82%E9%96%93), [地方平时（LMT）](https://zh.wikipedia.org/wiki/%E5%9C%B0%E6%96%B9%E5%B9%B3%E6%99%82)和[世界时（UT1）](https://zh.wikipedia.org/wiki/%E4%B8%96%E7%95%8C%E6%97%B6)
+- :clock1: 计算结果中提供[标准时间](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E6%99%82%E9%96%93)、[地方平时（LMT）](https://zh.wikipedia.org/wiki/%E5%9C%B0%E6%96%B9%E5%B9%B3%E6%99%82)和[世界时（UT1）](https://zh.wikipedia.org/wiki/%E4%B8%96%E7%95%8C%E6%97%B6)供用户参考
 
   *输出的标准时间仅反映所选地点当前的时区划分供用户参考，且不采用夏令时。*
 
@@ -55,9 +55,9 @@
 - :calendar: 支持以[格里历](https://zh.wikipedia.org/wiki/%E5%85%AC%E5%8E%86)或[儒略历](https://zh.wikipedia.org/wiki/%E5%84%92%E7%95%A5%E6%9B%86)输入日期
 - :aries: 可选择某一年的二分二至点来快速输入日期
 - :star: 可通过选择行星、查找依巴谷星表或输入[赤经赤纬](https://zh.wikipedia.org/wiki/%E8%B5%A4%E9%81%93%E5%9D%90%E6%A8%99%E7%B3%BB%E7%B5%B1)来选定天体或指定天球坐标[天球坐标](https://zh.wikipedia.org/wiki/%E5%9B%BD%E9%99%85%E5%A4%A9%E7%90%83%E5%8F%82%E8%80%83%E7%B3%BB)
-- :mag: 可输入数字或名称来查找依巴谷星表编号，支持[拜耳命名法](https://zh.wikipedia.org/wiki/%E6%8B%9C%E8%80%B3%E5%91%BD%E5%90%8D%E6%B3%95)和[固有名称](https://zh.wikipedia.org/wiki/%E6%81%86%E6%98%9F%E5%91%BD%E5%90%8D)（参见[参考资料](#参考资料)部分）
-- :framed_picture: 图像下载支持 SVG、PNG 和 PDF 格式
-- :clipboard: 表格下载支持 CSV、JSON 和 XLSX 格式
+- :mag: 可输入数字或名称来查找依巴谷星表编号，支持[拜耳命名法](https://zh.wikipedia.org/wiki/%E6%8B%9C%E8%80%B3%E5%91%BD%E5%90%8D%E6%B3%95)和[专有名称](https://zh.wikipedia.org/wiki/%E6%81%86%E6%98%9F%E5%91%BD%E5%90%8D)（参见[参考资料](#参考资料)部分）
+- :framed_picture: 图像下载支持 `SVG`、`PNG` 和 `PDF` 格式
+- :clipboard: 表格下载支持 `CSV`、`JSON` 和 `XLSX` 格式
 
 ## 基本用法
 
@@ -84,23 +84,23 @@
 
 3. :cn: **[天地图](http://lbs.tianditu.gov.cn/server/guide.html)**：对于 Nominatim 不可用的地区，此为默认的**逆地理解析**服务
 
-4. :cn: **[腾讯位置服务](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)**：对于 Nominatim 不可用的地区，此为默认的**地点提示**服务
+4. :cn: **[腾讯位置服务](https://lbs.qq.com/service/webService/webServiceGuide/webServiceOverview)**：对于 Nominatim 不可用的地区，此为默认的**地点提示**服务和备用的**逆地理解析**服务
 
-5. :cn: **[百度地图](https://lbsyun.baidu.com/faq/api?title=webapi)**：对于 Nominatim 不可用的地区，此为默认的**逆地理解析**服务
+5. :cn: **[百度地图](https://lbsyun.baidu.com/faq/api?title=webapi)**：对于 Nominatim 不可用的地区，此为仅测试用的**逆地理解析**服务和**地点提示**服务（不会直接被调用）
 
 > :bulb: 应用启动时会自动判断使用何种服务。如果发现自动选择的服务有误，请检查系统时区、清空缓存然后刷新页面重试。
 
-## 外部资源
+## 引用资源
 
 - [美国喷气推进实验室（JPL）星历表](https://ssd.jpl.nasa.gov/planets/eph_export.html)（版本：DE406）
 
-- [依巴谷星表](https://www.cosmos.esa.int/web/hipparcos/catalogues) [[FTP](https://cdsarc.cds.unistra.fr/ftp/cats/I/239)]
+- [依巴谷和第谷星表](https://www.cosmos.esa.int/web/hipparcos/catalogues) [[FTP](https://cdsarc.cds.unistra.fr/ftp/cats/I/239)]
 
-- 拜耳命名法和固有名称列表 [[FTP](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables) (ident4, ident6)]
+- 依巴谷和第谷星表中的交叉证认表 [[FTP](https://cdsarc.cds.unistra.fr/ftp/I/239/version_cd/tables) (ident4, ident6)]
 
 - [时区边界](https://github.com/evansiroky/timezone-boundary-builder)
 
-- [香港天文台的中文星名列表](https://web.archive.org/web/20120209032035/http://www.lcsd.gov.hk/CE/Museum/Space/Research/StarName/c_research_chinengstars.htm)
+- [香港天文台的亮星中英对照表](https://web.archive.org/web/20120209032035/http://www.lcsd.gov.hk/CE/Museum/Space/Research/StarName/c_research_chinengstars.htm)
 
 - [中文简繁转换](https://pypi.org/project/OpenCC)
 
@@ -112,19 +112,21 @@
 
 - [升落点和晨昏蒙影定义](https://aa.usno.navy.mil/faq/RST_defs)
 
-- 关于晨昏时分天体的可见性：
+- 晨昏时分的天体可见度：
 
   R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
 
 ## 修改日志
 
-- [v1.3.2] 2026-04-26
+- [v1.3.2] 2026-05-03
   - Bug 修复和 UI 优化
+  - 顶部应用栏跟随
 
 - [v1.3.1] 2026-03-29
   - 升级至 MUI 7 和 React 19
   - 新增深浅主题切换和中文
   - 使用天地图和腾讯位置服务替代百度地图
+  - React PWA
 
 - [v1.3.0] 2025-03-07
   - 使用 Vite

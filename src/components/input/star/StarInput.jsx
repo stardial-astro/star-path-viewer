@@ -46,7 +46,7 @@ const StarInput = () => {
    * > Also clears lastSelectedTermRef
    * if debounced searchTerm is cleared
    */
-  /* [RadecFormatToggle] When toggles, clear RA/Dec */
+  // /* [RadecFormatToggle] When toggles, clear RA/Dec */
 
   /* ------------------------------------------------------------------|
    * Validate input

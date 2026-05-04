@@ -119,7 +119,7 @@ const RadecDecDmsInput = () => {
           onChange={handleInputChange}
           intOnly={true}
           min={0}
-          max={59}
+          max={starDecDms.degrees.slice(-2) === '90' ? 0 : 59}
           allowOutOfRange={false}
           error={!!decError}
         />
@@ -133,16 +133,13 @@ const RadecDecDmsInput = () => {
           value={starDecDms.seconds}
           onChange={handleInputChange}
           min={0}
-          max={59.999}
+          max={starDecDms.degrees.slice(-2) === '90' ? 0 : 59.999}
           allowOutOfRange={false}
           error={!!decError}
         />
       </Grid>
       {decError && (
-        <Grid
-          size={12}
-          sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}
-        >
+        <Grid size={12} sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}>
           <ErrorHelperText variant="body2">{t(decError)}</ErrorHelperText>
         </Grid>
       )}

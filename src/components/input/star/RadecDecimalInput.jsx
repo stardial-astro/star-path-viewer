@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { useStarInput } from '@context/StarInputContext';
 import * as actionTypes from '@context/starInputActionTypes';
-// import { decimalToDms } from '@utils/coordUtils';
-// import { decimalToHms } from '@utils/dateUtils';
+import { decimalToDms } from '@utils/coordUtils';
+import { decimalToHms } from '@utils/dateUtils';
 import CustomNumberField from '@components/ui/CustomNumberField';
 
 const RA_ID = 'ra-input';
@@ -17,8 +17,8 @@ const RadecDecimalInput = () => {
   const { t } = useTranslation('star');
   const {
     starRadec,
-    // starRaHms,
-    // starDecDms,
+    starRaHms,
+    starDecDms,
     starError,
     starNullError,
     starDispatch,
@@ -37,22 +37,28 @@ const RadecDecimalInput = () => {
         starDispatch({ type: actionTypes.SET_STAR_DEC, payload: value });
       }
       /* Convert decimal degrees to HMS/DMS */
-      // const newRadec = { raHms: starRaHms, decDms: starDecDms };
-      // if (name === 'ra' && value) {
-      //   const hms = decimalToHms(parseFloat(value) / 15);
-      //   newRadec.raHms.hours = `${hms.sign < 0 ? '-' : ''}${hms.hours}`;
-      //   newRadec.raHms.minutes = hms.minutes.toString();
-      //   newRadec.raHms.seconds = hms.seconds.toString();
-      //   starDispatch({ type: actionTypes.SET_STAR_RA_HMS, payload: newRadec.raHms });
-      // } else if (name === 'dec' && value) {
-      //   const dms = decimalToDms(parseFloat(value));
-      //   newRadec.decDms.degrees = `${dms.sign < 0 ? '-' : ''}${dms.degrees}`;
-      //   newRadec.decDms.minutes = dms.minutes.toString();
-      //   newRadec.decDms.seconds = dms.seconds.toString();
-      //   starDispatch({ type: actionTypes.SET_STAR_DEC_DMS, payload: newRadec.decDms });
-      // }
+      const newRadec = { raHms: starRaHms, decDms: starDecDms };
+      if (name === RA_NAME && value) {
+        const hms = decimalToHms(parseFloat(value) / 15, 3);
+        newRadec.raHms.hours = hms.hours.toString();
+        newRadec.raHms.minutes = hms.minutes.toString();
+        newRadec.raHms.seconds = hms.seconds.toString();
+        starDispatch({
+          type: actionTypes.SET_STAR_RA_HMS,
+          payload: newRadec.raHms,
+        });
+      } else if (name === DEC_NAME && value) {
+        const dms = decimalToDms(parseFloat(value), 3);
+        newRadec.decDms.degrees = `${dms.sign < 0 ? '-' : ''}${dms.degrees}`;
+        newRadec.decDms.minutes = dms.minutes.toString();
+        newRadec.decDms.seconds = dms.seconds.toString();
+        starDispatch({
+          type: actionTypes.SET_STAR_DEC_DMS,
+          payload: newRadec.decDms,
+        });
+      }
     },
-    [starDispatch],
+    [starRaHms, starDecDms, starDispatch],
   );
 
   return (

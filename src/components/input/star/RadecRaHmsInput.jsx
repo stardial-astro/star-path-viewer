@@ -120,7 +120,7 @@ const RadecRaHmsInput = () => {
           onChange={handleInputChange}
           intOnly={true}
           min={0}
-          max={59}
+          max={starRaHms.hours === '24' ? 0 : 59}
           allowOutOfRange={false}
           error={!!raError}
         />
@@ -134,16 +134,13 @@ const RadecRaHmsInput = () => {
           value={starRaHms.seconds}
           onChange={handleInputChange}
           min={0}
-          max={59.999}
+          max={starRaHms.hours === '24' ? 0 : 59.999}
           allowOutOfRange={false}
           error={!!raError}
         />
       </Grid>
       {raError && (
-        <Grid
-          size={12}
-          sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}
-        >
+        <Grid size={12} sx={{ mt: -2, mx: { xs: 0, sm: 6, md: 4.8 } }}>
           <ErrorHelperText variant="body2">{t(raError)}</ErrorHelperText>
         </Grid>
       )}

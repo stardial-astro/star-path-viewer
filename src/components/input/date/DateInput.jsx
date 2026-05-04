@@ -8,7 +8,7 @@ import { useLocationInput } from '@context/LocationInputContext';
 import * as actionTypes from '@context/dateInputActionTypes';
 import * as locationActionTypes from '@context/locationInputActionTypes';
 import { clearDateError } from '@utils/dateInputUtils';
-import { isToday } from '@utils/devMode';
+// import { isToday } from '@utils/devMode';
 import ErrorHelperText from '@components/ui/ErrorHelperText';
 import CalendarToggle from './CalendarToggle';
 import DateFields from './DateFields';
@@ -35,15 +35,13 @@ const DateInput = () => {
     dateDispatch({ type: actionTypes.SET_DATE_VALID, payload: true });
 
     /* Set today's date */
-    if (isToday) {
-      const now = new Date();
-      const initialDate = {
-        year: now.getFullYear().toString(),
-        month: (now.getMonth() + 1).toString(),
-        day: now.getDate().toString(),
-      };
-      dateDispatch({ type: actionTypes.SET_DATE, payload: initialDate });
-    }
+    const now = new Date();
+    const initialDate = {
+      year: now.getFullYear().toString(),
+      month: (now.getMonth() + 1).toString(),
+      day: now.getDate().toString(),
+    };
+    dateDispatch({ type: actionTypes.SET_DATE, payload: initialDate });
   }, [dateDispatch, setErrorMessage]);
 
   /* ------------------------------------------------------------------|

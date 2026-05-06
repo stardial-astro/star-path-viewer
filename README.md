@@ -19,10 +19,6 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 
 [→ Source code](https://github.com/claude-hao/star-path-calculator)
 
-[→ Flask server](https://github.com/lydiazly/star-path-calculator-flask)
-
-[→ Hosted data (star names)](https://github.com/stardial-astro/star-path-data)
-
 ## Table of Contents<!-- omit in toc -->
 
 - [Features](#features)
@@ -32,7 +28,6 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - [Geolocation Services](#geolocation-services)
 - [Resources](#resources)
 - [References](#references)
-- [Changelog](#changelog)
 
 ## Features
 
@@ -47,7 +42,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - :night_with_stars: Displays star paths with distinct line styles for daytime, twilight transitions, and nighttime.
 - :clock1: Offers **[Standard Time](https://en.wikipedia.org/wiki/Standard_time)**, **[Local Mean Time (LMT)](https://en.wikipedia.org/wiki/Local_mean_time)**, and **[UT1](https://en.wikipedia.org/wiki/Universal_Time)** results for the user's reference.
 
-  ***Note:** The offset represents the Standard Time in the current time zone of a specific location, indicating that Daylight Saving Time (DST) is not in effect.*
+  ***Note:** Standard Time here reflects the current local time zone, without Daylight Saving Time (DST) adjustment.*
 
 ### User Interface
 
@@ -113,32 +108,3 @@ This app relies on the following services:
 - [Rise, Set, and Twilight Definitions](https://aa.usno.navy.mil/faq/RST_defs)
 
 - R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
-
-## Changelog
-
-- [v1.3.2] 2026-05-03
-  - Bug fix and UI optimization.
-  - Sticky App Bar.
-
-- [v1.3.1] 2026-03-29
-  - Upgraded to MUI 7 and React 19.
-  - Added dark mode and Chinese translations.
-  - Integrated Tianditu and QQ Map.
-  - React PWA
-
-- [v1.3.0] 2025-03-07
-  - Migrated to Vite.
-
-- [v1.2.0] 2024-12-16
-  - Included atmospheric refraction in position calculation.
-
-- [v1.1.0] 2024-12-10
-  - Added Local Mean Time (LMT) columns.
-  - Fixed text display in exported PDFs.
-
-- [v1.0.2] 2024-10-12
-  - Made the first column of the annotation table sticky.
-
-- [v1.0.1] 2024-09-14
-  - Added table download buttons for CSV, JSON, and XLSX formats.
-  - Embedded metadata in SVG and PDF.

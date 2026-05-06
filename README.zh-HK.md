@@ -19,10 +19,6 @@
 
 [→ 計算功能源代碼](https://github.com/claude-hao/star-path-calculator)
 
-[→ 後端服務器倉庫](https://github.com/lydiazly/star-path-calculator-flask)
-
-[→ 星名列表](https://github.com/stardial-astro/star-path-data)
-
 ## 目錄<!-- omit in toc -->
 
 - [功能特性](#功能特性)
@@ -32,7 +28,6 @@
 - [地理位置服務](#地理位置服務)
 - [引用資源](#引用資源)
 - [參考資料](#參考資料)
-- [修改日誌](#修改日誌)
 
 ## 功能特性
 
@@ -45,9 +40,9 @@
 - :ringed_planet: 調用[美國噴氣推進實驗室（JPL）星曆錶](https://ssd.jpl.nasa.gov/planets/eph_export.html)和[依巴谷星表](https://www.cosmos.esa.int/web/hipparcos/home)
 - :telescope: 如使用依巴谷星表檢索天體，計算時考慮天體[自行](https://zh.wikipedia.org/wiki/%E8%87%AA%E8%A1%8C)
 - :night_with_stars: 以不同線條表示天體經過晝夜和不同晨昏蒙影階段的軌跡
-- :clock1: 計算結果中提供[標準時間](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E6%99%82%E9%96%93)、[地方平時（LMT）](https://zh.wikipedia.org/wiki/%E5%9C%B0%E6%96%B9%E5%B9%B3%E6%99%82)和[世界時（UT1）](https://zh.wikipedia.org/wiki/%E4%B8%96%E7%95%8C%E6%97%B6)供用户參考
+- :clock1: 計算結果中提供[標準時](https://zh.wikipedia.org/wiki/%E6%A8%99%E6%BA%96%E6%99%82%E9%96%93)、[地方平時（LMT）](https://zh.wikipedia.org/wiki/%E5%9C%B0%E6%96%B9%E5%B9%B3%E6%99%82)和[世界時（UT1）](https://zh.wikipedia.org/wiki/%E4%B8%96%E7%95%8C%E6%97%B6)供用户參考
 
-  *輸出的標準時間僅反映所選地點當前的時區劃分供用户參考，且不採用夏令時。*
+  *此處標準時反映該地理位置的當前時區劃分, 且不採用夏令時（DST）。*
 
 ### 用户界面
 
@@ -115,32 +110,3 @@
 - 晨昏時分的天體可見度：
 
   R. Tousey and M. J. Koomen, "The Visibility of Stars and Planets During Twilight," *Journal of the Optical Society of America*, Vol. 43, pp. 177-183, 1953. [Online]. Available: <https://opg.optica.org/josa/viewmedia.cfm?uri=josa-43-3-177&seq=0&html=true>
-
-## 修改日誌
-
-- [v1.3.2] 2026-04-26
-  - Bug 修復和 UI 優化
-  - 頂部應用欄跟隨
-
-- [v1.3.1] 2026-03-29
-  - 升級至 MUI 7 和 React 19
-  - 新增深淺主題切換和中文
-  - 使用天地圖和騰訊位置服務替代百度地圖
-  - React PWA
-
-- [v1.3.0] 2025-03-07
-  - 使用 Vite
-
-- [v1.2.0] 2024-12-16
-  - 計算天體位置時引入大氣折射
-
-- [v1.1.0] 2024-12-10
-  - 增加地方平時輸出（LMT）
-  - 優化 PDF 中的文字顯示
-
-- [v1.0.2] 2024-10-12
-  - 優化表格顯示
-
-- [v1.0.1] 2024-09-14
-  - 增加下載格式：CSV、JSON 和 XLSX
-  - 在 SVG 和 PDF 中嵌入元數據

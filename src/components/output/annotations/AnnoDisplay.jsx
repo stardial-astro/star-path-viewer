@@ -25,7 +25,7 @@ const AnnoDisplay = () => {
         <AnnoTable anno={filteredAnno} tzname={info.tzname} />
       </Box>
 
-      <Stack id="download-table" direction="column" spacing={1} sx={{ mt: 1 }}>
+      <Stack id="download-table" direction="column" spacing={1} sx={{ mt: 1.5 }}>
         <DownloadAnnoTable
           anno={filteredAnno}
           filenameBase={`tb_${diagramId}`}

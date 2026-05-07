@@ -27,26 +27,19 @@ const Line = ({ type }) => (
       display: 'inline-block',
       width: '31px',
       height: '0px',
-      borderBottomWidth: type === 'dotted' ? '2px' : '3px',
+      borderBottomWidth:
+        type.toLowerCase().includes('dotted') && !type.includes('thick')
+          ? '2px'
+          : '3px',
       borderBottomStyle: type.toLowerCase().includes('dashed')
         ? 'dashed'
-        : type === 'dotted'
+        : type.toLowerCase().includes('dotted')
           ? 'dotted'
           : 'solid',
       borderBottomColor:
         type.includes('dark') || type === 'solid'
           ? 'text.primary'
           : 'text.disabled',
-      // borderBottom:
-      //   type === 'dotted'
-      //     ? '2px dotted text.disabled'
-      //     : type === 'solid'
-      //       ? '3px solid text.primary'
-      //       : type === 'lightDashed'
-      //         ? '3px dashed text.disabled'
-      //         : type === 'darkDashed'
-      //           ? '3px dashed text.primary'
-      //           : 'none',
       verticalAlign: 'middle',
       mb: '1px',
       mr: 1,
@@ -199,7 +192,7 @@ const AnnoLegend = ({ anno }) => {
           </Stack>
         </Grid>
       </Grid>
-      <CustomDivider sx={{ mt: 0.5, mb: 2 }} />
+      <CustomDivider sx={{ mt: 0.5, mb: 0.5 }} />
     </>
   );
 };

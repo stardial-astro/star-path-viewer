@@ -65,7 +65,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
    - Enter `RA` in HMS format and `Dec` in DMS format, or both in decimal degrees.
 4. **Draw Star Path** — Click `DRAW STAR PATH` to generate a diagram and a table of rising/setting/meridian-transit/twilight times.
 
-> :bulb: Note that the [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) has been taken into account in the calculation.
+> :bulb: The [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) has been taken into account in the calculation.
 
 See the [documentation](https://star-path-docs.pages.dev/) for detailed instructions.
 

@@ -1,8 +1,12 @@
 // src/components/output/annotations/AnnoTable.jsx
-import { memo } from 'react';
+import { memo, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 import {
+  Box,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -17,37 +21,43 @@ import isMobile from '@utils/isMobile';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
-const footnoteStyle = {
-  color: 'text.secondary',
-  mt: 1,
-  ml: 1,
+const JULIAN_NAME = 'julian';
+const LMT_NAME = 'lmt';
+const UT1_NAME = 'ut1';
+const LMT_LABEL = 'LMT';
+const UT1_LABEL = 'UT1';
+
+const pointWidth = '2.85rem';
+const coordWidthFactor = 0.88;
+const coordWidth = '5.25rem';
+const timeMinWidth = '6.2rem';
+
+const pointHeadStyle = { px: 0.5 };
+const pointStyle = { px: 0.5, py: 1.5, fontWeight: 500 };
+const timeHeadStyle = { pb: 0, borderBottom: 0 };
+const timeHeadStyle2 = { pt: 0 };
+
+const checkboxStyle = { '& .MuiSvgIcon-root': { fontSize: 18 } };
+const checkboxLabelStyle = {
+  '& .MuiFormControlLabel-label': {
+    fontSize: '0.875rem',
+  },
 };
 
-const dateColumnStyle = { minWidth: '6.2rem' };
+/** @param {number} colNumber */
+const timeStyle = (colNumber) => ({
+  whiteSpace: {
+    sm: colNumber < 2 ? 'nowrap' : 'normal',
+    md: colNumber < 4 ? 'nowrap' : 'normal',
+  },
+  overflow: 'hidden',
+});
 
-const StyledHeadCell = styled(TableCell)(() => ({
-  textAlign: 'center',
-  paddingLeft: '12px',
-  paddingRight: '12px',
-}));
+/** @param {number} colNumber */
+const timeWidth = (colNumber) =>
+  `calc(90% / ${coordWidthFactor * 2 + colNumber})`;
 
-const StyledCenterAlignCell = styled(TableCell)(() => ({
-  textAlign: 'center',
-  paddingLeft: '8px',
-  paddingRight: '8px',
-  paddingTop: '12px',
-  paddingBottom: '12px',
-}));
-
-const StyledRightAlignCell = styled(TableCell)(() => ({
-  textAlign: 'right',
-  paddingLeft: '9.6px',
-  paddingRight: '8px',
-  paddingTop: '12px',
-  paddingBottom: '12px',
-}));
-
-const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
+const StickyColumn = styled(TableCell)(({ theme }) => ({
   position: 'sticky',
   left: 0,
   textAlign: 'center',
@@ -61,6 +71,46 @@ const StyledStickyColumn = styled(TableCell)(({ theme }) => ({
   }),
 }));
 
+const CoordHeadCell = styled(TableCell)(() => ({
+  textAlign: 'right',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  paddingLeft: '4px',
+  paddingRight: '9px',
+}));
+
+const CoordCell = styled(TableCell)(() => ({
+  textAlign: 'right',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  paddingLeft: '4px',
+  paddingRight: '4px',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+}));
+
+const TimeHeadCell = styled(TableCell)(() => ({
+  textAlign: 'right',
+  lineHeight: 1.25,
+  paddingLeft: '4px',
+  paddingRight: '8px',
+}));
+
+const TimeHeadCell2 = styled(TableCell)(() => ({
+  textAlign: 'right',
+  paddingLeft: '4px',
+  paddingRight: '8px',
+}));
+
+const TimeCell = styled(TableCell)(() => ({
+  textAlign: 'right',
+  lineHeight: 1.25,
+  paddingLeft: '4px',
+  paddingRight: '8px',
+  paddingTop: '12px',
+  paddingBottom: '12px',
+}));
+
 const StyledRow = styled(TableRow)(() => ({
   // '&:nth-of-type(odd)': {
   //   backgroundColor: (theme.vars || theme).palette.action.hover,
@@ -71,6 +121,94 @@ const StyledRow = styled(TableRow)(() => ({
   },
 }));
 
+const SpacerCell = ({ ...props }) => <TableCell sx={{ p: 0 }} {...props} />;
+
+const footnoteStyle = {
+  color: 'text.secondary',
+  mt: 1,
+  ml: 1,
+};
+
+const footnoteMarkerRight = (
+  <Typography
+    component="span"
+    variant="body2"
+    sx={{
+      position: 'absolute',
+      top: -1.5,
+      right: -7.5,
+      color: 'error.main',
+      userSelect: 'none',
+    }}
+  >
+    *
+  </Typography>
+);
+
+const footnoteMarkerLeft = (
+  <Typography component="span" variant="body2" sx={{ color: 'error.main' }}>
+    *
+  </Typography>
+);
+
+/**
+ * @param {object} param
+ * @param {{ julian: boolean, lmt: boolean, ut1: boolean }} param.checked
+ * @param {(event: ReactChangeEvent, checked: boolean) => void} param.onChange
+ * @param {string} param.julianLabel
+ */
+const Checkboxes = ({ checked, onChange, julianLabel }) => (
+  <FormGroup
+    sx={{
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems: 'center',
+      gap: { xs: 1, sm: 4 },
+      ml: 1,
+    }}
+  >
+    <FormControlLabel
+      control={
+        <Checkbox
+          size="small"
+          checked={checked.julian}
+          onChange={onChange}
+          name={JULIAN_NAME}
+          sx={checkboxStyle}
+        />
+      }
+      label={julianLabel}
+      sx={checkboxLabelStyle}
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          size="small"
+          checked={checked.lmt}
+          onChange={onChange}
+          name={LMT_NAME}
+          sx={checkboxStyle}
+        />
+      }
+      label={LMT_LABEL}
+      sx={checkboxLabelStyle}
+    />
+    <FormControlLabel
+      control={
+        <Checkbox
+          size="small"
+          checked={checked.ut1}
+          onChange={onChange}
+          name={UT1_NAME}
+          sx={checkboxStyle}
+        />
+      }
+      label={UT1_LABEL}
+      sx={checkboxLabelStyle}
+    />
+  </FormGroup>
+);
+
 /**
  * @param {object} params
  * @param {AnnoItem[]} params.anno - Filtered annotations.
@@ -78,112 +216,201 @@ const StyledRow = styled(TableRow)(() => ({
  */
 const AnnoTable = ({ anno, tzname }) => {
   const { t } = useTranslation('output');
-  const redAsterisk = (
-    <Typography component="span" variant="body2" sx={{ color: 'error.main' }}>
-      *
-    </Typography>
+  const [checked, setChecked] = useState({
+    julian: false,
+    lmt: false,
+    ut1: !isMobile,
+  });
+
+  const timeColNumber =
+    (1 + +checked.julian) * (1 + +checked.lmt + +checked.ut1);
+
+  const timeCol = useMemo(
+    () => (
+      <>
+        <col
+          style={{ width: timeWidth(timeColNumber), minWidth: timeMinWidth }}
+        />
+        {checked.julian && (
+          <col
+            style={{ width: timeWidth(timeColNumber), minWidth: timeMinWidth }}
+          />
+        )}
+        <col />
+      </>
+    ),
+    [checked.julian, timeColNumber],
   );
-  const tzStr = formatTimezone(anno[0].time_zone);
+
+  const timeColumnHead = useMemo(
+    () => (
+      <>
+        <TimeHeadCell2 sx={timeHeadStyle2}>{t('gregorian')}</TimeHeadCell2>
+        {checked.julian && (
+          <TimeHeadCell2 sx={timeHeadStyle2}>{t('julian')}</TimeHeadCell2>
+        )}
+      </>
+    ),
+    [t, checked.julian],
+  );
+
+  /** @type {(time_g: number[], time_j: number[]) => any} */
+  const timeColumnCell = useCallback(
+    (time_g, time_j) => (
+      <>
+        <TimeCell sx={timeStyle(timeColNumber)}>
+          {datetimeToStr({ datetimeArr: time_g }).replace(/-/g, '\u2011')}
+        </TimeCell>
+        {checked.julian && (
+          <TimeCell sx={timeStyle(timeColNumber)}>
+            {datetimeToStr({ datetimeArr: time_j }).replace(/-/g, '\u2011')}
+          </TimeCell>
+        )}
+        <SpacerCell />
+      </>
+    ),
+    [checked.julian, timeColNumber],
+  );
+
+  /** @type {(event: ReactChangeEvent, checked: boolean) => void} */
+  const handleChange = useCallback(
+    (event) => {
+      setChecked({ ...checked, [event.target.name]: event.target.checked });
+    },
+    [checked],
+  );
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
-        <Table size="small" sx={{ borderCollapse: 'separate' }}>
-          <TableHead>
-            <TableRow>
-              <StyledStickyColumn
-                rowSpan={2}
-                sx={{
-                  px: 1.2,
-                }}
-              >
-                {t('point')}
-              </StyledStickyColumn>
-              <StyledHeadCell rowSpan={2}>{t('altitude')}</StyledHeadCell>
-              <StyledHeadCell rowSpan={2}>{t('azimuth')}</StyledHeadCell>
-              <StyledHeadCell colSpan={2}>
-                <Tooltip
-                  describeChild
-                  followCursor={!isMobile}
-                  title={tzname || ''}
-                  placement="top"
-                  disableHoverListener={isMobile}
-                  enterTouchDelay={500}
-                  leaveTouchDelay={1000}
-                >
-                  <span>
-                    {`${t('standard_time')} (${tzStr})`} {redAsterisk}
-                  </span>
-                </Tooltip>
-              </StyledHeadCell>
-              <StyledHeadCell colSpan={2}>{t('lmt')}</StyledHeadCell>
-              <StyledHeadCell colSpan={2}>{t('ut1')}</StyledHeadCell>
-            </TableRow>
-            <TableRow>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('gregorian')}
-              </StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('julian')}
-              </StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('gregorian')}
-              </StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('julian')}
-              </StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('gregorian')}
-              </StyledHeadCell>
-              <StyledHeadCell sx={dateColumnStyle}>
-                {t('julian')}
-              </StyledHeadCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {Object.entries(anno).map(([key, item]) => (
-              <StyledRow key={key}>
-                <StyledStickyColumn
-                  component="th"
-                  scope="row"
-                  sx={{ px: 1, py: 1.5, fontWeight: 500 }}
-                >
-                  {item.name}
-                </StyledStickyColumn>
-                <StyledRightAlignCell>
-                  {formatDecimalDegrees(item.alt)}
-                </StyledRightAlignCell>
-                <StyledRightAlignCell>
-                  {formatDecimalDegrees(item.az)}
-                </StyledRightAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_standard })}
-                </StyledCenterAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_standard_julian })}
-                </StyledCenterAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_local_mean })}
-                </StyledCenterAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_local_mean_julian })}
-                </StyledCenterAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_ut1 })}
-                </StyledCenterAlignCell>
-                <StyledCenterAlignCell>
-                  {datetimeToStr({ datetimeArr: item.time_ut1_julian })}
-                </StyledCenterAlignCell>
-              </StyledRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <Checkboxes
+        checked={checked}
+        onChange={handleChange}
+        julianLabel={t('julian')}
+      />
 
-      <Typography variant="body2" align="left" sx={footnoteStyle}>
-        {redAsterisk}
-        {' ' + t('no_dst')}
-      </Typography>
+      <Box
+        sx={{
+          mx: 'auto',
+          width: {
+            xs: '100%',
+            md: timeColNumber < 2 ? '60%' : timeColNumber < 3 ? '80%' : '100%',
+          },
+        }}
+      >
+        <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
+          <Table
+            size="small"
+            sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }}
+          >
+            <colgroup>
+              <col style={{ width: pointWidth }} />
+              <col />
+              <col style={{ width: coordWidth }} />
+              <col />
+              <col style={{ width: coordWidth }} />
+              <col />
+              {timeCol}
+              {checked.lmt && timeCol}
+              {checked.ut1 && timeCol}
+            </colgroup>
+
+            <TableHead>
+              {/* Row 1 */}
+              <TableRow>
+                <StickyColumn rowSpan={2} sx={pointHeadStyle}>
+                  {t('point')}
+                </StickyColumn>
+                <SpacerCell rowSpan={2} />
+                <CoordHeadCell rowSpan={2}>{t('altitude')}</CoordHeadCell>
+                <SpacerCell rowSpan={2} />
+                <CoordHeadCell rowSpan={2}>{t('azimuth')}</CoordHeadCell>
+                <SpacerCell rowSpan={2} />
+                <TimeHeadCell
+                  colSpan={checked.julian ? 2 : 1}
+                  sx={timeHeadStyle}
+                >
+                  <Tooltip
+                    describeChild
+                    followCursor={!isMobile}
+                    title={tzname || ''}
+                    placement="top"
+                    disableHoverListener={isMobile}
+                    enterTouchDelay={500}
+                    leaveTouchDelay={1000}
+                  >
+                    <Box
+                      component="span"
+                      sx={{ position: 'relative', display: 'inline-block' }}
+                    >
+                      {`${t('standard_time')} (${formatTimezone(anno[0].time_zone)})`}
+                      {footnoteMarkerRight}
+                    </Box>
+                  </Tooltip>
+                </TimeHeadCell>
+                <SpacerCell rowSpan={2} />
+                {checked.lmt && (
+                  <>
+                    <TimeHeadCell
+                      colSpan={checked.julian ? 2 : 1}
+                      sx={timeHeadStyle}
+                    >
+                      {t('lmt')}
+                    </TimeHeadCell>
+                    <SpacerCell rowSpan={2} />
+                  </>
+                )}
+                {checked.ut1 && (
+                  <>
+                    <TimeHeadCell
+                      colSpan={checked.julian ? 2 : 1}
+                      sx={timeHeadStyle}
+                    >
+                      {t('ut1')}
+                    </TimeHeadCell>
+                    <SpacerCell rowSpan={2} />
+                  </>
+                )}
+              </TableRow>
+              {/* Row 2: Gregorian and Julian columns */}
+              <TableRow>
+                {timeColumnHead}
+                {checked.lmt && timeColumnHead}
+                {checked.ut1 && timeColumnHead}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.entries(anno).map(([key, item]) => (
+                <StyledRow key={key}>
+                  <StickyColumn component="th" scope="row" sx={pointStyle}>
+                    {item.name}
+                  </StickyColumn>
+                  <SpacerCell />
+                  <CoordCell>{formatDecimalDegrees(item.alt)}</CoordCell>
+                  <SpacerCell />
+                  <CoordCell>{formatDecimalDegrees(item.az)}</CoordCell>
+                  <SpacerCell />
+                  {timeColumnCell(
+                    item.time_standard,
+                    item.time_standard_julian,
+                  )}
+                  {checked.lmt &&
+                    timeColumnCell(
+                      item.time_local_mean,
+                      item.time_local_mean_julian,
+                    )}
+                  {checked.ut1 &&
+                    timeColumnCell(item.time_ut1, item.time_ut1_julian)}
+                </StyledRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        <Typography variant="body2" align="left" sx={footnoteStyle}>
+          {footnoteMarkerLeft}
+          {' ' + t('no_dst')}
+        </Typography>
+      </Box>
     </>
   );
 };

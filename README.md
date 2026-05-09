@@ -51,8 +51,8 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 - :aries: Allows users to quickly retrieve **equinox** or **solstice** dates by providing a year and a location.
 - :star: Supports star or planet input by **name**, **Hipparcos Catalogue number**, or [ICRS coordinates](https://en.wikipedia.org/wiki/International_Celestial_Reference_System_and_its_realizations) **[(RA, Dec)](https://en.wikipedia.org/wiki/Equatorial_coordinate_system)**.
 - :mag: Allows searching for Hipparcos Catalogue numbers by integers or names, supporting [Bayer designations](https://en.wikipedia.org/wiki/Bayer_designation), [proper names](https://en.wikipedia.org/wiki/Stellar_designations_and_names), and Chinese names (traditional, simplified, and pinyin) (see [Resources](#resources)).
-- :framed_picture: SVG diagrams are available for download in `SVG`, `PNG`, or `PDF` formats.
-- :clipboard: Annotation tables are available for download in `CSV`, `JSON`, or `XLSX` formats.
+- :framed_picture: The SVG diagram is available for download in `SVG`, `PNG`, or `PDF` format.
+- :clipboard: The table is available for download in `CSV`, `JSON`, or `XLSX` format.
 
 ## Basic Usage
 
@@ -63,7 +63,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 3. **Celestial Object** — Select a **planet**, or specify a **star** by giving its Hipparcos Catalogue number or **(RA, Dec)**.
    - Type a name or number and choose a star from the drop-down list. The corresponding Hipparcos Catalogue number will be set up as well.
    - Enter `RA` in HMS format and `Dec` in DMS format, or both in decimal degrees.
-4. **Draw Star Path** — Click `DRAW STAR PATH` to generate a diagram and a table of rising/setting/meridian-transit/twilight times.
+4. **Draw Star Path** — Click `DRAW STAR PATH` to generate a diagram and a table of coordinates and times.
 
 > :bulb: The [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) has been taken into account in the calculation.
 

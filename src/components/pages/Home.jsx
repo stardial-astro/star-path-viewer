@@ -153,7 +153,7 @@ const Home = () => {
                 </Box>
 
                 {anno.length > 0 && (
-                  <Box id="annotations" sx={{ mt: 2 }}>
+                  <Box id="annotations" sx={{ mt: 2.5 }}>
                     <AnnoDisplay />
                   </Box>
                 )}

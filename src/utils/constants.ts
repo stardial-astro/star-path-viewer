@@ -148,12 +148,14 @@ export const PLANETS = [
 ]; // i18n keys
 
 export const POINT_LABELS = [
-  'D1',
-  'D2',
-  'D3',
+  'N0',
   'N1',
   'N2',
   'N3',
+  'D3',
+  'D2',
+  'D1',
+  'D0',
   'R',
   'T',
   'S',
@@ -166,6 +168,7 @@ export const LINE_STYLES = [
   'solid',
   'darkDashed',
   'lightDashed',
+  'thickDotted',
   'dotted',
 ] as const;
 

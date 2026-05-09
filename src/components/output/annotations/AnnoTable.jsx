@@ -33,7 +33,7 @@ const coordWidth = '5.25rem';
 const timeMinWidth = '6.2rem';
 
 const pointHeadStyle = { px: 0.5 };
-const pointStyle = { px: 0.5, py: 1.5, fontWeight: 500 };
+const pointStyle = { px: 0.5, py: { xs: 1, sm: 1.5 }, fontWeight: 500 };
 const timeHeadStyle = { pb: 0, borderBottom: 0 };
 const timeHeadStyle2 = { pt: 0 };
 
@@ -44,18 +44,32 @@ const checkboxLabelStyle = {
   },
 };
 
-/** @param {number} colNumber */
-const timeStyle = (colNumber) => ({
+/** @param {number} timeColNumber */
+const timeStyle = (timeColNumber) => ({
   whiteSpace: {
-    sm: colNumber < 2 ? 'nowrap' : 'normal',
-    md: colNumber < 4 ? 'nowrap' : 'normal',
+    sm: timeColNumber < 2 ? 'nowrap' : 'normal',
+    md: timeColNumber < 4 ? 'nowrap' : 'normal',
   },
   overflow: 'hidden',
 });
 
-/** @param {number} colNumber */
-const timeWidth = (colNumber) =>
-  `calc(90% / ${coordWidthFactor * 2 + colNumber})`;
+/** @param {number} timeColNumber */
+const timeWidth = (timeColNumber) =>
+  `calc(90% / ${coordWidthFactor * 2 + timeColNumber})`;
+
+/** @param {number} timeColNumber */
+const tableAreaStyle = (timeColNumber) => ({
+  mx: 'auto',
+  width: {
+    xs: '100%',
+    md: timeColNumber < 2 ? '520px' : timeColNumber < 3 ? '680px' : '100%',
+  },
+  maxWidth: {
+    xs: '100%',
+    sm: timeColNumber < 2 ? '520px' : '680px',
+    md: '100%',
+  },
+});
 
 const StickyColumn = styled(TableCell)(({ theme }) => ({
   position: 'sticky',
@@ -79,14 +93,18 @@ const CoordHeadCell = styled(TableCell)(() => ({
   paddingRight: '9px',
 }));
 
-const CoordCell = styled(TableCell)(() => ({
+const CoordCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'right',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   paddingLeft: '4px',
   paddingRight: '4px',
-  paddingTop: '12px',
-  paddingBottom: '12px',
+  paddingTop: '8px',
+  paddingBottom: '8px',
+  [theme.breakpoints.up('sm')]: {
+    paddingTop: '12px',
+    paddingBottom: '12px',
+  },
 }));
 
 const TimeHeadCell = styled(TableCell)(() => ({
@@ -102,13 +120,17 @@ const TimeHeadCell2 = styled(TableCell)(() => ({
   paddingRight: '8px',
 }));
 
-const TimeCell = styled(TableCell)(() => ({
+const TimeCell = styled(TableCell)(({ theme }) => ({
   textAlign: 'right',
   lineHeight: 1.25,
   paddingLeft: '4px',
   paddingRight: '8px',
-  paddingTop: '12px',
-  paddingBottom: '12px',
+  paddingTop: '8px',
+  paddingBottom: '8px',
+  [theme.breakpoints.up('sm')]: {
+    paddingTop: '12px',
+    paddingBottom: '12px',
+  },
 }));
 
 const StyledRow = styled(TableRow)(() => ({
@@ -126,7 +148,8 @@ const SpacerCell = ({ ...props }) => <TableCell sx={{ p: 0 }} {...props} />;
 const footnoteStyle = {
   color: 'text.secondary',
   mt: 1,
-  ml: 1,
+  ml: 0.75,
+  mr: 0.5,
 };
 
 const footnoteMarkerRight = (
@@ -164,6 +187,7 @@ const Checkboxes = ({ checked, onChange, julianLabel }) => (
       justifyContent: 'center',
       alignItems: 'center',
       gap: { xs: 1, sm: 4 },
+      mt: 1,
       ml: 1,
     }}
   >
@@ -288,15 +312,7 @@ const AnnoTable = ({ anno, tzname }) => {
         julianLabel={t('julian')}
       />
 
-      <Box
-        sx={{
-          mx: 'auto',
-          width: {
-            xs: '100%',
-            md: timeColNumber < 2 ? '60%' : timeColNumber < 3 ? '80%' : '100%',
-          },
-        }}
-      >
+      <Box sx={tableAreaStyle(timeColNumber)}>
         <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
           <Table
             size="small"

@@ -8,42 +8,52 @@
   "hip": "Hipparcos Catalogue Number",
   "radec": "RA/Dec",
 
+  "legend": "Legend",
+
   "point_anno": {
-    "D1": {
-      "name": "Nautical dawn starts",
-      "detail": "The star's position when the sun is 12 degrees below the horizon before sunrise. At this time, stars brighter than magnitude 4 are visible to the naked eye in most parts of the sky."
-    },
-    "D2": {
-      "name": "Civil dawn starts",
-      "detail": "The star's position when the sun is 6 degrees below the horizon before sunrise. At this time, stars brighter than magnitude 1 are visible to the naked eye in most parts of the sky."
-    },
-    "D3": {
-      "name": "Sunrise",
-      "detail": "The star's position at sunrise. At this time, only the brightest stars or planets, such as Venus and Jupiter, may be visible to the naked eye."
-    },
-    "N1": {
+    "N0": {
       "name": "Sunset",
       "detail": "The star's position at sunset. At this time, only the brightest stars or planets, such as Venus and Jupiter, may be visible to the naked eye."
     },
-    "N2": {
+    "N1": {
       "name": "Civil dusk ends",
       "detail": "The star's position when the sun is 6 degrees below the horizon after sunset. At this time, stars brighter than magnitude 1 are visible to the naked eye in most parts of the sky."
     },
-    "N3": {
+    "N2": {
       "name": "Nautical dusk ends",
       "detail": "The star's position when the sun is 12 degrees below the horizon after sunset. At this time, stars brighter than magnitude 4 are visible to the naked eye in most parts of the sky."
     },
+    "N3": {
+      "name": "Astronomical dusk ends",
+      "detail": "The star's position when the sun is 18 degrees below the horizon after sunset. Astronomical observation and astrophotography typically begin after this time."
+    },
+    "D3": {
+      "name": "Astronomical dawn starts",
+      "detail": "The star's position when the sun is 18 degrees below the horizon before sunrise. Astronomical observation and astrophotography typically take place before this time."
+    },
+    "D2": {
+      "name": "Nautical dawn starts",
+      "detail": "The star's position when the sun is 12 degrees below the horizon before sunrise. At this time, stars brighter than magnitude 4 are visible to the naked eye in most parts of the sky."
+    },
+    "D1": {
+      "name": "Civil dawn starts",
+      "detail": "The star's position when the sun is 6 degrees below the horizon before sunrise. At this time, stars brighter than magnitude 1 are visible to the naked eye in most parts of the sky."
+    },
+    "D0": {
+      "name": "Sunrise",
+      "detail": "The star's position at sunrise. At this time, only the brightest stars or planets, such as Venus and Jupiter, may be visible to the naked eye."
+    },
     "R": {
       "name": "Rising",
-      "detail": "The point where the star appears to rise above the horizon."
+      "detail": "The position where the star appears to rise above the horizon."
     },
     "T": {
       "name": "Meridian transit",
-      "detail": "The point where the star transits the meridian."
+      "detail": "The position where the star transits the meridian."
     },
     "S": {
       "name": "Setting",
-      "detail": "The point where the star appears to dip below the horizon."
+      "detail": "The position where the star appears to dip below the horizon."
     },
     "NCP": { "name": "North celestial pole", "detail": "" },
     "SCP": { "name": "South celestial pole", "detail": "" },
@@ -51,10 +61,11 @@
   },
 
   "line_legend": {
-    "solid": "The star's path in the nighttime sky.",
-    "darkDashed": "The star's path during nautical twilight.",
-    "lightDashed": "The star's path during civil twilight.",
-    "dotted": "The star's path in the daytime sky."
+    "solid": "The path in the nighttime sky.",
+    "darkDashed": "The path during astronomical twilight.",
+    "lightDashed": "The path during nautical twilight.",
+    "thickDotted": "The path during civil twilight.",
+    "dotted": "The path in the daytime sky."
   },
 
   "point": "Point",

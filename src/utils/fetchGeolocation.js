@@ -8,6 +8,8 @@ const GEO_IP_TIMEOUT = 5_000;
 
 const ipGeoServiceUrl = 'https://ipinfo.io/json';
 
+const COORD_FRACTION_DIGITS = 6;
+
 const NO_DATA_ERR_MSG = 'No data returned from ipinfo.io';
 const GEO_ERR_MSG = 'errors:gps_error'; // i18n key
 const NO_GEO_MSG = 'errors:gps_not_supported'; // i18n key
@@ -63,7 +65,7 @@ const fetchIpLocation = async (signal) => {
 
 /**
  * Fetches geolocation coordinates using `navigator.geolocation`.
- * - Keeps only 4 fraction digits
+ * - Keeps only 6 fraction digits
  * @param {number} geoMaxAge
  * @param {AbortSignal} signal
  * @returns {Promise<{ coords: CoordObj | null, isIpGeo: boolean }>}
@@ -127,8 +129,8 @@ const fetchGeolocation = async (geoMaxAge, signal) => {
     /* -------------------------------------------------------------- */
     return {
       coords: {
-        latitude: parseFloat(latitude.toFixed(4)),
-        longitude: parseFloat(longitude.toFixed(4)),
+        latitude: parseFloat(latitude.toFixed(COORD_FRACTION_DIGITS)),
+        longitude: parseFloat(longitude.toFixed(COORD_FRACTION_DIGITS)),
       },
       isIpGeo,
     };

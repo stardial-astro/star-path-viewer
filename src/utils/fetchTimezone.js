@@ -1,8 +1,12 @@
 // src/utils/fetchTimezone.js
+import { init } from 'browser-geo-tz';
 import { isDevMode } from './devMode';
 
+/* Initialize and cache tz data */
+const geoTzInstance = init();
+
 /**
- * Calls `window.GeoTZ.find` to find the time zone IDs at the given GPS coordinates.
+ * Calls `GeoTZ.find` to find the time zone IDs at the given GPS coordinates.
  * - Warns if failed (`tz` will be determined by the server)
  * @param {string} lat - Latitude (-90 <= `lat` <= 90).
  * @param {string} lng - Longitue (-180 <= `lng` <= 180).
@@ -12,7 +16,8 @@ import { isDevMode } from './devMode';
 const fetchTimezone = async (lat, lng) => {
   try {
     /* Fetch the time zone IDs */
-    const res = await window.GeoTZ.find(parseFloat(lat), parseFloat(lng));
+    // const res = await window.GeoTZ.find(parseFloat(lat), parseFloat(lng));
+    const res = await geoTzInstance.find(parseFloat(lat), parseFloat(lng));
     if (!Array.isArray(res) || res.length === 0 || !res[0]) {
       throw new Error(`GeoTZ returns invalid time zone ID: ${res}`);
     }

@@ -12,15 +12,15 @@ declare const __APP_DESCRIPTION__: string;
 
 interface Window {
   /* public/js/geotz.js */
-  GeoTZ: {
-    find: (lat: any, lon: any) => Promise<any>;
-    init: (
-      geoDataSource?: string,
-      tzDataSource?: string,
-    ) => {
-      find: (lat: any, lon: any) => Promise<any>;
-    };
-  };
+  // GeoTZ: {
+  //   find: (lat: any, lon: any) => Promise<any>;
+  //   init: (
+  //     geoDataSource?: string,
+  //     tzDataSource?: string,
+  //   ) => {
+  //     find: (lat: any, lon: any) => Promise<any>;
+  //   };
+  // };
   /* Google Analytics */
   dataLayer: any[];
   gtag: (...args: any[]) => void;

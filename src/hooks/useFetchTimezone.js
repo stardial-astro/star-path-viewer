@@ -14,7 +14,7 @@ const STALE_MS = isDevMode ? 60_000 : 10 * 60_000;
 const GC_MS = 10 * 60_000;
 
 /**
- * Calls `GeoTZ` to fetch the time zone ID.
+ * Calls `fetchTimezone` to fetch the time zone ID.
  * - Skips fetching if force skipping or the input is cleared
  * - Updates `tz` on status change
  * - Warns if failed (`tz` will be determined by the server)

@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.3] - 2026-05-08
+## [1.3.3] - 2026-05-09
 
 ### Added
 
 - Columns show/hide
 - Astronomical twilight display
 - Show/hide legend
+
+### Fixed
+
+- Updated geotz and switched back to the default data hosting
 
 ## [1.3.2] - 2026-05-03
 

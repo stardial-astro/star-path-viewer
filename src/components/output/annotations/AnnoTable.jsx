@@ -34,7 +34,7 @@ const timeMinWidth = '6.2rem';
 
 const pointHeadStyle = { px: 0.5 };
 const pointStyle = { px: 0.5, py: { xs: 1, sm: 1.5 }, fontWeight: 500 };
-const timeHeadStyle = { pb: 0, borderBottom: 0 };
+const timeHeadStyle = { letterSpacing: '0.008rem', pb: 0, borderBottom: 0 };
 const timeHeadStyle2 = { pt: 0 };
 
 const checkboxStyle = { '& .MuiSvgIcon-root': { fontSize: 18 } };
@@ -55,7 +55,7 @@ const timeStyle = (timeColNumber) => ({
 
 /** @param {number} timeColNumber */
 const timeWidth = (timeColNumber) =>
-  `calc(90% / ${coordWidthFactor * 2 + timeColNumber})`;
+  `calc(92% / ${coordWidthFactor * 2 + timeColNumber})`;
 
 /** @param {number} timeColNumber */
 const tableAreaStyle = (timeColNumber) => ({

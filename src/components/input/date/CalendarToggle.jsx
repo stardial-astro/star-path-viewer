@@ -33,6 +33,26 @@ const tooltipSlotProps = {
   },
 };
 
+/** @param {*} param */
+const TooltipWrapper = ({ children, ...props }) =>
+  isMobile ? (
+    children
+  ) : (
+    <Tooltip
+      describeChild
+      placement="top"
+      disableFocusListener
+      enterDelay={800}
+      enterNextDelay={500}
+      enterTouchDelay={800}
+      leaveTouchDelay={1500}
+      slotProps={tooltipSlotProps}
+      {...props}
+    >
+      <span>{children}</span>
+    </Tooltip>
+  );
+
 const CalendarToggle = () => {
   // console.log('Rendering CalendarToggle');
   const { i18n, t } = useTranslation('date');
@@ -64,54 +84,34 @@ const CalendarToggle = () => {
         }}
         onChange={handleCalChange}
       >
-        <Tooltip
-          describeChild
+        <TooltipWrapper
           title={
             `${t('ephemeris_range')}: ` +
             `${dateToStr({ dateArr: EPH_RANGE.min })}/${dateToStr({ dateArr: EPH_RANGE.max })}`
           }
-          placement="top"
-          disableHoverListener={isMobile}
-          enterDelay={800}
-          enterNextDelay={500}
-          enterTouchDelay={800}
-          leaveTouchDelay={1500}
-          slotProps={tooltipSlotProps}
         >
-          <span>
-            <CustomFormControlLabel
-              name={G_NAME}
-              label={t('gregorian')}
-              value={CALS.gregorian}
-              control={<Radio />}
-              checked={cal === CALS.gregorian}
-            />
-          </span>
-        </Tooltip>
-        <Tooltip
-          describeChild
+          <CustomFormControlLabel
+            name={G_NAME}
+            label={t('gregorian')}
+            value={CALS.gregorian}
+            control={<Radio />}
+            checked={cal === CALS.gregorian}
+          />
+        </TooltipWrapper>
+        <TooltipWrapper
           title={
             `${t('ephemeris_range')}: ` +
             `${dateToStr({ dateArr: EPH_RANGE_JULIAN.min })}/${dateToStr({ dateArr: EPH_RANGE_JULIAN.max })}`
           }
-          placement="top"
-          disableHoverListener={isMobile}
-          enterDelay={1000}
-          enterNextDelay={700}
-          enterTouchDelay={200}
-          leaveTouchDelay={2000}
-          slotProps={tooltipSlotProps}
         >
-          <span>
-            <CustomFormControlLabel
-              name={J_NAME}
-              label={t('julian')}
-              value={CALS.julian}
-              control={<Radio disabled={!!flag} />}
-              checked={cal === CALS.julian}
-            />
-          </span>
-        </Tooltip>
+          <CustomFormControlLabel
+            name={J_NAME}
+            label={t('julian')}
+            value={CALS.julian}
+            control={<Radio disabled={!!flag} />}
+            checked={cal === CALS.julian}
+          />
+        </TooltipWrapper>
       </RadioGroup>
     </FormControl>
   );

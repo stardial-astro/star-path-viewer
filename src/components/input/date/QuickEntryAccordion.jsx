@@ -27,6 +27,24 @@ const summaryStyle = {
 
 const expandIcon = <ExpandMoreIcon sx={{ color: 'primary.main' }} />;
 
+/** @param {*} param */
+const TooltipWrapper = ({ children, ...props }) =>
+  isMobile ? (
+    children
+  ) : (
+    <Tooltip
+      describeChild
+      disableFocusListener
+      enterDelay={1000}
+      enterNextDelay={800}
+      enterTouchDelay={800}
+      leaveTouchDelay={1500}
+      {...props}
+    >
+      <span>{children}</span>
+    </Tooltip>
+  );
+
 const QuickEntryAccordion = () => {
   // console.log('Rendering QuickEntryAccordion');
   const { t } = useTranslation('date');
@@ -77,34 +95,27 @@ const QuickEntryAccordion = () => {
         <Grid container spacing={{ xs: 2, sm: 2, md: 3 }}>
           {Object.entries(EQX_SOL_NAMES).map(([key, value]) => (
             <Grid size={{ xs: 12, sm: 6, md: 3 }} key={key}>
-              <Tooltip
-                describeChild
+              <TooltipWrapper
+                key={key}
                 title={
                   flag !== key
                     ? t('click_to_fill', { season: t(value) })
                     : t('click_to_deselect')
                 }
-                disableHoverListener={isMobile}
-                enterDelay={1000}
-                enterNextDelay={700}
-                enterTouchDelay={500}
-                leaveTouchDelay={1500}
               >
-                <span>
-                  <CustomToggleButton
-                    aria-label={key}
-                    color="primary"
-                    size="small"
-                    disabled={!!errorMessage.server}
-                    value={key}
-                    selected={flag === key}
-                    onChange={handleFlagChange}
-                    fullWidth
-                  >
-                    {t(value)}
-                  </CustomToggleButton>
-                </span>
-              </Tooltip>
+                <CustomToggleButton
+                  aria-label={key}
+                  color="primary"
+                  size="small"
+                  disabled={!!errorMessage.server}
+                  value={key}
+                  selected={flag === key}
+                  onChange={handleFlagChange}
+                  fullWidth
+                >
+                  {t(value)}
+                </CustomToggleButton>
+              </TooltipWrapper>
             </Grid>
           ))}
         </Grid>

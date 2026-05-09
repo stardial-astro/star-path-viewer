@@ -28,7 +28,7 @@ if (isDevMode && !import.meta.env.VITEST) {
   console.debug('[VITE_IS_PREVIEW]', import.meta.env.VITE_IS_PREVIEW);
   console.debug('[BASE_URL]', import.meta.env.BASE_URL);
   // console.debug('[VITE_GA_ID]', import.meta.env.VITE_GA_ID);
-  // console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
+  console.debug('[VITE_SERVER_URL]', import.meta.env.VITE_SERVER_URL);
   // console.debug('[config]', config);
 }
 

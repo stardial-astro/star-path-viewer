@@ -35,7 +35,7 @@ const timeMinWidth = '6.2rem';
 const pointHeadStyle = { px: 0.5 };
 const pointStyle = { px: 0.5, py: { xs: 1, sm: 1.5 }, fontWeight: 500 };
 const timeHeadStyle = { letterSpacing: '0.008rem', pb: 0, borderBottom: 0 };
-const timeHeadStyle2 = { pt: 0 };
+const timeHeadStyle2 = { minWidth: timeMinWidth, pt: 0 };
 
 const checkboxStyle = { '& .MuiSvgIcon-root': { fontSize: 18 } };
 const checkboxLabelStyle = {
@@ -51,6 +51,7 @@ const timeStyle = (timeColNumber) => ({
     md: timeColNumber < 4 ? 'nowrap' : 'normal',
   },
   overflow: 'hidden',
+  minWidth: timeMinWidth,
 });
 
 /** @param {number} timeColNumber */
@@ -253,11 +254,11 @@ const AnnoTable = ({ anno, tzname }) => {
     () => (
       <>
         <col
-          style={{ width: timeWidth(timeColNumber), minWidth: timeMinWidth }}
+          style={{ width: timeWidth(timeColNumber) }}
         />
         {checked.julian && (
           <col
-            style={{ width: timeWidth(timeColNumber), minWidth: timeMinWidth }}
+            style={{ width: timeWidth(timeColNumber) }}
           />
         )}
         <col />
@@ -316,7 +317,7 @@ const AnnoTable = ({ anno, tzname }) => {
         <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
           <Table
             size="small"
-            sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }}
+            sx={{ borderCollapse: 'separate' }}
           >
             <colgroup>
               <col style={{ width: pointWidth }} />
@@ -395,8 +396,8 @@ const AnnoTable = ({ anno, tzname }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {Object.entries(anno).map(([key, item]) => (
-                <StyledRow key={key}>
+              {Object.entries(anno).map(([id, item]) => (
+                <StyledRow key={id}>
                   <StickyColumn component="th" scope="row" sx={pointStyle}>
                     {item.name}
                   </StickyColumn>

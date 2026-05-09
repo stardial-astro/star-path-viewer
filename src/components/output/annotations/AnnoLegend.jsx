@@ -1,5 +1,5 @@
 // src/components/output/annotations/AnnoLegend.jsx
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { styled } from '@mui/material/styles';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 import isMobile from '@utils/isMobile';
 import { LINE_STYLES } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
@@ -74,15 +75,13 @@ const Dot = () => (
 );
 
 const tipIcon = (
-  <IconButton size="small" sx={{ p: 0, ml: 0.5 }}>
-    <InfoOutlinedIcon
-      sx={{
-        fontSize: '1rem',
-        color: 'primary.main',
-        mt: '-3px',
-      }}
-    />
-  </IconButton>
+  <InfoOutlinedIcon
+    sx={{
+      fontSize: '1rem',
+      color: 'primary.main',
+      mt: '-3px',
+    }}
+  />
 );
 
 const DetailTooltip = styled(({ className, ...props }) => (
@@ -90,9 +89,9 @@ const DetailTooltip = styled(({ className, ...props }) => (
     {...props}
     describeChild
     placement="top-start"
-    disableHoverListener={isMobile}
+    disableFocusListener
     enterTouchDelay={0}
-    leaveTouchDelay={20_000}
+    leaveTouchDelay={6_000}
     slotProps={{
       popper: {
         modifiers: [
@@ -122,6 +121,16 @@ const DetailTooltip = styled(({ className, ...props }) => (
     }),
   },
 }));
+
+/** @param {*} param */
+const TooltipWrapper = ({ children, onClickAway }) =>
+  isMobile ? (
+    <ClickAwayListener onClickAway={onClickAway}>
+      <span role="presentation">{children}</span>
+    </ClickAwayListener>
+  ) : (
+    children
+  );
 
 const StyledAccordion = styled((props) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -189,6 +198,9 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
  */
 const AnnoLegend = ({ anno }) => {
   const { t } = useTranslation('output');
+  /** @type {[string, ReactSetState<string>]} */
+  const [openId, setOpenId] = useState('');
+
   /** @type {Record<PtLabel | string, any>} */
   const pointAnno = t('point_anno', { returnObjects: true });
   /** @type {Record<LineStyle | string, any>} */
@@ -234,9 +246,9 @@ const AnnoLegend = ({ anno }) => {
 
             <Grid container size={{ xs: 12, md: 'auto' }} justifyContent="left">
               <Stack direction="column" spacing={0.5}>
-                {Object.entries(anno).map(([key, item]) => (
+                {Object.entries(anno).map(([id, item]) => (
                   <Box
-                    key={key}
+                    key={id}
                     display="flex"
                     flexWrap="wrap"
                     alignItems="flex-start"
@@ -257,9 +269,31 @@ const AnnoLegend = ({ anno }) => {
                     </Typography>
                     <Typography variant="body2" align="left" sx={detailStyle}>
                       {pointAnno[item.name].name}
-                      <DetailTooltip title={pointAnno[item.name].detail}>
-                        {tipIcon}
-                      </DetailTooltip>
+
+                      <TooltipWrapper
+                        onClickAway={() => openId === id && setOpenId('')}
+                      >
+                        <DetailTooltip
+                          key={id}
+                          title={pointAnno[item.name].detail}
+                          {...(isMobile && {
+                            open: openId === id,
+                            disableHoverListener: true,
+                            disableFocusListener: true,
+                            disableTouchListener: true,
+                          })}
+                        >
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              setOpenId((prev) => (prev === id ? '' : id))
+                            }
+                            sx={{ p: 0, ml: 0.5 }}
+                          >
+                            {tipIcon}
+                          </IconButton>
+                        </DetailTooltip>
+                      </TooltipWrapper>
                     </Typography>
                   </Box>
                 ))}

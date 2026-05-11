@@ -17,7 +17,9 @@ import {
   Typography,
   Tooltip,
 } from '@mui/material';
+import { useHome } from '@context/HomeContext';
 import isMobile from '@utils/isMobile';
+import { CALS } from '@utils/constants';
 import { datetimeToStr, formatTimezone } from '@utils/dateUtils';
 import { formatDecimalDegrees } from '@utils/coordUtils';
 
@@ -241,10 +243,12 @@ const Checkboxes = ({ checked, onChange, julianLabel }) => (
  */
 const AnnoTable = ({ anno, tzname }) => {
   const { t } = useTranslation('output');
+  const { info } = useHome();
   const [checked, setChecked] = useState({
-    julian: false,
-    lmt: false,
-    ut1: !isMobile,
+    /* If the other calendar is Gregorian (meaning input is in Julian), show all columns */
+    julian: info.cal === CALS.gregorian ? true : false,
+    lmt: info.cal === CALS.gregorian ? true : false,
+    ut1: info.cal === CALS.gregorian ? true : !isMobile,
   });
 
   const timeColNumber =
@@ -253,14 +257,8 @@ const AnnoTable = ({ anno, tzname }) => {
   const timeCol = useMemo(
     () => (
       <>
-        <col
-          style={{ width: timeWidth(timeColNumber) }}
-        />
-        {checked.julian && (
-          <col
-            style={{ width: timeWidth(timeColNumber) }}
-          />
-        )}
+        <col style={{ width: timeWidth(timeColNumber) }} />
+        {checked.julian && <col style={{ width: timeWidth(timeColNumber) }} />}
         <col />
       </>
     ),
@@ -315,10 +313,7 @@ const AnnoTable = ({ anno, tzname }) => {
 
       <Box sx={tableAreaStyle(timeColNumber)}>
         <TableContainer component={Paper} sx={{ overflow: 'auto' }}>
-          <Table
-            size="small"
-            sx={{ borderCollapse: 'separate' }}
-          >
+          <Table size="small" sx={{ borderCollapse: 'separate' }}>
             <colgroup>
               <col style={{ width: pointWidth }} />
               <col />

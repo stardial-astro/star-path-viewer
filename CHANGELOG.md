@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Columns show/hide
 - Astronomical twilight display
 - Show/hide legend
+- Show all columns if querying Julian date
 
 ### Fixed
 

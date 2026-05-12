@@ -61,6 +61,7 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true, // removes stale chunk caches automatically
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/.*\.txt$/],
         globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
         // skipWaiting: true, // new SW activates immediately
         clientsClaim: true, // claims all open tabs/windows

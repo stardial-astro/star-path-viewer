@@ -14,7 +14,8 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import MenuBookOutlinedIcon from '@mui/icons-material/MenuBookOutlined';
 // import GitHubIcon from '@mui/icons-material/GitHub';
 import { Link as RouterLink, useLocation } from 'react-router';
-import logo from '@assets/logo-text.svg';
+// import logo from '@assets/logo-text.svg';
+import logo from '@assets/logo-sm.svg';
 import isMobile from '@utils/isMobile';
 import config from '@utils/config';
 import CustomIconButton from '@components/ui/CustomIconButton';
@@ -41,11 +42,13 @@ const DOCS_URLS = {
 
 /** @type {React.CSSProperties} */
 const logoCssStyle = {
-  // maxHeight: '1.3rem',
-  width: '82.58px',
+  height: '29px', // logo only
+  // width: '82.58px', // logo with text
   objectFit: 'contain', // Maintain aspect ratio and contain the image within the Box
   justifyContent: 'flex-start',
-  marginTop: '6px',
+  marginLeft: '-3px',
+  marginTop: '5px',
+  // marginTop: '6px',
   cursor: 'pointer',
 };
 

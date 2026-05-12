@@ -2,7 +2,7 @@
 
 [English](README.md) | [簡體中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
-[→ 查看文檔](https://star-path-docs.pages.dev/zh-HK/)
+[→ 查看文檔](https://docs.starpathviewer.cc/zh-HK/)
 
 天體軌跡追蹤天文小工具：顯示上下五千年間指定日期和地點的天體視運動軌跡
 
@@ -11,11 +11,11 @@
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
-[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
+[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://starpathviewer.cc/)
 
 ## 簡介<!-- omit in toc -->
 
-[Star Path Viewer](https://star-path-viewer.pages.dev/) 是一個由 [Stardial](https://github.com/stardial-astro) 團隊開發的基於 [React](https://react.dev) 的網頁應用。
+[Star Path Viewer](https://starpathviewer.cc/) 是一個由 [Stardial](https://github.com/stardial-astro) 團隊開發的基於 [React](https://react.dev) 的網頁應用。
 
 [→ 計算功能源代碼](https://github.com/claude-hao/star-path-calculator)
 
@@ -67,7 +67,7 @@
 
 > :bulb: *計算天體位置時考慮了[大氣折射](https://zh.wikipedia.org/wiki/%E5%A4%A7%E6%B0%A3%E6%8A%98%E5%B0%84)效應。*
 
-詳細使用方法參見[文檔](https://star-path-docs.pages.dev/zh-HK/)。
+詳細使用方法參見[文檔](https://docs.starpathviewer.cc/zh-HK/)。
 
 ## 地理位置服務
 

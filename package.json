@@ -1,7 +1,7 @@
 {
   "name": "star-path-viewer",
   "version": "1.3.3",
-  "homepage": "https://star-path-viewer.pages.dev/",
+  "homepage": "https://starpathviewer.cc/",
   "description": "Astronomical tool for tracing the apparent motions of planets and stars observed from any location on any chosen date.",
   "private": true,
   "type": "module",

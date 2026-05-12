@@ -2,7 +2,7 @@
 
 [English](README.md) | [简体中文](README.zh.md) | [繁體中文](README.zh-HK.md)
 
-[→ Go to documentation](https://star-path-docs.pages.dev/)
+[→ Go to documentation](https://docs.starpathviewer.cc/)
 
 An astronomical tool for tracking the apparent motion of any planet or star on any chosen date in the ancient or future sky.
 
@@ -11,11 +11,11 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)
 
-[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://star-path-viewer.pages.dev/)
+[<img alt="thumbnail" src="https://stardial-astro.github.io/star-path-data/images/star-path-viewer_thumbnail.png" width="320">](https://starpathviewer.cc/)
 
 ## Description<!-- omit in toc -->
 
-[Star Path Viewer](https://star-path-viewer.pages.dev/) is a [React](https://react.dev) web application developed by the team [Stardial](https://github.com/stardial-astro).
+[Star Path Viewer](https://starpathviewer.cc/) is a [React](https://react.dev) web application developed by the team [Stardial](https://github.com/stardial-astro).
 
 [→ Source code](https://github.com/claude-hao/star-path-calculator)
 
@@ -67,7 +67,7 @@ An astronomical tool for tracking the apparent motion of any planet or star on a
 
 > :bulb: The [atmospheric refraction](https://en.wikipedia.org/wiki/Atmospheric_refraction) has been taken into account in the calculation.
 
-See the [documentation](https://star-path-docs.pages.dev/) for detailed instructions.
+See the [documentation](https://docs.starpathviewer.cc/) for detailed instructions.
 
 ## Geolocation Services
 

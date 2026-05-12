@@ -41,8 +41,14 @@ export async function onRequest(context) {
   const finalUrl = `${baseUrl}?${params.toString()}`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
+  let referer = context.request.headers.get('Referer');
+  if (!referer || referer.includes('127.0.0.1')) {
+    referer = 'https://starpathviewer.cc/';
+  }
+  console.log('[DEBUG] Referer:', referer); // TODO: test
+
   const headers = new Headers({
-    Referer: 'https://star-path-viewer.pages.dev',
+    Referer: referer,
     'User-Agent':
       context.request.headers.get('User-Agent') ||
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',

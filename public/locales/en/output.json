@@ -10,6 +10,8 @@
 
   "legend": "Legend",
 
+  "hold_alt": "Hold [{{alt}}] to magnify",
+
   "point_anno": {
     "N0": {
       "name": "Sunset",

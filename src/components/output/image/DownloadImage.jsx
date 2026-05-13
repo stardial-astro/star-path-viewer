@@ -76,7 +76,7 @@ const DownloadImage = ({ filenameBase, dpi = 300 }) => {
     async (format) => {
       const { Canvg, jsPDF } = libsRef.current ?? {};
       const svgElement = document
-        ?.getElementById('svg-container')
+        .getElementById('svg-container')
         ?.querySelector('svg');
       if (!svgElement) {
         setErrorMessage((prev) => ({

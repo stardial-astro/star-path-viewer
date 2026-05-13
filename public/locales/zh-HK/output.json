@@ -8,7 +8,9 @@
   "hip": "依巴谷星表編號",
   "radec": "赤經/赤緯",
 
-  "legend": "图例",
+  "legend": "圖例",
+
+  "hold_alt": "按住【{{alt}}】鍵可放大查看",
 
   "point_anno": {
     "N0": {

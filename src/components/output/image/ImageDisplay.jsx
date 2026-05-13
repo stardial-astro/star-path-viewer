@@ -1,34 +1,150 @@
 // src/components/output/image/ImageDisplay.jsx
-import { memo } from 'react';
+import { memo, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import parse from 'html-react-parser';
-import { Box, Stack } from '@mui/material';
+import { Box, Stack, Tooltip } from '@mui/material';
 import { useHome } from '@context/HomeContext';
+import useMagnifier from '@hooks/useMagnifier';
+import isMobile from '@utils/isMobile';
 import { colorFilter } from '@utils/outputUtils';
 import CustomAlert from '@components/ui/CustomAlert';
 import DownloadImage from './DownloadImage';
 
+const HINT_MS = 6000;
+
+/** Loupe diameter. */
+const loupeSize = 300;
+
+const loupeBaseStyle = {
+  display: 'none',
+  position: 'absolute',
+  width: loupeSize,
+  height: loupeSize,
+  borderRadius: '50%',
+  backgroundColor: 'background.default',
+  border: '2px solid rgba(0,0,0,0.25)',
+  overflow: 'hidden',
+  pointerEvents: 'none',
+  zIndex: 10,
+  boxSizing: 'border-box',
+};
+
+const loupeInnerBaseStyle = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  transformOrigin: '0 0',
+};
+
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [16, 16],
+        },
+      },
+    ],
+  },
+};
+
+/** @param {*} param */
+const TooltipWrapper = ({ children, showHint, ...props }) =>
+  isMobile ? (
+    children
+  ) : (
+    <Tooltip
+      describeChild
+      followCursor
+      open={showHint}
+      disableHoverListener={!showHint}
+      disableFocusListener
+      disableTouchListener
+      placement="bottom-start"
+      slotProps={tooltipSlotProps}
+      {...props}
+    >
+      <span>{children}</span>
+    </Tooltip>
+  );
+
 const ImageDisplay = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('output');
   const { errorMessage, setErrorMessage, diagramId, svgData } = useHome();
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
+  const altKey = isMac ? '⌥ Option' : 'Alt';
+  const [showHint, setShowHint] = useState(true);
+
+  const parsedSvg = useMemo(() => parse(svgData), [svgData]);
+
+  useEffect(() => {
+    if (!showHint) return;
+    const timer = setTimeout(() => setShowHint(false), HINT_MS);
+    /** @param {KeyboardEvent} e */
+    const onAlt = (e) => {
+      if (e.key === 'Alt') setShowHint(false);
+    };
+    window.addEventListener('keydown', onAlt);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('keydown', onAlt);
+    };
+  }, [showHint]);
+
+  const { loupeRef, loupeInnerRef, handleMouseMove, handleMouseLeave } =
+    useMagnifier({
+      enabled: !isMobile,
+      zoom: 3,
+      loupeSize,
+    });
+
   return (
     <>
       <Box
-        id="svg-container"
-        sx={(theme) => ({
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        sx={{
+          position: 'relative',
           mt: { xs: -1, sm: -2.5, md: -3 },
           mb: { xs: -2, sm: -3.5, md: -4.5 },
           mr: 0.5,
-          '& svg': {
-            width: '100%',
-            height: 'auto',
-          },
-          ...theme.applyStyles('dark', {
-            filter: colorFilter,
-          }),
-        })}
+        }}
       >
-        {parse(svgData)}
+        {/* Original SVG */}
+        <TooltipWrapper
+          title={t('hold_alt', { alt: altKey })}
+          showHint={showHint}
+        >
+          <Box
+            id="svg-container"
+            sx={(theme) => ({
+              // mt: { xs: -1, sm: -2.5, md: -3 },
+              // mb: { xs: -2, sm: -3.5, md: -4.5 },
+              // mr: 0.5,
+              '& svg': { width: '100%', height: 'auto' },
+              ...theme.applyStyles('dark', { filter: colorFilter }),
+            })}
+          >
+            {parsedSvg}
+          </Box>
+        </TooltipWrapper>
+
+        {/* Magnifier */}
+        {!isMobile && (
+          <Box ref={loupeRef} sx={loupeBaseStyle}>
+            <Box
+              ref={loupeInnerRef}
+              sx={[
+                loupeInnerBaseStyle,
+                { '& svg': { display: 'block' } },
+                (theme) => theme.applyStyles('dark', { filter: colorFilter }),
+              ]}
+            >
+              {parsedSvg}
+            </Box>
+          </Box>
+        )}
       </Box>
 
       <Stack id="download-img" direction="column" spacing={1}>

@@ -10,6 +10,8 @@
 
   "legend": "图例",
 
+  "hold_alt": "按住【{{alt}}】键可放大查看",
+
   "point_anno": {
     "N0": {
       "name": "日落",

@@ -64,6 +64,7 @@ const About = () => {
   return (
     <>
       <title>{t('head_title')}</title>
+      <link rel="canonical" href={config.BASE_URL + 'about'} />
 
       <Box data-testid="about-page" sx={{ mt: 4 }}>
         {logoImg}

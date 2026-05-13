@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Astronomical twilight display
 - Show/hide legend
 - Show all columns if querying Julian date
+- Magnifier on SVG
 
 ### Fixed
 

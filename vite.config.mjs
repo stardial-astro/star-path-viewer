@@ -31,9 +31,8 @@ export default defineConfig({
         'locales/**/*.json',
         'robots.txt',
       ],
-      /* Move manifest.json content here */
       manifest: {
-        short_name: 'Star Path Viewer',
+        short_name: 'StarPathViewer',
         name: 'Star Path Viewer',
         description: pkg.description,
         scope: '/',

@@ -4,6 +4,7 @@ import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import svgr from 'vite-plugin-svgr';
 import babel from '@rolldown/plugin-babel';
 import { VitePWA } from 'vite-plugin-pwa';
+import Sitemap from 'vite-plugin-sitemap';
 import { resolve } from 'path';
 import fs from 'fs';
 import pkg from './package.json';
@@ -60,7 +61,10 @@ export default defineConfig({
       workbox: {
         cleanupOutdatedCaches: true, // removes stale chunk caches automatically
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/sitemap\.xml$/, /^\/.*\.txt$/],
+        navigateFallbackDenylist: [
+          /^\/sitemap\.xml(\?.+)?$/,
+          /^\/.*\.txt(\?.+)?$/,
+        ],
         globPatterns: ['**/*.{js,css,html}'], // skip images, fonts
         // skipWaiting: true, // new SW activates immediately
         clientsClaim: true, // claims all open tabs/windows
@@ -70,6 +74,21 @@ export default defineConfig({
       //   enabled: false, // flip to true when debugging SW behavior (leave this off during normal dev)
       //   type: 'module', // matches Vite's dev server module type
       // },
+    }),
+    Sitemap({
+      readable: false,
+      hostname: 'https://starpathviewer.cc',
+      dynamicRoutes: ['/about'],
+      exclude: ['/googlea24ada8f7c1fd278'],
+      priority: {
+        '/': 1.0,
+        '/about': 0.8,
+        '*': 0.5,
+      },
+      changefreq: {
+        '/': 'weekly',
+        '*': 'monthly',
+      },
     }),
   ],
   resolve: {

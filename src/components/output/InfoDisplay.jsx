@@ -1,5 +1,5 @@
 // src/components/output/InfoDisplay.jsx
-import { memo, useMemo } from 'react';
+import { memo, useRef, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid, Box, Stack, Typography, Tooltip } from '@mui/material';
 import { useHome } from '@context/HomeContext';
@@ -104,6 +104,9 @@ const InfoDisplay = () => {
   const isZh = i18n.language.startsWith('zh');
   const isZhHant = CC_HANT_CODES.includes(i18n.language);
   const { info } = useHome();
+
+  /** @type {ReactRef<HTMLDivElement | null>} */
+  const targetRef = useRef(null);
 
   const radecStr = useMemo(
     () => radecToStr(info.ra, info.dec),
@@ -243,8 +246,12 @@ const InfoDisplay = () => {
     [info.name, info.nameZh, info.hip, radecStr, isZh, isZhHant, t],
   );
 
+  useEffect(() => {
+    targetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
+
   return (
-    <Box sx={{ mt: 1 }}>
+    <Box ref={targetRef} sx={{ mt: 1 }}>
       <CustomDivider sx={{ mb: 1 }} />
       <Grid
         container

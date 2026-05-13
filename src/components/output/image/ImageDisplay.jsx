@@ -10,7 +10,8 @@ import { colorFilter } from '@utils/outputUtils';
 import CustomAlert from '@components/ui/CustomAlert';
 import DownloadImage from './DownloadImage';
 
-const HINT_MS = 6000;
+const HINT_OPEN_DELAY = 2_500;
+const HINT_CLOSE_DELAY = 5_000;
 
 /** Loupe diameter. */
 const loupeSize = 300;
@@ -74,13 +75,18 @@ const ImageDisplay = () => {
   const { errorMessage, setErrorMessage, diagramId, svgData } = useHome();
   const isMac = /Mac|iPhone|iPad/.test(navigator.platform);
   const altKey = isMac ? '⌥ Option' : 'Alt';
-  const [showHint, setShowHint] = useState(true);
+  const [showHint, setShowHint] = useState(false);
 
   const parsedSvg = useMemo(() => parse(svgData), [svgData]);
 
   useEffect(() => {
+    const timer = setTimeout(() => setShowHint(true), HINT_OPEN_DELAY);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
     if (!showHint) return;
-    const timer = setTimeout(() => setShowHint(false), HINT_MS);
+    const timer = setTimeout(() => setShowHint(false), HINT_CLOSE_DELAY);
     /** @param {KeyboardEvent} e */
     const onAlt = (e) => {
       if (e.key === 'Alt') setShowHint(false);

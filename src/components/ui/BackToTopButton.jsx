@@ -87,7 +87,7 @@ const ScrollTop = ({ children }) => {
         role="presentation"
         sx={(theme) => ({
           position: 'fixed', // Move positioning here, preventing the style calculation lag
-          bottom: theme.spacing(2),
+          bottom: `calc(${theme.spacing(2)} + env(safe-area-inset-bottom, 0px))`,
           right: {
             xs: theme.spacing(2),
             sm: theme.spacing(3),

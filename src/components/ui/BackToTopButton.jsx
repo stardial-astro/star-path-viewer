@@ -1,7 +1,7 @@
 // src/components/ui/BackToTopButton.jsx
 import { memo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Fab, Tooltip, Fade, Box, Portal } from '@mui/material';
+import { Fab, Tooltip, Fade, Box } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { styled } from '@mui/material/styles';
 import useThrottledScroll from '@hooks/useThrottledScroll';
@@ -78,30 +78,29 @@ const ScrollTop = ({ children }) => {
   }, []);
 
   return (
-    <Portal>
-      <Fade in={trigger} timeout={200}>
-        {/* <div onClick={handleClick} role="presentation">
+    <Fade in={trigger} timeout={200}>
+      {/* <div onClick={handleClick} role="presentation">
           {children}
         </div> */}
-        <Box
-          onClick={handleClick}
-          role="presentation"
-          sx={(theme) => ({
-            position: 'fixed', // Move positioning here, preventing the style calculation lag
-            bottom: `calc(${theme.spacing(2)} + env(safe-area-inset-bottom, 0px))`,
-            right: {
-              xs: theme.spacing(2),
-              sm: theme.spacing(3),
-              md: 'calc(36% - 310px)',
-              lg: 'calc(50% - 480px)',
-            },
-            zIndex: theme.zIndex.speedDial,
-          })}
-        >
-          {children}
-        </Box>
-      </Fade>
-    </Portal>
+      <Box
+        onClick={handleClick}
+        role="presentation"
+        sx={(theme) => ({
+          position: 'fixed', // Move positioning here, preventing the style calculation lag
+          // bottom: `calc(${theme.spacing(2)} + env(safe-area-inset-bottom, 0px))`,
+          top: `calc(100svh - 40px - ${theme.spacing(2)} - env(safe-area-inset-bottom, 0px))`,
+          right: {
+            xs: theme.spacing(2),
+            sm: theme.spacing(3),
+            md: 'calc(36% - 310px)',
+            lg: 'calc(50% - 480px)',
+          },
+          zIndex: theme.zIndex.speedDial,
+        })}
+      >
+        {children}
+      </Box>
+    </Fade>
   );
 };
 

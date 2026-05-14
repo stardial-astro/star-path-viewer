@@ -38,6 +38,7 @@ interface AddressItem {
   /** Address ID (`''`: not found/no service; `'unknown-id'`: reverse geocoding failed). */
   id: string;
   addresstype: string;
+  address?: string;
 }
 
 interface LocationErrorObj {

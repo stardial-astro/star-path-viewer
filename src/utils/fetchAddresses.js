@@ -17,16 +17,36 @@ const baiduSearchUrl = import.meta.env.VITE_BAIDU_SEARCH_URL;
 const baiduApiKey = import.meta.env.VITE_BAIDU_API_KEY;
 
 const qqSearchUrlInternal = '/api/qq-search';
+const qqDistrictUrlInternal = '/api/qq-district';
 // const qqSearchUrl = import.meta.env.VITE_QQ_SEARCH_URL;
+// const qqDistrictUrl = import.meta.env.VITE_QQ_DISTRICT_URL;
 // const qqApiKey = import.meta.env.VITE_QQ_API_KEY;
 
 /** At most this number of items to show. */
 const limit = 20;
+/** At most this number of items to show when searching district. */
+const limitDistrict = 1;
+/**
+ * At most this number of items to show when searching district
+ * and the number of suggestions is less than `limitSug`.
+ */
+const limitDistrictMax = 3;
+/** At most this number of items to show if a district is found. */
+const limitSug = 10;
+
+/** @type {Record<number, string>} */
+const districtLevels = {
+  1: 'province_level',
+  2: 'city_level',
+  3: 'county_level',
+  4: 'township_level',
+};
 
 let activeRequests = 0;
 
 /**
  * Get the last `limit` number of segments and join them with `'|'`.
+ * Ignores segments with length greater than 5.
  * @param {string} str
  * @param {string} [delim=';'] - Defaults to `';'`.
  * @param {number} [limit=3] - Defaults to 3.
@@ -34,7 +54,12 @@ let activeRequests = 0;
 const getTailSegments = (str, delim = ';', limit = 3) => {
   if (!str) return '';
   const pattern = new RegExp(`${delim}\\s*`);
-  return str.split(pattern).filter(Boolean).slice(-limit).join('|');
+  return str
+    .split(pattern)
+    .filter(Boolean)
+    .filter((s) => s.length <= 5)
+    .slice(-limit)
+    .join('|');
 };
 
 /**
@@ -113,9 +138,10 @@ const searchWithBaidu = async (query) => {
     return data.slice(0, limit).map((item) => ({
       lat: item.location.lat.toString(),
       lng: item.location.lng.toString(),
-      display_name: [item.address, item.name].filter(Boolean).join(' '),
+      display_name: item.name,
       id: item.uid || `${item.location.lat},${item.location.lng}`,
       addresstype: getTailSegments(item.classified_poi_tag || item.tag, ';'),
+      address: item.address,
     }));
   } else {
     throw new Error(LOCATION_NOT_FOUND_MSG);
@@ -127,11 +153,11 @@ const searchWithBaidu = async (query) => {
  * @returns {Promise<AddressItem[]>} An array of address objects.
  * @throws {Error} If location is not found.
  */
-const searchWithQq = async (query) => {
+const searchSugWithQq = async (query) => {
   /* [JSONP] -------------------------------------------------------- */
   // const url =
   //   `${qqSearchUrl}?key=${qqApiKey}&keyword=${query}&policy=1&` +
-  //   `output=jsonp&page_index=1&page_size=20`;
+  //   `address_format=long&output=jsonp&page_index=1&page_size=20`;
   // isDevMode && console.debug(`[QQ key] ${qqApiKey.slice(0, 3)}******`);
   // const startTime = performance.now();
   // const response = await fetchJsonp(url, {
@@ -144,6 +170,7 @@ const searchWithQq = async (query) => {
     params: {
       keyword: query,
       policy: 1,
+      address_format: 'long',
       page_index: 1,
       page_size: 20,
     },
@@ -165,13 +192,110 @@ const searchWithQq = async (query) => {
     return data.slice(0, limit).map((item) => ({
       lat: item.location.lat.toString(),
       lng: item.location.lng.toString(),
-      display_name: [item.address, item.title].filter(Boolean).join(' '),
+      display_name: item.title,
       id: item.id || `${item.location.lat},${item.location.lng}`,
       addresstype: getTailSegments(item.category, ':'),
+      address: item.address,
     }));
   } else {
     throw new Error(LOCATION_NOT_FOUND_MSG);
   }
+};
+
+/**
+ * @param {string} query
+ * @returns {Promise<AddressItem[]>} An array of address objects.
+ * @throws {Error} If location is not found.
+ */
+const searchDistrictWithQq = async (query) => {
+  /* [JSONP] -------------------------------------------------------- */
+  // const url = `${qqDistrictUrl}?key=${qqApiKey}&keyword=${query}&output=jsonp`;
+  // const startTime = performance.now();
+  // const response = await fetchJsonp(url, {
+  //   jsonpCallback: 'callback',
+  //   timeout: QQ_TIMEOUT,
+  // });
+  // const duration = performance.now() - startTime;
+  /* [Proxy] -------------------------------------------------------- */
+  const response = await apiClient.get(qqDistrictUrlInternal, {
+    params: {
+      keyword: query,
+      policy: 1,
+      page_index: 1,
+      page_size: 20,
+    },
+    timeout: QQ_TIMEOUT,
+  });
+  const duration = response.config.metadata?.duration;
+  /* ---------------------------------------------------------------- */
+  isDevMode && duration && printDuration('QQ-district', duration);
+  /** @type {QqDistrictSchema} */
+  // const res = await response.json(); // [JSONP]
+  const res = response.data; // [Proxy]
+  isDevMode && console.debug('[Query]', query, '\n[Results]', res);
+  isDevMode && console.debug('[Headers]', response.headers); // [Proxy]
+  if (res?.status !== 0) {
+    throw new Error(res?.message || `Status: ${res?.status || 'unknown'}`);
+  }
+  const data = res.result;
+  if (Array.isArray(data) && data.length > 0 && data[0].length > 0) {
+    return data
+      .flat()
+      .slice(0, limitDistrictMax)
+      .map((item) => {
+        const parts = item.address.split(',');
+        return {
+          lat: item.location.lat.toString(),
+          lng: item.location.lng.toString(),
+          display_name: item.fullname,
+          id: item.id || `${item.location.lat},${item.location.lng}`,
+          addresstype: districtLevels[item.level] || 'region',
+          /* Same style as Baidu */
+          address: parts.length <= 1 ? '' : parts.join('-'),
+        };
+      });
+  } else {
+    throw new Error(LOCATION_NOT_FOUND_MSG);
+  }
+};
+
+/**
+ * @param {string} query
+ * @returns {Promise<AddressItem[]>} An array of address objects.
+ * @throws {Error} If location is not found.
+ */
+const searchWithQq = async (query) => {
+  const [distData, sugData] = await Promise.all([
+    searchDistrictWithQq(query).catch((err) => {
+      isDevMode && console.debug('* QQ district:', err.message);
+      return [];
+    }),
+    searchSugWithQq(query).catch((err) => {
+      isDevMode && console.debug('* QQ suggestion:', err.message);
+      return [];
+    }),
+  ]);
+  if (distData.length === 0 && sugData.length === 0) {
+    throw new Error(LOCATION_NOT_FOUND_MSG);
+  }
+  /* List less distData items if sugData contains many */
+  const limitedDistData =
+    sugData.length > limitSug ? distData.slice(0, limitDistrict) : distData;
+  /* List less sugData items if distData is not empty */
+  const limitedSugData =
+    distData.length === 0 ? sugData : sugData.slice(0, limitSug);
+  /* Merge and remove duplicates */
+  const uniqueData = [...limitedDistData, ...limitedSugData].filter(
+    (item, index, self) =>
+      index ===
+      self.findIndex(
+        (t) =>
+          t.id === item.id &&
+          t.display_name === item.display_name &&
+          t.addresstype === item.addresstype,
+      ),
+  );
+  return uniqueData;
 };
 
 /**
@@ -189,10 +313,8 @@ const fetchAddresses = async (query, service) => {
   const serviceInUse = service || fallbackGeoService;
 
   activeRequests++;
-  isDevMode &&
-    console.debug(
-      `[${serviceInUse}-search] concurrency: ${activeRequests}, query: ${query}`,
-    );
+  /* prettier-ignore */
+  isDevMode && console.debug(`[${serviceInUse}-search] concurrency: ${activeRequests}, query: ${query}`);
 
   /** @type {AddressItem[]} */
   let res;
@@ -218,10 +340,8 @@ const fetchAddresses = async (query, service) => {
     throw new Error(SERVICE_ERR_MSG, { cause: err });
   } finally {
     activeRequests--;
-    isDevMode &&
-      console.debug(
-        `[${serviceInUse}-search] concurrency: ${activeRequests}, finished`,
-      );
+    /* prettier-ignore */
+    isDevMode && console.debug(`[${serviceInUse}-search] concurrency: ${activeRequests}, finished`);
   }
 };
 

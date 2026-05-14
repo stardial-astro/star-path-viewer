@@ -48,8 +48,8 @@ const CoordinatesInput = () => {
      * (so if there is a reverse geocoding unavailable warning triggered by
      * id === LOC_UNKNOWN_ID, it keeps open)
      */
-    isDevMode &&
-      console.debug(`* (CoordinatesInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
+    /* prettier-ignore */
+    // isDevMode && console.debug(`* (CoordinatesInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */

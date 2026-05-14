@@ -224,8 +224,8 @@ const checkGlobal = async () =>
 export const checkGeoServiceAccessibility = async () => {
   const service = DEFAULT_SERVICE;
   if (forceInCn) {
-    isDevMode &&
-      console.debug(`🇨🇳 Pretend to be in CN (system tz: ${currentTz})`);
+    /* prettier-ignore */
+    isDevMode && console.debug(`🇨🇳 Pretend to be in CN (system tz: ${currentTz})`);
     return false;
   }
   try {
@@ -235,12 +235,12 @@ export const checkGeoServiceAccessibility = async () => {
       /* Possibly in CN, return the result */
       const isGlobal = await checkGlobal();
       if (isGlobal) {
-        isDevMode &&
-          console.debug(`✈️ You are outside CN but system tz is ${currentTz}`);
+        /* prettier-ignore */
+        isDevMode && console.debug(`✈️ You are outside CN but system tz is ${currentTz}`);
         return true;
       } else {
-        isDevMode &&
-          console.debug(`🇨🇳 You are in CN (system tz: ${currentTz})`);
+        /* prettier-ignore */
+        isDevMode && console.debug(`🇨🇳 You are in CN (system tz: ${currentTz})`);
         return false;
       }
     }
@@ -254,19 +254,17 @@ export const checkGeoServiceAccessibility = async () => {
     if (axios.isAxiosError(err) && err.response) {
       const { status } = err.response;
       if (status === 405) {
-        isDevMode &&
-          console.debug(`⚠️ HEAD not allowed, but ${service} is reachable.`);
+        /* prettier-ignore */
+        isDevMode && console.debug(`⚠️ HEAD not allowed, but ${service} is reachable.`);
         return true;
       }
       console.warn(`HTTP ${status}: ${err.message ?? err.toJSON()}`);
-      isDevMode &&
-        console.debug(`⚠️ Using ${service} but the connection is bad.`);
+      /* prettier-ignore */
+      isDevMode && console.debug(`⚠️ Using ${service} but the connection is bad.`);
       return true;
     }
-    isDevMode &&
-      console.debug(
-        `🔴 ${service} inaccessible: ${Error.isError(err) ? err.message : err}`,
-      );
+    /* prettier-ignore */
+    isDevMode && console.debug(`🔴 ${service} inaccessible: ${Error.isError(err) ? err.message : err}`);
     return false;
   }
 };

@@ -29,11 +29,14 @@ export async function onRequest(context) {
     );
   }
   const policy = requestUrl.searchParams.get('policy') || '0';
+  const address_format =
+    requestUrl.searchParams.get('address_format') || 'short';
   const page_index = requestUrl.searchParams.get('page_index') || '1';
   const page_size = requestUrl.searchParams.get('page_size') || '20';
   const params = new URLSearchParams({
     keyword,
     policy,
+    address_format,
     page_index,
     page_size,
     key,
@@ -66,7 +69,7 @@ export async function onRequest(context) {
       return new Response(
         JSON.stringify({
           status: -1, // frontend will handle this non-zero code
-          message: `QQ Error: ${response.status}`,
+          message: `QQ Error (search): ${response.status}`,
         }),
         { status: response.status },
       );

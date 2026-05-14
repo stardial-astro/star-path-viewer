@@ -8,5 +8,11 @@
   "coordinates": "輸入座標",
   "latitude": "緯度",
   "longitude": "經度",
-  "enter_decimal": "請輸入十進制小數"
+  "enter_decimal": "請輸入十進制小數",
+
+  "province_level": "省級行政區",
+  "city_level": "地級行政區",
+  "county_level": "縣級行政區",
+  "township_level": "鄉級行政區",
+  "region": "地區"
 }

@@ -62,8 +62,8 @@ const fetchDate = async (year, flag, lat, lng, tz) => {
   } catch (err) {
     /* If the request was cancelled/aborted, stop retrying */
     if (axios.isCancel(err)) {
-      isDevMode &&
-        console.debug(`Equinox/Solstice(${flag}) date fetching cancelled.`);
+      /* prettier-ignore */
+      isDevMode && console.debug(`Equinox/Solstice(${flag}) date fetching cancelled.`);
       return null;
     }
     /* Parse the error by the caller */

@@ -71,10 +71,8 @@ const useFetchAddresses = (
       if (geoService === DEFAULT_SERVICE_CN || (success && geoService)) {
         return;
       }
-      isDevMode &&
-        console.debug(
-          `> Updating service... (current: ${geoService || 'null'})`,
-        );
+      /* prettier-ignore */
+      isDevMode && console.debug(`> Updating service... (current: ${geoService || 'null'})`);
       const service = success ? fallbackGeoService : DEFAULT_SERVICE_CN;
       setGeoService(service, true);
       isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);

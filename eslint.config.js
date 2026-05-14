@@ -11,7 +11,14 @@ import { importX } from 'eslint-plugin-import-x';
 
 export default defineConfig([
   /* Global configuration */
-  globalIgnores(['dist', 'dev-dist', 'build', 'public', '__mocks__']),
+  globalIgnores([
+    'dist',
+    'dev-dist',
+    'build',
+    'public',
+    '__mocks__',
+    '.wrangler',
+  ]),
 
   eslintReact.configs.recommended,
 

@@ -184,8 +184,8 @@ const reverseWithTianditu = async (coords, signal) => {
     ver: 1,
   });
   /* [axios] -------------------------------------------------------- */
-  isDevMode &&
-    console.debug(`[Tianditu tk] ${tiandituApiKey.slice(0, 3)}******`);
+  /* prettier-ignore */
+  isDevMode && console.debug(`[Tianditu tk] ${tiandituApiKey.slice(0, 3)}******`);
   const response = await apiClient.get(tiandituReverseUrl, {
     params: {
       postStr,
@@ -291,9 +291,8 @@ const reverseGeocode = async (coords, service, serviceCn, signal) => {
         res = await reverseFn(coords, signal);
         if (res.id !== LOC_UNKNOWN_ID) return { res, serviceInUse };
         /* If returns an empty address, return or use a fallback */
-        console.debug(
-          `🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`,
-        );
+        /* prettier-ignore */
+        console.debug(`🤔 Hmm... ${serviceInUse} reverse geocoding for this location is unavailable.`);
         if (NO_FALLBACK) return { res, serviceInUse };
         /* Try DEFAULT_SERVICE below */
         isDevMode && console.debug(`Switching to ${DEFAULT_SERVICE}...`);

@@ -68,13 +68,7 @@ const validateStarHipSync = (starHip) => {
  * @returns {{ isValid: boolean, invalidError: StarErrorObj }}
  */
 const validateStarRadecSync = (radecFormat, starRadec) => {
-  // console.log(
-  //   'Validating RA/Dec...',
-  //   radecFormat,
-  //   starRadec,
-  //   starRaHms,
-  //   starDecDms,
-  // );
+  // console.log('Validating RA/Dec...', radecFormat, starRadec, starRaHms, starDecDms);
   let isValid = true;
   /** @type {StarErrorObj} */
   const invalidError = { name: '', hip: '', ra: '', dec: '' };

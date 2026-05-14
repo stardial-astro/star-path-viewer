@@ -8,5 +8,11 @@
   "coordinates": "Enter Coordinates",
   "latitude": "Latitude",
   "longitude": "Longitude",
-  "enter_decimal": "Enter in decimal degrees"
+  "enter_decimal": "Enter in decimal degrees",
+
+  "province_level": "province",
+  "city_level": "city",
+  "county_level": "district",
+  "township_level": "township",
+  "region": "region"
 }

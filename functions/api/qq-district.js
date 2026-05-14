@@ -1,13 +1,13 @@
-// functions/api/qq-reverse.js
+// functions/api/qq-district.js
 
 /** @param {*} context */
 export async function onRequest(context) {
-  const baseUrl = (context.env.QQ_REVERSE_URL || '').trim();
+  const baseUrl = (context.env.QQ_DISTRICT_URL || '').trim();
   const key = (context.env.QQ_API_KEY || '').trim();
 
   if (!baseUrl) {
     return new Response(
-      JSON.stringify({ error: 'Configuration missing: QQ_REVERSE_URL' }),
+      JSON.stringify({ error: 'Configuration missing: QQ_DISTRICT_URL' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
@@ -21,19 +21,14 @@ export async function onRequest(context) {
 
   /* Construct URL */
   const requestUrl = new URL(context.request.url);
-  const location = requestUrl.searchParams.get('location');
-  if (!location) {
+  const keyword = requestUrl.searchParams.get('keyword');
+  if (!keyword) {
     return new Response(
-      JSON.stringify({ error: "Parameter missing: 'location'" }),
+      JSON.stringify({ error: "Parameter missing: 'keyword'" }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
   }
-  const radius = requestUrl.searchParams.get('radius') || '0';
-  const params = new URLSearchParams({
-    location,
-    radius,
-    key,
-  });
+  const params = new URLSearchParams({ keyword, key });
   const finalUrl = `${baseUrl}?${params.toString()}`;
   console.log('[DEBUG] Raw Fetch URL:', finalUrl); // TODO: test
 
@@ -62,7 +57,7 @@ export async function onRequest(context) {
       return new Response(
         JSON.stringify({
           status: -1, // frontend will handle this non-zero code
-          message: `QQ Error (reverse): ${response.status}`,
+          message: `QQ Error (district): ${response.status}`,
         }),
         { status: response.status },
       );
@@ -84,7 +79,7 @@ export async function onRequest(context) {
     return new Response(
       JSON.stringify({
         status: -2, // frontend will handle this non-zero code
-        message: `QQ reverse geocoding failed: ${err instanceof Error ? err.message : err}`,
+        message: `QQ district failed: ${err instanceof Error ? err.message : err}`,
       }),
       { status: 500 },
     );

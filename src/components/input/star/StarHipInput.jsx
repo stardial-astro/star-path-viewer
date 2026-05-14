@@ -138,11 +138,11 @@ const StarHipInput = () => {
 
   /* Watch fetched suggestions and focus */
   useEffect(() => {
-    isDevMode && console.debug('* Star suggestions:', suggestions.length); // TODO: test
+    // isDevMode && console.debug('* Star suggestions:', suggestions.length); // TODO: test
     /* If empty, skip */
     if (suggestions.length === 0) return;
-    /* If have multiple options, focus and open options */
-    if (suggestions.length > 1) inputRef.current?.focus();
+    /* If there are options, focus and open options */
+    inputRef.current?.focus();
   }, [suggestions, starDispatch]);
 
   /**
@@ -200,7 +200,7 @@ const StarHipInput = () => {
           payload: value,
         });
         /* Clear suggestions before fetching */
-        // starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep in case just adding spaces
+        // starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep for adding spaces
       } else {
         /* Clear name, HIP, suggestions, RA/Dec, and resets validity if value is blank */
         resetStarValues();
@@ -282,8 +282,8 @@ const StarHipInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      isDevMode &&
-        console.debug('🤔 Something went wrong. Refetching stars...');
+      /* prettier-ignore */
+      isDevMode && console.debug('🤔 Something went wrong. Refetching stars...');
     }
   }, [
     searchTerm,

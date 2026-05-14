@@ -99,15 +99,8 @@ const fetchDiagram = async (params, signal) => {
   //   dateDispatch({ type: dateActionTypes.SET_DAY, payload: res_day });
   // }
 
-  isDevMode &&
-    console.debug(
-      '[Diagram ID]',
-      data.diagramId,
-      '\n[Results]',
-      newInfo,
-      '\n[Annotations]',
-      data.annotations,
-    );
+  /* prettier-ignore */
+  isDevMode && console.debug('[Diagram ID]', data.diagramId, '\n[Results]', newInfo, '\n[Annotations]', data.annotations);
 
   return {
     diagramId: data.diagramId,

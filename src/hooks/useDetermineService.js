@@ -124,9 +124,8 @@ const useDetermineService = (
     const noLocal = isAccessible === isCST || forceInCn;
     setGeoService(service, noLocal);
     isDevMode && noLocal && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-    console.debug(
-      `🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`,
-    );
+    /* prettier-ignore */
+    console.debug(`🌎 [Geocoding service] ${service}${noLocal ? ' (temporary)' : ''}`);
     /* If using CN service, update the reverse geocoding service as well */
     if (service !== DEFAULT_SERVICE) {
       const reverseService =

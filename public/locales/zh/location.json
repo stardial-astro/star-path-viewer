@@ -8,5 +8,11 @@
   "coordinates": "输入坐标",
   "latitude": "纬度",
   "longitude": "经度",
-  "enter_decimal": "请输入十进制小数"
+  "enter_decimal": "请输入十进制小数",
+
+  "province_level": "省级行政区",
+  "city_level": "地级行政区",
+  "county_level": "县级行政区",
+  "township_level": "乡级行政区",
+  "region": "地区"
 }

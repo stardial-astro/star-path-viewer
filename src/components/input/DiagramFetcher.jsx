@@ -156,18 +156,8 @@ const DiagramFetcher = () => {
     clearImage();
     setSuccess(false);
 
-    isDevMode &&
-      console.debug(
-        '[Inputs]',
-        location,
-        date,
-        flag,
-        cal,
-        starName,
-        starHip,
-        starRadec,
-        starInputType,
-      );
+    /* prettier-ignore */
+    isDevMode && console.debug('[Inputs]', location, date, flag, cal, starName, starHip, starRadec, starInputType);
 
     /* Check whether all input fields are complete ------------------ */
     const isComplete = isInputCompleteSync(

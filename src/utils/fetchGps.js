@@ -120,9 +120,8 @@ const fetchGps = async (
       if (service === DEFAULT_SERVICE) {
         setGeoService(DEFAULT_SERVICE_CN, true);
         isDevMode && console.debug('🧽 Cleared:', STORAGE_KEYS.service);
-        console.debug(
-          `🌎 [Geocoding service] ${DEFAULT_SERVICE_CN} (temporary)`,
-        );
+        /* prettier-ignore */
+        console.debug(`🌎 [Geocoding service] ${DEFAULT_SERVICE_CN} (temporary)`);
       }
       /* Update the reverse geocoding service */
       if (serviceCn !== serviceInUse) {

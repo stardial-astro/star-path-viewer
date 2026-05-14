@@ -3,6 +3,7 @@ import { memo, useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import parse from 'html-react-parser';
 import { Box, Stack, Tooltip } from '@mui/material';
+import Fade from '@mui/material/Fade';
 import { useHome } from '@context/HomeContext';
 import useMagnifier from '@hooks/useMagnifier';
 import isMobile from '@utils/isMobile';
@@ -48,6 +49,7 @@ const tooltipSlotProps = {
       },
     ],
   },
+  transition: { timeout: 600 },
 };
 
 /** @param {*} param */
@@ -63,6 +65,9 @@ const TooltipWrapper = ({ children, showHint, ...props }) =>
       disableFocusListener
       disableTouchListener
       placement="bottom-start"
+      slots={{
+        transition: Fade,
+      }}
       slotProps={tooltipSlotProps}
       {...props}
     >

@@ -36,6 +36,8 @@ import CustomIconButton from '@components/ui/CustomIconButton';
 
 const GPS_LABEL = 'GPS';
 
+const addressStyle = { color: 'text.secondary' };
+
 const gpsIcon = (
   <GpsFixedIcon
     fontSize="small"
@@ -107,8 +109,8 @@ const AddressInput = () => {
     /* Clear location and suggestions */
     resetLocationValues();
     lastSelectedTermRef.current = '';
-    isDevMode &&
-      console.debug(`* (AddressInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
+    /* prettier-ignore */
+    // isDevMode && console.debug(`* (AddressInput: onInit) flag: ${flag || 'unset'}`); // TODO: test
   });
 
   /* Initialize */
@@ -149,11 +151,11 @@ const AddressInput = () => {
 
   /* Watch fetched suggestions and focus */
   useEffect(() => {
-    isDevMode && console.debug('* Location suggestions:', suggestions.length); // TODO: test
+    // isDevMode && console.debug('* Location suggestions:', suggestions.length); // TODO: test
     /* If empty, skip */
     if (suggestions.length === 0) return;
-    /* If have multiple options, focus and open options */
-    if (suggestions.length > 1) inputRef.current?.focus();
+    /* If there are options, focus and open options */
+    inputRef.current?.focus();
   }, [suggestions, locationDispatch]);
 
   /**
@@ -266,7 +268,7 @@ const AddressInput = () => {
           payload: value,
         });
         /* Clear suggestions before fetching */
-        // locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep in case just adding spaces
+        // locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep for adding spaces
       } else {
         /* Clear location and suggestions if value is blank */
         resetLocationValues();
@@ -361,8 +363,8 @@ const AddressInput = () => {
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
-      isDevMode &&
-        console.debug('🤔 Something went wrong. Refetching locations...');
+      /* prettier-ignore */
+      isDevMode && console.debug('🤔 Something went wrong. Refetching locations...');
     }
   }, [
     searchTerm,
@@ -392,7 +394,9 @@ const AddressInput = () => {
       getOptionLabel={(option) =>
         typeof option === 'string'
           ? option
-          : option.display_name + '|' + option.addresstype
+          : [option.display_name, option.address, option.addresstype]
+              .filter(Boolean)
+              .join('|')
       }
       inputValue={searchTerm}
       isOptionEqualToValue={(option, value) => option.id === value.id}
@@ -414,11 +418,23 @@ const AddressInput = () => {
             spacing={1}
             sx={{ width: '100%', justifyContent: 'space-between' }}
           >
-            <Typography>{option.display_name}</Typography>
+            <Box
+              display="flex"
+              flexWrap="wrap"
+              alignItems="flex-start"
+              columnGap={1}
+            >
+              <Typography>{option.display_name}</Typography>
+              {option.address && (
+                <Typography align="left" sx={addressStyle}>
+                  {option.address}
+                </Typography>
+              )}
+            </Box>
             <Box>
               {option.addresstype ? (
                 <Chip
-                  label={option.addresstype}
+                  label={t(option.addresstype, { keySeparator: false })}
                   size="small"
                   color="primary"
                   variant="outlined"

@@ -85,6 +85,25 @@ interface QqSearchSchema {
   data: QqSearchItemSchema[];
 }
 
+interface QqDistrictItemSchema {
+  id: string;
+  fullname: string;
+  level: number;
+  location: { lat: number; lng: number };
+  address: string;
+  [key: string]: unknown;
+}
+
+interface QqDistrictSchema {
+  /** 0 is success */
+  status: number;
+  /** `'query ok'` is success */
+  message: string;
+  request_id: string;
+  data_version: string;
+  result: QqDistrictItemSchema[][];
+}
+
 interface TiandituReverseSchema {
   /** `'0'` is success */
   status: string;

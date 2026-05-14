@@ -260,7 +260,10 @@ const InfoDisplay = () => {
   );
 
   useEffect(() => {
-    targetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const timer = setTimeout(() => {
+      targetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+    return () => clearTimeout(timer);
   }, []);
 
   return (

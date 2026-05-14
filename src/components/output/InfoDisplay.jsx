@@ -52,6 +52,19 @@ const detailStyle = {
   },
 };
 
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, -20],
+        },
+      },
+    ],
+  },
+};
+
 // /** @param {string} s */
 // const quoteToPrime = (s) => s.replaceAll("'", '′').replaceAll('"', '″');
 
@@ -273,8 +286,9 @@ const InfoDisplay = () => {
               disableHoverListener={isMobile}
               enterDelay={800}
               enterNextDelay={500}
-              enterTouchDelay={500}
-              leaveTouchDelay={1500}
+              enterTouchDelay={200}
+              leaveTouchDelay={2500}
+              {...(isMobile && { slotProps: tooltipSlotProps })}
             >
               {dateInfoItems}
             </Tooltip>

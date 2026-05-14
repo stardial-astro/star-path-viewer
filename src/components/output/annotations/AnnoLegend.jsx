@@ -13,13 +13,15 @@ import {
   accordionSummaryClasses,
   IconButton,
 } from '@mui/material';
-import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
 import isMobile from '@utils/isMobile';
 import { LINE_STYLES } from '@utils/constants';
 import { colorFilter } from '@utils/outputUtils';
 // import CustomDivider from '@components/ui/CustomDivider';
+import {
+  infoTipIcon,
+  DetailTooltip,
+  DetailTooltipWrapper,
+} from '@components/ui/CustomTooltips';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 
 const labelStyle = { fontWeight: 500, minWidth: '1.5rem' };
@@ -74,65 +76,7 @@ const Dot = () => (
   />
 );
 
-const tipIcon = (
-  <InfoOutlinedIcon
-    sx={{
-      fontSize: '1rem',
-      color: 'primary.main',
-      mt: '-3px',
-    }}
-  />
-);
-
-const DetailTooltip = styled(({ className, ...props }) => (
-  <Tooltip
-    {...props}
-    describeChild
-    placement="top-start"
-    disableFocusListener
-    enterTouchDelay={0}
-    leaveTouchDelay={6_000}
-    slotProps={{
-      popper: {
-        modifiers: [
-          {
-            name: 'offset',
-            options: {
-              offset: [0, -5],
-            },
-          },
-        ],
-      },
-    }}
-    classes={{ popper: className }}
-  />
-))(({ theme }) => ({
-  [`& .${tooltipClasses.tooltip}`]: {
-    color: theme.vars.palette.primary.main,
-    backgroundColor: theme.vars.palette.background.paper,
-    maxWidth: 480,
-    fontSize: theme.typography.body2.fontSize,
-    fontWeight: 400,
-    border: `1px solid ${theme.vars.palette.primary.main}`,
-    boxShadow: `0px 2px 6px ${theme.vars.palette.action.disabledBackground}`,
-    ...theme.applyStyles('dark', {
-      backgroundColor: 'rgb(41, 41, 41)',
-      border: `1px solid ${theme.vars.palette.primary.main}`,
-    }),
-  },
-}));
-
-/** @param {*} param */
-const TooltipWrapper = ({ children, onClickAway }) =>
-  isMobile ? (
-    <ClickAwayListener onClickAway={onClickAway}>
-      <span role="presentation">{children}</span>
-    </ClickAwayListener>
-  ) : (
-    children
-  );
-
-const StyledAccordion = styled((props) => (
+const LegendAccordion = styled((props) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
   margin: 'auto',
@@ -140,7 +84,7 @@ const StyledAccordion = styled((props) => (
   maxWidth: '680px',
 }));
 
-const StyledAccordionSummary = styled((props) => (
+const LegendAccordionSummary = styled((props) => (
   <AccordionSummary
     expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
     {...props}
@@ -173,7 +117,7 @@ const StyledAccordionSummary = styled((props) => (
   }),
 }));
 
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
+const LegendAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   backgroundColor: 'rgba(0, 0, 0, .03)',
   paddingLeft: theme.spacing(1.5),
   paddingRight: theme.spacing(1.5),
@@ -210,12 +154,12 @@ const AnnoLegend = ({ anno }) => {
     <>
       {/* <CustomDivider sx={{ mb: 1 }} /> */}
 
-      <StyledAccordion defaultExpanded={!isMobile} disableGutters>
-        <StyledAccordionSummary>
+      <LegendAccordion defaultExpanded={!isMobile} disableGutters>
+        <LegendAccordionSummary>
           <Typography variant="body1">{t('legend')}</Typography>
-        </StyledAccordionSummary>
+        </LegendAccordionSummary>
 
-        <StyledAccordionDetails>
+        <LegendAccordionDetails>
           <Grid
             container
             rowSpacing={0.5}
@@ -270,7 +214,8 @@ const AnnoLegend = ({ anno }) => {
                     <Typography variant="body2" align="left" sx={detailStyle}>
                       {pointAnno[item.name].name}
 
-                      <TooltipWrapper
+                      <DetailTooltipWrapper
+                        isMobile={isMobile}
                         onClickAway={() => openId === id && setOpenId('')}
                       >
                         <DetailTooltip
@@ -290,18 +235,18 @@ const AnnoLegend = ({ anno }) => {
                             }
                             sx={{ p: 0, ml: 0.5 }}
                           >
-                            {tipIcon}
+                            {infoTipIcon}
                           </IconButton>
                         </DetailTooltip>
-                      </TooltipWrapper>
+                      </DetailTooltipWrapper>
                     </Typography>
                   </Box>
                 ))}
               </Stack>
             </Grid>
           </Grid>
-        </StyledAccordionDetails>
-      </StyledAccordion>
+        </LegendAccordionDetails>
+      </LegendAccordion>
 
       {/* <CustomDivider sx={{ mt: 0.5, mb: 0.5 }} /> */}
     </>

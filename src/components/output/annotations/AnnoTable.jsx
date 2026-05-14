@@ -148,6 +148,19 @@ const StyledRow = styled(TableRow)(() => ({
 
 const SpacerCell = ({ ...props }) => <TableCell sx={{ p: 0 }} {...props} />;
 
+const tooltipSlotProps = {
+  popper: {
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, -20],
+        },
+      },
+    ],
+  },
+};
+
 const footnoteStyle = {
   color: 'text.secondary',
   mt: 1,
@@ -347,8 +360,9 @@ const AnnoTable = ({ anno, tzname }) => {
                     title={tzname || ''}
                     placement="top"
                     disableHoverListener={isMobile}
-                    enterTouchDelay={500}
+                    enterTouchDelay={200}
                     leaveTouchDelay={1000}
+                    {...(isMobile && { slotProps: tooltipSlotProps })}
                   >
                     <Box
                       component="span"

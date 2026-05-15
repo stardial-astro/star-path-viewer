@@ -48,15 +48,7 @@ const Footer = () => {
           >
             Lydia Zhang
           </Link>
-          ,{' '}
-          <Link
-            href="https://github.com/claude-hao"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Zhibo Hao
-          </Link>
-          , and Jinsong Guo.
+          , Zhibo Hao, and Jinsong Guo.
         </Typography>
 
         <Typography variant="body2" component="p" align="left">

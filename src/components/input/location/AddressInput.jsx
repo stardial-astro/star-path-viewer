@@ -28,6 +28,7 @@ import useDebounce from '@hooks/useDebounce';
 import isMobile from '@utils/isMobile';
 import config from '@utils/config';
 import { LOC_INPUT_TYPES, LOC_UNKNOWN_ID } from '@utils/constants';
+import { norm } from '@utils/inputUtils';
 import fetchGps from '@utils/fetchGps';
 import { clearLocationError } from '@utils/locationInputUtils';
 import { isDevMode } from '@utils/devMode';
@@ -36,7 +37,7 @@ import CustomIconButton from '@components/ui/CustomIconButton';
 
 const GPS_LABEL = 'GPS';
 
-const addressStyle = { color: 'text.secondary' };
+const addressStyle = { color: 'text.secondary', fontSize: 'body2.fontSize' };
 
 const gpsIcon = (
   <GpsFixedIcon
@@ -53,6 +54,28 @@ const circularProgress = (
     sx={{ color: 'action.disabled', ml: 0.4, mr: 0.5 }}
   />
 );
+
+/**
+ * @param {AddressItem[]} suggestions
+ * @param {string} normalizedTerm
+ */
+const findMatchedIndex = (suggestions, normalizedTerm) => {
+  const matchedIndexes = suggestions.reduce(
+    /** @param {number[]} acc */
+    (acc, curr, index) => {
+      if (
+        norm(curr.display_name) === normalizedTerm ||
+        (curr.address && norm(curr.address) === normalizedTerm)
+      ) {
+        acc.push(index);
+        console.log('matched:', index, curr);
+      }
+      return acc;
+    },
+    [],
+  );
+  return matchedIndexes.length === 1 ? matchedIndexes[0] : -1;
+};
 
 const AddressInput = () => {
   // console.log('Rendering AddressInput');
@@ -86,7 +109,7 @@ const AddressInput = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   /* Whether to skip fetching suggestions */
   const [skipFetch, setSkipFetch] = useState(true);
-  /** Last selected trimmed display name, which is also set as the search term. */
+  /** Last selected normalized display name, which is also set as the search term. */
   const lastSelectedTermRef = useRef('');
   /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
@@ -182,13 +205,9 @@ const AddressInput = () => {
       /* If valid, select this option */
       locationDispatch({
         type: actionTypes.SET_LOCATION,
-        payload: {
-          lat: option.lat,
-          lng: option.lng,
-          id: option.id,
-        },
+        payload: { lat: option.lat, lng: option.lng, id: option.id },
       });
-      lastSelectedTermRef.current = option.display_name.trim();
+      lastSelectedTermRef.current = norm(option.display_name);
       locationDispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
@@ -229,6 +248,7 @@ const AddressInput = () => {
       setReverseGeoServiceCn,
       locationDispatch,
     );
+    // isDevMode && console.debug('* Last selected:', lastSelectedTermRef.current); // TODO: test
     if (err) {
       setErrorMessage((prev) => ({ ...prev, location: err.message }));
     }
@@ -254,21 +274,26 @@ const AddressInput = () => {
   const handleInputChange = useCallback(
     (event, value, reason) => {
       /* Skip if triggered by programmatic change (select or hit Enter before fetching)
-       * or GPS is loading (setting GPS result doesn't trigger this)
+       * or GPS is loading (setting GPS result doesn't actually trigger this)
        */
       if ((reason !== 'input' && reason !== 'clear') || gpsLoading) return;
-      /* Reset lastSelectedTermRef when typing */
-      lastSelectedTermRef.current = '';
+      // /* Reset lastSelectedTermRef when typing */
+      // lastSelectedTermRef.current = '';
+      // isDevMode && console.debug('* Last selected location cleared'); // TODO: test
+      /* Reset lastSelectedTermRef when inputting new values */
+      if (
+        lastSelectedTermRef.current &&
+        norm(value) !== lastSelectedTermRef.current
+      ) {
+        lastSelectedTermRef.current = '';
+        isDevMode && console.debug('* Last selected location cleared'); // TODO: test
+      }
       /* Update searchTerm only when value is non-blank */
       if (value.trim()) {
         /* Ready to fetch suggestions */
         setSkipFetch(false);
-        locationDispatch({
-          type: actionTypes.SET_SEARCH_TERM,
-          payload: value,
-        });
-        /* Clear suggestions before fetching */
-        // locationDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep for adding spaces
+        locationDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: value });
+        /* Do not clear suggestions before fetching, allowing adding spaces */
       } else {
         /* Clear location and suggestions if value is blank */
         resetLocationValues();
@@ -290,8 +315,9 @@ const AddressInput = () => {
   const handleSelect = useCallback(
     (event, value, reason) => {
       /* Skip if not triggered by selecting an option */
-      if (reason !== 'selectOption' || typeof value === 'string' || !value)
+      if (reason !== 'selectOption' || typeof value === 'string' || !value) {
         return;
+      }
       /* Do not fetch suggestions */
       setSkipFetch(true);
       /* Ready to fetch tz */
@@ -318,13 +344,13 @@ const AddressInput = () => {
 
   /** @type {() => void} */
   const handleBlur = useCallback(() => {
-    const trimmedSearchTerm = searchTerm.trim();
+    const normalizedTerm = norm(searchTerm);
     /* If fetching, searchTerm is blank, or selected, skip and close */
     if (
       gpsLoading ||
       suggestionsLoading ||
-      !trimmedSearchTerm ||
-      trimmedSearchTerm === lastSelectedTermRef.current ||
+      !normalizedTerm ||
+      normalizedTerm === lastSelectedTermRef.current ||
       /* Reverse geocoding failed (should already toggled to coordinate mode) */
       (suggestions.length > 0 && suggestions[0].id === LOC_UNKNOWN_ID)
     ) {
@@ -333,12 +359,15 @@ const AddressInput = () => {
     }
     /* When loosing focus, auto-select or warn */
     if (suggestions.length > 0) {
-      const index = suggestions.findIndex(
-        (item) => item.display_name === trimmedSearchTerm,
-      );
+      const index = findMatchedIndex(suggestions, normalizedTerm);
       if (index >= 0) {
         /* If the search term itself is a valid address, select this option and close */
+        /* Do not fetch suggestions */
+        setSkipFetch(true);
+        /* Ready to fetch tz */
+        setSkipTz(false);
         selectOption(suggestions[index]);
+        /* Do not clear suggestions */
         setOpen(false);
       } else {
         /* If none has been selected, warn and set invalid */
@@ -360,11 +389,13 @@ const AddressInput = () => {
       /* If searchTerm is not empty but nothing returned yet for this new search
        * and not querying GPS, fetch again
        */
+      /* prettier-ignore */
+      isDevMode && console.debug('* Last selected:', lastSelectedTermRef.current); // TODO: test
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
       /* prettier-ignore */
-      isDevMode && console.debug('🤔 Something went wrong. Refetching locations...');
+      isDevMode && console.debug('🤔 Options missing. Refetching locations...');
     }
   }, [
     searchTerm,
@@ -373,6 +404,7 @@ const AddressInput = () => {
     suggestionsLoading,
     locationError,
     errorMessage,
+    setSkipTz,
     selectOption,
     locationDispatch,
   ]);
@@ -399,7 +431,9 @@ const AddressInput = () => {
               .join('|')
       }
       inputValue={searchTerm}
-      isOptionEqualToValue={(option, value) => option.id === value.id}
+      // isOptionEqualToValue={(option, value) => option.id === value.id}
+      isOptionEqualToValue={() => false} // allow the selected option to be selected again
+      value={null} // allow the selected option to be selected again
       forcePopupIcon={suggestions.length > 0}
       open={open}
       onOpen={() => setOpen(true)}
@@ -418,12 +452,7 @@ const AddressInput = () => {
             spacing={1}
             sx={{ width: '100%', justifyContent: 'space-between' }}
           >
-            <Box
-              display="flex"
-              flexWrap="wrap"
-              alignItems="flex-start"
-              columnGap={1}
-            >
+            <Box display="flex" flexDirection="column" alignItems="flex-start">
               <Typography>{option.display_name}</Typography>
               {option.address && (
                 <Typography align="left" sx={addressStyle}>

@@ -9,6 +9,7 @@ import {
   LOC_INPUT_TYPES,
   LOC_UNKNOWN_ID,
 } from './constants';
+import { norm } from './inputUtils';
 import fetchGeolocation from './fetchGeolocation';
 import reverseGeocode from './reverseGeocode';
 import { isDevMode } from './devMode';
@@ -87,7 +88,7 @@ const fetchGps = async (
 
     if (res.id !== LOC_UNKNOWN_ID) {
       /* If the address is valid, update search term and ref */
-      lastSelectedTermRef.current = res.display_name.trim();
+      lastSelectedTermRef.current = norm(res.display_name);
       dispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: res.display_name,

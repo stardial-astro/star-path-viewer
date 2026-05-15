@@ -71,7 +71,8 @@ const searchWithNominatim = async (query) => {
   const response = await apiClient.get(nominatimSearchUrl, {
     params: {
       q: query,
-      format: 'json',
+      format: 'jsonv2',
+      limit,
       addressdetails: 1,
       email: import.meta.env.VITE_EMAIL || 'stardial.astro@gmail.com',
     },
@@ -84,7 +85,7 @@ const searchWithNominatim = async (query) => {
   isDevMode && console.debug('[Query]', query, '\n[Results]', data);
   if (Array.isArray(data) && data.length > 0) {
     /* item.lat and item.lon are strings */
-    return data.slice(0, limit).map((item) => ({
+    return data.map((item) => ({
       lat: item.lat,
       lng: item.lon,
       display_name: item.display_name,
@@ -218,12 +219,7 @@ const searchDistrictWithQq = async (query) => {
   // const duration = performance.now() - startTime;
   /* [Proxy] -------------------------------------------------------- */
   const response = await apiClient.get(qqDistrictUrlInternal, {
-    params: {
-      keyword: query,
-      policy: 1,
-      page_index: 1,
-      page_size: 20,
-    },
+    params: { keyword: query },
     timeout: QQ_TIMEOUT,
   });
   const duration = response.config.metadata?.duration;

@@ -22,6 +22,7 @@ import * as actionTypes from '@context/starInputActionTypes';
 import useFetchHipList from '@hooks/useFetchHipList';
 import useFetchStarNames from '@hooks/useFetchStarNames';
 import { CC_HANT_CODES } from '@utils/constants';
+import { norm } from '@utils/inputUtils';
 import { constructNameZh, clearStarError } from '@utils/starInputUtils';
 import { isDevMode } from '@utils/devMode';
 import CustomTextField from '@components/ui/CustomTextField';
@@ -71,7 +72,7 @@ const StarHipInput = () => {
   const [refreshCount, setRefreshCount] = useState(0);
   /* Whether to skip fetching suggestions */
   const [skipFetch, setSkipFetch] = useState(true);
-  /** Last selected trimmed display name, which is also set as the search term. */
+  /** Last selected normalized display name, which is also set as the search term. */
   const lastSelectedTermRef = useRef('');
   /** @type {ReactRef<HTMLInputElement | null>} */
   const inputRef = useRef(null);
@@ -168,7 +169,7 @@ const StarHipInput = () => {
         type: actionTypes.SET_STAR_NAME_ZH,
         payload: constructNameZh(option),
       });
-      lastSelectedTermRef.current = option.display_name.trim();
+      lastSelectedTermRef.current = norm(option.display_name);
       starDispatch({
         type: actionTypes.SET_SEARCH_TERM,
         payload: option.display_name,
@@ -190,17 +191,22 @@ const StarHipInput = () => {
       /* Skip if triggered by programmatic change (select or hit Enter before fetching) */
       if (reason !== 'input' && reason !== 'clear') return;
       /* Reset lastSelectedTermRef when typing */
-      lastSelectedTermRef.current = '';
+      // lastSelectedTermRef.current = '';
+      // isDevMode && console.debug('* Last selected location cleared'); // TODO: test
+      /* Reset lastSelectedTermRef when inputting new values */
+      if (
+        lastSelectedTermRef.current &&
+        norm(value) !== lastSelectedTermRef.current
+      ) {
+        lastSelectedTermRef.current = '';
+        isDevMode && console.debug('* Last selected star cleared'); // TODO: test
+      }
       /* Update searchTerm only when value is non-blank */
       if (value.trim()) {
         /* Ready to fetch suggestions */
         setSkipFetch(false);
-        starDispatch({
-          type: actionTypes.SET_SEARCH_TERM,
-          payload: value,
-        });
-        /* Clear suggestions before fetching */
-        // starDispatch({ type: actionTypes.CLEAR_SUGGESTIONS }); // TODO: must keep for adding spaces
+        starDispatch({ type: actionTypes.SET_SEARCH_TERM, payload: value });
+        /* Do not clear suggestions before fetching, allowing adding spaces */
       } else {
         /* Clear name, HIP, suggestions, RA/Dec, and resets validity if value is blank */
         resetStarValues();
@@ -222,8 +228,9 @@ const StarHipInput = () => {
   const handleSelect = useCallback(
     (event, value, reason) => {
       /* Skip if not triggered by selecting an option */
-      if (reason !== 'selectOption' || typeof value === 'string' || !value)
+      if (reason !== 'selectOption' || typeof value === 'string' || !value) {
         return;
+      }
       /* Do not fetch suggestions */
       setSkipFetch(true);
       selectOption(value);
@@ -248,23 +255,26 @@ const StarHipInput = () => {
 
   /** @type {() => void} */
   const handleBlur = useCallback(() => {
-    const trimmedSearchTerm = searchTerm.trim();
+    const normalizedTerm = norm(searchTerm);
     /* If no cached data, searchTerm is blank, or selected, skip and close */
     if (
       !hipList ||
-      !trimmedSearchTerm ||
-      trimmedSearchTerm === lastSelectedTermRef.current
+      !normalizedTerm ||
+      normalizedTerm === lastSelectedTermRef.current
     ) {
       setOpen(false);
       return;
     }
     /* When loosing focus, auto-select or warn */
     if (suggestions.length > 0) {
-      if (suggestions[0].hip === trimmedSearchTerm) {
+      if (suggestions[0].hip === normalizedTerm) {
         /* If the search term itself is a valid HIP, which will always be at the top
          * in this case, select this option and close
          */
+        /* Do not fetch suggestions */
+        setSkipFetch(true);
         selectOption(suggestions[0]);
+        /* Do not clear suggestions */
         setOpen(false);
       } else {
         /* If none has been selected, warn and set invalid */
@@ -279,11 +289,13 @@ const StarHipInput = () => {
       /* If searchTerm is not empty but nothing returned yet for this new search,
        * fetch again
        */
+      /* prettier-ignore */
+      isDevMode && console.debug('* Last selected:', lastSelectedTermRef.current); // TODO: test
       lastSelectedTermRef.current = '';
       setSkipFetch(false);
       setRefreshCount((prev) => prev + 1);
       /* prettier-ignore */
-      isDevMode && console.debug('🤔 Something went wrong. Refetching stars...');
+      isDevMode && console.debug('🤔 Options missing. Refetching stars...');
     }
   }, [
     searchTerm,
@@ -313,7 +325,9 @@ const StarHipInput = () => {
         typeof option === 'string' ? option : option.hip || option.display_name
       }
       inputValue={searchTerm}
-      isOptionEqualToValue={(option, value) => option.hip === value.hip}
+      // isOptionEqualToValue={(option, value) => option.hip === value.hip}
+      isOptionEqualToValue={() => false} // allow the selected option to be selected again
+      value={null} // allow the selected option to be selected again
       forcePopupIcon={suggestions.length > 0}
       open={open}
       onOpen={() => setOpen(true)}

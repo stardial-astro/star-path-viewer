@@ -267,7 +267,7 @@ const InfoDisplay = () => {
   }, []);
 
   return (
-    <Box ref={targetRef} sx={{ mt: 1 }}>
+    <Box ref={targetRef} sx={{ mt: 1, scrollMarginTop: { xs: '3rem', sm: '3.5rem' } }}>
       <CustomDivider sx={{ mb: 1 }} />
       <Grid
         container

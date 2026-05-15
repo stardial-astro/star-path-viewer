@@ -5,6 +5,12 @@ import * as starActionTypes from '@context/starInputActionTypes';
 import { LOC_INPUT_TYPES, STAR_INPUT_TYPES } from './constants';
 
 /**
+ * Trims and converts to lowercase.
+ * @param {string} s
+ * */
+const norm = (s) => s.trim().toLowerCase();
+
+/**
  * Converts to string and pads with 0.
  * @param {number} num
  * @param {number} [fractionDigits=0] - Defaults to 0.
@@ -184,6 +190,7 @@ const clearNullError = (locationDispatch, dateDispatch, starDispatch) => {
 };
 
 export {
+  norm,
   pad,
   isLocationInputCompleteSync,
   isDateInputCompleteSync,

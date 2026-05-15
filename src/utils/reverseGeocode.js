@@ -40,9 +40,10 @@ const reverseWithNominatim = async (coords, signal) => {
     params: {
       lat: coords.latitude,
       lon: coords.longitude,
-      format: 'json',
+      format: 'jsonv2',
       addressdetails: 1,
-      zoom: 10, // City level
+      // zoom: 10, // city
+      zoom: 14, // neighbourhood
       email: import.meta.env.VITE_EMAIL || 'stardial.astro@gmail.com',
     },
     timeout: NOMINATIM_TIMEOUT,

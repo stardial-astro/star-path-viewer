@@ -10,6 +10,7 @@ import {
   LOCATION_NOT_FOUND_MSG,
   // SERVICE_ERR_MSG,
 } from '@utils/constants';
+import { norm } from '@utils/inputUtils';
 import fetchAddresses from '@utils/fetchAddresses';
 import { fallbackGeoService } from '@utils/apiUtils';
 import { isDevMode } from '@utils/devMode';
@@ -54,7 +55,8 @@ const useFetchAddresses = (
   setGeoService,
   setErrorMessage,
 ) => {
-  const isEnabled = !skipFetch && !gpsLoading && searchTerm.trim().length > 1;
+  const normalizedTerm = norm(searchTerm);
+  const isEnabled = !skipFetch && !gpsLoading && normalizedTerm.length > 1;
 
   /**
    * Updates `geoService` but does not store in local.
@@ -82,13 +84,8 @@ const useFetchAddresses = (
   );
 
   const { data, error, isFetching } = useQuery({
-    queryKey: [
-      QUERY_KEY,
-      searchTerm.trim().toLowerCase(),
-      geoService,
-      refreshCount,
-    ],
-    queryFn: () => fetchAddresses(searchTerm.trim().toLowerCase(), geoService),
+    queryKey: [QUERY_KEY, normalizedTerm, geoService, refreshCount],
+    queryFn: () => fetchAddresses(normalizedTerm, geoService),
     enabled: isEnabled,
     networkMode: 'online',
     staleTime: STALE_MS,
@@ -120,7 +117,7 @@ const useFetchAddresses = (
   }, [isFetching, dispatch]);
 
   useEffect(() => {
-    /* Skip if not enabled, avoiding refetch after selection */
+    /* Skip if not enabled, avoiding resetting when not enabled */
     if (!isEnabled) return;
     if (error) {
       /* Show errors, set invalid, and clear suggestions */

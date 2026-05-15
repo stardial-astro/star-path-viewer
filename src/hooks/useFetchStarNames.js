@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import * as actionTypes from '@context/starInputActionTypes';
 import config from '@utils/config';
 import { HIP_OUT_OF_RANGE_MSG, HIP_NOT_FOUND_MSG } from '@utils/constants';
+import { norm } from '@utils/inputUtils';
 import { fetchStarNames } from '@utils/fetchStarNames';
 
 const QUERY_KEY = 'starName';
@@ -41,11 +42,13 @@ const useFetchStarNames = (
   dispatch,
   setErrorMessage,
 ) => {
+  const normalizedTerm = norm(searchTerm);
+  const isEnabled = !skipFetch && !!normalizedTerm;
+
   const { data, error } = useQuery({
-    queryKey: [QUERY_KEY, searchTerm.trim().toLowerCase(), refreshCount],
-    queryFn: () =>
-      fetchStarNames(searchTerm.trim().toLowerCase(), hipList, setHipList),
-    enabled: !skipFetch && !!searchTerm.trim(),
+    queryKey: [QUERY_KEY, normalizedTerm, refreshCount],
+    queryFn: () => fetchStarNames(normalizedTerm, hipList, setHipList),
+    enabled: isEnabled,
     networkMode: 'online',
     staleTime: STALE_MS,
     gcTime: GC_MS,
@@ -66,6 +69,8 @@ const useFetchStarNames = (
   });
 
   useEffect(() => {
+    /* Skip if not enabled, avoiding resetting when not enabled */
+    if (!isEnabled) return;
     if (error) {
       /* Show errors, set invalid, and clear suggestions */
       if (
@@ -85,7 +90,7 @@ const useFetchStarNames = (
       /* Update state */
       dispatch({ type: actionTypes.SET_SUGGESTIONS, payload: data });
     }
-  }, [data, error, dispatch, setErrorMessage]);
+  }, [isEnabled, data, error, dispatch, setErrorMessage]);
 };
 
 export default useFetchStarNames;

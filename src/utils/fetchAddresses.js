@@ -54,12 +54,7 @@ let activeRequests = 0;
 const getTailSegments = (str, delim = ';', limit = 3) => {
   if (!str) return '';
   const pattern = new RegExp(`${delim}\\s*`);
-  return str
-    .split(pattern)
-    .filter(Boolean)
-    .filter((s) => s.length <= 5)
-    .slice(-limit)
-    .join('|');
+  return str.split(pattern).filter(Boolean).slice(-limit).join('|');
 };
 
 /**

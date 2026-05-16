@@ -73,6 +73,7 @@ const PwaUpdater = () => {
   // });
 
   const handleUpdate = useCallback(() => {
+    setNeedRefresh(false);
     if (updateActionRef.current) {
       updateActionRef.current();
     }

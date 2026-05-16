@@ -6,7 +6,7 @@
 
 An astronomical tool for tracking the apparent motion of any planet or star on any chosen date in the ancient or future sky.
 
-[![Version](https://img.shields.io/badge/Version-v1.3.3-blue)](#features)
+[![Version](https://img.shields.io/badge/Version-v1.3.4-blue)](#features)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)

@@ -6,7 +6,7 @@
 
 天體軌跡追蹤天文小工具：顯示上下五千年間指定日期和地點的天體視運動軌跡
 
-[![版本](https://img.shields.io/badge/Version-v1.3.3-blue)](#功能特性)
+[![版本](https://img.shields.io/badge/Version-v1.3.4-blue)](#功能特性)
 [![node](https://img.shields.io/badge/Node.js-24.14.0-5FA04E?logo=Node.js&logoColor=white)](https://www.npmjs.com)
 [![react](https://img.shields.io/badge/React-19-1DAFB?logo=react&logoColor=white)](https://react.dev)
 [![mui](https://img.shields.io/badge/MUI-7-007FFF?logo=mui&logoColor=white)](https://mui.com)

@@ -7,7 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.3.3] - 2026-05-13
+## [1.3.4] - 2026-05-13
+
+### Added
+
+- Magnifier on SVG
+- QQ district search
+
+## [1.3.3] - 2026-05-09
 
 ### Added
 
@@ -15,8 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Astronomical twilight display
 - Show/hide legend
 - Show all columns if querying Julian date
-- Magnifier on SVG
-- QQ district search
 
 ### Fixed
 

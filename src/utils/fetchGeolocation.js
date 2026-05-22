@@ -3,7 +3,7 @@ import axios from 'axios';
 import apiClient from './apiClient';
 import { isDevMode } from './devMode';
 
-const GEO_TIMEOUT = 6_000;
+const GEO_TIMEOUT = 12_000;
 const GEO_IP_TIMEOUT = 5_000;
 
 const ipGeoServiceUrl = 'https://ipinfo.io/json';

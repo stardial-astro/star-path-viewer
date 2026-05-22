@@ -103,7 +103,7 @@ const ImageDisplay = () => {
     };
   }, [showHint]);
 
-  const { loupeRef, loupeInnerRef, handleMouseMove, handleMouseLeave } =
+  const { loupeRef, loupeInnerRef, handlePointerMove, handlePointerLeave } =
     useMagnifier({
       enabled: !isMobile,
       zoom: 3,
@@ -113,12 +113,16 @@ const ImageDisplay = () => {
   return (
     <>
       <Box
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        onPointerEnter={handlePointerMove}
+        tabIndex={0}
         sx={{
           position: 'relative',
-          mt: { xs: -1, sm: -2.5, md: -3 },
-          mb: { xs: -2, sm: -3.5, md: -4.5 },
+          overflow: 'hidden',
+          outline: 'none', // no outline when focus
+          // mt: { xs: -1, sm: -2.5, md: -3 },
+          // mb: { xs: -2, sm: -3.5, md: -4.5 },
           mr: 0.5,
         }}
       >
@@ -130,9 +134,9 @@ const ImageDisplay = () => {
           <Box
             id="svg-container"
             sx={(theme) => ({
-              // mt: { xs: -1, sm: -2.5, md: -3 },
-              // mb: { xs: -2, sm: -3.5, md: -4.5 },
-              // mr: 0.5,
+              position: 'relative',
+              top: { xs: -8, sm: -20, md: -24 },
+              mb: { xs: -3, sm: -6, md: -7.5 },
               '& svg': { width: '100%', height: 'auto' },
               ...theme.applyStyles('dark', { filter: colorFilter }),
             })}

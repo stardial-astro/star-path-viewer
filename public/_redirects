@@ -1,0 +1,11 @@
+# Cloudflare Pages evaluates these ONLY for paths with no matching static file.
+# A real hashed asset (e.g. /assets/vendor-mui-xxx.js) exists, so it is served
+# directly and never hits these rules. A *missing* asset (old hash removed by a
+# new deploy, or edge not yet propagated) would otherwise fall through to the SPA
+# handler and get 200 index.html — which the /assets/* immutable rule in _headers
+# then caches as "HTML under a .js URL" for a year (the bug that white-screens
+# the app). Returning a real 404 keeps that from ever being cached as a module.
+/assets/*  /404  404
+
+# SPA fallback for client-side routes (/, /about, ...) — navigations only.
+/*  /index.html  200

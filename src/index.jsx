@@ -27,8 +27,15 @@ await i18nPromise;
 //   },
 // });
 
+/* A dynamically-imported chunk failed to load (version skew after a deploy:
+ * the hash no longer exists on the server). Reload once to pick up the fresh
+ * index.html + new hashes. Guard against a reload loop if it keeps failing. */
 window.addEventListener('vite:preloadError', (event) => {
   event.preventDefault();
+  const KEY = 'chunk-reload-at';
+  const last = Number(sessionStorage.getItem(KEY) || 0);
+  if (Date.now() - last < 10000) return; // already reloaded very recently — give up
+  sessionStorage.setItem(KEY, String(Date.now()));
   window.location.reload();
 });
 
